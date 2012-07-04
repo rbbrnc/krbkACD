@@ -24,7 +24,7 @@ class PTag
 		QRectF region() const;
 		void setRegion(const QString &region);
 
-		const void debug() const;
+		void debug() const;
 
 	private:
 		QSharedDataPointer<PTagDataPrivate> d;

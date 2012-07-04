@@ -60,7 +60,7 @@ void PTag::setRegion(const QString &region)
 }
 
 
-const void PTag::debug() const
+void PTag::debug() const
 {
 	qDebug() << "PTag::" << "m_region:" << d->m_region << "m_text:" << d->m_text;
 }
