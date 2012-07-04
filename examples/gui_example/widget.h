@@ -34,9 +34,6 @@ class Widget : public QWidget
 		QLabel *label;
 		QPixmap m_pic;
 
-		QRect tagRect;
-		QRectF tagRectF;
-
 		PTagWidget *m_tag;
 		QList<PTagWidget *> m_tagWidgetList;
 

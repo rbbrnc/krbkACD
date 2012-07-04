@@ -79,7 +79,7 @@ void Widget::mouseMoveEvent(QMouseEvent *event)
 
 	for (int i = 0; i < m_tagWidgetList.size(); i++) {
 		PTagWidget *t = m_tagWidgetList.at(i);
-		tagRect = t->tagRect();
+		QRect tagRect = t->tagRect();
 
 		if (tagRect.contains(x, y) && t->isHidden()) {
 			t->show();
