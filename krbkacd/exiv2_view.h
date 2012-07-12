@@ -19,6 +19,7 @@ class Exiv2View : public QTreeView
 		~Exiv2View();
 
 		void readMetadata(const QString file);
+		void clearMetadata();
 
 	public slots:
 		void debug();

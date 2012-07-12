@@ -79,15 +79,22 @@ void Exiv2View::debug()
 {
 }
 
-void Exiv2View::readMetadata(const QString file)
+// Clear metadata if present!
+void Exiv2View::clearMetadata()
 {
-	// TODO: Clear metadata if present!
 	if (standardModel->rowCount() > 0) {
+		qDebug() << __func__;
 		for (int j = 0; j < standardModel->rowCount(); j++) {
 			QStandardItem *itm = standardModel->item(j, 0);
 			itm->removeRows(0, itm->rowCount());
 		}
 	}
+}
+
+void Exiv2View::readMetadata(const QString file)
+{
+	// Clear previous metadata
+	clearMetadata()
 
 	QByteArray ba = file.toLatin1();
 	const char *c_str2 = ba.data();
