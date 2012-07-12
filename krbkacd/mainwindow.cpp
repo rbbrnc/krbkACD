@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	browserPage    = static_cast<BrowserPage *>(ui->stackedWidget->widget(0));
 	fullScreenPage = static_cast<FullScreenPage *>(ui->stackedWidget->widget(1));
 	workPage       = static_cast<WorkPage *>(ui->stackedWidget->widget(2));
+	m_photoPage = static_cast<PhotoWidget *>(ui->stackedWidget->widget(3));
 
 	// Connect View Actions
 	connect(ui->actionShowMetadata, SIGNAL(toggled(bool)),
@@ -47,12 +48,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::fullScreen()
 {
+#if 10
+	if (ui->stackedWidget->currentWidget() != m_photoPage) {
+		m_photoPage->setPixmap(browserPage->currentPixmap());
+		ui->stackedWidget->setCurrentWidget(m_photoPage);
+	} else {
+		ui->stackedWidget->setCurrentWidget(browserPage);
+	}
+#else
 	if (ui->stackedWidget->currentWidget() != fullScreenPage) {
 		fullScreenPage->setPixmap(browserPage->currentPixmap());
 		ui->stackedWidget->setCurrentWidget(fullScreenPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(browserPage);
 	}
+#endif
 }
 
 void MainWindow::showWorkPage()

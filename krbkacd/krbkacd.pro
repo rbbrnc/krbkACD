@@ -21,7 +21,8 @@ SOURCES += main.cpp \
 	fullscreen_page.cpp \
 	work_page.cpp \
 	file_data.cpp \
-	PTagWidget.cpp
+	PTagWidget.cpp \
+    photo_widget.cpp
 
 HEADERS += mainwindow.h \
 	browser_page.h \
@@ -31,11 +32,13 @@ HEADERS += mainwindow.h \
 	fullscreen_page.h \
 	work_page.h \
 	file_data.h \
-	PTagWidget.h
+	PTagWidget.h \
+    photo_widget.h
 
 FORMS += mainwindow.ui \
 	browser_page.ui \
 	fullscreen_page.ui \
-	work_page.ui
+	work_page.ui \
+    photo_widget.ui
 
 LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a

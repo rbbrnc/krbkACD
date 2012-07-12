@@ -8,6 +8,8 @@
 #include "browser_page.h"
 #include "work_page.h"
 
+#include "photo_widget.h"
+
 namespace Ui {
     class MainWindow;
 }
@@ -35,6 +37,7 @@ class MainWindow : public QMainWindow
 		BrowserPage    *browserPage;
 		FullScreenPage *fullScreenPage;
 		WorkPage	*workPage;
+		PhotoWidget	*m_photoPage;
 };
 
 #endif // MAINWINDOW_H

@@ -23,6 +23,7 @@
       <widget class="BrowserPage" name="browserPage"/>
       <widget class="FullScreenPage" name="fullScreenPage"/>
       <widget class="WorkPage" name="workPage"/>
+      <widget class="PhotoWidget" name="photoPage"/>
      </widget>
     </item>
    </layout>
@@ -33,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>797</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTest">
@@ -241,6 +242,12 @@
    <class>WorkPage</class>
    <extends>QWidget</extends>
    <header>work_page.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PhotoWidget</class>
+   <extends>QWidget</extends>
+   <header>photo_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
