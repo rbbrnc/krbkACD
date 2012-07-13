@@ -39,6 +39,8 @@ class QExiv2
 		bool clearIptc();
 
 		// XMP Functions
+		bool hasXmp() const;
+
 		QString xmpTagString(const char *xmpTagName, bool escapeCR) const;
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
 
