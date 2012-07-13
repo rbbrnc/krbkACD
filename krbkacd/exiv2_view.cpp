@@ -79,11 +79,25 @@ void Exiv2View::debug()
 {
 }
 
+void Exiv2View::setFileData(FileData fdata)
+{
+	// Clear previous metadata
+	clearMetadata();
+
+	m_metadata = fdata.metadata();
+
+#if 0
+	QList<PTag> tl = m_metadata.xmpPTags();
+	for (int i = 0; i < tl.size(); i++)
+		tl.at(i).debug();
+#endif
+}
+
 // Clear metadata if present!
 void Exiv2View::clearMetadata()
 {
 	if (standardModel->rowCount() > 0) {
-		qDebug() << __func__;
+		qDebug() << __func__ << "rowCount=" << standardModel->rowCount();
 		for (int j = 0; j < standardModel->rowCount(); j++) {
 			QStandardItem *itm = standardModel->item(j, 0);
 			itm->removeRows(0, itm->rowCount());
@@ -93,9 +107,26 @@ void Exiv2View::clearMetadata()
 
 void Exiv2View::readMetadata(const QString file)
 {
-	// Clear previous metadata
-	clearMetadata();
+#if 10
+	qDebug() << "________________";
+	if (m_metadata.hasExif()) {
+		qDebug() << "Found Exif data";
+	}
 
+	if (m_metadata.hasIptc()) {
+		qDebug() << "Found Iptc data";
+	}
+
+	if (m_metadata.hasXmp()) {
+		qDebug() << "Found XMP data";
+	}
+
+	if (m_metadata.hasComment()) {
+		qDebug() << "Img Comment:" << m_metadata.imgComment();
+	}
+	qDebug() << "________________";
+
+#else
 	QByteArray ba = file.toLatin1();
 	const char *c_str2 = ba.data();
 
@@ -174,5 +205,6 @@ void Exiv2View::readMetadata(const QString file)
 		  << preview.width() << "x" << preview.height() << " "
 		  << "to file" << " " << name << std::endl;
 	preview.writeFile(name);
+#endif
 #endif
 }

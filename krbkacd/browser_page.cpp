@@ -119,6 +119,7 @@ void BrowserPage::updateCurrentSelection(const QString file)
 	updatePreview();
 
 	if (m_currentFileData.isImage()) {
+		ui->metadataBrowser->setFileData(m_currentFileData);
 		ui->metadataBrowser->readMetadata(file);
 	}
 }

@@ -10,6 +10,10 @@
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
 
+#include "file_data.h"
+#include "QExiv2.h"
+#include "PTag.h"
+
 class Exiv2View : public QTreeView
 {
 	Q_OBJECT
@@ -21,6 +25,8 @@ class Exiv2View : public QTreeView
 		void readMetadata(const QString file);
 		void clearMetadata();
 
+		void setFileData(FileData fdata);
+
 	public slots:
 		void debug();
 
@@ -31,6 +37,8 @@ class Exiv2View : public QTreeView
 		QStandardItem *xmpItem;
 
 		void setMetadata(QStandardItem *rootItem, QString key, QString tag, QString typeName, QString count, QString value);
+
+                QExiv2      m_metadata;
 };
 
 #endif
