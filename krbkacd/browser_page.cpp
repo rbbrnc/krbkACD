@@ -125,6 +125,7 @@ void BrowserPage::updateCurrentSelection(const QString file)
 
 void BrowserPage::previewSplitterMoved(int, int)
 {
+	// update preview but not the metadata!
 	updatePreview();
 }
 

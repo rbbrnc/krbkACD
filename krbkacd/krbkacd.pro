@@ -11,7 +11,6 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
-
 SOURCES += main.cpp \
         mainwindow.cpp \
 	browser_page.cpp \
@@ -22,7 +21,8 @@ SOURCES += main.cpp \
 	work_page.cpp \
 	file_data.cpp \
 	PTagWidget.cpp \
-    photo_widget.cpp
+	PTagGraphicsItem.cpp \
+	photo_widget.cpp
 
 HEADERS += mainwindow.h \
 	browser_page.h \
@@ -33,12 +33,13 @@ HEADERS += mainwindow.h \
 	work_page.h \
 	file_data.h \
 	PTagWidget.h \
-    photo_widget.h
+	PTagGraphicsItem.h \
+	photo_widget.h
 
 FORMS += mainwindow.ui \
 	browser_page.ui \
 	fullscreen_page.ui \
 	work_page.ui \
-    photo_widget.ui
+	photo_widget.ui
 
 LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a

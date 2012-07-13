@@ -94,7 +94,7 @@ void Exiv2View::clearMetadata()
 void Exiv2View::readMetadata(const QString file)
 {
 	// Clear previous metadata
-	clearMetadata()
+	clearMetadata();
 
 	QByteArray ba = file.toLatin1();
 	const char *c_str2 = ba.data();

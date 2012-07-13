@@ -1,7 +1,6 @@
 #include "photo_widget.h"
 #include "ui_photo_widget.h"
 
-//#include <math.h>
 #include <QDebug>
 
 
@@ -11,17 +10,8 @@ PhotoWidget::PhotoWidget(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	pixScene = new QGraphicsScene();
+	pixScene = new QGraphicsScene(this);
 	ui->pixView->setScene(pixScene);
-
-//	pixItem = new QGraphicsPixmapItem();
-//	pixScene->addItem(pixItem);
-
-	this->setMouseTracking(true);
-	ui->pixView->setMouseTracking(true);
-
-
-
 }
 
 PhotoWidget::~PhotoWidget()
@@ -30,28 +20,25 @@ PhotoWidget::~PhotoWidget()
 	delete ui;
 }
 
-void PhotoWidget::setPixmap(QPixmap pix)
+void PhotoWidget::setFileData(FileData fdata)
 {
 	pixScene->clear();
 
-#if 10
-	pixScene->addPixmap(pix);
-#else
-	pixItem->setPixmap(pix);
-	pixScene->addItem(pixItem);
-#endif
+	m_pic = fdata.fullPixmap();
+	pixScene->addPixmap(m_pic);
 
-#if 0
-	exiv2 = new QExiv2();
-	if (exiv2->load(file)) {
-		m_tagList = exiv2->xmpPTags();
-		for (int i = 0; i < m_tagList.size(); i++) {
-			m_tag = new PTagWidget(m_tagList.at(i), QSize(w, h), this);
-			m_tagWidgetList.append(m_tag);
-			m_tagList.at(i).debug();
-		}
+	int w = m_pic.width();
+	int h = m_pic.height();
+
+	m_metadata = fdata.metadata();
+	m_tagList = m_metadata.xmpPTags();
+
+	for (int i = 0; i < m_tagList.size(); i++) {
+		m_tagItem = new PTagGraphicsItem(m_tagList.at(i), QSize(w, h));
+		m_tagItemList.append(m_tagItem);
+		pixScene->addItem(m_tagItem);
+		//m_tagList.at(i).debug();
 	}
-#endif
 }
 
 void PhotoWidget::resizeEvent(QResizeEvent *event)
@@ -65,11 +52,10 @@ void PhotoWidget::resizeEvent(QResizeEvent *event)
 		m_pic = m_pic.scaled(w, h, Qt::KeepAspectRatio);
 		label->setPixmap(m_pic);
 	}
-
-	for (int i = 0; i < m_tagWidgetList.size(); i++) {
-		m_tagWidgetList.at(i)->setFrameSize(w, h);
-	 }
 #endif
+	for (int i = 0; i < m_tagItemList.size(); i++) {
+		m_tagItemList.at(i)->setFrameSize(w, h);
+	 }
 }
 
 //
@@ -94,27 +80,4 @@ void PhotoWidget::wheelEvent(QWheelEvent *event)
 		}
 		event->accept();
 	}
-}
-
-void PhotoWidget::mouseMoveEvent(QMouseEvent *event)
-{
-	int x = event->x();
-	int y = event->y();
-
-	qDebug() << "PhotoWidget:" << __func__ << "x:" << x << "y:" << y;
-#if 0
-	for (int i = 0; i < m_tagWidgetList.size(); i++) {
-		PTagWidget *t = m_tagWidgetList.at(i);
-		QRect tagRect = t->tagRect();
-
-		if (tagRect.contains(x, y) && t->isHidden()) {
-//			pixScene->addRect(x,y,h,w);
-			t->show();
-		} else {
-			if (t->isVisible()) {
-				t->hide();
-			}
-		}
-	 }
-#endif
 }

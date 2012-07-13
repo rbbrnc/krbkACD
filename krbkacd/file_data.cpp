@@ -15,14 +15,23 @@ FileData::FileData(const QFileInfo &fileInfo)
 {
 	m_fileInfo = fileInfo;
 	m_path = fileInfo.absoluteFilePath();
+
 	setMimeType();
+
+	// load metadata only for mime type "image/xxxx"
+	m_metadata.load(m_path);
+
 }
 
 FileData::FileData(const QString &file)
 {
 	m_fileInfo = QFileInfo(file);
 	m_path = m_fileInfo.absoluteFilePath();
+
 	setMimeType();
+
+	// load metadata only for mime type "image/xxxx"
+	m_metadata.load(m_path);
 }
 
 FileData::FileData(const FileData &other)
@@ -31,6 +40,9 @@ FileData::FileData(const FileData &other)
 	m_path = other.m_fileInfo.absoluteFilePath();
 	m_mimeType = other.m_mimeType;
 	m_md5 = other.m_md5;
+
+	// load metadata only for mime type "image/xxxx"
+	m_metadata = other.m_metadata;
 }
 
 QString FileData::mimeType()
@@ -63,6 +75,11 @@ QPixmap FileData::fullPixmap()
 	}
 
 	return QPixmap();
+}
+
+const QExiv2 FileData::metadata() const
+{
+	return m_metadata;
 }
 
 void FileData::setMimeType()

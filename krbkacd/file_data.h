@@ -2,6 +2,7 @@
 #define FILE_DATA_H
 
 #include <QPixmap>
+#include "QExiv2.h"
 
 class FileData {
 	public:
@@ -17,6 +18,8 @@ class FileData {
 		QPixmap previewPixmap(int w, int h);
 		QPixmap fullPixmap();
 
+		const QExiv2 metadata() const;
+
 		QString mimeType();
 
 	private:
@@ -31,6 +34,8 @@ class FileData {
 
 		QFileInfo m_fileInfo;
 		QPixmap m_pixmap;
+
+		QExiv2 m_metadata;
 };
 
 #endif

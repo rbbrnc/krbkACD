@@ -1,17 +1,16 @@
 #ifndef PHOTO_WIDGET_H
 #define PHOTO_WIDGET_H
 
-#include <QWidget>
-
+//#include <QWidget>
 #include <QGraphicsScene>
 //#include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 
-#if 10
-#include "PTagWidget.h"
+#include "file_data.h"
 #include "QExiv2.h"
-#endif
+#include "PTagWidget.h"
+#include "PTagGraphicsItem.h"
 
 namespace Ui {
 	class PhotoWidget;
@@ -25,14 +24,11 @@ class PhotoWidget : public QWidget
 		explicit PhotoWidget(QWidget *parent = 0);
 		~PhotoWidget();
 
-		void setPixmap(QPixmap pix);
+		void setFileData(FileData fdata);
 
         protected:
                 void resizeEvent(QResizeEvent *event);
 		void wheelEvent(QWheelEvent *event);
-
-        private:
-                void mouseMoveEvent(QMouseEvent *);
 
 	private:
 		Ui::PhotoWidget *ui;
@@ -40,15 +36,17 @@ class PhotoWidget : public QWidget
 		QGraphicsScene      *pixScene;
 		QGraphicsPixmapItem *pixItem;
 
-#if 10
                 QPixmap m_pic;
 
                 PTagWidget *m_tag;
                 QList<PTagWidget *> m_tagWidgetList;
 
-                QExiv2 *exiv2;
+                PTagGraphicsItem *m_tagItem;
+                QList<PTagGraphicsItem *> m_tagItemList;
+
+                QExiv2      m_metadata;
                 QList<PTag> m_tagList;
-#endif
+
 };
 
 #endif // PHOTO_WIDGET_H
