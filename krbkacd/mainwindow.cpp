@@ -50,7 +50,6 @@ void MainWindow::fullScreen()
 {
 #if 10
 	if (ui->stackedWidget->currentWidget() != m_photoPage) {
-//		m_photoPage->setPixmap(browserPage->currentPixmap());
 		m_photoPage->setFileData(browserPage->currentFileData());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 	} else {
