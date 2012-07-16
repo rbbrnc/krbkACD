@@ -87,6 +87,7 @@ void WorkPage::scanDir(const QString path, bool recursive)
 	dir.setCurrent(path);
 
 	QFileInfoList list = dir.entryInfoList();
+	QStringList workingList;
 
 //	qDebug() << "DIR:" << qPrintable(QDir::current().path());
 
@@ -102,11 +103,18 @@ void WorkPage::scanDir(const QString path, bool recursive)
 			}
 		} else {
 			FileData fd(fi);
-			if (ui->mimeFilter->isChecked()) {
-				fd.print();
+			if (ui->mimeFilterImages->isChecked()) {
+				if (!fd.isImage()) {
+					continue;
+				} else {
+					fd.print();
+					workingList << qPrintable(fi.absoluteFilePath());
+				}
 			}
 			//qDebug() << "FILE:" << qPrintable(fi.absoluteFilePath());
 		}
 	}
+
+	qDebug() << "workingList:" << workingList;
 }
 
