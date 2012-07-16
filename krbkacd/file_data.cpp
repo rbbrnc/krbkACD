@@ -19,7 +19,8 @@ FileData::FileData(const QFileInfo &fileInfo)
 	setMimeType();
 
 	// load metadata only for mime type "image/xxxx"
-	m_metadata.load(m_path);
+	if (isImage())
+		m_metadata.load(m_path);
 
 }
 
@@ -31,17 +32,16 @@ FileData::FileData(const QString &file)
 	setMimeType();
 
 	// load metadata only for mime type "image/xxxx"
-	m_metadata.load(m_path);
+	if (isImage())
+		m_metadata.load(m_path);
 }
 
 FileData::FileData(const FileData &other)
 {
 	m_fileInfo = other.m_fileInfo;
-	m_path = other.m_fileInfo.absoluteFilePath();
+	m_path     = other.m_fileInfo.absoluteFilePath();
 	m_mimeType = other.m_mimeType;
-	m_md5 = other.m_md5;
-
-	// load metadata only for mime type "image/xxxx"
+	m_md5      = other.m_md5;
 	m_metadata = other.m_metadata;
 }
 
