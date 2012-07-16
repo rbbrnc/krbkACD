@@ -56,10 +56,19 @@
       </widget>
      </item>
      <item>
-      <widget class="QCheckBox" name="mimeFilter">
-       <property name="text">
-        <string>Mime Filter</string>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>MIME Filters</string>
        </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="mimeFilterImages">
+          <property name="text">
+           <string>Images</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
      <item>
