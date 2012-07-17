@@ -20,22 +20,22 @@ class FileData {
 
 		const QExiv2 metadata() const;
 
-		QString mimeType();
+		QFileInfo  fileInfo() const;
+		QString    filePath() const;
+		QString    mimeType() const;
+		QByteArray md5();
 
 	private:
 		void setMimeType();
 		void setMd5();
-		QByteArray md5();
 
 	private:
-		QString m_path;
-		QString m_mimeType;
+		QFileInfo  m_fileInfo;
+		QString    m_path;
+		QString    m_mimeType;
 		QByteArray m_md5;
-
-		QFileInfo m_fileInfo;
-		QPixmap m_pixmap;
-
-		QExiv2 m_metadata;
+		QPixmap    m_pixmap;
+		QExiv2     m_metadata;
 };
 
 #endif

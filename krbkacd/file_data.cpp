@@ -7,6 +7,7 @@
 
 #include "file_data.h"
 
+
 FileData::FileData()
 {
 }
@@ -45,12 +46,22 @@ FileData::FileData(const FileData &other)
 	m_metadata = other.m_metadata;
 }
 
-QString FileData::mimeType()
+FileData::~FileData()
 {
-	if (m_mimeType.isEmpty()) {
-		setMimeType();
-	}
+}
 
+QString FileData::filePath() const
+{
+	return m_path;
+}
+
+QFileInfo FileData::fileInfo() const
+{
+	return m_fileInfo;
+}
+
+QString FileData::mimeType() const
+{
 	return m_mimeType;
 }
 
@@ -124,10 +135,6 @@ QByteArray FileData::md5()
 		setMd5();
 	}
 	return m_md5;
-}
-
-FileData::~FileData()
-{
 }
 
 void FileData::print()
