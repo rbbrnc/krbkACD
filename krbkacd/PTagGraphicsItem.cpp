@@ -3,6 +3,8 @@
 #include <QLinearGradient>
 #include <QApplication>
 
+#include <QDebug>
+
 #include "PTagGraphicsItem.h"
 #include "math.h"
 
@@ -10,7 +12,7 @@ PTagGraphicsItem::PTagGraphicsItem(const PTag &tag, QSize imgSize)
 {
 //	this->hide();
 
-	m_ptag = tag;
+	m_ptag    = tag;
 	m_imgSize = imgSize;
 
 #if 0
@@ -18,8 +20,6 @@ PTagGraphicsItem::PTagGraphicsItem(const PTag &tag, QSize imgSize)
 	m_pen.setWidth(1);
 	m_pen.setColor(m_borderColor);
 #endif
-	_text.setPlainText(m_ptag.text());
-	_text.setParentItem(this);
 
 	updateRect();
 
@@ -35,7 +35,10 @@ void PTagGraphicsItem::updateRect()
 
 	m_rect = rf.toRect();
 
-//	qDebug() << __func__ << rf;
+	qDebug() << "PTagGraphicsItem::" << __func__
+		 << "m_ptag:" << m_ptag.region()
+		 << "rf:" << rf
+		 << "m_rect:" << m_rect;
 
 	QFontMetrics fm(QApplication::font());
 	int fmW = fm.width(m_ptag.text());
@@ -56,15 +59,8 @@ void PTagGraphicsItem::updateRect()
 	_width  = rf.width();
 	_height = rf.height();
 #endif
-	// Set the position of the Box
+	// Set the position of the Tag Box on the scene.
 	this->setPos(wr.x(), wr.y());
-}
-
-void PTagGraphicsItem::setFrameSize(int w, int h)
-{
-	m_imgSize.setWidth(w);
-	m_imgSize.setHeight(h);
-	updateRect();
 }
 
 void PTagGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)

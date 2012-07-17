@@ -17,9 +17,6 @@ class PTagGraphicsItem : public QGraphicsItem
 {
 	public:
 		PTagGraphicsItem(const PTag &tag, QSize imgSize);
-		QGraphicsTextItem _text;    ///< sample text to go in the title area.
-
-		void setFrameSize(int w, int h);
 
 	protected:
 		virtual QRectF boundingRect() const;
@@ -27,21 +24,27 @@ class PTagGraphicsItem : public QGraphicsItem
 		virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 		virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
+	private:
+		void updateRect();
+
+	private:
+		// Image size
+		QSize  m_imgSize;
+
+		// Actual region rect (in screen coordinates)
+		// tag rectangle + tag text
+		QRect  m_rect;
+
+		// Rect for description Tag
+		QRect  m_textRect;
+
+		PTag	m_ptag;
+///
 		QColor  m_borderColor;
 		QPen    m_pen;
 
 		qreal   _width;
 		qreal   _height;
-
-	private:
-		void updateRect();
-
-	private:
-		QSize  m_imgSize;	// Whole frame
-		QRect  m_rect;		// Actual region rect (screen coordinates)
-		QRect  m_textRect;	// Rect for description Tag
-
-		PTag	m_ptag;
 };
 
 #endif // PTAG_GRAPHICS_ITEM_H

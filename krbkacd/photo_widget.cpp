@@ -5,8 +5,8 @@
 
 
 PhotoWidget::PhotoWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::PhotoWidget)
+	QWidget(parent),
+	ui(new Ui::PhotoWidget)
 {
 	ui->setupUi(this);
 
@@ -39,23 +39,6 @@ void PhotoWidget::setFileData(FileData fdata)
 		pixScene->addItem(m_tagItem);
 		//m_tagList.at(i).debug();
 	}
-}
-
-void PhotoWidget::resizeEvent(QResizeEvent *event)
-{
-	int w = event->size().width();
-	int h = event->size().height();
-
-	qDebug() << "PhotoWidget:" << __func__ << "w:" << w << "h:" << h;
-#if 0
-	if (!m_pic.isNull()) {
-		m_pic = m_pic.scaled(w, h, Qt::KeepAspectRatio);
-		label->setPixmap(m_pic);
-	}
-#endif
-	for (int i = 0; i < m_tagItemList.size(); i++) {
-		m_tagItemList.at(i)->setFrameSize(w, h);
-	 }
 }
 
 //

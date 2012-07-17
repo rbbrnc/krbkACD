@@ -27,7 +27,6 @@ class PhotoWidget : public QWidget
 		void setFileData(FileData fdata);
 
         protected:
-                void resizeEvent(QResizeEvent *event);
 		void wheelEvent(QWheelEvent *event);
 
 	private:
