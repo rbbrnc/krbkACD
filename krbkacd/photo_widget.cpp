@@ -27,6 +27,8 @@ void PhotoWidget::setFileData(FileData fdata)
 	m_pic = fdata.fullPixmap();
 	m_pixItem = pixScene->addPixmap(m_pic);
 
+	ui->pixView->centerOn(m_pixItem);
+
 	int w = m_pic.width();
 	int h = m_pic.height();
 
@@ -84,7 +86,7 @@ void PhotoWidget::zoom11()
 // Zoom to fit
 void PhotoWidget::zoomToFit()
 {
-	ui->pixView->fitInView(m_pixItem, Qt::KeepAspectRatio);
+	ui->pixView->fitInView(m_pixItem, Qt::IgnoreAspectRatio);
 }
 
 void PhotoWidget::rotateCW()
