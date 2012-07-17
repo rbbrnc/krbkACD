@@ -17,7 +17,6 @@ SOURCES += main.cpp \
 	lens_zoom.cpp \
 	filelistwidget.cpp \
 	exiv2_view.cpp \
-	fullscreen_page.cpp \
 	work_page.cpp \
 	file_data.cpp \
 	PTagWidget.cpp \
@@ -29,7 +28,6 @@ HEADERS += mainwindow.h \
 	lens_zoom.h \
 	filelistwidget.h \
 	exiv2_view.h \
-	fullscreen_page.h \
 	work_page.h \
 	file_data.h \
 	PTagWidget.h \
@@ -38,7 +36,6 @@ HEADERS += mainwindow.h \
 
 FORMS += mainwindow.ui \
 	browser_page.ui \
-	fullscreen_page.ui \
 	work_page.ui \
 	photo_widget.ui
 
