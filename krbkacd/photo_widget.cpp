@@ -25,7 +25,7 @@ void PhotoWidget::setFileData(FileData fdata)
 	pixScene->clear();
 
 	m_pic = fdata.fullPixmap();
-	pixScene->addPixmap(m_pic);
+	m_pixItem = pixScene->addPixmap(m_pic);
 
 	int w = m_pic.width();
 	int h = m_pic.height();
@@ -63,4 +63,45 @@ void PhotoWidget::wheelEvent(QWheelEvent *event)
 		}
 		event->accept();
 	}
+}
+
+// Zoom 1:1
+void PhotoWidget::zoom11()
+{
+	QTransform t = ui->pixView->transform();
+
+	if (t.isScaling()) {
+		// Reset the scale transformation
+		// m11 and m22 specifying the scale.
+		t.setMatrix(1.0    , t.m12(), t.m13(),
+		    t.m21(), 1.0    , t.m23(),
+		    t.m31(), t.m32(), t.m33());
+
+		ui->pixView->setTransform(t, false);
+	}
+}
+
+// Zoom to fit
+void PhotoWidget::zoomToFit()
+{
+	ui->pixView->fitInView(m_pixItem, Qt::KeepAspectRatio);
+}
+
+void PhotoWidget::rotateCW()
+{
+	QTransform t = ui->pixView->transform();
+	t.rotate(90.0, Qt::ZAxis);
+	ui->pixView->setTransform(t, false);
+}
+
+void PhotoWidget::rotateCCW()
+{
+	QTransform t = ui->pixView->transform();
+	t.rotate(-90.0, Qt::ZAxis);
+	ui->pixView->setTransform(t, false);
+}
+
+void PhotoWidget::resetTransformations()
+{
+	ui->pixView->setTransform(QTransform(), false);
 }

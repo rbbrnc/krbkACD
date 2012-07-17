@@ -21,7 +21,6 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <widget class="BrowserPage" name="browserPage"/>
-      <widget class="FullScreenPage" name="fullScreenPage"/>
       <widget class="WorkPage" name="workPage"/>
       <widget class="PhotoWidget" name="photoPage"/>
      </widget>
@@ -34,7 +33,7 @@
      <x>0</x>
      <y>0</y>
      <width>797</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTest">
@@ -68,8 +67,25 @@
     <property name="title">
      <string>Image</string>
     </property>
+    <widget class="QMenu" name="menuZoom">
+     <property name="title">
+      <string>Zoom</string>
+     </property>
+     <addaction name="actionZoom_1_1"/>
+     <addaction name="actionZoomToFit"/>
+    </widget>
+    <widget class="QMenu" name="menuOrientation">
+     <property name="title">
+      <string>Orientation</string>
+     </property>
+     <addaction name="actionRotateCW"/>
+     <addaction name="actionRotateCCW"/>
+     <addaction name="actionResetTransformations"/>
+    </widget>
     <addaction name="actionFullScreen"/>
     <addaction name="actionWork_Page"/>
+    <addaction name="menuZoom"/>
+    <addaction name="menuOrientation"/>
    </widget>
    <addaction name="menuTest"/>
    <addaction name="menuView"/>
@@ -223,6 +239,46 @@
     <string>F4</string>
    </property>
   </action>
+  <action name="actionZoom_1_1">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Zoom 1:1</string>
+   </property>
+  </action>
+  <action name="actionZoomToFit">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Zoom to fit</string>
+   </property>
+  </action>
+  <action name="actionRotateCW">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Rotate Clockwise</string>
+   </property>
+  </action>
+  <action name="actionRotateCCW">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Rotate Counterclockwise</string>
+   </property>
+  </action>
+  <action name="actionResetTransformations">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Original State</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -230,12 +286,6 @@
    <class>BrowserPage</class>
    <extends>QWidget</extends>
    <header>browser_page.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>FullScreenPage</class>
-   <extends>QWidget</extends>
-   <header>fullscreen_page.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

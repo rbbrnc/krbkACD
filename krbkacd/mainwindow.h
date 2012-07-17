@@ -4,7 +4,6 @@
 #include <QtGui>
 #include <QMainWindow>
 
-#include "fullscreen_page.h"
 #include "browser_page.h"
 #include "work_page.h"
 
@@ -34,10 +33,9 @@ class MainWindow : public QMainWindow
 	private:
 		Ui::MainWindow *ui;
 
-		BrowserPage    *browserPage;
-		FullScreenPage *fullScreenPage;
-		WorkPage	*workPage;
-		PhotoWidget	*m_photoPage;
+		BrowserPage *browserPage;
+		WorkPage    *workPage;
+		PhotoWidget *m_photoPage;
 };
 
 #endif // MAINWINDOW_H

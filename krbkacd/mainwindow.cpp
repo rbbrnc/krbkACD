@@ -8,10 +8,9 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	browserPage    = static_cast<BrowserPage *>(ui->stackedWidget->widget(0));
-	fullScreenPage = static_cast<FullScreenPage *>(ui->stackedWidget->widget(1));
-	workPage       = static_cast<WorkPage *>(ui->stackedWidget->widget(2));
-	m_photoPage = static_cast<PhotoWidget *>(ui->stackedWidget->widget(3));
+	browserPage = static_cast<BrowserPage *>(ui->stackedWidget->widget(0));
+	workPage    = static_cast<WorkPage *>(ui->stackedWidget->widget(1));
+	m_photoPage = static_cast<PhotoWidget *>(ui->stackedWidget->widget(2));
 
 	// Connect View Actions
 	connect(ui->actionShowMetadata, SIGNAL(toggled(bool)),
@@ -37,6 +36,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Connect Image Actions
 	connect(ui->actionFullScreen, SIGNAL(triggered()), this, SLOT(fullScreen()));
 
+	connect(ui->actionZoom_1_1,  SIGNAL(triggered()), m_photoPage, SLOT(zoom11()));
+	connect(ui->actionZoomToFit, SIGNAL(triggered()), m_photoPage, SLOT(zoomToFit()));
+
+	connect(ui->actionRotateCW, SIGNAL(triggered()), m_photoPage, SLOT(rotateCW()));
+	connect(ui->actionRotateCCW, SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
+	connect(ui->actionResetTransformations, SIGNAL(triggered()),
+		m_photoPage, SLOT(resetTransformations()));
+
 	// For debugging Browser Page
 	connect(ui->actionDebug, SIGNAL(triggered()), browserPage, SLOT(debugAction()));
 }
@@ -48,21 +55,27 @@ MainWindow::~MainWindow()
 
 void MainWindow::fullScreen()
 {
-#if 10
 	if (ui->stackedWidget->currentWidget() != m_photoPage) {
+		// Enable fullScreen Action
+		ui->actionZoom_1_1->setEnabled(true);
+		ui->actionZoomToFit->setEnabled(true);
+		ui->actionRotateCW->setEnabled(true);
+		ui->actionRotateCCW->setEnabled(true);
+		ui->actionResetTransformations->setEnabled(true);
+
 		m_photoPage->setFileData(browserPage->currentFileData());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 	} else {
+		// Disable fullScreen Action
+		ui->actionZoom_1_1->setEnabled(false);
+		ui->actionZoomToFit->setEnabled(false);
+		ui->actionRotateCW->setEnabled(false);
+		ui->actionRotateCCW->setEnabled(false);
+		ui->actionResetTransformations->setEnabled(false);
+
+		// Return to the browser page
 		ui->stackedWidget->setCurrentWidget(browserPage);
 	}
-#else
-	if (ui->stackedWidget->currentWidget() != fullScreenPage) {
-		fullScreenPage->setPixmap(browserPage->currentPixmap());
-		ui->stackedWidget->setCurrentWidget(fullScreenPage);
-	} else {
-		ui->stackedWidget->setCurrentWidget(browserPage);
-	}
-#endif
 }
 
 void MainWindow::showWorkPage()

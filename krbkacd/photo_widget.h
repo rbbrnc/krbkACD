@@ -26,6 +26,13 @@ class PhotoWidget : public QWidget
 
 		void setFileData(FileData fdata);
 
+	public slots:
+		void zoom11();
+		void zoomToFit();
+		void rotateCW();
+		void rotateCCW();
+		void resetTransformations();
+
         protected:
 		void wheelEvent(QWheelEvent *event);
 
@@ -33,7 +40,7 @@ class PhotoWidget : public QWidget
 		Ui::PhotoWidget *ui;
 
 		QGraphicsScene      *pixScene;
-		QGraphicsPixmapItem *pixItem;
+		QGraphicsPixmapItem *m_pixItem;
 
                 QPixmap m_pic;
 
