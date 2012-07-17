@@ -66,9 +66,26 @@
           <property name="text">
            <string>Images</string>
           </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
          </widget>
         </item>
        </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="compareType">
+       <item>
+        <property name="text">
+         <string>File MD5</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Metadata Only</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
