@@ -21,6 +21,7 @@ class WorkPage : public QWidget
 	private:
 		void scanDir(const QString path, bool recursive);
 		void compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map);
+		void compareMetadata(FileData &fdata, QMap<QString, QStringList> &map);
 
 	private slots:
 		void on_insertDir_clicked();

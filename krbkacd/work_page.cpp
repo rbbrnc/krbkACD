@@ -119,7 +119,7 @@ void WorkPage::scanDir(const QString path, bool recursive)
 				break;
 			case 1:
 				//Compare Method: "Metadata Only"
-				qDebug() << "Compare Method:" << ui->compareType->currentText();
+				compareMetadata(fd, dupMap);
 				break;
 			default:
 				qDebug() << "Somting wrong!";
@@ -157,4 +157,9 @@ void WorkPage::compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map)
 
 	sl << fdata.filePath();	// Update file list
 	map[md5] = sl;		// Add to map
+}
+
+void WorkPage::compareMetadata(FileData &fdata, QMap<QString, QStringList> &map)
+{
+	qDebug() << "WorkPage::CompareMetadata";
 }

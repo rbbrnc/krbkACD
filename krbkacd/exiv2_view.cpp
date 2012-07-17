@@ -131,6 +131,7 @@ void Exiv2View::readMetadata(const QString file)
 
 	if (m_metadata.hasXmp()) {
 		qDebug() << "Found XMP data";
+		qDebug() << m_metadata.xmpPacket();
 	}
 
 	// Add image comment to the view
