@@ -6,7 +6,6 @@
 
 // TODO: Button for stopping the scan
 //
-//
 WorkPage::WorkPage(QWidget *parent) :
 	QWidget(parent), ui(new Ui::WorkPage)
 {
@@ -18,6 +17,7 @@ WorkPage::WorkPage(QWidget *parent) :
 	ui->dirTree->setModel(&m_dirModel);
 
 	// Do it after the model has been initialized
+	ui->dirTree->header()->hide();
 	ui->dirTree->hideColumn(1);
 	ui->dirTree->hideColumn(2);
 	ui->dirTree->hideColumn(3);
@@ -71,7 +71,6 @@ void WorkPage::on_clearDir_clicked()
 
 void WorkPage::on_workButton_clicked()
 {
-	//qDebug() << __func__;
 	for (int i = 0; i < ui->dirList->count(); i++) {
 		QString path = ui->dirList->item(i)->text();
 		scanDir(path, ui->recursiveCheck->isChecked());
@@ -112,17 +111,26 @@ void WorkPage::scanDir(const QString path, bool recursive)
 				}
 			}
 
+			// TODO: For MD5, Image and Byte-to-Byte compare only files with the same format
 			switch (ui->compareType->currentIndex()) {
 			case 0:
-				//Compare Method: "File MD5"
+				// Compare Method: "File MD5"
 				compareFileMd5(fd, dupMap);
 				break;
 			case 1:
-				//Compare Method: "Metadata Only"
+				// Compare Method: "Image, Only skip Metadata"
+				compareImage(fd, dupMap);
+				break;
+			case 2:
+				// Compare Method: "Metadata Only Skip Image Data
 				compareMetadata(fd, dupMap);
 				break;
+			case 3:
+				// Compare Method: "Byte-to-Byte"
+				compareByteToByte(fd, dupMap);
+				break;
 			default:
-				qDebug() << "Somting wrong!";
+				qDebug() << "Something wrong!";
 				break;
 			}
 		}
@@ -159,7 +167,30 @@ void WorkPage::compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map)
 	map[md5] = sl;		// Add to map
 }
 
+// Compare Method: "Metadata Only, skip Image Data
 void WorkPage::compareMetadata(FileData &fdata, QMap<QString, QStringList> &map)
 {
+	Q_UNUSED(fdata)
+	Q_UNUSED(map)
+
 	qDebug() << "WorkPage::CompareMetadata";
 }
+
+// Compare Method: "Byte-to-Byte"
+void WorkPage::compareByteToByte(FileData &fdata, QMap<QString, QStringList> &map)
+{
+	Q_UNUSED(fdata)
+	Q_UNUSED(map)
+
+	qDebug() << "WorkPage::CompareByteToByte";
+}
+
+// Compare Method: "Image Only skip Metadata"
+void WorkPage::compareImage(FileData &fdata, QMap<QString, QStringList> &map)
+{
+	Q_UNUSED(fdata)
+	Q_UNUSED(map)
+
+	qDebug() << "WorkPage::CompareImage";
+}
+
