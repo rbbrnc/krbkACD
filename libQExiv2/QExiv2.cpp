@@ -127,6 +127,33 @@ bool QExiv2::hasXmp() const
 	return !d->xmpMetadata.empty();
 }
 
+// Serialize the XMP data and output the XML XMP packet
+QByteArray QExiv2::xmpPacket() const
+{
+	try {
+		std::string xmpPacket;
+		Exiv2::XmpData xmpData(d->xmpMetadata);
+
+		if (0 != Exiv2::XmpParser::encode(xmpPacket, xmpData)) {
+			//qDebug() << "Failed to serialize XMP data";
+			throw Exiv2::Error(1, "Failed to serialize XMP data");
+		} else {
+			QByteArray ba(xmpPacket.c_str(), xmpPacket.size());
+			//qDebug() << QString(xmpPacket.c_str());
+			qDebug() << ba;
+			return ba;
+		}
+
+		// Cleanup
+		Exiv2::XmpParser::terminate();
+
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError("QExiv2::xmpPacket()", e);
+	}
+
+	return QByteArray();
+}
+
 QString QExiv2::xmpTagString(const char *xmpTagName, bool escapeCR) const
 {
 	try {
@@ -358,3 +385,4 @@ bool QExiv2::clearExif()
 
 	return false;
 }
+

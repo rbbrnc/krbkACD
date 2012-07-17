@@ -40,6 +40,7 @@ class QExiv2
 
 		// XMP Functions
 		bool hasXmp() const;
+		QByteArray xmpPacket() const;
 
 		QString xmpTagString(const char *xmpTagName, bool escapeCR) const;
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
