@@ -4,8 +4,6 @@
 #include <QMessageBox>
 #include <QDebug>
 
-#include "file_data.h"
-
 // TODO: Button for stopping the scan
 //
 //
@@ -87,7 +85,9 @@ void WorkPage::scanDir(const QString path, bool recursive)
 	dir.setCurrent(path);
 
 	QFileInfoList list = dir.entryInfoList();
-	QStringList workingList;
+
+	// Key = File Path, Value md5
+	QMap<QString, QStringList> dupMap;
 
 //	qDebug() << "DIR:" << qPrintable(QDir::current().path());
 
@@ -103,18 +103,58 @@ void WorkPage::scanDir(const QString path, bool recursive)
 			}
 		} else {
 			FileData fd(fi);
+			//qDebug() << "FILE:" << qPrintable(fi.absoluteFilePath());
+
+			// Check mime filter
 			if (ui->mimeFilterImages->isChecked()) {
 				if (!fd.isImage()) {
 					continue;
-				} else {
-					fd.print();
-					workingList << qPrintable(fi.absoluteFilePath());
 				}
 			}
-			//qDebug() << "FILE:" << qPrintable(fi.absoluteFilePath());
+
+			switch (ui->compareType->currentIndex()) {
+			case 0:
+				//Compare Method: "File MD5"
+				compareFileMd5(fd, dupMap);
+				break;
+			case 1:
+				//Compare Method: "Metadata Only"
+				qDebug() << "Compare Method:" << ui->compareType->currentText();
+				break;
+			default:
+				qDebug() << "Somting wrong!";
+				break;
+			}
 		}
 	}
 
-	qDebug() << "workingList:" << workingList;
+	if (dupMap.isEmpty()) {
+		qDebug() << "No file found!";
+	} else {
+		// (Debug) Map
+		QMap<QString, QStringList>::const_iterator i = dupMap.constBegin();
+		 while (i != dupMap.constEnd()) {
+			if (i.value().size() > 1) {
+				qDebug() << i.key() << ": " << i.value();
+			}
+			++i;
+		 }
+	}
 }
 
+// Compare Method: "File MD5"
+void WorkPage::compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map)
+{
+	QString md5;
+	md5 = fdata.md5().toHex();
+
+	QStringList sl;
+
+	if (map.contains(md5)) {
+		// Duplicate Found get file list for this <key>
+		sl = map[md5];
+	}
+
+	sl << fdata.filePath();	// Update file list
+	map[md5] = sl;		// Add to map
+}

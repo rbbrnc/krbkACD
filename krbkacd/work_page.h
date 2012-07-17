@@ -3,7 +3,8 @@
 
 #include <QWidget>
 #include <QFileSystemModel>
-//#include <QSet>
+
+#include "file_data.h"
 
 namespace Ui {
 	class WorkPage;
@@ -19,6 +20,7 @@ class WorkPage : public QWidget
 
 	private:
 		void scanDir(const QString path, bool recursive);
+		void compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map);
 
 	private slots:
 		void on_insertDir_clicked();
