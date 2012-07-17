@@ -35,6 +35,7 @@ class Exiv2View : public QTreeView
 		QStandardItem *exifItem;
 		QStandardItem *iptcItem;
 		QStandardItem *xmpItem;
+		QStandardItem *commentItem;
 
 		void setMetadata(QStandardItem *rootItem, QString key, QString tag, QString typeName, QString count, QString value);
 

@@ -23,11 +23,13 @@ Exiv2View::Exiv2View(QWidget *parent) :
 	exifItem = new QStandardItem("EXIF");
 	iptcItem = new QStandardItem("IPTC");
 	xmpItem  = new QStandardItem("XMP");
+	commentItem = new QStandardItem("Comment");
 
 	// Building up the hierarchy
 	rootNode->appendRow(exifItem);
 	rootNode->appendRow(iptcItem);
 	rootNode->appendRow(xmpItem);
+	rootNode->appendRow(commentItem);
 
 	// Register the model
 	setModel(standardModel);
@@ -37,8 +39,8 @@ Exiv2View::Exiv2View(QWidget *parent) :
 void Exiv2View::setMetadata(QStandardItem *rootItem, QString key, QString tag, QString typeName, QString count, QString value)
 {
         QList<QStandardItem *> items;
-        QStandardItem *item =  new QStandardItem();
-        items << item;
+	QStandardItem *item =  new QStandardItem();
+	items << item;
 
         QStandardItem *keyItem =  new QStandardItem("Key");
         keyItem->setText(key);
@@ -97,17 +99,27 @@ void Exiv2View::setFileData(FileData fdata)
 void Exiv2View::clearMetadata()
 {
 	if (standardModel->rowCount() > 0) {
-		qDebug() << __func__ << "rowCount=" << standardModel->rowCount();
-		for (int j = 0; j < standardModel->rowCount(); j++) {
-			QStandardItem *itm = standardModel->item(j, 0);
-			itm->removeRows(0, itm->rowCount());
+		if (exifItem->rowCount() > 0) {
+			//qDebug() << __func__ << "EXIF rowCount=" << exifItem->rowCount();
+			exifItem->removeRows(0, exifItem->rowCount());
+		}
+		if (iptcItem->rowCount() > 0) {
+			//qDebug() << __func__ << "IPTC rowCount=" << iptcItem->rowCount();
+			iptcItem->removeRows(0, iptcItem->rowCount());
+		}
+		if (xmpItem->rowCount() > 0) {
+			//qDebug() << __func__ << "XMP rowCount=" << xmpItem->rowCount();
+			xmpItem->removeRows(0, xmpItem->rowCount());
+		}
+		if (commentItem->rowCount() > 0) {
+			//qDebug() << __func__ << "Comment rowCount=" << commentItem->rowCount();
+			commentItem->removeRows(0, commentItem->rowCount());
 		}
 	}
 }
 
 void Exiv2View::readMetadata(const QString file)
 {
-#if 10
 	qDebug() << "________________";
 	if (m_metadata.hasExif()) {
 		qDebug() << "Found Exif data";
@@ -121,12 +133,17 @@ void Exiv2View::readMetadata(const QString file)
 		qDebug() << "Found XMP data";
 	}
 
+	// Add image comment to the view
 	if (m_metadata.hasComment()) {
-		qDebug() << "Img Comment:" << m_metadata.imgComment();
+		//qDebug() << "Img Comment:" << m_metadata.imgComment();
+		QStandardItem *item =  new QStandardItem();
+	        item->setText(m_metadata.imgComment());
+	        item->setEditable(false);
+		commentItem->appendRow(item);
 	}
 	qDebug() << "________________";
 
-#else
+#if 10
 	QByteArray ba = file.toLatin1();
 	const char *c_str2 = ba.data();
 
