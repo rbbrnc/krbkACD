@@ -8,13 +8,11 @@
 #include "PTagGraphicsItem.h"
 #include "math.h"
 
-PTagGraphicsItem::PTagGraphicsItem(const PTag &tag, QSize imgSize)
+PTagGraphicsItem::PTagGraphicsItem(const PTag &tag, QSize imgSize) :
+	m_ptag(tag),
+	m_imgSize(imgSize)
 {
 //	this->hide();
-
-	m_ptag    = tag;
-	m_imgSize = imgSize;
-
 #if 0
         m_borderColor = QColor(Qt::black);
 	m_pen.setWidth(1);

@@ -28,6 +28,8 @@ class PTagGraphicsItem : public QGraphicsItem
 		void updateRect();
 
 	private:
+		PTag	m_ptag;
+
 		// Image size
 		QSize  m_imgSize;
 
@@ -38,7 +40,6 @@ class PTagGraphicsItem : public QGraphicsItem
 		// Rect for description Tag
 		QRect  m_textRect;
 
-		PTag	m_ptag;
 ///
 		QColor  m_borderColor;
 		QPen    m_pen;
