@@ -19,7 +19,6 @@ SOURCES += main.cpp \
 	metadata_view.cpp \
 	work_page.cpp \
 	file_data.cpp \
-	PTagWidget.cpp \
 	PTagGraphicsItem.cpp \
 	photo_widget.cpp
 
@@ -30,7 +29,6 @@ HEADERS += mainwindow.h \
 	metadata_view.h \
 	work_page.h \
 	file_data.h \
-	PTagWidget.h \
 	PTagGraphicsItem.h \
 	photo_widget.h
 

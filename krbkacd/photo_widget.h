@@ -1,15 +1,13 @@
 #ifndef PHOTO_WIDGET_H
 #define PHOTO_WIDGET_H
 
-//#include <QWidget>
+#include <QWidget>
 #include <QGraphicsScene>
-//#include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QMouseEvent>
 
 #include "file_data.h"
 #include "QExiv2.h"
-#include "PTagWidget.h"
 #include "PTagGraphicsItem.h"
 
 namespace Ui {
@@ -44,15 +42,11 @@ class PhotoWidget : public QWidget
 
                 QPixmap m_pic;
 
-                PTagWidget *m_tag;
-                QList<PTagWidget *> m_tagWidgetList;
-
                 PTagGraphicsItem *m_tagItem;
                 QList<PTagGraphicsItem *> m_tagItemList;
 
                 QExiv2      m_metadata;
                 QList<PTag> m_tagList;
-
 };
 
 #endif // PHOTO_WIDGET_H

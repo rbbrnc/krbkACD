@@ -3,7 +3,6 @@
 
 #include <QDebug>
 
-
 PhotoWidget::PhotoWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::PhotoWidget)
