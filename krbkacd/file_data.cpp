@@ -45,14 +45,6 @@ FileData::FileData(const FileData &other) :
 	m_pixmap(other.m_pixmap),
 	m_metadata(other.m_metadata)
 {
-/*
-	m_fileInfo = other.m_fileInfo;
-	m_path     = other.m_path;
-	m_mimeType = other.m_mimeType;
-	m_md5      = other.m_md5;
-	m_metadata = other.m_metadata;
-	m_pixmap   = other.m_pixmap;
-*/
 }
 
 FileData::~FileData()
