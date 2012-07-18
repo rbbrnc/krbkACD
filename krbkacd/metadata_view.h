@@ -1,5 +1,5 @@
-#ifndef EXIV2_VIEW_H
-#define EXIV2_VIEW_H
+#ifndef METADATA_VIEW_H
+#define METADATA_VIEW_H
 
 #include <QWidget>
 #include <QModelIndex>
@@ -14,15 +14,15 @@
 #include "QExiv2.h"
 #include "PTag.h"
 
-class Exiv2View : public QTreeView
+class MetadataView : public QTreeView
 {
 	Q_OBJECT
 
 	public:
-		explicit Exiv2View(QWidget *parent = 0);
-		~Exiv2View();
+		explicit MetadataView(QWidget *parent = 0);
+		~MetadataView();
 
-		void readMetadata(const QString file);
+		void readMetadata();
 		void clearMetadata();
 
 		void setFileData(FileData fdata);
@@ -37,7 +37,7 @@ class Exiv2View : public QTreeView
 		QStandardItem *xmpItem;
 		QStandardItem *commentItem;
 
-		void setMetadata(QStandardItem *rootItem, QString key, QString tag, QString typeName, QString count, QString value);
+		void setMetadata(QStandardItem *rootItem, struct exifData *data);
 
                 QExiv2      m_metadata;
 };

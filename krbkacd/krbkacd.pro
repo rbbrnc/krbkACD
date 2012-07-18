@@ -16,7 +16,7 @@ SOURCES += main.cpp \
 	browser_page.cpp \
 	lens_zoom.cpp \
 	filelistwidget.cpp \
-	exiv2_view.cpp \
+	metadata_view.cpp \
 	work_page.cpp \
 	file_data.cpp \
 	PTagWidget.cpp \
@@ -27,7 +27,7 @@ HEADERS += mainwindow.h \
 	browser_page.h \
 	lens_zoom.h \
 	filelistwidget.h \
-	exiv2_view.h \
+	metadata_view.h \
 	work_page.h \
 	file_data.h \
 	PTagWidget.h \
