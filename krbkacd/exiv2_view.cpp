@@ -120,17 +120,16 @@ void Exiv2View::clearMetadata()
 
 void Exiv2View::readMetadata(const QString file)
 {
-	qDebug() << "________________";
 	if (m_metadata.hasExif()) {
-		qDebug() << "Found Exif data";
+		//qDebug() << "Found Exif data";
 	}
 
 	if (m_metadata.hasIptc()) {
-		qDebug() << "Found Iptc data";
+		//qDebug() << "Found Iptc data";
 	}
 
 	if (m_metadata.hasXmp()) {
-		qDebug() << "Found XMP data";
+		//qDebug() << "Found XMP data";
 		qDebug() << m_metadata.xmpPacket();
 	}
 
@@ -142,7 +141,6 @@ void Exiv2View::readMetadata(const QString file)
 	        item->setEditable(false);
 		commentItem->appendRow(item);
 	}
-	qDebug() << "________________";
 
 #if 10
 	QByteArray ba = file.toLatin1();
