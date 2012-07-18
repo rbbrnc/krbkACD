@@ -12,6 +12,16 @@
 // Forward decl.
 class QExiv2DataPrivate;
 
+
+struct exifData {
+	QString key;
+	unsigned int tag;
+	QString typeName;
+	unsigned int typeId;
+	long count;
+	QString value;
+};
+
 class QExiv2
 {
 	public:
@@ -55,6 +65,9 @@ class QExiv2
 	public:
 		// XXX PRELIMINARY!!!
 		QList<PTag> xmpPTags() const;
+		QList<struct exifData> exifDataList() const;
+		QList<struct exifData> iptcDataList() const;
+		QList<struct exifData> xmpDataList() const;
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

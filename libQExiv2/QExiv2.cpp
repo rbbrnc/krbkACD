@@ -386,3 +386,95 @@ bool QExiv2::clearExif()
 	return false;
 }
 
+
+QList<exifData> QExiv2::exifDataList() const
+{
+	if (d->exifMetadata.empty()) {
+		QList<struct exifData>();
+	}
+
+	QList<struct exifData> lst;
+
+	// fill list;
+	Exiv2::ExifData::const_iterator end = d->exifMetadata.end();
+	for (Exiv2::ExifData::const_iterator md = d->exifMetadata.begin(); md != end; ++md) {
+		struct exifData ed;
+
+		ed.key = QString(md->key().c_str());
+		ed.tag = md->tag();
+		ed.typeName = QString(md->typeName());
+		ed.count = md->count();
+		ed.value = QString(md->value().toString().c_str());
+		lst.append(ed);
+	}
+
+	return lst;
+}
+
+QList<exifData> QExiv2::iptcDataList() const
+{
+	if (d->iptcMetadata.empty()) {
+		QList<struct exifData>();
+	}
+
+	QList<struct exifData> lst;
+
+	// fill list;
+	Exiv2::IptcData::const_iterator end = d->iptcMetadata.end();
+	for (Exiv2::IptcData::const_iterator md = d->iptcMetadata.begin(); md != end; ++md) {
+		struct exifData ed;
+
+		ed.key = QString(md->key().c_str());
+		ed.tag = md->tag();
+		ed.typeName = QString(md->typeName());
+		ed.count = md->count();
+		ed.value = QString(md->value().toString().c_str());
+		lst.append(ed);
+	}
+
+	return lst;
+}
+
+QList<exifData> QExiv2::xmpDataList() const
+{
+	if (d->xmpMetadata.empty()) {
+		QList<struct exifData>();
+	}
+
+	QList<struct exifData> lst;
+
+	// fill list;
+	Exiv2::XmpData::const_iterator end = d->xmpMetadata.end();
+	for (Exiv2::XmpData::const_iterator md = d->xmpMetadata.begin(); md != end; ++md) {
+		struct exifData ed;
+
+		ed.key = QString(md->key().c_str());
+		ed.tag = md->tag();
+		ed.typeName = QString(md->typeName());
+		ed.count = md->count();
+		ed.value = QString(md->value().toString().c_str());
+		lst.append(ed);
+	}
+
+	return lst;
+}
+#if 0
+	// Get a list of preview images available in the image. The list is sorted
+	// by the preview image pixel size, starting with the smallest preview.
+	Exiv2::PreviewManager loader(*image);
+	Exiv2::PreviewPropertiesList list = loader.getPreviewProperties();
+
+	// Some application logic to select one of the previews from the list
+	Exiv2::PreviewPropertiesList::const_iterator pos = selectPreview(list);
+
+	// Get the selected preview image
+	Exiv2::PreviewImage preview = loader.getPreviewImage(*pos);
+
+	// Write the preview image to a file
+	std::string name = "preview" + preview.extension();
+	std::cout << "Writing preview" << " "
+		  << preview.width() << "x" << preview.height() << " "
+		  << "to file" << " " << name << std::endl;
+	preview.writeFile(name);
+#endif
+
