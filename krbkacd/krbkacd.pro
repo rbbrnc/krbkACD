@@ -14,7 +14,6 @@ RCC_DIR = resources
 SOURCES += main.cpp \
         mainwindow.cpp \
 	browser_page.cpp \
-	lens_zoom.cpp \
 	filelistwidget.cpp \
 	metadata_view.cpp \
 	work_page.cpp \
@@ -24,7 +23,6 @@ SOURCES += main.cpp \
 
 HEADERS += mainwindow.h \
 	browser_page.h \
-	lens_zoom.h \
 	filelistwidget.h \
 	metadata_view.h \
 	work_page.h \
