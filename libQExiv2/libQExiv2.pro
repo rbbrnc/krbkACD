@@ -23,4 +23,4 @@ EXIV2_CXXFLAGS = $$system(pkg-config exiv2 --cflags)
 EXIV2_LDFLAGS  = $$system(pkg-config exiv2 --libs)
 
 LIBS += $$EXIV2_LDFLAGS
-QMAKE_CXXFLAGS += -Wall -W $$EXIV2_CXXFLAGS
+QMAKE_CXXFLAGS += $$EXIV2_CXXFLAGS
