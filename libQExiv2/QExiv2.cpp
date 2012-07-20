@@ -400,11 +400,12 @@ QList<exifData> QExiv2::exifDataList() const
 	for (Exiv2::ExifData::const_iterator md = d->exifMetadata.begin(); md != end; ++md) {
 		struct exifData ed;
 
-		ed.key = QString(md->key().c_str());
-		ed.tag = md->tag();
+		ed.key      = QString(md->key().c_str());
+		ed.tag      = md->tag();
 		ed.typeName = QString(md->typeName());
-		ed.count = md->count();
-		ed.value = QString(md->value().toString().c_str());
+		ed.typeId   = md->typeId();
+		ed.count    = md->count();
+		ed.value    = QString(md->value().toString().c_str());
 		lst.append(ed);
 	}
 
@@ -424,11 +425,12 @@ QList<exifData> QExiv2::iptcDataList() const
 	for (Exiv2::IptcData::const_iterator md = d->iptcMetadata.begin(); md != end; ++md) {
 		struct exifData ed;
 
-		ed.key = QString(md->key().c_str());
-		ed.tag = md->tag();
+		ed.key      = QString(md->key().c_str());
+		ed.tag      = md->tag();
 		ed.typeName = QString(md->typeName());
-		ed.count = md->count();
-		ed.value = QString(md->value().toString().c_str());
+		ed.typeId   = md->typeId();
+		ed.count    = md->count();
+		ed.value    = QString(md->value().toString().c_str());
 		lst.append(ed);
 	}
 
@@ -448,11 +450,12 @@ QList<exifData> QExiv2::xmpDataList() const
 	for (Exiv2::XmpData::const_iterator md = d->xmpMetadata.begin(); md != end; ++md) {
 		struct exifData ed;
 
-		ed.key = QString(md->key().c_str());
-		ed.tag = md->tag();
+		ed.key      = QString(md->key().c_str());
+		ed.tag      = md->tag();
 		ed.typeName = QString(md->typeName());
-		ed.count = md->count();
-		ed.value = QString(md->value().toString().c_str());
+		ed.typeId   = md->typeId();
+		ed.count    = md->count();
+		ed.value    = QString(md->value().toString().c_str());
 		lst.append(ed);
 	}
 
