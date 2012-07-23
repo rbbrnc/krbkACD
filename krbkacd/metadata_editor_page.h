@@ -24,24 +24,26 @@ class MetadataEditorPage : public QWidget
 
 		void setFileData(FileData fdata);
 
-private slots:
-        void on_cancelButton_clicked();
+	private slots:
+	        void on_cancelButton_clicked();
+		void on_updateButton_clicked();
+		void propertyValueChanged(QtProperty *prop, const QVariant &val);
+		void slotCurrentItemChanged(QtBrowserItem *currentItem);
 
-        void on_updateButton_clicked();
-
-private:
-		QtVariantProperty *testTypes(QtVariantPropertyManager *manager, struct exifData *data);
+	private:
+		QtVariantProperty *testTypes(QtVariantPropertyManager *manager, struct exifData *data, bool readOnly);
+		void clear();
 
 	private:
 		Ui::MetadataEditorPage *ui;
 
-		QtVariantPropertyManager *variantManager;
-		QtVariantEditorFactory *variantFactory;
+		QtVariantPropertyManager *m_manager;
+		QtVariantEditorFactory   *m_factory;
 
-		QtProperty *exifProperties;
-		QtProperty *iptcProperties;
-		QtProperty *xmpProperties;
-		QtProperty *commentProperties;
+		QtProperty *m_exifProperties;
+		QtProperty *m_iptcProperties;
+		QtProperty *m_xmpProperties;
+		QtProperty *m_commentProperties;
 
 	        QExiv2 m_metadata;
 };

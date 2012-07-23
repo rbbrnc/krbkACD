@@ -1,6 +1,7 @@
 #include "metadata_editor_page.h"
 #include "ui_metadata_editor_page.h"
 
+#include <QMessageBox>
 #include <QDebug>
 
 MetadataEditorPage::MetadataEditorPage(QWidget *parent) :
@@ -9,52 +10,59 @@ MetadataEditorPage::MetadataEditorPage(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	variantManager = new QtVariantPropertyManager();
+	m_manager = new QtVariantPropertyManager();
 
-	exifProperties = variantManager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("EXIF"));
-	iptcProperties = variantManager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("IPTC"));
-	xmpProperties  = variantManager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("XMP"));
-	commentProperties = variantManager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("Image Comment"));
+	m_exifProperties = m_manager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("EXIF"));
+	m_iptcProperties = m_manager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("IPTC"));
+	m_xmpProperties  = m_manager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("XMP"));
+	m_commentProperties = m_manager->addProperty(QtVariantPropertyManager::groupTypeId(), QLatin1String("Image Comment"));
 
-	variantFactory = new QtVariantEditorFactory();
+	m_factory = new QtVariantEditorFactory();
 
-	ui->propertyBrowser->setFactoryForManager(variantManager, variantFactory);
+	ui->propertyBrowser->setFactoryForManager(m_manager, m_factory);
 
-	ui->propertyBrowser->addProperty(exifProperties);
-	ui->propertyBrowser->addProperty(iptcProperties);
-	ui->propertyBrowser->addProperty(xmpProperties);
-	ui->propertyBrowser->addProperty(commentProperties);
+	ui->propertyBrowser->addProperty(m_exifProperties);
+	ui->propertyBrowser->addProperty(m_iptcProperties);
+	ui->propertyBrowser->addProperty(m_xmpProperties);
+	ui->propertyBrowser->addProperty(m_commentProperties);
 
 	ui->propertyBrowser->setPropertiesWithoutValueMarked(true);
 	ui->propertyBrowser->setRootIsDecorated(false);
+
+	connect(m_manager, SIGNAL(valueChanged(QtProperty *, const QVariant &)),
+		this, SLOT(propertyValueChanged(QtProperty *, const QVariant &)));
+
+
+	connect(ui->propertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem *)),
+		this, SLOT(slotCurrentItemChanged(QtBrowserItem *)));
 }
 
 MetadataEditorPage::~MetadataEditorPage()
 {
-	delete variantManager;
-	delete variantFactory;
+	delete m_manager;
+	delete m_factory;
 
 	delete ui;
 }
 
-QtVariantProperty *MetadataEditorPage::testTypes(QtVariantPropertyManager *manager, struct exifData *data)
+QtVariantProperty *MetadataEditorPage::testTypes(QtVariantPropertyManager *manager, struct exifData *data, bool readOnly)
 {
-//	qDebug() << data->key << "typeName:" << data->typeName <<  "typeId:" << data->typeId;
+	//qDebug() << data->key << "typeName:" << data->typeName <<  "typeId:" << "0x" + QString::number(data->typeId, 16);
 
 	QtVariantProperty *item;
 
 	switch (data->typeId) {
-	case 1:		// unsignedByte       = 1, //!< Exif BYTE type, 8-bit unsigned integer.
+	case 1:		// unsignedByte = 1, //!< Exif BYTE type, 8-bit unsigned integer.
 		item = manager->addProperty(QVariant::String, data->key);
 		item->setValue(data->value);
 		break;
 
-	case 2:		// asciiString        = 2, //!< Exif ASCII type, 8-bit byte.
+	case 2:		// asciiString = 2, //!< Exif ASCII type, 8-bit byte.
 		item = manager->addProperty(QVariant::String, data->key);
 		item->setValue(data->value);
 		break;
 
-	case 3:		// unsignedShort      = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
+	case 3:		// unsignedShort = 3, //!< Exif SHORT type, 16-bit (2-byte) unsigned integer.
 		item = manager->addProperty(QVariant::Int, data->key);
 		item->setValue(data->value.toUShort());
 		item->setAttribute(QLatin1String("minimum"), 0);
@@ -97,28 +105,59 @@ QtVariantProperty *MetadataEditorPage::testTypes(QtVariantPropertyManager *manag
 		item->setValue(data->value);
 		break;
 	}
+
+	if (readOnly) {
+		item->setAttribute(QLatin1String("readOnly"), true);
+	}
+
 	return item;
+}
+
+// Remove previous file properties
+void MetadataEditorPage::clear()
+{
+	QList<QtProperty *> exifSubPropertyList = m_exifProperties->subProperties();
+	for (int i=0; i < exifSubPropertyList.size(); i++) {
+		m_exifProperties->removeSubProperty(exifSubPropertyList.at(i));
+	}
+
+	QList<QtProperty *> iptcSubPropertyList = m_iptcProperties->subProperties();
+	for (int i=0; i < iptcSubPropertyList.size(); i++) {
+		m_iptcProperties->removeSubProperty(iptcSubPropertyList.at(i));
+	}
+
+	QList<QtProperty *> xmpSubPropertyList  = m_xmpProperties->subProperties();
+	for (int i=0; i < xmpSubPropertyList.size(); i++) {
+		m_xmpProperties->removeSubProperty(xmpSubPropertyList.at(i));
+	}
+
+	QList<QtProperty *> commentSubPropertyList  = m_commentProperties->subProperties();
+	for (int i=0; i < commentSubPropertyList.size(); i++) {
+		m_commentProperties->removeSubProperty(commentSubPropertyList.at(i));
+	}
 }
 
 void MetadataEditorPage::setFileData(FileData fdata)
 {
 	m_metadata = fdata.metadata();
 
-//	ui->propertyBrowser->clear();
+	clear();
 
 	if (m_metadata.hasExif()) {
+		bool ro = m_metadata.isExifWritable();
 		QList<exifData> ed = m_metadata.exifDataList();
 		for (int i=0; i < ed.size(); i++) {
 			struct exifData data = ed.at(i);
-			exifProperties->addSubProperty(testTypes(variantManager, &data));
+			m_exifProperties->addSubProperty(testTypes(m_manager, &data, ro));
 		}
 	}
 
 	if (m_metadata.hasIptc()) {
+		bool ro = m_metadata.isIptcWritable();
 		QList<exifData> ed = m_metadata.iptcDataList();
 		for (int i=0; i < ed.size(); i++) {
 			struct exifData data = ed.at(i);
-			iptcProperties->addSubProperty(testTypes(variantManager, &data));
+			m_iptcProperties->addSubProperty(testTypes(m_manager, &data, ro));
 		}
 	}
 
@@ -126,17 +165,21 @@ void MetadataEditorPage::setFileData(FileData fdata)
 		QList<exifData> ed = m_metadata.xmpDataList();
 		for (int i=0; i < ed.size(); i++) {
 			struct exifData data = ed.at(i);
-			xmpProperties->addSubProperty(testTypes(variantManager, &data));
+			m_xmpProperties->addSubProperty(testTypes(m_manager, &data, false));
 		}
 	}
 
 	// Add image comment to the view
 	if (m_metadata.hasComment()) {
 		QtVariantProperty *item;
-		item = variantManager->addProperty(QVariant::String, QLatin1String("Comment"));
+		item = m_manager->addProperty(QVariant::String, QLatin1String("Comment"));
 		item->setValue(m_metadata.imgComment());
-		item->setAttribute(QLatin1String("readOnly"), true);
-		commentProperties->addSubProperty(item);
+
+		if (!m_metadata.isImgCommentWritable()) {
+			item->setAttribute(QLatin1String("readOnly"), true);
+		}
+
+		m_commentProperties->addSubProperty(item);
 	}
 }
 
@@ -147,5 +190,25 @@ void MetadataEditorPage::on_cancelButton_clicked()
 
 void MetadataEditorPage::on_updateButton_clicked()
 {
+	if (QMessageBox::Yes == QMessageBox::warning(this, tr("Update Metadata"),
+		"Update Metadata?", QMessageBox::Yes, QMessageBox::No)) {
 
+//		m_metadata.setImgComment("KRBK Added this Comment");
+//		m_metadata.save();
+	}
+}
+
+// SLOT
+void MetadataEditorPage::propertyValueChanged(QtProperty *prop, const QVariant &val)
+{
+	//qDebug() << __func__ << prop->propertyName() << "val:" << val;
+
+	if ("Comment" == prop->propertyName()) {
+		qDebug() << __func__ << prop->propertyName() << "val:" << val;
+	}
+}
+
+void MetadataEditorPage::slotCurrentItemChanged(QtBrowserItem *currentItem)
+{
+	qDebug() << __func__;
 }
