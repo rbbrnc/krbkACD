@@ -8,6 +8,7 @@
 #include "work_page.h"
 
 #include "photo_widget.h"
+#include "metadata_editor_page.h"
 
 namespace Ui {
     class MainWindow;
@@ -29,6 +30,7 @@ class MainWindow : public QMainWindow
 	private slots:
 		void fullScreen();
 		void showWorkPage();
+		void showMetadataEditorPage();
 
 	private:
 		Ui::MainWindow *ui;
@@ -36,6 +38,7 @@ class MainWindow : public QMainWindow
 		BrowserPage *browserPage;
 		WorkPage    *workPage;
 		PhotoWidget *m_photoPage;
+		MetadataEditorPage *m_metadataEditorPage;
 };
 
 #endif // MAINWINDOW_H

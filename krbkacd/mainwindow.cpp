@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	workPage    = static_cast<WorkPage *>(ui->stackedWidget->widget(1));
 	m_photoPage = static_cast<PhotoWidget *>(ui->stackedWidget->widget(2));
 
+	m_metadataEditorPage = static_cast<MetadataEditorPage *>(ui->stackedWidget->widget(3));
+
 	// Connect View Actions
 	connect(ui->actionShowMetadata, SIGNAL(toggled(bool)),
 		browserPage, SLOT(showMetadata(bool)));
@@ -32,6 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionMoveFile,   SIGNAL(triggered()), browserPage, SLOT(moveFile()));
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), browserPage, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), browserPage, SLOT(renameFile()));
+
+	// Connect Edit Actions
+	connect(ui->actionMetadataEditor, SIGNAL(triggered()), this, SLOT(showMetadataEditorPage()));
+
 
 	// Connect Image Actions
 	connect(ui->actionFullScreen, SIGNAL(triggered()), this, SLOT(fullScreen()));
@@ -82,6 +88,16 @@ void MainWindow::showWorkPage()
 {
 	if (ui->stackedWidget->currentWidget() != workPage) {
 		ui->stackedWidget->setCurrentWidget(workPage);
+	} else {
+		ui->stackedWidget->setCurrentWidget(browserPage);
+	}
+}
+
+void MainWindow::showMetadataEditorPage()
+{
+	if (ui->stackedWidget->currentWidget() != m_metadataEditorPage) {
+		m_metadataEditorPage->setFileData(browserPage->currentFileData());
+		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(browserPage);
 	}
