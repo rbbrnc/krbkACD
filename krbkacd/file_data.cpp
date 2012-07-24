@@ -20,9 +20,9 @@ FileData::FileData(const QFileInfo &fileInfo) :
 	setMimeType();
 
 	// load metadata only for mime type "image/xxxx"
-	if (isImage())
+	if (isImage()) {
 		m_metadata.load(m_path);
-
+	}
 }
 
 FileData::FileData(const QString &file)
@@ -33,8 +33,9 @@ FileData::FileData(const QString &file)
 	setMimeType();
 
 	// load metadata only for mime type "image/xxxx"
-	if (isImage())
+	if (isImage()) {
 		m_metadata.load(m_path);
+	}
 }
 
 FileData::FileData(const FileData &other) :
