@@ -1,4 +1,5 @@
 TEMPLATE = app
+POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
 
 include(../../qtpropertybrowser/src/qtpropertybrowser.pri)
 include (../krbkACD.pri)
