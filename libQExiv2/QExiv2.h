@@ -5,6 +5,7 @@
 #include <QStringList>
 #include <QString>
 #include <QFileInfo>
+#include <QImage>
 
 // For Tags
 #include "PTag.h"
@@ -62,6 +63,9 @@ class QExiv2
 		bool clearImgComment();
 		QByteArray imgComment() const;
 		bool setImgComment(const QByteArray& data);
+
+
+		QImage getPreviewImage() const;
 
 	public:
 		// XXX PRELIMINARY!!!

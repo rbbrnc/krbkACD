@@ -81,6 +81,8 @@ bool QExiv2::load(const QString& filePath)
 
 		//d->debug();
 		d->image = image;
+
+		/*QImage*/ getPreviewImage();
 		return true;
 
 	} catch (Exiv2::Error &e) {
@@ -473,23 +475,41 @@ QList<exifData> QExiv2::xmpDataList() const
 
 	return lst;
 }
-#if 0
-	// Get a list of preview images available in the image. The list is sorted
-	// by the preview image pixel size, starting with the smallest preview.
-	Exiv2::PreviewManager loader(*image);
-	Exiv2::PreviewPropertiesList list = loader.getPreviewProperties();
 
-	// Some application logic to select one of the previews from the list
-	Exiv2::PreviewPropertiesList::const_iterator pos = selectPreview(list);
+QImage QExiv2::getPreviewImage() const
+{
+	try {
+		// Get a list of preview images available in the image. The list is sorted
+		// by the preview image pixel size, starting with the smallest preview.
+		Exiv2::PreviewManager loader(*d->image);
+		Exiv2::PreviewPropertiesList list = loader.getPreviewProperties();
 
-	// Get the selected preview image
-	Exiv2::PreviewImage preview = loader.getPreviewImage(*pos);
+		qDebug() << __func__ << "# of preview:" << list.size();
 
-	// Write the preview image to a file
-	std::string name = "preview" + preview.extension();
-	std::cout << "Writing preview" << " "
-		  << preview.width() << "x" << preview.height() << " "
-		  << "to file" << " " << name << std::endl;
-	preview.writeFile(name);
-#endif
+		if (list.empty()) {
+			return QImage();
+		}
 
+		// Some application logic to select one of the previews from the list
+		Exiv2::PreviewPropertiesList::const_iterator pos = list.begin(); //selectPreview(list);
+
+		// Get the selected preview image
+		Exiv2::PreviewImage preview = loader.getPreviewImage(*pos);
+
+		QImage image;
+		QByteArray ba((const char*) preview.pData(), preview.size());
+		if (!image.loadFromData(ba)) {
+			return QImage();
+		}
+
+		qDebug() << "[Preview] Type:" << QString(preview.extension().c_str())
+			 << "Size:" << preview.width() << "x" << preview.height();
+
+		return image;
+
+	} catch (Exiv2::Error& e) {
+		d->printExiv2ExceptionError("Cannot get preview data using Exiv2", e);
+	}
+
+	return QImage();
+}
