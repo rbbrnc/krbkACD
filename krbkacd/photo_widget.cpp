@@ -22,6 +22,7 @@ PhotoWidget::~PhotoWidget()
 void PhotoWidget::setFileData(FileData fdata)
 {
 	pixScene->clear();
+	resetTransformations();
 
 	m_pic = fdata.fullPixmap();
 	m_pixItem = pixScene->addPixmap(m_pic);
