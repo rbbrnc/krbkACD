@@ -127,6 +127,18 @@ bool QExiv2::hasXmp() const
 	return !d->xmpMetadata.empty();
 }
 
+bool QExiv2::isXmpWritable() const
+{
+	try {
+	        Exiv2::AccessMode mode = d->image->checkMode(Exiv2::mdXmp);
+		return (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
+	} catch (Exiv2::Error& e) {
+		d->printExiv2ExceptionError(QString("Cannot check XMP access mode using Exiv2"), e);
+	}
+
+	return false;
+}
+
 // Serialize the XMP data and output the XML XMP packet
 QByteArray QExiv2::xmpPacket() const
 {

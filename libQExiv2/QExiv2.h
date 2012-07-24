@@ -49,6 +49,7 @@ class QExiv2
 		bool clearIptc();
 
 		// XMP Functions
+		bool isXmpWritable() const;
 		bool hasXmp() const;
 		QByteArray xmpPacket() const;
 
