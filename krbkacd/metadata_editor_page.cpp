@@ -162,10 +162,11 @@ void MetadataEditorPage::setFileData(FileData fdata)
 	}
 
 	if (m_metadata.hasXmp()) {
+		bool ro = m_metadata.isXmpWritable();
 		QList<exifData> ed = m_metadata.xmpDataList();
 		for (int i=0; i < ed.size(); i++) {
 			struct exifData data = ed.at(i);
-			m_xmpProperties->addSubProperty(testTypes(m_manager, &data, false));
+			m_xmpProperties->addSubProperty(testTypes(m_manager, &data, ro));
 		}
 	}
 
