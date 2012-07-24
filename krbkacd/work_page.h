@@ -44,6 +44,9 @@ class WorkPage : public QWidget
 		QString		 m_currentWorkingDirSelection;
 
 		bool m_mimeFilter;
+
+		// map of duplicate file [Key = md5, Value = File Path]
+		QMap<QString, QStringList> m_dupMap;
 };
 
 #endif // WORK_PAGE_H

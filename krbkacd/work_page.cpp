@@ -71,9 +71,25 @@ void WorkPage::on_clearDir_clicked()
 
 void WorkPage::on_workButton_clicked()
 {
+	m_dupMap.clear();
 	for (int i = 0; i < ui->dirList->count(); i++) {
 		QString path = ui->dirList->item(i)->text();
 		scanDir(path, ui->recursiveCheck->isChecked());
+	}
+
+	if (m_dupMap.isEmpty()) {
+		qDebug() << "No file found!";
+	} else {
+		// (Debug) Map
+		qDebug() << "-------RESULTS-----------";
+		QMap<QString, QStringList>::const_iterator i = m_dupMap.constBegin();
+		 while (i != m_dupMap.constEnd()) {
+			if (i.value().size() > 1) {
+				qDebug() << i.key() << ": " << i.value();
+			}
+			++i;
+		 }
+		qDebug() << "-------------------------";
 	}
 }
 
@@ -84,9 +100,6 @@ void WorkPage::scanDir(const QString path, bool recursive)
 	dir.setCurrent(path);
 
 	QFileInfoList list = dir.entryInfoList();
-
-	// Key = File Path, Value md5
-	QMap<QString, QStringList> dupMap;
 
 //	qDebug() << "DIR:" << qPrintable(QDir::current().path());
 
@@ -115,38 +128,25 @@ void WorkPage::scanDir(const QString path, bool recursive)
 			switch (ui->compareType->currentIndex()) {
 			case 0:
 				// Compare Method: "File MD5"
-				compareFileMd5(fd, dupMap);
+				compareFileMd5(fd, m_dupMap);
 				break;
 			case 1:
 				// Compare Method: "Image, Only skip Metadata"
-				compareImage(fd, dupMap);
+				compareImage(fd, m_dupMap);
 				break;
 			case 2:
 				// Compare Method: "Metadata Only Skip Image Data
-				compareMetadata(fd, dupMap);
+				compareMetadata(fd, m_dupMap);
 				break;
 			case 3:
 				// Compare Method: "Byte-to-Byte"
-				compareByteToByte(fd, dupMap);
+				compareByteToByte(fd, m_dupMap);
 				break;
 			default:
 				qDebug() << "Something wrong!";
 				break;
 			}
 		}
-	}
-
-	if (dupMap.isEmpty()) {
-		qDebug() << "No file found!";
-	} else {
-		// (Debug) Map
-		QMap<QString, QStringList>::const_iterator i = dupMap.constBegin();
-		 while (i != dupMap.constEnd()) {
-			if (i.value().size() > 1) {
-				qDebug() << i.key() << ": " << i.value();
-			}
-			++i;
-		 }
 	}
 }
 
