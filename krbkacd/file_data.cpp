@@ -74,11 +74,18 @@ bool FileData::isImage() const
 
 QPixmap FileData::previewPixmap(int w, int h)
 {
-	if (m_pixmap.load(m_path)) {
-		return m_pixmap.scaled(w, h, Qt::KeepAspectRatio);
-	}
+	QImage preview = m_metadata.getPreviewImage();
+	if (preview.isNull()) {
+		if (m_pixmap.load(m_path)) {
+			return m_pixmap.scaled(w, h, Qt::KeepAspectRatio);
+		}
 
-	return QPixmap();
+		return QPixmap();
+	}
+	qDebug() << "FileData::previewPixmap() - use EXIF preview";
+	QPixmap p;
+	p.convertFromImage(preview);
+	return p;
 }
 
 QPixmap FileData::fullPixmap()
