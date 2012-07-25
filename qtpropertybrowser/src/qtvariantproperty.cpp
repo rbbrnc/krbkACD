@@ -46,6 +46,8 @@
 #include <QtCore/QDate>
 #include <QtCore/QLocale>
 
+#include <QDebug>
+
 #if defined(Q_CC_MSVC)
 #    pragma warning(disable: 4786) /* MS VS 6: truncating debug info after 255 characters */
 #endif
@@ -346,6 +348,8 @@ public:
     void slotPropertyInserted(QtProperty *property, QtProperty *parent, QtProperty *after);
     void slotPropertyRemoved(QtProperty *property, QtProperty *parent);
 
+    void slotEditingFinished(QtProperty *, const QString &);
+
     void valueChanged(QtProperty *property, const QVariant &val);
 
     int internalPropertyToType(QtProperty *property) const;
@@ -530,6 +534,14 @@ void QtVariantPropertyManagerPrivate::slotDecimalsChanged(QtProperty *property, 
 void QtVariantPropertyManagerPrivate::slotValueChanged(QtProperty *property, bool val)
 {
     valueChanged(property, QVariant(val));
+}
+
+void QtVariantPropertyManagerPrivate::slotEditingFinished(QtProperty *property, const QString &val)
+{
+	QtVariantProperty *varProp = m_internalToProperty.value(property, 0);
+	if (varProp) {
+		emit q_ptr->editingFinished(varProp, QVariant(val));
+	}
 }
 
 void QtVariantPropertyManagerPrivate::slotValueChanged(QtProperty *property, const QString &val)
@@ -1009,6 +1021,9 @@ QtVariantPropertyManager::QtVariantPropertyManager(QObject *parent)
                 this, SLOT(slotEchoModeChanged(QtProperty*, int)));
     connect(stringPropertyManager, SIGNAL(readOnlyChanged(QtProperty*, bool)),
         this, SLOT(slotReadOnlyChanged(QtProperty*, bool)));
+
+	connect(stringPropertyManager, SIGNAL(editingFinished(QtProperty *, const QString &)),
+		this, SLOT(slotEditingFinished(QtProperty *, const QString &)));
 
     // DatePropertyManager
     QtDatePropertyManager *datePropertyManager = new QtDatePropertyManager(this);
