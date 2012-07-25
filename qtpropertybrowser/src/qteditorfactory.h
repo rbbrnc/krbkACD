@@ -69,6 +69,7 @@ private:
     Q_PRIVATE_SLOT(d_func(), void slotSingleStepChanged(QtProperty *, int))
     Q_PRIVATE_SLOT(d_func(), void slotSetValue(int))
     Q_PRIVATE_SLOT(d_func(), void slotEditorDestroyed(QObject *))
+    Q_PRIVATE_SLOT(d_func(), void slotEditingFinished())
 };
 
 class QtSliderFactoryPrivate;

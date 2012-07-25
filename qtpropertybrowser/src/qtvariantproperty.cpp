@@ -349,6 +349,7 @@ public:
     void slotPropertyRemoved(QtProperty *property, QtProperty *parent);
 
     void slotEditingFinished(QtProperty *, const QString &);
+    void slotEditingFinished(QtProperty *, int);
 
     void valueChanged(QtProperty *property, const QVariant &val);
 
@@ -537,6 +538,14 @@ void QtVariantPropertyManagerPrivate::slotValueChanged(QtProperty *property, boo
 }
 
 void QtVariantPropertyManagerPrivate::slotEditingFinished(QtProperty *property, const QString &val)
+{
+	QtVariantProperty *varProp = m_internalToProperty.value(property, 0);
+	if (varProp) {
+		emit q_ptr->editingFinished(varProp, QVariant(val));
+	}
+}
+
+void QtVariantPropertyManagerPrivate::slotEditingFinished(QtProperty *property, int val)
 {
 	QtVariantProperty *varProp = m_internalToProperty.value(property, 0);
 	if (varProp) {
@@ -974,6 +983,9 @@ QtVariantPropertyManager::QtVariantPropertyManager(QObject *parent)
                 this, SLOT(slotRangeChanged(QtProperty *, int, int)));
     connect(intPropertyManager, SIGNAL(singleStepChanged(QtProperty *, int)),
                 this, SLOT(slotSingleStepChanged(QtProperty *, int)));
+	connect(intPropertyManager, SIGNAL(editingFinished(QtProperty *, int)),
+		this, SLOT(slotEditingFinished(QtProperty *, int)));
+
     // DoublePropertyManager
     QtDoublePropertyManager *doublePropertyManager = new QtDoublePropertyManager(this);
     d_ptr->m_typeToPropertyManager[QVariant::Double] = doublePropertyManager;
