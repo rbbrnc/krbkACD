@@ -243,32 +243,28 @@ void FileListWidget::actionMoveFile(const QString destPath)
 	setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
-#if 0
-QStringList FileListWidget::selectedDirs()
+/* SLOT [public]
+ *
+ * Create New Directory
+ */
+void FileListWidget::actionMkDir(const QString destPath)
 {
-	m_model->setReadOnly(true);
+	QString dirName = QInputDialog::getText(this,
+				"Create a new directory",
+				tr("Enter directory name: "),
+				QLineEdit::Normal);
+	// Remove whitespaces
+	dirName = dirName.simplified();
 
-	selectedFiles = selectedIndexes();
-	if (selectedFiles.isEmpty())
-		return QStringList();
-
-	QStringList pathList;
-
-	while (!selectedFiles.isEmpty()) {
-		QFileInfo fi = m_model->fileInfo(selectedFiles.first());
-		if (fi.isDir()) {
-			// Do not select '.' and '..'
-			if ((fi.fileName() == ".") || (fi.fileName() == "..")) {
-				qDebug() << __func__ << "skip " << fi.fileName();
-			} else {
-				pathList.append(fi.absoluteFilePath());
-			}
-		}
-		selectedFiles.removeFirst();
+	if (dirName.isEmpty()) {
+		return;
 	}
 
-	clearSelection();
-	setSelectionMode(QAbstractItemView::SingleSelection);
-	return pathList;
+	QDir newDir;
+
+	if (!newDir.mkdir(destPath + "/" + dirName)) {
+		QMessageBox::critical(this, tr("Error!"),
+				tr("Creating dir %1 failed").arg(dirName),
+				QMessageBox::Ok);
+	}
 }
-#endif

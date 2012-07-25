@@ -170,6 +170,17 @@ void BrowserPage::renameFile()
 	}
 }
 
+void BrowserPage::makeNewDirectory()
+{
+	if (ui->firstBrowser->hasFocus()) {
+		QString destPath = ui->firstBrowser->getPath();
+		ui->firstBrowser->actionMkDir(destPath);
+	} else if (ui->secondBrowser->hasFocus()) {
+		QString destPath = ui->secondBrowser->getPath();
+		ui->secondBrowser->actionMkDir(destPath);
+	}
+}
+
 void BrowserPage::debugAction()
 {
 #if 0

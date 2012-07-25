@@ -34,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionMoveFile,   SIGNAL(triggered()), browserPage, SLOT(moveFile()));
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), browserPage, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), browserPage, SLOT(renameFile()));
+	connect(ui->actionMkDir,      SIGNAL(triggered()), browserPage, SLOT(makeNewDirectory()));
 
 	// Connect Edit Actions
 	connect(ui->actionMetadataEditor, SIGNAL(triggered()), this, SLOT(showMetadataEditorPage()));
