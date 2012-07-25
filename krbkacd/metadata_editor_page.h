@@ -29,6 +29,7 @@ class MetadataEditorPage : public QWidget
 		void on_updateButton_clicked();
 		void propertyValueChanged(QtProperty *prop, const QVariant &val);
 		void slotCurrentItemChanged(QtBrowserItem *currentItem);
+		void slotEditingFinished(QtProperty *prop, const QVariant &val);
 
 	private:
 		QtVariantProperty *testTypes(QtVariantPropertyManager *manager, struct exifData *data, bool readOnly);
