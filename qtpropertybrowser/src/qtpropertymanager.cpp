@@ -55,6 +55,8 @@
 #include <QtGui/QCheckBox>
 #include <QtGui/QLineEdit>
 
+#include <QDebug>
+
 #include <limits.h>
 #include <float.h>
 
@@ -1442,6 +1444,11 @@ void QtStringPropertyManager::setValue(QtProperty *property, const QString &val)
 
     emit propertyChanged(property);
     emit valueChanged(property, data.val);
+}
+
+void QtStringPropertyManager::slotEditingFinished(QtProperty *property, const QString &val)
+{
+	emit editingFinished(property, val);
 }
 
 /*!

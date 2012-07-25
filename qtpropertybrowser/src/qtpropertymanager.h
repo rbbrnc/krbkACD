@@ -186,12 +186,14 @@ public Q_SLOTS:
     void setRegExp(QtProperty *property, const QRegExp &regExp);
     void setEchoMode(QtProperty *property, EchoMode echoMode);
     void setReadOnly(QtProperty *property, bool readOnly);
+    void slotEditingFinished(QtProperty *property, const QString &val);
 
 Q_SIGNALS:
     void valueChanged(QtProperty *property, const QString &val);
     void regExpChanged(QtProperty *property, const QRegExp &regExp);
     void echoModeChanged(QtProperty *property, const int);
     void readOnlyChanged(QtProperty *property, bool);
+    void editingFinished(QtProperty *property, const QString &val);
 
 protected:
     QString valueText(const QtProperty *property) const;

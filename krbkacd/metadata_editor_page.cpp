@@ -29,12 +29,15 @@ MetadataEditorPage::MetadataEditorPage(QWidget *parent) :
 	ui->propertyBrowser->setPropertiesWithoutValueMarked(true);
 	ui->propertyBrowser->setRootIsDecorated(false);
 
-	connect(m_manager, SIGNAL(valueChanged(QtProperty *, const QVariant &)),
-		this, SLOT(propertyValueChanged(QtProperty *, const QVariant &)));
+//	connect(m_manager, SIGNAL(valueChanged(QtProperty *, const QVariant &)),
+//		this, SLOT(propertyValueChanged(QtProperty *, const QVariant &)));
+
+	connect(m_manager, SIGNAL(editingFinished(QtProperty *, const QVariant &)),
+		this, SLOT(slotEditingFinished(QtProperty *, const QVariant &)));
 
 
-	connect(ui->propertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem *)),
-		this, SLOT(slotCurrentItemChanged(QtBrowserItem *)));
+//	connect(ui->propertyBrowser, SIGNAL(currentItemChanged(QtBrowserItem *)),
+//		this, SLOT(slotCurrentItemChanged(QtBrowserItem *)));
 }
 
 MetadataEditorPage::~MetadataEditorPage()
@@ -195,7 +198,7 @@ void MetadataEditorPage::on_updateButton_clicked()
 		"Update Metadata?", QMessageBox::Yes, QMessageBox::No)) {
 
 //		m_metadata.setImgComment("KRBK Added this Comment");
-//		m_metadata.save();
+		m_metadata.save();
 	}
 }
 
@@ -205,11 +208,25 @@ void MetadataEditorPage::propertyValueChanged(QtProperty *prop, const QVariant &
 	//qDebug() << __func__ << prop->propertyName() << "val:" << val;
 
 	if ("Comment" == prop->propertyName()) {
-		qDebug() << __func__ << prop->propertyName() << "val:" << val;
+		qDebug() << "MetadataEditorPage::" << __func__
+			 << prop->propertyName() << "val:" << val;
 	}
 }
 
 void MetadataEditorPage::slotCurrentItemChanged(QtBrowserItem *currentItem)
 {
+	Q_UNUSED(currentItem)
 	qDebug() << __func__;
+}
+
+void MetadataEditorPage::slotEditingFinished(QtProperty *prop, const QVariant &val)
+{
+	qDebug() << "MetadataEditorPage::" << __func__
+		 << "Prop:" << prop->propertyName()
+		 << "val:" << val;
+
+	if ("Comment" == prop->propertyName()) {
+		m_metadata.setImgComment(val.toByteArray());
+	}
+
 }

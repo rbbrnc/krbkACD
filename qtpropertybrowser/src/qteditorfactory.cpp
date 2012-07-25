@@ -59,6 +59,8 @@
 #include <QtGui/QPainter>
 #include <QtCore/QMap>
 
+#include <QDebug>
+
 #if defined(Q_CC_MSVC)
 #    pragma warning(disable: 4786) /* MS VS 6: truncating debug info after 255 characters */
 #endif
@@ -932,6 +934,7 @@ public:
     void slotSetValue(const QString &value);
     void slotEchoModeChanged(QtProperty *, int);
     void slotReadOnlyChanged(QtProperty *, bool);
+	void slotEditingFinished();
 };
 
 void QtLineEditFactoryPrivate::slotPropertyChanged(QtProperty *property,
@@ -1025,7 +1028,23 @@ void QtLineEditFactoryPrivate::slotSetValue(const QString &value)
         }
 }
 
+void QtLineEditFactoryPrivate::slotEditingFinished()
+{
+	QObject *object = q_ptr->sender();
 
+	const QMap<QLineEdit *, QtProperty *>::ConstIterator ecend = m_editorToProperty.constEnd();
+	for (QMap<QLineEdit *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor != ecend; ++itEditor)
+		if (itEditor.key() == object) {
+			QtProperty *property = itEditor.value();
+			QtStringPropertyManager *manager = q_ptr->propertyManager(property);
+			if (!manager)
+				return;
+
+			QString value = static_cast<QLineEdit *>(q_ptr->sender())->text();
+			manager->slotEditingFinished(property, value);
+			return;
+		}
+}
 
 /*!
     \class QtLineEditFactory
@@ -1096,6 +1115,10 @@ QWidget *QtLineEditFactory::createEditor(QtStringPropertyManager *manager,
                 this, SLOT(slotSetValue(const QString &)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
+
+	connect(editor, SIGNAL(editingFinished()),
+		this, SLOT(slotEditingFinished()));
+
     return editor;
 }
 
