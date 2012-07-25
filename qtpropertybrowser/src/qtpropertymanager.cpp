@@ -787,6 +787,11 @@ void QtIntPropertyManager::setValue(QtProperty *property, int val)
                 &QtIntPropertyManager::valueChanged,
                 property, val, setSubPropertyValue);
 }
+void QtIntPropertyManager::slotEditingFinished(QtProperty *property, int val)
+{
+	qDebug() << "QtIntPropertyManager::slotEditingFinished";
+	emit editingFinished(property, val);
+}
 
 /*!
     Sets the minimum value for the given \a property to \a minVal.

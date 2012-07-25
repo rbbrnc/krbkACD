@@ -151,6 +151,7 @@ public:
     void slotRangeChanged(QtProperty *property, int min, int max);
     void slotSingleStepChanged(QtProperty *property, int step);
     void slotSetValue(int value);
+    void slotEditingFinished();
 };
 
 void QtSpinBoxFactoryPrivate::slotPropertyChanged(QtProperty *property, int value)
@@ -216,6 +217,25 @@ void QtSpinBoxFactoryPrivate::slotSetValue(int value)
     }
 }
 
+void QtSpinBoxFactoryPrivate::slotEditingFinished()
+{
+	QObject *object = q_ptr->sender();
+	const QMap<QSpinBox *, QtProperty *>::ConstIterator  ecend = m_editorToProperty.constEnd();
+	for (QMap<QSpinBox *, QtProperty *>::ConstIterator itEditor = m_editorToProperty.constBegin(); itEditor !=  ecend; ++itEditor) {
+		if (itEditor.key() == object) {
+			QtProperty *property = itEditor.value();
+			QtIntPropertyManager *manager = q_ptr->propertyManager(property);
+			if (!manager) {
+				return;
+			}
+			int value = static_cast<QSpinBox *>(q_ptr->sender())->value();
+			qDebug() << "QtSpinBoxFactoryPrivate" << __func__ << value;
+			manager->slotEditingFinished(property, value);
+			return;
+		}
+	}
+}
+
 /*!
     \class QtSpinBoxFactory
 
@@ -277,6 +297,8 @@ QWidget *QtSpinBoxFactory::createEditor(QtIntPropertyManager *manager, QtPropert
     connect(editor, SIGNAL(valueChanged(int)), this, SLOT(slotSetValue(int)));
     connect(editor, SIGNAL(destroyed(QObject *)),
                 this, SLOT(slotEditorDestroyed(QObject *)));
+
+    connect(editor, SIGNAL(editingFinished()), this, SLOT(slotEditingFinished()));
     return editor;
 }
 
