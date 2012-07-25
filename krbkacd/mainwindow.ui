@@ -47,6 +47,7 @@
     <addaction name="actionRenameFile"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
+    <addaction name="actionMkDir"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -296,6 +297,17 @@
    </property>
    <property name="shortcut">
     <string>F2</string>
+   </property>
+  </action>
+  <action name="actionMkDir">
+   <property name="text">
+    <string>Create Dir</string>
+   </property>
+   <property name="toolTip">
+    <string>Create New Directory</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
    </property>
   </action>
  </widget>

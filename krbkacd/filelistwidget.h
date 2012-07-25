@@ -30,6 +30,7 @@ class FileListWidget : public QListView
 		void actionRename();
 		void actionCopyFile(const QString destPath);
 		void actionMoveFile(const QString destPath);
+		void actionMkDir(const QString destPath);
 
 	private slots:
 		void handleItemActivation(QModelIndex index);

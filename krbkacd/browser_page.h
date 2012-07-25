@@ -37,6 +37,7 @@ class BrowserPage : public QWidget
 		void moveFile();
 		void deleteFile();
 		void renameFile();
+		void makeNewDirectory();
 
 		void debugAction();
 
