@@ -484,7 +484,7 @@ QImage QExiv2::getPreviewImage() const
 		Exiv2::PreviewManager loader(*d->image);
 		Exiv2::PreviewPropertiesList list = loader.getPreviewProperties();
 
-		qDebug() << __func__ << "# of preview:" << list.size();
+//		qDebug() << __func__ << "# of preview:" << list.size();
 
 		if (list.empty()) {
 			return QImage();
@@ -502,8 +502,8 @@ QImage QExiv2::getPreviewImage() const
 			return QImage();
 		}
 
-		qDebug() << "[Preview] Type:" << QString(preview.extension().c_str())
-			 << "Size:" << preview.width() << "x" << preview.height();
+//		qDebug() << "[Preview] Type:" << QString(preview.extension().c_str())
+//			 << "Size:" << preview.width() << "x" << preview.height();
 
 		return image;
 

@@ -203,15 +203,10 @@ void WorkPage::compareByteToByte(FileData &fdata, QMap<QString, QStringList> &ma
 // Compare Method: "Image Only skip Metadata"
 void WorkPage::compareImage(FileData &fdata, QMap<QString, QStringList> &map)
 {
-//	Q_UNUSED(fdata)
-//	Q_UNUSED(map)
-
-	qDebug() << "WorkPage::CompareImage";
-
 	QString md5;
 	md5 = fdata.imageMd5().toHex();
 
-	qDebug() << "WorkPage::CompareImage:MD5" << md5;
+	qDebug() << "WorkPage::CompareImage:" << fdata.filePath() << "MD5" << md5;
 
 	QStringList sl;
 
