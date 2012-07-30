@@ -26,6 +26,7 @@ class WorkPage : public QWidget
 		void compareMetadata(FileData &fdata, QMap<QString, QStringList> &map);
 		void compareByteToByte(FileData &fdata, QMap<QString, QStringList> &map);
 		void compareImage(FileData &fdata, QMap<QString, QStringList> &map);
+		void compareHistogram(FileData &fdata, QMap<QString, QStringList> &map);
 
 	private slots:
 		void on_insertDir_clicked();
@@ -36,7 +37,9 @@ class WorkPage : public QWidget
 
 		void on_clearDir_clicked();
 
-	private:
+        void on_compareType_currentIndexChanged(int index);
+
+private:
 		Ui::WorkPage *ui;
 
 		QFileSystemModel m_dirModel;

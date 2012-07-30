@@ -11,6 +11,8 @@ WorkPage::WorkPage(QWidget *parent) :
 {
 	ui->setupUi(this);
 
+	ui->tresholdHistogramDiffSlider->hide();
+
 	m_dirModel.setRootPath("");
 	m_dirModel.setFilter(QDir::Dirs | QDir::NoDotAndDotDot); // Only Directories
 
@@ -131,14 +133,18 @@ void WorkPage::scanDir(const QString path, bool recursive)
 				compareFileMd5(fd, m_dupMap);
 				break;
 			case 1:
+				// Compare Method: "Color Histogram"
+				compareHistogram(fd, m_dupMap);
+				break;
+			case 2:
 				// Compare Method: "Image, Only skip Metadata"
 				compareImage(fd, m_dupMap);
 				break;
-			case 2:
+			case 3:
 				// Compare Method: "Metadata Only Skip Image Data
 				compareMetadata(fd, m_dupMap);
 				break;
-			case 3:
+			case 4:
 				// Compare Method: "Byte-to-Byte"
 				compareByteToByte(fd, m_dupMap);
 				break;
@@ -165,6 +171,13 @@ void WorkPage::compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map)
 
 	sl << fdata.filePath();	// Update file list
 	map[md5] = sl;		// Add to map
+}
+
+// Compare Method: "Color Histogtram"
+void WorkPage::compareHistogram(FileData &fdata, QMap<QString, QStringList> &map)
+{
+
+	qDebug() << "WorkPage::CompareHistogram";
 }
 
 // Compare Method: "Metadata Only, skip Image Data
@@ -194,3 +207,11 @@ void WorkPage::compareImage(FileData &fdata, QMap<QString, QStringList> &map)
 	qDebug() << "WorkPage::CompareImage";
 }
 
+
+void WorkPage::on_compareType_currentIndexChanged(int index)
+{
+	if (index == 1)
+		ui->tresholdHistogramDiffSlider->show();
+	else
+		ui->tresholdHistogramDiffSlider->hide();
+}
