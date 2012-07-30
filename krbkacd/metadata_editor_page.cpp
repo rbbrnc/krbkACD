@@ -51,6 +51,7 @@ MetadataEditorPage::~MetadataEditorPage()
 QtVariantProperty *MetadataEditorPage::testTypes(QtVariantPropertyManager *manager, struct exifData *data, bool readOnly)
 {
 	//qDebug() << data->key << "typeName:" << data->typeName <<  "typeId:" << "0x" + QString::number(data->typeId, 16);
+	qDebug() << data->key << "tag:" << "0x" + QString::number(data->tag, 16);
 
 	QtVariantProperty *item;
 
