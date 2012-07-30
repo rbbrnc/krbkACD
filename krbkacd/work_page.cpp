@@ -103,7 +103,6 @@ void WorkPage::debugHistogramMap() const
 		 }
 		qDebug() << "-------------------------";
 	}
-
 }
 
 void WorkPage::debugFileList() const
@@ -117,7 +116,6 @@ void WorkPage::debugFileList() const
 		 }
 		qDebug() << "-------------------------";
 	}
-
 }
 
 void WorkPage::on_workButton_clicked()
@@ -211,7 +209,6 @@ void WorkPage::on_compareType_currentIndexChanged(int index)
 		ui->tresholdHistogramDiffSlider->hide();
 }
 
-
 // Compare Method: "File MD5"
 void WorkPage::compareFileMd5()
 {
@@ -237,11 +234,10 @@ void WorkPage::compareFileMd5()
 void WorkPage::compareHistogram()
 {
 //	qDebug() << "WorkPage::CompareHistogram";
-#if 0
 	for (int i = 0; i < m_fileList.size(); i++) {
 		FileData fd = m_fileList.at(i);
 
-		QImage img = fdata.image();
+		QImage img = fd.image();
 
 		if (img.isNull()) {
 			return;
@@ -250,11 +246,29 @@ void WorkPage::compareHistogram()
 		ColorHistogram h;
 		h.calcNormalized(&img);
 
-		QString fp = fdata.filePath();
+		QString fp = fd.filePath();
 
 		m_histogramMap[fp] = h;		// Add to map
 	}
-#endif
+	ColorHistogram h1;
+	ColorHistogram h2;
+
+	QMap<QString, ColorHistogram>::const_iterator i = m_histogramMap.constBegin();
+	QMap<QString, ColorHistogram>::const_iterator j = m_histogramMap.constBegin();
+	while (i != m_histogramMap.constEnd()) {
+		j = i + 1;
+		h1 = i.value();
+		while (j != m_histogramMap.constEnd()) {
+			h2 = j.value();
+			double lhn = h1.compareChiSquareNormalized(h2);
+			qDebug() << i.key()
+				 << j.key()
+				 << (1.0 - lhn)*100.0 << "%";
+			++j;
+		}
+		i++;
+	}
+//	debugHistogramMap();
 }
 
 // Compare Method: "Metadata Only, skip Image Data
