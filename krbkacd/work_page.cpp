@@ -71,14 +71,8 @@ void WorkPage::on_clearDir_clicked()
 	}
 }
 
-void WorkPage::on_workButton_clicked()
+void WorkPage::debugDupMap() const
 {
-	m_dupMap.clear();
-	for (int i = 0; i < ui->dirList->count(); i++) {
-		QString path = ui->dirList->item(i)->text();
-		scanDir(path, ui->recursiveCheck->isChecked());
-	}
-
 	if (m_dupMap.isEmpty()) {
 		qDebug() << "No file found!";
 	} else {
@@ -95,8 +89,87 @@ void WorkPage::on_workButton_clicked()
 	}
 }
 
-void WorkPage::scanDir(const QString path, bool recursive)
+void WorkPage::debugHistogramMap() const
 {
+	if (m_histogramMap.isEmpty()) {
+		qDebug() << "No histogram found!";
+	} else {
+		// (Debug) Map
+		qDebug() << "-------Histogram Map-----------";
+		QMap<QString, ColorHistogram>::const_iterator i = m_histogramMap.constBegin();
+		 while (i != m_histogramMap.constEnd()) {
+			qDebug() << i.key(); // << ": " << i.value();
+			++i;
+		 }
+		qDebug() << "-------------------------";
+	}
+
+}
+
+void WorkPage::debugFileList() const
+{
+	if (m_fileList.isEmpty()) {
+		qDebug() << "No file found!";
+	} else {
+		qDebug() << "-------File List-----------";
+		for (int i = 0; i < m_fileList.size(); i++) {
+			qDebug() << m_fileList.at(i).filePath();
+		 }
+		qDebug() << "-------------------------";
+	}
+
+}
+
+void WorkPage::on_workButton_clicked()
+{
+	for (int i = 0; i < ui->dirList->count(); i++) {
+		QString path = ui->dirList->item(i)->text();
+		fillFileList(path, ui->recursiveCheck->isChecked());
+	}
+	//debugFileList();
+
+	if (m_fileList.isEmpty()) {
+		qDebug() << __func__ << "No file found!";
+		return;
+	}
+
+	m_dupMap.clear();
+	m_histogramMap.clear();
+
+	// TODO: For MD5, Image and Byte-to-Byte compare only files with the same format
+	switch (ui->compareType->currentIndex()) {
+	case 0:
+		// Compare Method: "File MD5"
+		compareFileMd5();
+		break;
+	case 1:
+		// Compare Method: "Color Histogram"
+		compareHistogram();
+		break;
+	case 2:
+		// Compare Method: "Image, Only skip Metadata"
+		compareImage();
+		break;
+	case 3:
+		// Compare Method: "Metadata Only Skip Image Data
+		compareMetadata();
+		break;
+	case 4:
+		// Compare Method: "Byte-to-Byte"
+		compareByteToByte();
+		break;
+	default:
+		qDebug() << "Something wrong!";
+		break;
+	}
+}
+
+void WorkPage::fillFileList(const QString path, bool recursive)
+{
+	if (!m_fileList.isEmpty()) {
+		m_fileList.clear();
+	}
+
 	QDir dir;
 	dir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 	dir.setCurrent(path);
@@ -111,7 +184,7 @@ void WorkPage::scanDir(const QString path, bool recursive)
 			if ((fi.fileName() != ".") && (fi.fileName() != "..")) {
 				if (recursive) {
 					QDir::setCurrent(fi.absoluteFilePath());
-					scanDir(fi.absoluteFilePath(), recursive);
+					fillFileList(fi.absoluteFilePath(), recursive);
 					QDir::setCurrent("..");
 				}
 			}
@@ -125,100 +198,10 @@ void WorkPage::scanDir(const QString path, bool recursive)
 					continue;
 				}
 			}
-
-			// TODO: For MD5, Image and Byte-to-Byte compare only files with the same format
-			switch (ui->compareType->currentIndex()) {
-			case 0:
-				// Compare Method: "File MD5"
-				compareFileMd5(fd, m_dupMap);
-				break;
-			case 1:
-				// Compare Method: "Color Histogram"
-				compareHistogram(fd, m_dupMap);
-				break;
-			case 2:
-				// Compare Method: "Image, Only skip Metadata"
-				compareImage(fd, m_dupMap);
-				break;
-			case 3:
-				// Compare Method: "Metadata Only Skip Image Data
-				compareMetadata(fd, m_dupMap);
-				break;
-			case 4:
-				// Compare Method: "Byte-to-Byte"
-				compareByteToByte(fd, m_dupMap);
-				break;
-			default:
-				qDebug() << "Something wrong!";
-				break;
-			}
+			m_fileList << fd;
 		}
 	}
 }
-
-// Compare Method: "File MD5"
-void WorkPage::compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map)
-{
-	QString md5;
-	md5 = fdata.md5().toHex();
-
-	QStringList sl;
-
-	if (map.contains(md5)) {
-		// Duplicate Found get file list for this <key>
-		sl = map[md5];
-	}
-
-	sl << fdata.filePath();	// Update file list
-	map[md5] = sl;		// Add to map
-}
-
-// Compare Method: "Color Histogtram"
-void WorkPage::compareHistogram(FileData &fdata, QMap<QString, QStringList> &map)
-{
-	Q_UNUSED(fdata)
-	Q_UNUSED(map)
-
-	qDebug() << "WorkPage::CompareHistogram";
-}
-
-// Compare Method: "Metadata Only, skip Image Data
-void WorkPage::compareMetadata(FileData &fdata, QMap<QString, QStringList> &map)
-{
-	Q_UNUSED(fdata)
-	Q_UNUSED(map)
-
-	qDebug() << "WorkPage::CompareMetadata";
-}
-
-// Compare Method: "Byte-to-Byte"
-void WorkPage::compareByteToByte(FileData &fdata, QMap<QString, QStringList> &map)
-{
-	Q_UNUSED(fdata)
-	Q_UNUSED(map)
-
-	qDebug() << "WorkPage::CompareByteToByte";
-}
-
-// Compare Method: "Image Only skip Metadata"
-void WorkPage::compareImage(FileData &fdata, QMap<QString, QStringList> &map)
-{
-	QString md5;
-	md5 = fdata.imageMd5().toHex();
-
-	qDebug() << "WorkPage::CompareImage:" << fdata.filePath() << "MD5" << md5;
-
-	QStringList sl;
-
-	if (map.contains(md5)) {
-		// Duplicate Found get file list for this <key>
-		sl = map[md5];
-	}
-
-	sl << fdata.filePath();	// Update file list
-	map[md5] = sl;		// Add to map
-}
-
 
 void WorkPage::on_compareType_currentIndexChanged(int index)
 {
@@ -226,4 +209,85 @@ void WorkPage::on_compareType_currentIndexChanged(int index)
 		ui->tresholdHistogramDiffSlider->show();
 	else
 		ui->tresholdHistogramDiffSlider->hide();
+}
+
+
+// Compare Method: "File MD5"
+void WorkPage::compareFileMd5()
+{
+	for (int i = 0; i < m_fileList.size(); i++) {
+		FileData fd = m_fileList.at(i);
+		QString md5;
+		md5 = fd.md5().toHex();
+
+		QStringList sl;
+
+		if (m_dupMap.contains(md5)) {
+			// Duplicate Found get file list for this <key>
+			sl = m_dupMap[md5];
+		}
+
+		sl << fd.filePath();	// Update file list
+		m_dupMap[md5] = sl;	// Add to map
+	}
+	debugDupMap();
+}
+
+// Compare Method: "Color Histogtram"
+void WorkPage::compareHistogram()
+{
+//	qDebug() << "WorkPage::CompareHistogram";
+#if 0
+	for (int i = 0; i < m_fileList.size(); i++) {
+		FileData fd = m_fileList.at(i);
+
+		QImage img = fdata.image();
+
+		if (img.isNull()) {
+			return;
+		}
+
+		ColorHistogram h;
+		h.calcNormalized(&img);
+
+		QString fp = fdata.filePath();
+
+		m_histogramMap[fp] = h;		// Add to map
+	}
+#endif
+}
+
+// Compare Method: "Metadata Only, skip Image Data
+void WorkPage::compareMetadata()
+{
+	qDebug() << "WorkPage::CompareMetadata";
+}
+
+// Compare Method: "Byte-to-Byte"
+void WorkPage::compareByteToByte()
+{
+	qDebug() << "WorkPage::CompareByteToByte";
+}
+
+// Compare Method: "Image Only skip Metadata"
+void WorkPage::compareImage()
+{
+	for (int i = 0; i < m_fileList.size(); i++) {
+		FileData fd = m_fileList.at(i);
+		QString md5;
+		md5 = fd.imageMd5().toHex();
+
+		qDebug() << "WorkPage::CompareImage:" << fd.filePath() << "MD5" << md5;
+
+		QStringList sl;
+
+		if (m_dupMap.contains(md5)) {
+			// Duplicate Found get file list for this <key>
+			sl = m_dupMap[md5];
+		}
+
+		sl << fd.filePath();	// Update file list
+		m_dupMap[md5] = sl;	// Add to map
+	}
+	debugDupMap();
 }

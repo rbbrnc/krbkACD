@@ -22,7 +22,8 @@ SOURCES += main.cpp \
 	file_data.cpp \
 	PTagGraphicsItem.cpp \
 	photo_widget.cpp \
-	metadata_editor_page.cpp
+	metadata_editor_page.cpp \
+	histogram.cpp
 
 HEADERS += mainwindow.h \
 	browser_page.h \
@@ -32,7 +33,8 @@ HEADERS += mainwindow.h \
 	file_data.h \
 	PTagGraphicsItem.h \
 	photo_widget.h \
-	metadata_editor_page.h
+	metadata_editor_page.h \
+	histogram.h
 
 FORMS += mainwindow.ui \
 	browser_page.ui \

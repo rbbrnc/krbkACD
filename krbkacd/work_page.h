@@ -5,6 +5,7 @@
 #include <QFileSystemModel>
 
 #include "file_data.h"
+#include "histogram.h"
 
 namespace Ui {
 	class WorkPage;
@@ -19,14 +20,18 @@ class WorkPage : public QWidget
 		~WorkPage();
 
 	private:
-		void scanDir(const QString path, bool recursive);
+		void fillFileList(const QString path, bool recursive);
+
+		void debugDupMap() const;
+		void debugHistogramMap() const;
+		void debugFileList() const;
 
 		// Compare Methods
-		void compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map);
-		void compareMetadata(FileData &fdata, QMap<QString, QStringList> &map);
-		void compareByteToByte(FileData &fdata, QMap<QString, QStringList> &map);
-		void compareImage(FileData &fdata, QMap<QString, QStringList> &map);
-		void compareHistogram(FileData &fdata, QMap<QString, QStringList> &map);
+		void compareFileMd5();
+		void compareMetadata();
+		void compareByteToByte();
+		void compareImage();
+		void compareHistogram();
 
 	private slots:
 		void on_insertDir_clicked();
@@ -36,10 +41,9 @@ class WorkPage : public QWidget
 		void dirSelectionChanged(const QModelIndex &index);
 
 		void on_clearDir_clicked();
+		void on_compareType_currentIndexChanged(int index);
 
-        void on_compareType_currentIndexChanged(int index);
-
-private:
+	private:
 		Ui::WorkPage *ui;
 
 		QFileSystemModel m_dirModel;
@@ -50,6 +54,8 @@ private:
 
 		// map of duplicate file [Key = md5, Value = File Path]
 		QMap<QString, QStringList> m_dupMap;
+		QMap<QString, ColorHistogram> m_histogramMap;
+		QList<FileData> m_fileList;
 };
 
 #endif // WORK_PAGE_H
