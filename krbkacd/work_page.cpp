@@ -11,7 +11,7 @@ WorkPage::WorkPage(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	ui->tresholdHistogramDiffSlider->hide();
+	ui->tresholdLayout->hide();
 
 	m_dirModel.setRootPath("");
 	m_dirModel.setFilter(QDir::Dirs | QDir::NoDotAndDotDot); // Only Directories
@@ -203,10 +203,12 @@ void WorkPage::fillFileList(const QString path, bool recursive)
 
 void WorkPage::on_compareType_currentIndexChanged(int index)
 {
-	if (index == 1)
-		ui->tresholdHistogramDiffSlider->show();
-	else
-		ui->tresholdHistogramDiffSlider->hide();
+	if (index == 1) {
+		ui->tresholdValue->setText(QString::number(ui->tresholdHistogramDiffSlider->value()));
+		ui->tresholdLayout->show();
+	} else {
+		ui->tresholdLayout->hide();
+	}
 }
 
 // Compare Method: "File MD5"
@@ -306,4 +308,9 @@ void WorkPage::compareImage()
 		m_dupMap[md5] = sl;	// Add to map
 	}
 	debugDupMap();
+}
+
+void WorkPage::on_tresholdHistogramDiffSlider_valueChanged(int value)
+{
+	ui->tresholdValue->setText(QString::number(value));
 }

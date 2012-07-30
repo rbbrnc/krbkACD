@@ -43,6 +43,8 @@ class WorkPage : public QWidget
 		void on_clearDir_clicked();
 		void on_compareType_currentIndexChanged(int index);
 
+	        void on_tresholdHistogramDiffSlider_valueChanged(int value);
+
 	private:
 		Ui::WorkPage *ui;
 

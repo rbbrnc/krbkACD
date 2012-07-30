@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>854</width>
+    <width>707</width>
     <height>653</height>
    </rect>
   </property>
@@ -17,7 +17,7 @@
       <widget class="QTreeView" name="dirTree"/>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="_6">
        <item>
         <widget class="QPushButton" name="insertDir">
          <property name="text">
@@ -47,7 +47,7 @@
     </layout>
    </item>
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
+    <layout class="QVBoxLayout" name="_5">
      <item>
       <widget class="QGroupBox" name="groupBox">
        <property name="title">
@@ -72,7 +72,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <layout class="QHBoxLayout" name="_4">
           <item>
            <widget class="QLabel" name="label">
             <property name="sizePolicy">
@@ -118,22 +118,42 @@
          </layout>
         </item>
         <item>
-         <widget class="QSlider" name="tresholdHistogramDiffSlider">
-          <property name="maximum">
-           <number>100</number>
-          </property>
-          <property name="value">
-           <number>80</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="tickPosition">
-           <enum>QSlider::TicksAbove</enum>
-          </property>
-          <property name="tickInterval">
-           <number>10</number>
-          </property>
+         <widget class="QWidget" name="tresholdLayout" native="true">
+          <layout class="QVBoxLayout" name="_7">
+           <item>
+            <layout class="QHBoxLayout" name="_2">
+             <item>
+              <widget class="QLabel" name="tresholdLabel">
+               <property name="text">
+                <string>Treshold</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="tresholdValue"/>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QSlider" name="tresholdHistogramDiffSlider">
+             <property name="maximum">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>80</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="tickPosition">
+              <enum>QSlider::TicksAbove</enum>
+             </property>
+             <property name="tickInterval">
+              <number>10</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </widget>
         </item>
         <item>
@@ -150,7 +170,7 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <layout class="QHBoxLayout" name="_3">
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
