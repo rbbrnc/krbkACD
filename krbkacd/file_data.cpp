@@ -21,6 +21,7 @@ FileData::FileData(const QFileInfo &fileInfo) :
 
 	// load metadata only for mime type "image/xxxx"
 	if (isImage()) {
+		m_image = QImage();
 		m_metadata.load(m_path);
 	}
 }
@@ -34,6 +35,7 @@ FileData::FileData(const QString &file)
 
 	// load metadata only for mime type "image/xxxx"
 	if (isImage()) {
+		m_image = QImage();
 		m_metadata.load(m_path);
 	}
 }
@@ -44,6 +46,7 @@ FileData::FileData(const FileData &other) :
 	m_mimeType(other.m_mimeType),
 	m_md5(other.m_md5),
 	m_pixmap(other.m_pixmap),
+	m_image(other.m_image),
 	m_metadata(other.m_metadata)
 {
 }
@@ -88,13 +91,35 @@ QPixmap FileData::previewPixmap(int w, int h)
 	return p;
 }
 
+QImage FileData::image()
+{
+	if (m_image.isNull()) {
+		qDebug() << "FileData::fullPixmap() - load" << m_path;
+		m_image.load(m_path);
+	}
+
+	return m_image;
+}
+
 QPixmap FileData::fullPixmap()
 {
+#if 10
+	if (m_image.isNull()) {
+		qDebug() << "FileData::fullPixmap() - load" << m_path;
+		m_image.load(m_path);
+	}
+
+	QPixmap p;
+	p.convertFromImage(m_image);
+	return p;
+#else
 	if (m_pixmap.load(m_path)) {
+		qDebug() << "FileData::fullPixmap() - load" << m_path;
 		return m_pixmap;
 	}
 
 	return QPixmap();
+#endif
 }
 
 const QExiv2 FileData::metadata() const
@@ -144,6 +169,13 @@ QByteArray FileData::md5()
 		setMd5();
 	}
 	return m_md5;
+}
+
+QByteArray FileData::imageMd5()
+{
+	QImage img = image();
+	QByteArray ba((const char *) img.constBits());
+	return QCryptographicHash::hash(ba, QCryptographicHash::Md5);
 }
 
 void FileData::print()

@@ -24,6 +24,9 @@ class FileData {
 		QString    filePath() const;
 		QString    mimeType() const;
 		QByteArray md5();
+		QByteArray imageMd5();
+
+		QImage image();
 
 	private:
 		void setMimeType();
@@ -35,6 +38,7 @@ class FileData {
 		QString    m_mimeType;
 		QByteArray m_md5;
 		QPixmap    m_pixmap;
+		QImage	   m_image;
 		QExiv2     m_metadata;
 };
 

@@ -176,6 +176,8 @@ void WorkPage::compareFileMd5(FileData &fdata, QMap<QString, QStringList> &map)
 // Compare Method: "Color Histogtram"
 void WorkPage::compareHistogram(FileData &fdata, QMap<QString, QStringList> &map)
 {
+	Q_UNUSED(fdata)
+	Q_UNUSED(map)
 
 	qDebug() << "WorkPage::CompareHistogram";
 }
@@ -201,10 +203,25 @@ void WorkPage::compareByteToByte(FileData &fdata, QMap<QString, QStringList> &ma
 // Compare Method: "Image Only skip Metadata"
 void WorkPage::compareImage(FileData &fdata, QMap<QString, QStringList> &map)
 {
-	Q_UNUSED(fdata)
-	Q_UNUSED(map)
+//	Q_UNUSED(fdata)
+//	Q_UNUSED(map)
 
 	qDebug() << "WorkPage::CompareImage";
+
+	QString md5;
+	md5 = fdata.imageMd5().toHex();
+
+	qDebug() << "WorkPage::CompareImage:MD5" << md5;
+
+	QStringList sl;
+
+	if (map.contains(md5)) {
+		// Duplicate Found get file list for this <key>
+		sl = map[md5];
+	}
+
+	sl << fdata.filePath();	// Update file list
+	map[md5] = sl;		// Add to map
 }
 
 
