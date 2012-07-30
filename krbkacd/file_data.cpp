@@ -85,7 +85,7 @@ QPixmap FileData::previewPixmap(int w, int h)
 
 		return QPixmap();
 	}
-	qDebug() << "FileData::previewPixmap() - use EXIF preview";
+//	qDebug() << "FileData::previewPixmap() - use EXIF preview";
 	QPixmap p;
 	p.convertFromImage(preview);
 	return p;
@@ -94,7 +94,7 @@ QPixmap FileData::previewPixmap(int w, int h)
 QImage FileData::image()
 {
 	if (m_image.isNull()) {
-		qDebug() << "FileData::fullPixmap() - load" << m_path;
+//		qDebug() << "FileData::image() - load" << m_path;
 		m_image.load(m_path);
 	}
 
@@ -105,7 +105,7 @@ QPixmap FileData::fullPixmap()
 {
 #if 10
 	if (m_image.isNull()) {
-		qDebug() << "FileData::fullPixmap() - load" << m_path;
+//		qDebug() << "FileData::fullPixmap() - load" << m_path;
 		m_image.load(m_path);
 	}
 
@@ -173,9 +173,13 @@ QByteArray FileData::md5()
 
 QByteArray FileData::imageMd5()
 {
+	QByteArray md5;
 	QImage img = image();
-	QByteArray ba((const char *) img.constBits());
-	return QCryptographicHash::hash(ba, QCryptographicHash::Md5);
+	if (!img.isNull()) {
+		QByteArray ba((const char *) img.constBits());
+		md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5);
+	}
+	return md5;
 }
 
 void FileData::print()
