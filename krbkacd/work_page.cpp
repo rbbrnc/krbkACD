@@ -120,11 +120,15 @@ void WorkPage::debugFileList() const
 
 void WorkPage::on_workButton_clicked()
 {
+	if (!m_fileList.isEmpty()) {
+		m_fileList.clear();
+	}
+
 	for (int i = 0; i < ui->dirList->count(); i++) {
 		QString path = ui->dirList->item(i)->text();
 		fillFileList(path, ui->recursiveCheck->isChecked());
 	}
-	//debugFileList();
+	debugFileList();
 
 	if (m_fileList.isEmpty()) {
 		qDebug() << __func__ << "No file found!";
@@ -164,10 +168,6 @@ void WorkPage::on_workButton_clicked()
 
 void WorkPage::fillFileList(const QString path, bool recursive)
 {
-	if (!m_fileList.isEmpty()) {
-		m_fileList.clear();
-	}
-
 	QDir dir;
 	dir.setFilter(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 	dir.setCurrent(path);
@@ -233,14 +233,14 @@ void WorkPage::compareFileMd5()
 // Compare Method: "Color Histogtram"
 void WorkPage::compareHistogram()
 {
-//	qDebug() << "WorkPage::CompareHistogram";
+	qDebug() << "WorkPage::CompareHistogram";
 	for (int i = 0; i < m_fileList.size(); i++) {
 		FileData fd = m_fileList.at(i);
 
 		QImage img = fd.image();
 
 		if (img.isNull()) {
-			return;
+			continue;
 		}
 
 		ColorHistogram h;
@@ -253,6 +253,7 @@ void WorkPage::compareHistogram()
 	ColorHistogram h1;
 	ColorHistogram h2;
 
+	qDebug() << "Treshold:" << ui->tresholdHistogramDiffSlider->value();
 	QMap<QString, ColorHistogram>::const_iterator i = m_histogramMap.constBegin();
 	QMap<QString, ColorHistogram>::const_iterator j = m_histogramMap.constBegin();
 	while (i != m_histogramMap.constEnd()) {
@@ -261,9 +262,10 @@ void WorkPage::compareHistogram()
 		while (j != m_histogramMap.constEnd()) {
 			h2 = j.value();
 			double lhn = h1.compareChiSquareNormalized(h2);
-			qDebug() << i.key()
-				 << j.key()
-				 << (1.0 - lhn)*100.0 << "%";
+			if (ui->tresholdHistogramDiffSlider->value() < ((1.0 - lhn)*100.0))
+				qDebug() << i.key()
+					 << j.key()
+					 << (1.0 - lhn)*100.0 << "%";
 			++j;
 		}
 		i++;
