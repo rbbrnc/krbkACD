@@ -86,7 +86,12 @@ void PhotoWidget::zoom11()
 // Zoom to fit
 void PhotoWidget::zoomToFit()
 {
-	ui->pixView->fitInView(m_pixItem, Qt::IgnoreAspectRatio);
+//	ui->pixView->fitInView(m_pixItem, Qt::IgnoreAspectRatio);
+//	ui->pixView->fitInView(m_pixItem, Qt::KeepAspectRatio);
+//	ui->pixView->fitInView(m_pixItem, Qt::KeepAspectRatioByExpanding);
+	qDebug() << __PRETTY_FUNCTION__ << "sceneRect:" << ui->pixView->sceneRect();
+
+	ui->pixView->fitInView(ui->pixView->sceneRect(), Qt::KeepAspectRatioByExpanding);
 }
 
 void PhotoWidget::rotateCW()

@@ -85,7 +85,7 @@ QPixmap FileData::previewPixmap(int w, int h)
 
 		return QPixmap();
 	}
-//	qDebug() << "FileData::previewPixmap() - use EXIF preview";
+	//qDebug() << __PRETTY_FUNCTION__ - use EXIF preview";
 	QPixmap p;
 	p.convertFromImage(preview);
 	return p;
@@ -94,7 +94,7 @@ QPixmap FileData::previewPixmap(int w, int h)
 QImage FileData::image()
 {
 	if (m_image.isNull()) {
-//		qDebug() << "FileData::image() - load" << m_path;
+		//qDebug() << __PRETTY_FUNCTION__ - load" << m_path;
 		m_image.load(m_path);
 	}
 
@@ -105,7 +105,7 @@ QPixmap FileData::fullPixmap()
 {
 #if 10
 	if (m_image.isNull()) {
-//		qDebug() << "FileData::fullPixmap() - load" << m_path;
+		//qDebug() << __PRETTY_FUNCTION__ - load" << m_path;
 		m_image.load(m_path);
 	}
 
@@ -114,7 +114,7 @@ QPixmap FileData::fullPixmap()
 	return p;
 #else
 	if (m_pixmap.load(m_path)) {
-		qDebug() << "FileData::fullPixmap() - load" << m_path;
+		//qDebug() << __PRETTY_FUNCTION__ - load" << m_path;
 		return m_pixmap;
 	}
 
@@ -134,16 +134,18 @@ void FileData::setMimeType()
 	/* cfr. man libmagic */
 	cookie = magic_open(MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
 	if (cookie == NULL) {
-		qDebug() << __func__ << "Error allocating magic cookie";
+		qDebug() << __PRETTY_FUNCTION__ << "Error allocating magic cookie";
 	} else {
 		// load magic file (NULL default)
 		// XXX: Can be a custom magic file on .qrc?!
 		if (magic_load(cookie, NULL /*const char *filename*/) != 0) {
-			qDebug() << __func__ << "Error loading magic data";
+			qDebug() << __PRETTY_FUNCTION__ << "Error loading magic data";
 		} else {
 			const char *s = magic_file(cookie, m_path.toAscii().constData());
 			if (s == NULL) {
-				qDebug() << "FILE:" << qPrintable(m_path) << magic_error(cookie);
+				qDebug() << __PRETTY_FUNCTION__
+					 << "FILE:" << qPrintable(m_path)
+					 << magic_error(cookie);
 			} else {
 				m_mimeType = QString(s);
 			}
@@ -185,6 +187,8 @@ QByteArray FileData::imageMd5()
 void FileData::print()
 {
 	md5();
-	qDebug() << "FILE:" << qPrintable(m_path) << m_mimeType << m_md5.toHex();
+	qDebug() << __PRETTY_FUNCTION__
+		 << "FILE:" << qPrintable(m_path)
+		 << m_mimeType
+		 << m_md5.toHex();
 }
-

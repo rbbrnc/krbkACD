@@ -152,7 +152,7 @@ void ColorHistogram::calcNormalized(QImage *img)
 //		sum += m_normalized_histogram[i];
 	}
 	// sum must be == 1
-//	qDebug() << __func__ << "sum:" << sum;
+//	qDebug() << __PRETTY_FUNCTION__ << "sum:" << sum;
 }
 
 void ColorHistogram::calc(QImage *img)
@@ -206,7 +206,7 @@ void ColorHistogram::calc(QImage *img)
 		//qDebug() << m_histogram[i];
 		sum += m_histogram[i];
 	}
-	qDebug() << __func__ << "sum:" << sum << "=" << m_count;
+	//qDebug() << __PRETTY_FUNCTION__ << "sum:" << sum << "=" << m_count;
 }
 
 

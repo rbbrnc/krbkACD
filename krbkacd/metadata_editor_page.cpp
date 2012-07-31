@@ -50,8 +50,7 @@ MetadataEditorPage::~MetadataEditorPage()
 
 QtVariantProperty *MetadataEditorPage::testTypes(QtVariantPropertyManager *manager, struct exifData *data, bool readOnly)
 {
-	//qDebug() << data->key << "typeName:" << data->typeName <<  "typeId:" << "0x" + QString::number(data->typeId, 16);
-	qDebug() << data->key << "tag:" << "0x" + QString::number(data->tag, 16);
+	//qDebug() << data->key << "tag:" << "0x" + QString::number(data->tag, 16);
 
 	QtVariantProperty *item;
 
@@ -206,7 +205,7 @@ void MetadataEditorPage::on_updateButton_clicked()
 // SLOT
 void MetadataEditorPage::propertyValueChanged(QtProperty *prop, const QVariant &val)
 {
-	//qDebug() << __func__ << prop->propertyName() << "val:" << val;
+	//qDebug() << __PRETTY_FUNCTION__ << prop->propertyName() << "val:" << val;
 
 	if ("Comment" == prop->propertyName()) {
 		qDebug() << "MetadataEditorPage::" << __func__
@@ -217,12 +216,12 @@ void MetadataEditorPage::propertyValueChanged(QtProperty *prop, const QVariant &
 void MetadataEditorPage::slotCurrentItemChanged(QtBrowserItem *currentItem)
 {
 	Q_UNUSED(currentItem)
-	qDebug() << __func__;
+	//qDebug() << __PRETTY_FUNCTION__;
 }
 
 void MetadataEditorPage::slotEditingFinished(QtProperty *prop, const QVariant &val)
 {
-	qDebug() << "MetadataEditorPage::" << __func__
+	qDebug() << __PRETTY_FUNCTION__
 		 << "Prop:" << prop->propertyName()
 		 << "val:" << val;
 

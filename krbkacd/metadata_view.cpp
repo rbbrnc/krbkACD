@@ -1,6 +1,6 @@
 #include "metadata_view.h"
 
-#include <QDebug>
+//#include <QDebug>
 
 MetadataView::MetadataView(QWidget *parent) :
 	QTreeView(parent)

@@ -1,7 +1,7 @@
 #include "browser_page.h"
 #include "ui_browser_page.h"
 
-#include <QDebug>
+//#include <QDebug>
 
 BrowserPage::BrowserPage(QWidget *parent) :
 	QWidget(parent),
@@ -183,28 +183,4 @@ void BrowserPage::makeNewDirectory()
 
 void BrowserPage::debugAction()
 {
-#if 0
-//	qDebug() << __func__;
-//	ui->metadataBrowser->debug();
-
-	if (ui->firstBrowser->hasFocus()) {
-		QStringList sl = ui->firstBrowser->selectedDirs();
-		if (sl.isEmpty()) {
-			qDebug() << __func__ << "No dir selected!";
-			return;
-		}
-
-		for (int i = 0; i < sl.size(); i++) {
-			m_cDirSelection.insert(sl.at(i));
-		}
-		emit dirSelectionChanged(&m_cDirSelection);
-
-	//	qDebug() << __func__<< sl.at(i);
-
-
-		//qDebug() << __func__ << ui->firstBrowser->getPath();
-	} else if (ui->secondBrowser->hasFocus()) {
-		//qDebug() << __func__ << ui->secondBrowser->getPath();
-	}
-#endif
 }

@@ -30,7 +30,7 @@ QExiv2& QExiv2::operator=(const QExiv2& other)
 bool QExiv2::loadFromData(const QByteArray& data)
 {
 	if (data.isEmpty()) {
-		qDebug() << "QExiv2::" <<__func__ << "Empty data";
+		qDebug() << __PRETTY_FUNCTION__ << "Empty data";
 		return false;
 	}
 
@@ -58,7 +58,7 @@ bool QExiv2::loadFromData(const QByteArray& data)
 bool QExiv2::load(const QString& filePath)
 {
 	if (filePath.isEmpty()) {
-		qDebug() << __func__ << "Empty filePath";
+		qDebug() << __PRETTY_FUNCTION__ << "Empty filePath";
 		return false;
 	}
 
@@ -103,12 +103,12 @@ bool QExiv2::save()
 				d->image->setComment(d->imageComment);
 				update = true;
 			} else {
-				qDebug() << __func__ << "Same Image Comment";
+				qDebug() << __PRETTY_FUNCTION__ << "Same Image Comment";
 			}
 		}
 
 		if (update) {
-			qDebug() << __func__ << "write Metadata";
+			qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
 			d->image->writeMetadata();
 		}
 
@@ -291,7 +291,6 @@ QList<PTag> QExiv2::xmpPTags() const
 		i++;
 	}
 
-	qDebug() << "Widget::" <<__func__ << "3";
 	return tl;
 }
 

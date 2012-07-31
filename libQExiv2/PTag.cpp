@@ -48,7 +48,7 @@ void PTag::setRegion(const QString &region)
 
 	QStringList sl = region.split(",");
 	if (sl.isEmpty() || sl.size() != 4) {
-		qDebug() << "PTag::" << __func__ << "wrong size";
+		qDebug() << __PRETTY_FUNCTION__ << "wrong size";
 		return;
 	}
 	d->m_region = QRectF(sl.at(0).toDouble(),
@@ -56,11 +56,13 @@ void PTag::setRegion(const QString &region)
 			     sl.at(2).toDouble(),
 			     sl.at(3).toDouble());
 
-//	qDebug() << "PTag::" << __func__ << "m_region:" << d->m_region;
+//	qDebug() << __PRETTY_FUNCTION__ << "m_region:" << d->m_region;
 }
 
 
 void PTag::debug() const
 {
-	qDebug() << "PTag::" << "m_region:" << d->m_region << "m_text:" << d->m_text;
+	qDebug() << __PRETTY_FUNCTION__
+		 << "m_region:" << d->m_region
+		 << "m_text:" << d->m_text;
 }

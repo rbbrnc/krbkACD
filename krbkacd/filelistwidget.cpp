@@ -4,7 +4,7 @@
 #include <QUrl>
 #include <QProcess>
 
-#include <QDebug>
+//#include <QDebug>
 
 #include "filelistwidget.h"
 

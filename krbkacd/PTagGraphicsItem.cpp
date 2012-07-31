@@ -1,4 +1,3 @@
-#include <QDebug>
 #include <QBrush>
 #include <QLinearGradient>
 #include <QApplication>
@@ -33,10 +32,12 @@ void PTagGraphicsItem::updateRect()
 
 	m_rect = rf.toRect();
 
-	qDebug() << "PTagGraphicsItem::" << __func__
+#if 0
+	qDebug() << __PRETTY_FUNCTION__
 		 << "m_ptag:" << m_ptag.region()
 		 << "rf:" << rf
 		 << "m_rect:" << m_rect;
+#endif
 
 	QFontMetrics fm(QApplication::font());
 	int fmW = fm.width(m_ptag.text());

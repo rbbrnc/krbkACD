@@ -49,7 +49,7 @@ void WorkPage::on_insertDir_clicked()
 	// Do not add duplicate item
 	if (lst.isEmpty()) {
 		ui->dirList->addItem(m_currentDirSelection);
-		//qDebug() << __func__ << "Insert item:" << m_currentDirSelection;
+		//qDebug() << __PRETTY_FUNCTION__ << "Insert item:" << m_currentDirSelection;
 	}
 }
 
@@ -58,7 +58,7 @@ void WorkPage::on_removeDir_clicked()
 {
 	int row = ui->dirList->currentRow();
 	delete ui->dirList->takeItem(row);
-	//qDebug() << __func__ << "Remove item on row:" << row;
+	//qDebug() << __PRETTY_FUNCTION__ << "Remove item on row:" << row;
 }
 
 // Clear the selected directory list
@@ -73,11 +73,11 @@ void WorkPage::on_clearDir_clicked()
 
 void WorkPage::debugDupMap() const
 {
+	qDebug() << "-------" << __PRETTY_FUNCTION__ << "-----------";
 	if (m_dupMap.isEmpty()) {
 		qDebug() << "No file found!";
 	} else {
 		// (Debug) Map
-		qDebug() << "-------RESULTS-----------";
 		QMap<QString, QStringList>::const_iterator i = m_dupMap.constBegin();
 		 while (i != m_dupMap.constEnd()) {
 			if (i.value().size() > 1) {
@@ -85,37 +85,37 @@ void WorkPage::debugDupMap() const
 			}
 			++i;
 		 }
-		qDebug() << "-------------------------";
 	}
+	qDebug() << "-------------------------";
 }
 
 void WorkPage::debugHistogramMap() const
 {
+	qDebug() << "-------" << __PRETTY_FUNCTION__ << "-----------";
 	if (m_histogramMap.isEmpty()) {
 		qDebug() << "No histogram found!";
 	} else {
 		// (Debug) Map
-		qDebug() << "-------Histogram Map-----------";
 		QMap<QString, ColorHistogram>::const_iterator i = m_histogramMap.constBegin();
 		 while (i != m_histogramMap.constEnd()) {
 			qDebug() << i.key(); // << ": " << i.value();
 			++i;
 		 }
-		qDebug() << "-------------------------";
 	}
+	qDebug() << "-------------------------";
 }
 
 void WorkPage::debugFileList() const
 {
+	qDebug() << "-------" << __PRETTY_FUNCTION__ << "-----------";
 	if (m_fileList.isEmpty()) {
 		qDebug() << "No file found!";
 	} else {
-		qDebug() << "-------File List-----------";
 		for (int i = 0; i < m_fileList.size(); i++) {
 			qDebug() << m_fileList.at(i).filePath();
 		 }
-		qDebug() << "-------------------------";
 	}
+	qDebug() << "-------------------------";
 }
 
 void WorkPage::on_workButton_clicked()
@@ -128,10 +128,10 @@ void WorkPage::on_workButton_clicked()
 		QString path = ui->dirList->item(i)->text();
 		fillFileList(path, ui->recursiveCheck->isChecked());
 	}
-	debugFileList();
+	//debugFileList();
 
 	if (m_fileList.isEmpty()) {
-		qDebug() << __func__ << "No file found!";
+		QMessageBox::information(this, tr("Find Duplicate"), "No Image in Directory List");
 		return;
 	}
 
@@ -161,7 +161,7 @@ void WorkPage::on_workButton_clicked()
 		compareByteToByte();
 		break;
 	default:
-		qDebug() << "Something wrong!";
+		qDebug() << __PRETTY_FUNCTION__ << "Something wrong!";
 		break;
 	}
 }
@@ -235,7 +235,6 @@ void WorkPage::compareFileMd5()
 // Compare Method: "Color Histogtram"
 void WorkPage::compareHistogram()
 {
-	qDebug() << "WorkPage::CompareHistogram";
 	for (int i = 0; i < m_fileList.size(); i++) {
 		FileData fd = m_fileList.at(i);
 
@@ -255,7 +254,7 @@ void WorkPage::compareHistogram()
 	ColorHistogram h1;
 	ColorHistogram h2;
 
-	qDebug() << "Treshold:" << ui->tresholdHistogramDiffSlider->value();
+	qDebug() << __PRETTY_FUNCTION__ << "Treshold:" << ui->tresholdHistogramDiffSlider->value();
 	QMap<QString, ColorHistogram>::const_iterator i = m_histogramMap.constBegin();
 	QMap<QString, ColorHistogram>::const_iterator j = m_histogramMap.constBegin();
 	while (i != m_histogramMap.constEnd()) {
@@ -278,13 +277,13 @@ void WorkPage::compareHistogram()
 // Compare Method: "Metadata Only, skip Image Data
 void WorkPage::compareMetadata()
 {
-	qDebug() << "WorkPage::CompareMetadata";
+	qDebug() << __PRETTY_FUNCTION__;
 }
 
 // Compare Method: "Byte-to-Byte"
 void WorkPage::compareByteToByte()
 {
-	qDebug() << "WorkPage::CompareByteToByte";
+	qDebug() << __PRETTY_FUNCTION__;
 }
 
 // Compare Method: "Image Only skip Metadata"
@@ -295,7 +294,7 @@ void WorkPage::compareImage()
 		QString md5;
 		md5 = fd.imageMd5().toHex();
 
-		qDebug() << "WorkPage::CompareImage:" << fd.filePath() << "MD5" << md5;
+//		qDebug() << __PRETTY_FUNCTION__ << fd.filePath() << "MD5" << md5;
 
 		QStringList sl;
 
