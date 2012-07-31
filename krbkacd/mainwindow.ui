@@ -34,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>797</width>
-     <height>21</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTest">
@@ -45,9 +45,9 @@
     <addaction name="actionMoveFile"/>
     <addaction name="actionDeleteFile"/>
     <addaction name="actionRenameFile"/>
+    <addaction name="actionMkDir"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
-    <addaction name="actionMkDir"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
