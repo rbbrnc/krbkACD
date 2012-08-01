@@ -19,6 +19,8 @@ class WorkPage : public QWidget
 		explicit WorkPage(QWidget *parent = 0);
 		~WorkPage();
 
+		QMap<QString, QStringList> dupMap() const;
+
 	private:
 		void fillFileList(const QString path, bool recursive);
 
@@ -32,6 +34,9 @@ class WorkPage : public QWidget
 		void compareByteToByte();
 		void compareImage();
 		void compareHistogram();
+
+		void addDuplicate(const QString key, const QString value);
+		void removeNonDuplicate();
 
 	signals:
 		void changePage(int);

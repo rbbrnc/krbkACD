@@ -25,8 +25,10 @@ SOURCES += main.cpp \
 	metadata_editor_page.cpp \
 	duplicate_page.cpp \
 	histogram.cpp \
+	thumb_view.cpp \
 
 HEADERS += mainwindow.h \
+	pages.h \
 	browser_page.h \
 	filelistwidget.h \
 	metadata_view.h \
@@ -36,6 +38,7 @@ HEADERS += mainwindow.h \
 	photo_widget.h \
 	metadata_editor_page.h \
 	histogram.h \
+	thumb_view.h \
 	duplicate_page.h
 
 FORMS += mainwindow.ui \

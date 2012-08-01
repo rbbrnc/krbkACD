@@ -1,6 +1,8 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "pages.h"
+
 //#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -25,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionShowSecondBrowser, SIGNAL(toggled(bool)), m_browserPage, SLOT(showSecondBrowser(bool)));
 	connect(ui->actionShowHidden,        SIGNAL(toggled(bool)), m_browserPage, SLOT(showHiddenFiles(bool)));
 	connect(ui->actionShowIcons,         SIGNAL(toggled(bool)), m_browserPage, SLOT(showIcons(bool)));
+
 	connect(ui->actionCopyFile,          SIGNAL(triggered()),   m_browserPage, SLOT(copyFile()));
 	connect(ui->actionMoveFile,          SIGNAL(triggered()),   m_browserPage, SLOT(moveFile()));
 	connect(ui->actionDeleteFile,        SIGNAL(triggered()),   m_browserPage, SLOT(deleteFile()));
@@ -52,9 +55,19 @@ MainWindow::~MainWindow()
 // SLOT for change UI pages
 void MainWindow::changePageSlot(int page)
 {
-	if ((page > 0) && (page < ui->stackedWidget->count())) {
-		ui->stackedWidget->setCurrentIndex(page);
+	if ((page < 0) || (page >= ui->stackedWidget->count())) {
+		return;
 	}
+
+	switch (page) {
+	case DUPLICATE_PAGE:
+		m_duplicatePage->setMap(m_workPage->dupMap());
+		break;
+	default:
+		break;
+	}
+
+	ui->stackedWidget->setCurrentIndex(page);
 }
 
 void MainWindow::fullScreen()

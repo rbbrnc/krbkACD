@@ -2,6 +2,7 @@
 #define DUPLICATE_PAGE_H
 
 #include <QWidget>
+#include <QMap>
 
 namespace Ui {
 	class DuplicatePage;
@@ -15,6 +16,8 @@ class DuplicatePage : public QWidget
 		explicit DuplicatePage(QWidget *parent = 0);
 		~DuplicatePage();
 
+		void setMap(const QMap<QString, QStringList> &map);
+
 	signals:
 		void changePage(int);
 
@@ -25,6 +28,10 @@ class DuplicatePage : public QWidget
 
 	private:
 		Ui::DuplicatePage *ui;
+
+		QMap<QString, QStringList> m_dupMap;
+		QStringList m_keyList;
+		int m_current;
 };
 
 #endif // DUPLICATE_PAGE_H
