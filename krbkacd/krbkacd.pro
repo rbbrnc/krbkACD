@@ -15,15 +15,16 @@ RCC_DIR = resources
 
 SOURCES += main.cpp \
         mainwindow.cpp \
-	browser_page.cpp \
 	filelistwidget.cpp \
 	metadata_view.cpp \
-	work_page.cpp \
 	file_data.cpp \
 	PTagGraphicsItem.cpp \
 	photo_widget.cpp \
+	browser_page.cpp \
+	work_page.cpp \
 	metadata_editor_page.cpp \
-	histogram.cpp
+	duplicate_page.cpp \
+	histogram.cpp \
 
 HEADERS += mainwindow.h \
 	browser_page.h \
@@ -34,12 +35,14 @@ HEADERS += mainwindow.h \
 	PTagGraphicsItem.h \
 	photo_widget.h \
 	metadata_editor_page.h \
-	histogram.h
+	histogram.h \
+	duplicate_page.h
 
 FORMS += mainwindow.ui \
 	browser_page.ui \
 	work_page.ui \
 	photo_widget.ui \
-	metadata_editor_page.ui
+	metadata_editor_page.ui \
+	duplicate_page.ui
 
 LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a

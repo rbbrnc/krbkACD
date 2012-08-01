@@ -33,10 +33,14 @@ class WorkPage : public QWidget
 		void compareImage();
 		void compareHistogram();
 
+	signals:
+		void changePage(int);
+
 	private slots:
 		void on_insertDir_clicked();
 		void on_removeDir_clicked();
 		void on_workButton_clicked();
+		void on_resultsButton_clicked();
 
 		void dirSelectionChanged(const QModelIndex &index);
 

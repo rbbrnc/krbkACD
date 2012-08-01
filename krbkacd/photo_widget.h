@@ -24,6 +24,9 @@ class PhotoWidget : public QWidget
 
 		void setFileData(FileData fdata);
 
+	signals:
+		void changePage(int);
+
 	public slots:
 		void zoom11();
 		void zoomToFit();

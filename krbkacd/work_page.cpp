@@ -313,3 +313,9 @@ void WorkPage::on_tresholdHistogramDiffSlider_valueChanged(int value)
 {
 	ui->tresholdValue->setText(QString::number(value));
 }
+
+void WorkPage::on_resultsButton_clicked()
+{
+	emit changePage(4);
+}
+

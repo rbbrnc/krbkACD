@@ -25,6 +25,7 @@ class BrowserPage : public QWidget
 
 	signals:
 		void dirSelectionChanged(const QSet<QString> * const);
+		void changePage(int);
 
 	public slots:
 		void showHiddenFiles(bool show);
