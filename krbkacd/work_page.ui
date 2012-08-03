@@ -130,7 +130,11 @@
               </widget>
              </item>
              <item>
-              <widget class="QLabel" name="tresholdValue"/>
+              <widget class="QLabel" name="tresholdValue">
+               <property name="text">
+                <string>-</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -188,6 +192,26 @@
            <widget class="QPushButton" name="workButton">
             <property name="text">
              <string>Compare!</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="resultsButton">
+            <property name="text">
+             <string>Show Results</string>
             </property>
            </widget>
           </item>

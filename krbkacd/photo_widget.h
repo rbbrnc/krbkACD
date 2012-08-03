@@ -24,16 +24,21 @@ class PhotoWidget : public QWidget
 
 		void setFileData(FileData fdata);
 
+	signals:
+		void changePage(int);
+
 	public slots:
 		void zoom11();
 		void zoomToFit();
 		void rotateCW();
 		void rotateCCW();
 		void resetTransformations();
+		void renameFile();
+		void deleteFile();
 
         protected:
 		void wheelEvent(QWheelEvent *event);
-
+		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 	private:
 		Ui::PhotoWidget *ui;
 

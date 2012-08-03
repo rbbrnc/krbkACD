@@ -9,18 +9,11 @@
 
 PTagGraphicsItem::PTagGraphicsItem(const PTag &tag, QSize imgSize) :
 	m_ptag(tag),
-	m_imgSize(imgSize)
+	m_imgSize(imgSize),
+	m_visible(false)
 {
-//	this->hide();
-#if 0
-        m_borderColor = QColor(Qt::black);
-	m_pen.setWidth(1);
-	m_pen.setColor(m_borderColor);
-#endif
-
 	updateRect();
-
-	this->setAcceptHoverEvents(true);
+	setAcceptHoverEvents(true);
 }
 
 void PTagGraphicsItem::updateRect()
@@ -52,28 +45,26 @@ void PTagGraphicsItem::updateRect()
 	m_textRect = QRect(0, wr.height() - fmH, fmW, fmH);
 
 #if 10
-	_width  = wr.width();
-	_height = wr.height();
+	m_width  = wr.width();
+	m_height = wr.height();
 #else
-	_width  = rf.width();
-	_height = rf.height();
+	m_width  = rf.width();
+	m_height = rf.height();
 #endif
 	// Set the position of the Tag Box on the scene.
-	this->setPos(wr.x(), wr.y());
+	setPos(wr.x(), wr.y());
 }
 
 void PTagGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
-	this->hide();
-//	m_borderColor = Qt::black;
-//	this->update(0, 0, _width, _height);
+	m_visible = false;
+	update(0, 0, m_width, m_height);
 }
 
 void PTagGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
-	m_borderColor = Qt::red;
-//	this->update(0, 0, _width, _height);
-	this->show();
+	m_visible = true;
+	update(0, 0, m_width, m_height);
 }
 
 // boundingRect must be re-implemented from the base class to provide the scene with
@@ -81,25 +72,45 @@ void PTagGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 // Provide the diminsions of the box to the QGraphicsView
 QRectF PTagGraphicsItem::boundingRect() const
 {
-	return QRectF(0, 0, _width, _height);
+	return QRectF(0, 0, m_width, m_height);
 }
 
 void PTagGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
 	QRect trr(0, 0, m_rect.width(), m_rect.height());
 
-//	qDebug() << __func__ << trr;
+	QColor borderColor;
+	QColor textColor;
+	QColor textBackgroundColor;
 
-	m_pen.setColor(m_borderColor);
+	if (m_visible) {
+		borderColor = Qt::red;
+		textColor   = Qt::white;
+		textBackgroundColor = Qt::black;
+	} else {
+		borderColor = Qt::transparent;
+		textColor   = Qt::transparent;
+		textBackgroundColor = Qt::transparent;
+	}
+
+	m_pen.setColor(borderColor);
 	m_pen.setStyle(Qt::SolidLine);
 
 	painter->setPen(m_pen);
-
-//	painter->setPen(QPen(Qt::red, 1, Qt::SolidLine));
 	painter->drawRect(trr);
 
-	painter->setPen(QPen(Qt::white, 1, Qt::SolidLine));
-	painter->setBackground(QBrush(Qt::black, Qt::SolidPattern));
+	painter->setPen(QPen(textColor, 1, Qt::SolidLine));
+	painter->setBackground(QBrush(textBackgroundColor, Qt::SolidPattern));
 	painter->setBackgroundMode(Qt::OpaqueMode);
 	painter->drawText(m_textRect, Qt::AlignCenter, m_ptag.text(), 0);
+}
+
+void PTagGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+	QMenu *menu = new QMenu;
+	menu->addAction("Action 1");
+	menu->addAction("Action 2");
+	menu->popup(event->screenPos());
+//	QObject::connect(menu, SIGNAL(triggered(QAction *)),
+//			 this, SLOT(triggered(QAction *)));
 }

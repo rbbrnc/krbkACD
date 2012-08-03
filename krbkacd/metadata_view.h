@@ -39,7 +39,7 @@ class MetadataView : public QTreeView
 
 		void setMetadata(QStandardItem *rootItem, struct exifData *data);
 
-                QExiv2      m_metadata;
+                QExiv2 m_metadata;
 };
 
 #endif

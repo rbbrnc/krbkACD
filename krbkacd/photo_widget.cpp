@@ -24,7 +24,7 @@ void PhotoWidget::setFileData(FileData fdata)
 	pixScene->clear();
 	resetTransformations();
 
-	m_pic = fdata.fullPixmap();
+	m_pic     = fdata.fullPixmap();
 	m_pixItem = pixScene->addPixmap(m_pic);
 
 	ui->pixView->centerOn(m_pixItem);
@@ -33,7 +33,7 @@ void PhotoWidget::setFileData(FileData fdata)
 	int h = m_pic.height();
 
 	m_metadata = fdata.metadata();
-	m_tagList = m_metadata.xmpPTags();
+	m_tagList  = m_metadata.xmpPTags();
 
 	for (int i = 0; i < m_tagList.size(); i++) {
 		m_tagItem = new PTagGraphicsItem(m_tagList.at(i), QSize(w, h));
@@ -112,3 +112,34 @@ void PhotoWidget::resetTransformations()
 {
 	ui->pixView->setTransform(QTransform(), false);
 }
+
+#if 10
+void PhotoWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+	qDebug() << __PRETTY_FUNCTION__;
+        QMenu *menu = new QMenu;
+        QAction *action;
+	action = menu->addAction("Rotate CW");
+	connect(menu, SIGNAL(triggered()), this, SLOT(rotateCW()));
+
+        action = menu->addAction("Rotate CCW");
+	connect(menu, SIGNAL(triggered()), this, SLOT(rotateCCW()));
+
+        menu->popup(event->screenPos());
+
+	ui->pixView->setTransform(QTransform(), false);
+//      QObject::connect(menu, SIGNAL(triggered(QAction *)),
+//       this, SLOT(triggered(QAction *)));
+}
+#endif
+
+void PhotoWidget::deleteFile()
+{
+	qDebug() << __PRETTY_FUNCTION__;
+}
+
+void PhotoWidget::renameFile()
+{
+	qDebug() << __PRETTY_FUNCTION__;
+}
+

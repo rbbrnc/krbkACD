@@ -123,7 +123,6 @@ void MetadataView::readMetadata()
 			struct exifData data = ed.at(i);
 			setMetadata(iptcItem, &data);
 		}
-
 	}
 
 	if (m_metadata.hasXmp()) {
@@ -141,5 +140,4 @@ void MetadataView::readMetadata()
 	        item->setEditable(false);
 		commentItem->appendRow(item);
 	}
-
 }

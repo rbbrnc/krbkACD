@@ -24,6 +24,9 @@ class MetadataEditorPage : public QWidget
 
 		void setFileData(FileData fdata);
 
+	signals:
+		void changePage(int);
+
 	private slots:
 	        void on_cancelButton_clicked();
 		void on_updateButton_clicked();

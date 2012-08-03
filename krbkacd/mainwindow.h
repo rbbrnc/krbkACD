@@ -4,11 +4,12 @@
 #include <QtGui>
 #include <QMainWindow>
 
+// UI Pages
 #include "browser_page.h"
 #include "work_page.h"
-
 #include "photo_widget.h"
 #include "metadata_editor_page.h"
+#include "duplicate_page.h"
 
 namespace Ui {
     class MainWindow;
@@ -27,18 +28,25 @@ class MainWindow : public QMainWindow
 		void showPreview(bool);
 		void showSecondBrowser(bool);
 
+	public slots:
+		void changePageSlot(int);
+
 	private slots:
 		void fullScreen();
 		void showWorkPage();
 		void showMetadataEditorPage();
 
+		void renameFile();
+		void deleteFile();
+
 	private:
 		Ui::MainWindow *ui;
 
-		BrowserPage *browserPage;
-		WorkPage    *workPage;
+		BrowserPage *m_browserPage;
+		WorkPage    *m_workPage;
 		PhotoWidget *m_photoPage;
 		MetadataEditorPage *m_metadataEditorPage;
+		DuplicatePage *m_duplicatePage;
 };
 
 #endif // MAINWINDOW_H

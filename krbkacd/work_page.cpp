@@ -4,6 +4,8 @@
 #include <QMessageBox>
 #include <QDebug>
 
+#include "pages.h"
+
 // TODO: Button for stopping the scan
 //
 WorkPage::WorkPage(QWidget *parent) :
@@ -80,9 +82,7 @@ void WorkPage::debugDupMap() const
 		// (Debug) Map
 		QMap<QString, QStringList>::const_iterator i = m_dupMap.constBegin();
 		 while (i != m_dupMap.constEnd()) {
-			if (i.value().size() > 1) {
-				qDebug() << i.key() << ": " << i.value();
-			}
+			qDebug() << i.key() << ": " << i.value();
 			++i;
 		 }
 	}
@@ -164,6 +164,7 @@ void WorkPage::on_workButton_clicked()
 		qDebug() << __PRETTY_FUNCTION__ << "Something wrong!";
 		break;
 	}
+	debugDupMap();
 }
 
 void WorkPage::fillFileList(const QString path, bool recursive)
@@ -218,18 +219,11 @@ void WorkPage::compareFileMd5()
 		FileData fd = m_fileList.at(i);
 		QString md5;
 		md5 = fd.md5().toHex();
-
-		QStringList sl;
-
-		if (m_dupMap.contains(md5)) {
-			// Duplicate Found get file list for this <key>
-			sl = m_dupMap[md5];
-		}
-
-		sl << fd.filePath();	// Update file list
-		m_dupMap[md5] = sl;	// Add to map
+		addDuplicate(md5, fd.filePath());
 	}
-	debugDupMap();
+
+	// Remove entries without duplicates
+	removeNonDuplicate();
 }
 
 // Compare Method: "Color Histogtram"
@@ -237,40 +231,45 @@ void WorkPage::compareHistogram()
 {
 	for (int i = 0; i < m_fileList.size(); i++) {
 		FileData fd = m_fileList.at(i);
-
 		QImage img = fd.image();
-
 		if (img.isNull()) {
 			continue;
 		}
 
 		ColorHistogram h;
 		h.calcNormalized(&img);
-
-		QString fp = fd.filePath();
-
-		m_histogramMap[fp] = h;		// Add to map
+		m_histogramMap[fd.filePath()] = h; // Add to map
 	}
 	ColorHistogram h1;
 	ColorHistogram h2;
 
-	qDebug() << __PRETTY_FUNCTION__ << "Treshold:" << ui->tresholdHistogramDiffSlider->value();
+	//qDebug() << __PRETTY_FUNCTION__ << "Treshold:" << ui->tresholdHistogramDiffSlider->value();
 	QMap<QString, ColorHistogram>::const_iterator i = m_histogramMap.constBegin();
 	QMap<QString, ColorHistogram>::const_iterator j = m_histogramMap.constBegin();
 	while (i != m_histogramMap.constEnd()) {
 		j = i + 1;
 		h1 = i.value();
+
+		// Add file to Map
+		addDuplicate(i.key(), i.key());
 		while (j != m_histogramMap.constEnd()) {
 			h2 = j.value();
 			double lhn = h1.compareChiSquareNormalized(h2);
-			if (ui->tresholdHistogramDiffSlider->value() < ((1.0 - lhn)*100.0))
+			if (ui->tresholdHistogramDiffSlider->value() < ((1.0 - lhn)*100.0)) {
 				qDebug() << i.key()
 					 << j.key()
 					 << (1.0 - lhn)*100.0 << "%";
+
+				// Add duplicate to map value
+				addDuplicate(i.key(), j.key());
+			}
 			++j;
 		}
 		i++;
 	}
+	// Remove entries without duplicates
+	removeNonDuplicate();
+
 //	debugHistogramMap();
 }
 
@@ -293,23 +292,52 @@ void WorkPage::compareImage()
 		FileData fd = m_fileList.at(i);
 		QString md5;
 		md5 = fd.imageMd5().toHex();
-
-//		qDebug() << __PRETTY_FUNCTION__ << fd.filePath() << "MD5" << md5;
-
-		QStringList sl;
-
-		if (m_dupMap.contains(md5)) {
-			// Duplicate Found get file list for this <key>
-			sl = m_dupMap[md5];
-		}
-
-		sl << fd.filePath();	// Update file list
-		m_dupMap[md5] = sl;	// Add to map
+		addDuplicate(md5, fd.filePath());
 	}
-	debugDupMap();
+
+	// Remove entries without duplicates
+	removeNonDuplicate();
 }
 
 void WorkPage::on_tresholdHistogramDiffSlider_valueChanged(int value)
 {
 	ui->tresholdValue->setText(QString::number(value));
 }
+
+void WorkPage::on_resultsButton_clicked()
+{
+	emit changePage(DUPLICATE_PAGE);
+}
+
+QMap<QString, QStringList> WorkPage::dupMap() const
+{
+	return m_dupMap;
+}
+
+// Adds an entry to the map of duplicates.
+void WorkPage::addDuplicate(const QString key, const QString value)
+{
+	QStringList sl;
+
+	if (m_dupMap.contains(key)) {
+		// <key> already in the map, get <value> list for updating.
+		sl = m_dupMap[key];
+	}
+
+	sl << value;		// Update <value> file list
+	m_dupMap[key] = sl;	// Add to map
+}
+
+// Remove entries without duplicates
+void WorkPage::removeNonDuplicate()
+{
+	QMap<QString, QStringList>::const_iterator i = m_dupMap.constBegin();
+	 while (i != m_dupMap.constEnd()) {
+		if (i.value().size() < 2) {
+			//qDebug() << "Removing key:" << i.key() << ":" << i.value();
+			m_dupMap.remove(i.key());
+		}
+		++i;
+	 }
+}
+

@@ -24,6 +24,7 @@
       <widget class="WorkPage" name="workPage"/>
       <widget class="PhotoWidget" name="photoPage"/>
       <widget class="MetadataEditorPage" name="metadataEditorPage"/>
+      <widget class="DuplicatePage" name="duplicatePage"/>
      </widget>
     </item>
    </layout>
@@ -335,6 +336,12 @@
    <class>MetadataEditorPage</class>
    <extends>QWidget</extends>
    <header location="global">metadata_editor_page.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DuplicatePage</class>
+   <extends>QWidget</extends>
+   <header>duplicate_page.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

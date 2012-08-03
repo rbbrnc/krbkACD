@@ -19,6 +19,8 @@ class WorkPage : public QWidget
 		explicit WorkPage(QWidget *parent = 0);
 		~WorkPage();
 
+		QMap<QString, QStringList> dupMap() const;
+
 	private:
 		void fillFileList(const QString path, bool recursive);
 
@@ -33,10 +35,17 @@ class WorkPage : public QWidget
 		void compareImage();
 		void compareHistogram();
 
+		void addDuplicate(const QString key, const QString value);
+		void removeNonDuplicate();
+
+	signals:
+		void changePage(int);
+
 	private slots:
 		void on_insertDir_clicked();
 		void on_removeDir_clicked();
 		void on_workButton_clicked();
+		void on_resultsButton_clicked();
 
 		void dirSelectionChanged(const QModelIndex &index);
 
