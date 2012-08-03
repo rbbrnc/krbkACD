@@ -11,6 +11,7 @@
 #include <QPen>
 #include <QPointF>
 
+#include <QMenu>
 #include "PTag.h"
 
 class PTagGraphicsItem : public QGraphicsItem
@@ -23,6 +24,8 @@ class PTagGraphicsItem : public QGraphicsItem
 		virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 		virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 		virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+
+		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 
 	private:
 		void updateRect();
@@ -39,13 +42,12 @@ class PTagGraphicsItem : public QGraphicsItem
 
 		// Rect for description Tag
 		QRect  m_textRect;
+		QPen   m_pen;
 
-///
-		QColor  m_borderColor;
-		QPen    m_pen;
+		qreal   m_width;
+		qreal   m_height;
 
-		qreal   _width;
-		qreal   _height;
+		bool m_visible;
 };
 
 #endif // PTAG_GRAPHICS_ITEM_H
