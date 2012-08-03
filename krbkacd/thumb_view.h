@@ -18,17 +18,10 @@ class ThumbView : public QGraphicsView
 		virtual ~ThumbView();
 
 	public slots:
-		/* This slot loads all the image path from the passed list of files.
-		 * Loaded image path is sent to QFutureWatcher for loading all the images in concurrent.
-		 * if diretory path does not contain any images then this function does nothing
-		 */
 		void loadImages(QStringList fileList);
 		void setZoom(qreal zoomFactor);
 
 	private slots:
-		/* This slot is called internally when QFutureWatcher is finished image processing,
-		 * scalling and result is obtained. passed integer parameter represent location of
-		 * the result in QFutureWatcher object */
 		void showResult(int n);
 
 	protected:
@@ -53,5 +46,4 @@ class ThumbView : public QGraphicsView
 
 		qreal m_ZoomFactor;
 };
-
 #endif

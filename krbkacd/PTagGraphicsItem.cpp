@@ -105,7 +105,6 @@ void PTagGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 	painter->drawText(m_textRect, Qt::AlignCenter, m_ptag.text(), 0);
 }
 
-
 void PTagGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
 	QMenu *menu = new QMenu;

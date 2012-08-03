@@ -132,3 +132,14 @@ void PhotoWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 //       this, SLOT(triggered(QAction *)));
 }
 #endif
+
+void PhotoWidget::deleteFile()
+{
+	qDebug() << __PRETTY_FUNCTION__;
+}
+
+void PhotoWidget::renameFile()
+{
+	qDebug() << __PRETTY_FUNCTION__;
+}
+

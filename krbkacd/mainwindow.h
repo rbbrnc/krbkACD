@@ -36,6 +36,9 @@ class MainWindow : public QMainWindow
 		void showWorkPage();
 		void showMetadataEditorPage();
 
+		void renameFile();
+		void deleteFile();
+
 	private:
 		Ui::MainWindow *ui;
 

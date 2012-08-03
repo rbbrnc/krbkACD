@@ -28,11 +28,15 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionShowHidden,        SIGNAL(toggled(bool)), m_browserPage, SLOT(showHiddenFiles(bool)));
 	connect(ui->actionShowIcons,         SIGNAL(toggled(bool)), m_browserPage, SLOT(showIcons(bool)));
 
+	connect(ui->actionMkDir,             SIGNAL(triggered()),   m_browserPage, SLOT(makeNewDirectory()));
 	connect(ui->actionCopyFile,          SIGNAL(triggered()),   m_browserPage, SLOT(copyFile()));
 	connect(ui->actionMoveFile,          SIGNAL(triggered()),   m_browserPage, SLOT(moveFile()));
-	connect(ui->actionDeleteFile,        SIGNAL(triggered()),   m_browserPage, SLOT(deleteFile()));
-	connect(ui->actionRenameFile,        SIGNAL(triggered()),   m_browserPage, SLOT(renameFile()));
-	connect(ui->actionMkDir,             SIGNAL(triggered()),   m_browserPage, SLOT(makeNewDirectory()));
+
+//	connect(ui->actionDeleteFile,        SIGNAL(triggered()),   m_browserPage, SLOT(deleteFile()));
+
+	connect(ui->actionDeleteFile, SIGNAL(triggered()), this, SLOT(deleteFile()));
+	connect(ui->actionRenameFile, SIGNAL(triggered()), this, SLOT(renameFile()));
+
 	connect(ui->actionDebug,             SIGNAL(triggered()),   m_browserPage, SLOT(debugAction()));
 
 	connect(ui->actionQuit,           SIGNAL(triggered()), this, SLOT(close()));
@@ -111,5 +115,39 @@ void MainWindow::showMetadataEditorPage()
 		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
+	}
+}
+
+void MainWindow::renameFile()
+{
+	switch (ui->stackedWidget->currentIndex()) {
+	case BROWSER_PAGE:
+		m_browserPage->renameFile();
+		break;
+	case DUPLICATE_PAGE:
+		m_duplicatePage->renameFile();
+		break;
+	case PHOTO_PAGE:
+		m_photoPage->renameFile();
+		break;
+	default:
+		break;
+	}
+}
+
+void MainWindow::deleteFile()
+{
+	switch (ui->stackedWidget->currentIndex()) {
+	case BROWSER_PAGE:
+		m_browserPage->deleteFile();
+		break;
+	case DUPLICATE_PAGE:
+		m_duplicatePage->deleteFile();
+		break;
+	case PHOTO_PAGE:
+		m_photoPage->deleteFile();
+		break;
+	default:
+		break;
 	}
 }

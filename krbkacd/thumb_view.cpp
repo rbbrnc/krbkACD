@@ -77,6 +77,9 @@ void ThumbView::loadImages(QStringList fileList)
 	}
 }
 
+/* SLOT [private]
+ * This slot is called when QFutureWatcher is finished image processing,
+ */
 void ThumbView::showResult(int n)
 {
 	QGraphicsPixmapItem *imageItem = new QGraphicsPixmapItem();
@@ -86,7 +89,6 @@ void ThumbView::showResult(int n)
 	imageItem->setFlag(QGraphicsItem::ItemIsSelectable, true);
 	imageItem->setPixmap(QPixmap::fromImage(result.m_thumbnail));
 	imageItem->setToolTip(result.m_filePath);
-
 
 	if (m_row >= 4) {
 		m_row = 0;
@@ -159,7 +161,15 @@ void ThumbView::mousePressEvent(QMouseEvent *e)
 		m_mouseDeltaX = e->x();
 		m_mouseButtonPressed = true;
 	}
-
+#if 0
+ else if (e->button() == Qt::RightButton) {
+		if (QGraphicsItem *item = itemAt(e->pos())) {
+			qDebug() << "You clicked on item" << item;
+		} else {
+			qDebug() << "You didn't click on an item.";
+		}
+	}
+#endif
 	QGraphicsView::mousePressEvent(e);
 }
 

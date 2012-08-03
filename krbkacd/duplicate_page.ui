@@ -28,6 +28,9 @@
        </color>
       </brush>
      </property>
+     <property name="dragMode">
+      <enum>QGraphicsView::RubberBandDrag</enum>
+     </property>
     </widget>
    </item>
    <item>

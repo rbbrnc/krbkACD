@@ -33,6 +33,8 @@ class PhotoWidget : public QWidget
 		void rotateCW();
 		void rotateCCW();
 		void resetTransformations();
+		void renameFile();
+		void deleteFile();
 
         protected:
 		void wheelEvent(QWheelEvent *event);
