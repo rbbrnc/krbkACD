@@ -36,7 +36,7 @@ class PhotoWidget : public QWidget
 
         protected:
 		void wheelEvent(QWheelEvent *event);
-		//virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 	private:
 		Ui::PhotoWidget *ui;
 

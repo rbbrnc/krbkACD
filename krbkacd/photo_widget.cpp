@@ -113,13 +113,21 @@ void PhotoWidget::resetTransformations()
 	ui->pixView->setTransform(QTransform(), false);
 }
 
-#if 0
+#if 10
 void PhotoWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
+	qDebug() << __PRETTY_FUNCTION__;
         QMenu *menu = new QMenu;
-        menu->addAction("Show Tags");
-        menu->addAction("Hide Tags");
+        QAction *action;
+	action = menu->addAction("Rotate CW");
+	connect(menu, SIGNAL(triggered()), this, SLOT(rotateCW()));
+
+        action = menu->addAction("Rotate CCW");
+	connect(menu, SIGNAL(triggered()), this, SLOT(rotateCCW()));
+
         menu->popup(event->screenPos());
+
+	ui->pixView->setTransform(QTransform(), false);
 //      QObject::connect(menu, SIGNAL(triggered(QAction *)),
 //       this, SLOT(triggered(QAction *)));
 }
