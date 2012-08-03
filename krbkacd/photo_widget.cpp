@@ -24,7 +24,7 @@ void PhotoWidget::setFileData(FileData fdata)
 	pixScene->clear();
 	resetTransformations();
 
-	m_pic = fdata.fullPixmap();
+	m_pic     = fdata.fullPixmap();
 	m_pixItem = pixScene->addPixmap(m_pic);
 
 	ui->pixView->centerOn(m_pixItem);
@@ -33,7 +33,7 @@ void PhotoWidget::setFileData(FileData fdata)
 	int h = m_pic.height();
 
 	m_metadata = fdata.metadata();
-	m_tagList = m_metadata.xmpPTags();
+	m_tagList  = m_metadata.xmpPTags();
 
 	for (int i = 0; i < m_tagList.size(); i++) {
 		m_tagItem = new PTagGraphicsItem(m_tagList.at(i), QSize(w, h));
@@ -112,3 +112,15 @@ void PhotoWidget::resetTransformations()
 {
 	ui->pixView->setTransform(QTransform(), false);
 }
+
+#if 0
+void PhotoWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+        QMenu *menu = new QMenu;
+        menu->addAction("Show Tags");
+        menu->addAction("Hide Tags");
+        menu->popup(event->screenPos());
+//      QObject::connect(menu, SIGNAL(triggered(QAction *)),
+//       this, SLOT(triggered(QAction *)));
+}
+#endif
