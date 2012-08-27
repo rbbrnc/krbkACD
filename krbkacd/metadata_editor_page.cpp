@@ -174,17 +174,18 @@ void MetadataEditorPage::setFileData(FileData fdata)
 	}
 
 	// Add image comment to the view
+	QtVariantProperty *item;
+	item = m_manager->addProperty(QVariant::String, QLatin1String("Comment"));
+
 	if (m_metadata.hasComment()) {
-		QtVariantProperty *item;
-		item = m_manager->addProperty(QVariant::String, QLatin1String("Comment"));
 		item->setValue(m_metadata.imgComment());
-
-		if (!m_metadata.isImgCommentWritable()) {
-			item->setAttribute(QLatin1String("readOnly"), true);
-		}
-
-		m_commentProperties->addSubProperty(item);
 	}
+
+	if (!m_metadata.isImgCommentWritable()) {
+		item->setAttribute(QLatin1String("readOnly"), true);
+	}
+
+	m_commentProperties->addSubProperty(item);
 }
 
 void MetadataEditorPage::on_cancelButton_clicked()
@@ -196,8 +197,6 @@ void MetadataEditorPage::on_updateButton_clicked()
 {
 	if (QMessageBox::Yes == QMessageBox::warning(this, tr("Update Metadata"),
 		"Update Metadata?", QMessageBox::Yes, QMessageBox::No)) {
-
-//		m_metadata.setImgComment("KRBK Added this Comment");
 		m_metadata.save();
 	}
 }
@@ -207,10 +206,12 @@ void MetadataEditorPage::propertyValueChanged(QtProperty *prop, const QVariant &
 {
 	//qDebug() << __PRETTY_FUNCTION__ << prop->propertyName() << "val:" << val;
 
+#if 0
 	if ("Comment" == prop->propertyName()) {
-		qDebug() << "MetadataEditorPage::" << __func__
+		qDebug() << __PRETTY_FUNCTION__
 			 << prop->propertyName() << "val:" << val;
 	}
+#endif
 }
 
 void MetadataEditorPage::slotCurrentItemChanged(QtBrowserItem *currentItem)
@@ -221,9 +222,11 @@ void MetadataEditorPage::slotCurrentItemChanged(QtBrowserItem *currentItem)
 
 void MetadataEditorPage::slotEditingFinished(QtProperty *prop, const QVariant &val)
 {
+#if 0
 	qDebug() << __PRETTY_FUNCTION__
 		 << "Prop:" << prop->propertyName()
 		 << "val:" << val;
+#endif
 
 	if ("Comment" == prop->propertyName()) {
 		m_metadata.setImgComment(val.toByteArray());
