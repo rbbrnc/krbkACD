@@ -174,17 +174,19 @@ void MetadataEditorPage::setFileData(FileData fdata)
 	}
 
 	// Add image comment to the view
-	if (m_metadata.hasComment()) {
+//	if (m_metadata.hasComment()) {
 		QtVariantProperty *item;
 		item = m_manager->addProperty(QVariant::String, QLatin1String("Comment"));
-		item->setValue(m_metadata.imgComment());
 
+	if (m_metadata.hasComment()) {
+		item->setValue(m_metadata.imgComment());
+	}
 		if (!m_metadata.isImgCommentWritable()) {
 			item->setAttribute(QLatin1String("readOnly"), true);
 		}
 
 		m_commentProperties->addSubProperty(item);
-	}
+//	}
 }
 
 void MetadataEditorPage::on_cancelButton_clicked()
