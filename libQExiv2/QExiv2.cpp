@@ -222,52 +222,92 @@ QStringList QExiv2::xmpTagStringBag(const char* xmpTagName, bool escapeCR) const
 }
 
 //
-#if 0
 QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 {
 	QList<PTag> tl;
 
-	if (d->xmpMetadata.empty())
+	if (d->xmpMetadata.empty()) {
 		return tl;
+	}
 
 	QString regionInfo = xmpTagString("Xmp.mwg-rs.Regions", false);
 	if (regionInfo.isEmpty()) {
 		return tl;
 	}
 
-	QString textPath   = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Name";
-	QString regionPath = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/MPReg:Rectangle";
+	QString mwgName = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Name";
+	QString mwgDescription = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Description";
 
-	Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:x XmpText     8  0.439417
-	Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:y XmpText     4  0.45
-	Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:w XmpText     8  0.154908
-	Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:h XmpText     8  0.295122
-	Xmp.mwg-rs.Regions/mwg-rs:RegionList[1]/mwg-rs:Area/stArea:unit XmpText    10  normalized
+	QString mwgX = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:x";
+	QString mwgY = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:y";
+	QString mwgW = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:w";
+	QString mwgH = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:h";
+	QString mwgD = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:d";
+
+	QString mwgUnit = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:unit";
 
 	int i = 1;
+	QString s;
+	QString region;
 	while (1) {
-		QString region = xmpTagString(regionPath.arg(i).toLatin1(), false);
-		if (region.isEmpty()) {
+		PTag ptag;
+
+		s = xmpTagString(mwgX.arg(i).toLatin1(), false);
+		if (s.isEmpty()) {
+			qDebug() << "stArea:x Missing";
 			break;
 		}
-		QString text = xmpTagString(textPath.arg(i).toLatin1(), false);
-		PTag ptag;
+		qDebug() << "stArea:x" << s;
+		region = s + ",";
+
+		s = xmpTagString(mwgY.arg(i).toLatin1(), false);
+		if (s.isEmpty()) {
+			qDebug() << "stArea:y Missing";
+			break;
+		}
+		qDebug() << "stArea:y" << s;
+		region += s + ",";
+
+		s = xmpTagString(mwgD.arg(i).toLatin1(), false);
+		if (s.isEmpty()) {
+			s = xmpTagString(mwgW.arg(i).toLatin1(), false);
+			qDebug() << "stArea:w" << s;
+			region += s + ",";
+
+			s = xmpTagString(mwgH.arg(i).toLatin1(), false);
+			qDebug() << "stArea:h" << s;
+			region += s;
+		} else {
+			qDebug() << "stArea:d" << s;
+			region += s + "," + s;
+		}
+
+		s = xmpTagString(mwgUnit.arg(i).toLatin1(), false);
+		qDebug() << "stArea:unit" << s;
+
+		s = xmpTagString(mwgDescription.arg(i).toLatin1(), false);
+		qDebug() << "mwg-rs:Description" << s;
+
+		s = xmpTagString(mwgName.arg(i).toLatin1(), false);
+		qDebug() << "mwg-rs:Name" << s;
+
+		ptag.setText(s);
 		ptag.setRegion(region);
-		ptag.setText(text);
 		tl.append(ptag);
+
 		i++;
 	}
 
 	return tl;
 }
-#endif
 
 QList<PTag> QExiv2::xmpPTags() const
 {
 	QList<PTag> tl;
 
-	if (d->xmpMetadata.empty())
+	if (d->xmpMetadata.empty()) {
 		return tl;
+	}
 
 	QString regionInfo = xmpTagString("Xmp.MP.RegionInfo", false);
 	if (regionInfo.isEmpty()) {

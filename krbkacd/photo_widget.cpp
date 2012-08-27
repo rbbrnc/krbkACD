@@ -33,7 +33,13 @@ void PhotoWidget::setFileData(FileData fdata)
 	int h = m_pic.height();
 
 	m_metadata = fdata.metadata();
+
+	// Check Microsoft MP regions
 	m_tagList  = m_metadata.xmpPTags();
+	if (m_tagList.isEmpty()) {
+		// Check MWG regions
+		m_tagList  = m_metadata.xmpMWG_RegionsTags();
+	}
 
 	for (int i = 0; i < m_tagList.size(); i++) {
 		m_tagItem = new PTagGraphicsItem(m_tagList.at(i), QSize(w, h));

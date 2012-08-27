@@ -70,6 +70,7 @@ class QExiv2
 	public:
 		// XXX PRELIMINARY!!!
 		QList<PTag> xmpPTags() const;
+		QList<PTag> xmpMWG_RegionsTags() const;
 		QList<struct exifData> exifDataList() const;
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
