@@ -230,13 +230,13 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 		return tl;
 	}
 
-	QString regionInfo = xmpTagString("Xmp.mwg-rs.Regions", false);
-	if (regionInfo.isEmpty()) {
+	if (xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty()) {
 		return tl;
 	}
 
 	QString mwgName = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Name";
 	QString mwgDescription = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Description";
+	QString mwgType = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Type";
 
 	QString mwgX = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:x";
 	QString mwgY = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:y";
@@ -285,6 +285,9 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 		s = xmpTagString(mwgUnit.arg(i).toLatin1(), false);
 		qDebug() << "stArea:unit" << s;
 
+		s = xmpTagString(mwgType.arg(i).toLatin1(), false);
+		qDebug() << "mwg-rs:Type" << s;
+
 		s = xmpTagString(mwgDescription.arg(i).toLatin1(), false);
 		qDebug() << "mwg-rs:Description" << s;
 
@@ -309,8 +312,7 @@ QList<PTag> QExiv2::xmpPTags() const
 		return tl;
 	}
 
-	QString regionInfo = xmpTagString("Xmp.MP.RegionInfo", false);
-	if (regionInfo.isEmpty()) {
+	if (xmpTagString("Xmp.MP.RegionInfo", false).isEmpty()) {
 		return tl;
 	}
 
