@@ -28,6 +28,8 @@ class PhotoWidget : public QWidget
 		void changePage(int);
 
 	public slots:
+		void zoomIn();
+		void zoomOut();
 		void zoom11();
 		void zoomToFit();
 		void rotateCW();

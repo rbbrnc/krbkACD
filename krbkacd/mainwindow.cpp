@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionZoom_1_1,             SIGNAL(triggered()), m_photoPage, SLOT(zoom11()));
 	connect(ui->actionZoomToFit,            SIGNAL(triggered()), m_photoPage, SLOT(zoomToFit()));
+	connect(ui->actionZoomIn,               SIGNAL(triggered()), m_photoPage, SLOT(zoomIn()));
+	connect(ui->actionZoomOut,              SIGNAL(triggered()), m_photoPage, SLOT(zoomOut()));
 	connect(ui->actionRotateCW,             SIGNAL(triggered()), m_photoPage, SLOT(rotateCW()));
 	connect(ui->actionRotateCCW,            SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
 	connect(ui->actionResetTransformations, SIGNAL(triggered()), m_photoPage, SLOT(resetTransformations()));
@@ -80,6 +82,9 @@ void MainWindow::fullScreen()
 		// Enable fullScreen Action
 		ui->actionZoom_1_1->setEnabled(true);
 		ui->actionZoomToFit->setEnabled(true);
+		ui->actionZoomIn->setEnabled(true);
+		ui->actionZoomOut->setEnabled(true);
+
 		ui->actionRotateCW->setEnabled(true);
 		ui->actionRotateCCW->setEnabled(true);
 		ui->actionResetTransformations->setEnabled(true);
@@ -90,6 +95,8 @@ void MainWindow::fullScreen()
 		// Disable fullScreen Action
 		ui->actionZoom_1_1->setEnabled(false);
 		ui->actionZoomToFit->setEnabled(false);
+		ui->actionZoomIn->setEnabled(false);
+		ui->actionZoomOut->setEnabled(false);
 		ui->actionRotateCW->setEnabled(false);
 		ui->actionRotateCCW->setEnabled(false);
 		ui->actionResetTransformations->setEnabled(false);

@@ -76,6 +76,16 @@ void PhotoWidget::wheelEvent(QWheelEvent *event)
 	}
 }
 
+void PhotoWidget::zoomIn()
+{
+	ui->pixView->scale(1.15, 1.15);
+}
+
+void PhotoWidget::zoomOut()
+{
+	ui->pixView->scale(1.0/1.15, 1.0/1.15);
+}
+
 // Zoom 1:1
 void PhotoWidget::zoom11()
 {
