@@ -272,6 +272,9 @@
    <property name="text">
     <string>Rotate Clockwise</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Right</string>
+   </property>
   </action>
   <action name="actionRotateCCW">
    <property name="enabled">
@@ -279,6 +282,9 @@
    </property>
    <property name="text">
     <string>Rotate Counterclockwise</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Left</string>
    </property>
   </action>
   <action name="actionResetTransformations">
