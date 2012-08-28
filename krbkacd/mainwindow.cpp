@@ -105,9 +105,11 @@ void MainWindow::fullScreen()
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;
 	case PHOTO_PAGE:
-		// we need to return on prev page
+		// return to prev page
 		enableFullScreenActions(false);
 		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
+		break;
+	case METADATA_EDITOR_PAGE:
 		break;
 	default:
 		// Return to the browser page
@@ -128,11 +130,28 @@ void MainWindow::showWorkPage()
 
 void MainWindow::showMetadataEditorPage()
 {
-	if (ui->stackedWidget->currentWidget() != m_metadataEditorPage) {
+	switch (ui->stackedWidget->currentIndex()) {
+	case BROWSER_PAGE:
+		m_prevPageIndex = BROWSER_PAGE;
 		m_metadataEditorPage->setFileData(m_browserPage->currentFileData());
 		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
-	} else {
+		break;
+	case DUPLICATE_PAGE:
+		m_prevPageIndex = DUPLICATE_PAGE;
+		m_metadataEditorPage->setFileData(m_duplicatePage->currentFileData());
+		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
+		break;
+	case PHOTO_PAGE:
+		m_metadataEditorPage->setFileData(m_photoPage->fileData());
+		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
+		break;
+	case METADATA_EDITOR_PAGE:
+		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
+		break;
+	default:
+		// Return to the browser page
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
+		break;
 	}
 }
 

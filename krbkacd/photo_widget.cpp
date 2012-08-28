@@ -21,10 +21,17 @@ PhotoWidget::~PhotoWidget()
 	delete ui;
 }
 
+FileData PhotoWidget::fileData() const
+{
+	return m_fileData;
+}
+
 void PhotoWidget::setFileData(FileData fdata)
 {
 	pixScene->clear();
 	resetTransformations();
+
+	m_fileData = fdata;
 
 	m_currentFile = fdata.filePath();
 	m_pic     = fdata.fullPixmap();
