@@ -132,6 +132,11 @@ void BrowserPage::previewSplitterMoved(int, int)
 
 void BrowserPage::copyFile()
 {
+	// Copy only is 2nd browser is visible
+	if (ui->secondBrowser->isHidden()) {
+		return;
+	}
+
 	if (ui->firstBrowser->hasFocus()) {
 		QString destPath = ui->secondBrowser->getPath();
 		ui->firstBrowser->actionCopyFile(destPath);
@@ -143,6 +148,11 @@ void BrowserPage::copyFile()
 
 void BrowserPage::moveFile()
 {
+	// Move only is 2nd browser is visible
+	if (ui->secondBrowser->isHidden()) {
+		return;
+	}
+
 	if (ui->firstBrowser->hasFocus()) {
 		QString destPath = ui->secondBrowser->getPath();
 		ui->firstBrowser->actionMoveFile(destPath);
