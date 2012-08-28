@@ -3,10 +3,12 @@
 
 #include "pages.h"
 
-//#include <QDebug>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), ui(new Ui::MainWindow)
+	QMainWindow(parent),
+	ui(new Ui::MainWindow),
+	m_prevPageIndex(0)
 {
 	ui->setupUi(this);
 
@@ -32,12 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionCopyFile,          SIGNAL(triggered()),   m_browserPage, SLOT(copyFile()));
 	connect(ui->actionMoveFile,          SIGNAL(triggered()),   m_browserPage, SLOT(moveFile()));
 
-//	connect(ui->actionDeleteFile,        SIGNAL(triggered()),   m_browserPage, SLOT(deleteFile()));
-
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), this, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), this, SLOT(renameFile()));
 
-	connect(ui->actionDebug,             SIGNAL(triggered()),   m_browserPage, SLOT(debugAction()));
+	connect(ui->actionDebug, SIGNAL(triggered()), m_photoPage, SLOT(debugAction()));
 
 	connect(ui->actionQuit,           SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui->actionWork_Page,      SIGNAL(triggered()), this, SLOT(showWorkPage()));
@@ -46,9 +46,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionZoom_1_1,             SIGNAL(triggered()), m_photoPage, SLOT(zoom11()));
 	connect(ui->actionZoomToFit,            SIGNAL(triggered()), m_photoPage, SLOT(zoomToFit()));
+	connect(ui->actionZoomIn,               SIGNAL(triggered()), m_photoPage, SLOT(zoomIn()));
+	connect(ui->actionZoomOut,              SIGNAL(triggered()), m_photoPage, SLOT(zoomOut()));
 	connect(ui->actionRotateCW,             SIGNAL(triggered()), m_photoPage, SLOT(rotateCW()));
 	connect(ui->actionRotateCCW,            SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
 	connect(ui->actionResetTransformations, SIGNAL(triggered()), m_photoPage, SLOT(resetTransformations()));
+	connect(ui->actionShowRegions,          SIGNAL(toggled(bool)), m_photoPage, SLOT(showRegions(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -74,28 +77,48 @@ void MainWindow::changePageSlot(int page)
 	ui->stackedWidget->setCurrentIndex(page);
 }
 
+// Enable/Disable fullScreen Action
+void MainWindow::enableFullScreenActions(bool enable)
+{
+	ui->actionZoom_1_1->setEnabled(enable);
+	ui->actionZoomToFit->setEnabled(enable);
+	ui->actionZoomIn->setEnabled(enable);
+	ui->actionZoomOut->setEnabled(enable);
+
+	ui->actionRotateCW->setEnabled(enable);
+	ui->actionRotateCCW->setEnabled(enable);
+	ui->actionResetTransformations->setEnabled(enable);
+
+	ui->actionShowRegions->setEnabled(enable);
+}
+
 void MainWindow::fullScreen()
 {
-	if (ui->stackedWidget->currentWidget() != m_photoPage) {
-		// Enable fullScreen Action
-		ui->actionZoom_1_1->setEnabled(true);
-		ui->actionZoomToFit->setEnabled(true);
-		ui->actionRotateCW->setEnabled(true);
-		ui->actionRotateCCW->setEnabled(true);
-		ui->actionResetTransformations->setEnabled(true);
-
+	switch (ui->stackedWidget->currentIndex()) {
+	case BROWSER_PAGE:
+		m_prevPageIndex = BROWSER_PAGE;
+		enableFullScreenActions(true);
 		m_photoPage->setFileData(m_browserPage->currentFileData());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
-	} else {
-		// Disable fullScreen Action
-		ui->actionZoom_1_1->setEnabled(false);
-		ui->actionZoomToFit->setEnabled(false);
-		ui->actionRotateCW->setEnabled(false);
-		ui->actionRotateCCW->setEnabled(false);
-		ui->actionResetTransformations->setEnabled(false);
-
+		break;
+	case DUPLICATE_PAGE:
+		m_prevPageIndex = DUPLICATE_PAGE;
+		enableFullScreenActions(true);
+		m_photoPage->setFileData(m_duplicatePage->currentFileData());
+		ui->stackedWidget->setCurrentWidget(m_photoPage);
+		break;
+	case PHOTO_PAGE:
+		// return to prev page
+		enableFullScreenActions(false);
+		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
+		break;
+	case METADATA_EDITOR_PAGE:
+		break;
+	default:
 		// Return to the browser page
+		enableFullScreenActions(false);
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
+		break;
 	}
 }
 
@@ -110,11 +133,28 @@ void MainWindow::showWorkPage()
 
 void MainWindow::showMetadataEditorPage()
 {
-	if (ui->stackedWidget->currentWidget() != m_metadataEditorPage) {
+	switch (ui->stackedWidget->currentIndex()) {
+	case BROWSER_PAGE:
+		m_prevPageIndex = BROWSER_PAGE;
 		m_metadataEditorPage->setFileData(m_browserPage->currentFileData());
 		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
-	} else {
+		break;
+	case DUPLICATE_PAGE:
+		m_prevPageIndex = DUPLICATE_PAGE;
+		m_metadataEditorPage->setFileData(m_duplicatePage->currentFileData());
+		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
+		break;
+	case PHOTO_PAGE:
+		m_metadataEditorPage->setFileData(m_photoPage->fileData());
+		ui->stackedWidget->setCurrentWidget(m_metadataEditorPage);
+		break;
+	case METADATA_EDITOR_PAGE:
+		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
+		break;
+	default:
+		// Return to the browser page
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
+		break;
 	}
 }
 

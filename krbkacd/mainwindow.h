@@ -32,6 +32,7 @@ class MainWindow : public QMainWindow
 		void changePageSlot(int);
 
 	private slots:
+		void enableFullScreenActions(bool enable);
 		void fullScreen();
 		void showWorkPage();
 		void showMetadataEditorPage();
@@ -42,6 +43,7 @@ class MainWindow : public QMainWindow
 	private:
 		Ui::MainWindow *ui;
 
+		int m_prevPageIndex;
 		BrowserPage *m_browserPage;
 		WorkPage    *m_workPage;
 		PhotoWidget *m_photoPage;

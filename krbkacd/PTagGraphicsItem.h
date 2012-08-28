@@ -19,6 +19,14 @@ class PTagGraphicsItem : public QGraphicsItem
 	public:
 		PTagGraphicsItem(const PTag &tag, QSize imgSize);
 
+		enum PTagGraphicsItemVisibility {
+			visibilityNormal = 0,	// Tag is always visible
+			visibilityHover,	// Tag is visible on hoower
+			visibilityNone,		// Tag is always hide
+		};
+
+		void setVisibility(enum PTagGraphicsItemVisibility visibility);
+
 	protected:
 		virtual QRectF boundingRect() const;
 		virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
