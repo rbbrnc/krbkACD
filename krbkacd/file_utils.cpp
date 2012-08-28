@@ -53,6 +53,43 @@ void deleteFile(QString filePath, QWidget *parent)
 	}
 }
 
+/* Delete File(s) */
+void deleteFiles(QStringList fileList, QWidget *parent)
+{
+	if (fileList.isEmpty()) {
+		QMessageBox::critical(parent,
+			QObject::tr("Delete File(s)"),
+			QObject::tr("No file(s) selected"),
+			QMessageBox::Abort);
+		return;
+	}
+
+	int count = fileList.size();
+	if (count == 1) {
+		deleteFile(fileList.at(0), parent);
+		return;
+	}
+
+	if (QMessageBox::Yes == QMessageBox::warning(parent,
+				QObject::tr("Delete"),
+				QObject::tr("Delete %1 files?").arg(count),
+				QMessageBox::Yes,
+				QMessageBox::No))
+	{
+		//delete files until filelist empty or error occured
+		for (int i = 0; i < count; i++) {
+			QFile file(fileList.at(i));
+			if (!file.remove()) {
+				QMessageBox::critical(parent,
+				      QObject::tr("Error"),
+				      QObject::tr("Deleting file '%1' failed").arg(file.fileName()),
+				      QMessageBox::Ok);
+				break;
+			}
+		}
+	}
+}
+
 bool copyFile(const QString destPath, const QString filePath, QWidget *parent)
 {
 	QFileInfo fin(filePath);
