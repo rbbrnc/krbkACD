@@ -47,21 +47,6 @@ void DuplicatePage::on_prevButton_clicked()
 	}
 }
 
-void DuplicatePage::contextMenuEvent(QGraphicsSceneContextMenuEvent *e)
-{
-	qDebug() << __PRETTY_FUNCTION__;
-
-        QMenu *menu = new QMenu;
-        QAction *action;
-	action = menu->addAction("DPRotate CW");
-	connect(menu, SIGNAL(triggered()), this, SLOT(rotateCW()));
-
-        action = menu->addAction("DPRotate CCW");
-	connect(menu, SIGNAL(triggered()), this, SLOT(rotateCCW()));
-
-        menu->popup(e->screenPos());
-}
-
 /* SLOT [public]
  *
  * Rename selected file

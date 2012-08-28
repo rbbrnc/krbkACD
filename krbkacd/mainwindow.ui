@@ -46,9 +46,9 @@
     <addaction name="actionMoveFile"/>
     <addaction name="actionDeleteFile"/>
     <addaction name="actionRenameFile"/>
+    <addaction name="actionMkDir"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
-    <addaction name="actionMkDir"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">

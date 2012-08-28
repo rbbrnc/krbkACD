@@ -3,7 +3,6 @@
 
 #include <QWidget>
 #include <QMap>
-#include <QGraphicsSceneContextMenuEvent>
 
 namespace Ui {
 	class DuplicatePage;
@@ -25,9 +24,6 @@ class DuplicatePage : public QWidget
 	public slots:
 		void renameFile();
 		void deleteFile();
-
-	protected:
-		void contextMenuEvent(QGraphicsSceneContextMenuEvent *e);
 
 	private slots:
 	        void on_backButton_clicked();
