@@ -256,6 +256,9 @@
    <property name="text">
     <string>Zoom 1:1</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
   </action>
   <action name="actionZoomToFit">
    <property name="enabled">
@@ -263,6 +266,9 @@
    </property>
    <property name="text">
     <string>Zoom to fit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
    </property>
   </action>
   <action name="actionRotateCW">
