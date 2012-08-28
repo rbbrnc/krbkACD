@@ -31,6 +31,17 @@ void DuplicatePage::on_backButton_clicked()
 	emit changePage(WORK_PAGE);
 }
 
+FileData DuplicatePage::currentFileData() const
+{
+	QList<QGraphicsItem *> itemList = ui->thumbView->items();
+	for (int i = 0; i < itemList.size(); i++) {
+		if (itemList.at(i)->isSelected()) {
+		        return FileData(itemList.at(i)->toolTip());
+		}
+	}
+        return FileData();
+}
+
 void DuplicatePage::on_nextButton_clicked()
 {
 	if (m_current < m_keyList.size() - 1) {
@@ -49,7 +60,7 @@ void DuplicatePage::on_prevButton_clicked()
 
 /* SLOT [public]
  *
- * Rename selected file
+ * Rename selected files
  */
 void DuplicatePage::renameFile()
 {
@@ -62,6 +73,10 @@ void DuplicatePage::renameFile()
 	}
 }
 
+/* SLOT [public]
+ *
+ * Delete selected files
+ */
 void DuplicatePage::deleteFile()
 {
 	QList<QGraphicsItem *> itemList = ui->thumbView->items();

@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QMap>
 
+#include "file_data.h"
+
 namespace Ui {
 	class DuplicatePage;
 }
@@ -17,6 +19,7 @@ class DuplicatePage : public QWidget
 		~DuplicatePage();
 
 		void setMap(const QMap<QString, QStringList> &map);
+		FileData currentFileData() const;
 
 	signals:
 		void changePage(int);

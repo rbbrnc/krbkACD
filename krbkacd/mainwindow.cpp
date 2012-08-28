@@ -3,10 +3,12 @@
 
 #include "pages.h"
 
-//#include <QDebug>
+#include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
-	QMainWindow(parent), ui(new Ui::MainWindow)
+	QMainWindow(parent),
+	ui(new Ui::MainWindow),
+	m_prevPageIndex(0)
 {
 	ui->setupUi(this);
 
@@ -32,12 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionCopyFile,          SIGNAL(triggered()),   m_browserPage, SLOT(copyFile()));
 	connect(ui->actionMoveFile,          SIGNAL(triggered()),   m_browserPage, SLOT(moveFile()));
 
-//	connect(ui->actionDeleteFile,        SIGNAL(triggered()),   m_browserPage, SLOT(deleteFile()));
-
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), this, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), this, SLOT(renameFile()));
 
-	connect(ui->actionDebug,             SIGNAL(triggered()),   m_browserPage, SLOT(debugAction()));
+	connect(ui->actionDebug, SIGNAL(triggered()), m_browserPage, SLOT(debugAction()));
 
 	connect(ui->actionQuit,           SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui->actionWork_Page,      SIGNAL(triggered()), this, SLOT(showWorkPage()));
@@ -76,33 +76,44 @@ void MainWindow::changePageSlot(int page)
 	ui->stackedWidget->setCurrentIndex(page);
 }
 
+// Enable/Disable fullScreen Action
+void MainWindow::enableFullScreenActions(bool enable)
+{
+	ui->actionZoom_1_1->setEnabled(enable);
+	ui->actionZoomToFit->setEnabled(enable);
+	ui->actionZoomIn->setEnabled(enable);
+	ui->actionZoomOut->setEnabled(enable);
+
+	ui->actionRotateCW->setEnabled(enable);
+	ui->actionRotateCCW->setEnabled(enable);
+	ui->actionResetTransformations->setEnabled(enable);
+}
+
 void MainWindow::fullScreen()
 {
-	if (ui->stackedWidget->currentWidget() != m_photoPage) {
-		// Enable fullScreen Action
-		ui->actionZoom_1_1->setEnabled(true);
-		ui->actionZoomToFit->setEnabled(true);
-		ui->actionZoomIn->setEnabled(true);
-		ui->actionZoomOut->setEnabled(true);
-
-		ui->actionRotateCW->setEnabled(true);
-		ui->actionRotateCCW->setEnabled(true);
-		ui->actionResetTransformations->setEnabled(true);
-
+	switch (ui->stackedWidget->currentIndex()) {
+	case BROWSER_PAGE:
+		m_prevPageIndex = BROWSER_PAGE;
+		enableFullScreenActions(true);
 		m_photoPage->setFileData(m_browserPage->currentFileData());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
-	} else {
-		// Disable fullScreen Action
-		ui->actionZoom_1_1->setEnabled(false);
-		ui->actionZoomToFit->setEnabled(false);
-		ui->actionZoomIn->setEnabled(false);
-		ui->actionZoomOut->setEnabled(false);
-		ui->actionRotateCW->setEnabled(false);
-		ui->actionRotateCCW->setEnabled(false);
-		ui->actionResetTransformations->setEnabled(false);
-
+		break;
+	case DUPLICATE_PAGE:
+		m_prevPageIndex = DUPLICATE_PAGE;
+		enableFullScreenActions(true);
+		m_photoPage->setFileData(m_duplicatePage->currentFileData());
+		ui->stackedWidget->setCurrentWidget(m_photoPage);
+		break;
+	case PHOTO_PAGE:
+		// we need to return on prev page
+		enableFullScreenActions(false);
+		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
+		break;
+	default:
 		// Return to the browser page
+		enableFullScreenActions(false);
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
+		break;
 	}
 }
 
