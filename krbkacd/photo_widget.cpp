@@ -3,6 +3,8 @@
 
 #include <QDebug>
 
+#include "file_utils.h"
+
 PhotoWidget::PhotoWidget(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::PhotoWidget)
@@ -24,6 +26,7 @@ void PhotoWidget::setFileData(FileData fdata)
 	pixScene->clear();
 	resetTransformations();
 
+	m_currentFile = fdata.filePath();
 	m_pic     = fdata.fullPixmap();
 	m_pixItem = pixScene->addPixmap(m_pic);
 
@@ -71,6 +74,16 @@ void PhotoWidget::wheelEvent(QWheelEvent *event)
 		}
 		event->accept();
 	}
+}
+
+void PhotoWidget::zoomIn()
+{
+	ui->pixView->scale(1.15, 1.15);
+}
+
+void PhotoWidget::zoomOut()
+{
+	ui->pixView->scale(1.0/1.15, 1.0/1.15);
 }
 
 // Zoom 1:1
@@ -141,11 +154,10 @@ void PhotoWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 
 void PhotoWidget::deleteFile()
 {
-	qDebug() << __PRETTY_FUNCTION__;
+	::deleteFile(m_currentFile, this);
 }
 
 void PhotoWidget::renameFile()
 {
-	qDebug() << __PRETTY_FUNCTION__;
+	::renameFile(m_currentFile, this);
 }
-

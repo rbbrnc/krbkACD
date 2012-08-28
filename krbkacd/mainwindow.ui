@@ -70,13 +70,6 @@
     <property name="title">
      <string>Image</string>
     </property>
-    <widget class="QMenu" name="menuZoom">
-     <property name="title">
-      <string>Zoom</string>
-     </property>
-     <addaction name="actionZoom_1_1"/>
-     <addaction name="actionZoomToFit"/>
-    </widget>
     <widget class="QMenu" name="menuOrientation">
      <property name="title">
       <string>Orientation</string>
@@ -84,6 +77,15 @@
      <addaction name="actionRotateCW"/>
      <addaction name="actionRotateCCW"/>
      <addaction name="actionResetTransformations"/>
+    </widget>
+    <widget class="QMenu" name="menuZoom">
+     <property name="title">
+      <string>Zoom</string>
+     </property>
+     <addaction name="actionZoom_1_1"/>
+     <addaction name="actionZoomToFit"/>
+     <addaction name="actionZoomIn"/>
+     <addaction name="actionZoomOut"/>
     </widget>
     <addaction name="actionFullScreen"/>
     <addaction name="actionWork_Page"/>
@@ -233,14 +235,6 @@
     <string>F12</string>
    </property>
   </action>
-  <action name="actionFullScreen">
-   <property name="text">
-    <string>Toggle Full Screen</string>
-   </property>
-   <property name="shortcut">
-    <string>F3</string>
-   </property>
-  </action>
   <action name="actionWork_Page">
    <property name="text">
     <string>Toggle Work Page</string>
@@ -256,6 +250,9 @@
    <property name="text">
     <string>Zoom 1:1</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
   </action>
   <action name="actionZoomToFit">
    <property name="enabled">
@@ -263,6 +260,9 @@
    </property>
    <property name="text">
     <string>Zoom to fit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
    </property>
   </action>
   <action name="actionRotateCW">
@@ -272,6 +272,9 @@
    <property name="text">
     <string>Rotate Clockwise</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Right</string>
+   </property>
   </action>
   <action name="actionRotateCCW">
    <property name="enabled">
@@ -279,6 +282,9 @@
    </property>
    <property name="text">
     <string>Rotate Counterclockwise</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Left</string>
    </property>
   </action>
   <action name="actionResetTransformations">
@@ -309,6 +315,30 @@
    </property>
    <property name="shortcut">
     <string>F7</string>
+   </property>
+  </action>
+  <action name="actionZoomIn">
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="actionZoomOut">
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionFullScreen">
+   <property name="text">
+    <string>Toggle Full Screen</string>
+   </property>
+   <property name="shortcut">
+    <string>F3</string>
    </property>
   </action>
  </widget>

@@ -7,6 +7,7 @@
 //#include <QDebug>
 
 #include "filelistwidget.h"
+#include "file_utils.h"
 
 /* TODO
  *
@@ -84,14 +85,8 @@ void FileListWidget::actionShowHidden(bool show)
  */
 void FileListWidget::actionRename()
 {
-	QFileInfo file = m_model->fileInfo(selectedIndexes().first());
-	QString newName = QInputDialog::getText(this, tr("Rename"), tr("New filename: "), QLineEdit::Normal, file.fileName());
-	if (newName != file.fileName() && !newName.isEmpty()) {
-		if (QFile::rename(file.absoluteFilePath(), file.absolutePath() + "/" + newName))
-			return;
-		else
-			QMessageBox::critical(this, tr("Error!"), tr("Renaming file %1 failed").arg(file.fileName()), QMessageBox::Ok);
-	}
+	QString file = m_model->fileInfo(selectedIndexes().first()).filePath();
+	::renameFile(file, this);
 	setSelectionMode(QAbstractItemView::SingleSelection);
 }
 
@@ -198,16 +193,10 @@ void FileListWidget::actionCopyFile(const QString destPath)
 
 	// Copy files until filelist is empty or error occured
 	while (!selectedFiles.isEmpty()) {
-		if (QFile::copy(m_model->fileInfo(selectedFiles.first()).absoluteFilePath(),
-				destPath + "/" + m_model->fileName(selectedFiles.first()))) {
-			selectedFiles.removeFirst();
-		} else if (QFile::copy(m_model->fileInfo(selectedFiles.first()).absoluteFilePath(),
-				       m_model->rootPath() + "/copy_" + m_model->fileName(selectedFiles.first()))) {
-			selectedFiles.removeFirst();
-		} else {
-			QMessageBox::critical(this, tr("Error!"), tr("Copying file %1 failed").arg(m_model->fileName(selectedFiles.first())), QMessageBox::Ok);
+		if (!::copyFile(destPath, m_model->fileInfo(selectedFiles.first()).absoluteFilePath(), this)) {
 			break;
 		}
+		selectedFiles.removeFirst();
 	}
 
 	m_model->setReadOnly(true);
@@ -229,13 +218,10 @@ void FileListWidget::actionMoveFile(const QString destPath)
 
 	// Move files until filelist is empty or error occured
 	while (!selectedFiles.isEmpty()) {
-		if (QFile::rename(m_model->fileInfo(selectedFiles.first()).absoluteFilePath(),
-				  destPath + "/" + m_model->fileName(selectedFiles.first()))) {
-			selectedFiles.removeFirst();
-		} else {
-			QMessageBox::critical(this, tr("Error!"), tr("Moving file %1 failed").arg(m_model->fileName(selectedFiles.first())), QMessageBox::Ok);
+		if (!::moveFile(destPath, m_model->fileInfo(selectedFiles.first()).absoluteFilePath(), this)) {
 			break;
 		}
+		selectedFiles.removeFirst();
 	}
 
 	m_model->setReadOnly(true);
@@ -249,22 +235,5 @@ void FileListWidget::actionMoveFile(const QString destPath)
  */
 void FileListWidget::actionMkDir(const QString destPath)
 {
-	QString dirName = QInputDialog::getText(this,
-				"Create a new directory",
-				tr("Enter directory name: "),
-				QLineEdit::Normal);
-	// Remove whitespaces
-	dirName = dirName.simplified();
-
-	if (dirName.isEmpty()) {
-		return;
-	}
-
-	QDir newDir;
-
-	if (!newDir.mkdir(destPath + "/" + dirName)) {
-		QMessageBox::critical(this, tr("Error!"),
-				tr("Creating dir %1 failed").arg(dirName),
-				QMessageBox::Ok);
-	}
+	::makeDir(destPath, this);
 }

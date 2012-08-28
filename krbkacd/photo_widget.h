@@ -28,6 +28,8 @@ class PhotoWidget : public QWidget
 		void changePage(int);
 
 	public slots:
+		void zoomIn();
+		void zoomOut();
 		void zoom11();
 		void zoomToFit();
 		void rotateCW();
@@ -39,6 +41,7 @@ class PhotoWidget : public QWidget
         protected:
 		void wheelEvent(QWheelEvent *event);
 		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
 	private:
 		Ui::PhotoWidget *ui;
 
@@ -52,6 +55,8 @@ class PhotoWidget : public QWidget
 
                 QExiv2      m_metadata;
                 QList<PTag> m_tagList;
+
+		QString m_currentFile;
 };
 
 #endif // PHOTO_WIDGET_H
