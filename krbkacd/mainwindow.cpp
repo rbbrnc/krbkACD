@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), this, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), this, SLOT(renameFile()));
 
-	connect(ui->actionDebug, SIGNAL(triggered()), m_browserPage, SLOT(debugAction()));
+	connect(ui->actionDebug, SIGNAL(triggered()), m_photoPage, SLOT(debugAction()));
 
 	connect(ui->actionQuit,           SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui->actionWork_Page,      SIGNAL(triggered()), this, SLOT(showWorkPage()));
@@ -51,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionRotateCW,             SIGNAL(triggered()), m_photoPage, SLOT(rotateCW()));
 	connect(ui->actionRotateCCW,            SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
 	connect(ui->actionResetTransformations, SIGNAL(triggered()), m_photoPage, SLOT(resetTransformations()));
+	connect(ui->actionShowRegions,          SIGNAL(toggled(bool)), m_photoPage, SLOT(showRegions(bool)));
 }
 
 MainWindow::~MainWindow()
@@ -87,6 +88,8 @@ void MainWindow::enableFullScreenActions(bool enable)
 	ui->actionRotateCW->setEnabled(enable);
 	ui->actionRotateCCW->setEnabled(enable);
 	ui->actionResetTransformations->setEnabled(enable);
+
+	ui->actionShowRegions->setEnabled(enable);
 }
 
 void MainWindow::fullScreen()

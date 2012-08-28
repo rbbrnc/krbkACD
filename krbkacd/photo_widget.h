@@ -38,10 +38,12 @@ class PhotoWidget : public QWidget
 		void resetTransformations();
 		void renameFile();
 		void deleteFile();
+		void showRegions(bool show);
+
+		void debugAction();
 
         protected:
 		void wheelEvent(QWheelEvent *event);
-		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 
 	private:
 		Ui::PhotoWidget *ui;

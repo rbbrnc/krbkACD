@@ -55,6 +55,25 @@ void PTagGraphicsItem::updateRect()
 	setPos(wr.x(), wr.y());
 }
 
+void PTagGraphicsItem::setVisibility(enum PTagGraphicsItemVisibility visibility)
+{
+	switch (visibility) {
+	case visibilityNormal:
+		m_visible = true;
+		setAcceptHoverEvents(false);
+		break;
+	case visibilityHover:
+		m_visible = false;
+		setAcceptHoverEvents(true);
+		break;
+	case visibilityNone:
+		m_visible = false;
+		setAcceptHoverEvents(false);
+		break;
+	}
+	update(0, 0, m_width, m_height);
+}
+
 void PTagGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
 	m_visible = false;

@@ -40,7 +40,6 @@ class BrowserPage : public QWidget
 		void renameFile();
 		void makeNewDirectory();
 
-		void debugAction();
 
 	private slots:
 		void updateCurrentSelection(const QString file);

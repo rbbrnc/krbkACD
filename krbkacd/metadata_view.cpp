@@ -10,10 +10,10 @@ MetadataView::MetadataView(QWidget *parent) :
 	QStringList headerLabels;
 	headerLabels << "Metadata";
 	headerLabels << "Key";
+	headerLabels << "Value";
 	headerLabels << "Tag";
 	headerLabels << "Type Name";
 	headerLabels << "Count";
-	headerLabels << "Value";
 
 	standardModel->setHorizontalHeaderLabels(headerLabels);
 
@@ -47,6 +47,11 @@ void MetadataView::setMetadata(QStandardItem *rootItem, struct exifData *data)
         keyItem->setEditable(false);
         items << keyItem;
 
+        QStandardItem *valueItem =  new QStandardItem("Value");
+        valueItem->setText(data->value);
+        valueItem->setEditable(true);
+        items << valueItem;
+
         QStandardItem *tagItem =  new QStandardItem("Tag");
         tagItem->setText("0x" + QString::number(data->tag, 16));
         tagItem->setEditable(false);
@@ -62,15 +67,7 @@ void MetadataView::setMetadata(QStandardItem *rootItem, struct exifData *data)
         countItem->setEditable(false);
         items << countItem;
 
-        QStandardItem *valueItem =  new QStandardItem("Value");
-        valueItem->setText(data->value);
-        valueItem->setEditable(true);
-        items << valueItem;
-
         rootItem->appendRow(items);
-
-	// DEBUG
-	//qDebug() << key << " " << tag << " " << typeName << "" << count << " " << value;
 }
 
 MetadataView::~MetadataView()

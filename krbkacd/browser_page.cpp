@@ -191,6 +191,4 @@ void BrowserPage::makeNewDirectory()
 	}
 }
 
-void BrowserPage::debugAction()
-{
-}
+
