@@ -46,9 +46,9 @@
     <addaction name="actionMoveFile"/>
     <addaction name="actionDeleteFile"/>
     <addaction name="actionRenameFile"/>
+    <addaction name="actionMkDir"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
-    <addaction name="actionMkDir"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -87,10 +87,17 @@
      <addaction name="actionZoomIn"/>
      <addaction name="actionZoomOut"/>
     </widget>
+    <widget class="QMenu" name="menuRegions">
+     <property name="title">
+      <string>Regions</string>
+     </property>
+     <addaction name="actionShowRegions"/>
+    </widget>
     <addaction name="actionFullScreen"/>
     <addaction name="actionWork_Page"/>
     <addaction name="menuZoom"/>
     <addaction name="menuOrientation"/>
+    <addaction name="menuRegions"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -339,6 +346,17 @@
    </property>
    <property name="shortcut">
     <string>F3</string>
+   </property>
+  </action>
+  <action name="actionShowRegions">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Regions</string>
    </property>
   </action>
  </widget>

@@ -23,6 +23,7 @@ class PhotoWidget : public QWidget
 		~PhotoWidget();
 
 		void setFileData(FileData fdata);
+		FileData fileData() const;
 
 	signals:
 		void changePage(int);
@@ -37,10 +38,12 @@ class PhotoWidget : public QWidget
 		void resetTransformations();
 		void renameFile();
 		void deleteFile();
+		void showRegions(bool show);
+
+		void debugAction();
 
         protected:
 		void wheelEvent(QWheelEvent *event);
-		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
 
 	private:
 		Ui::PhotoWidget *ui;
@@ -57,6 +60,7 @@ class PhotoWidget : public QWidget
                 QList<PTag> m_tagList;
 
 		QString m_currentFile;
+		FileData m_fileData;
 };
 
 #endif // PHOTO_WIDGET_H

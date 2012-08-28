@@ -3,7 +3,8 @@
 
 #include <QWidget>
 #include <QMap>
-#include <QGraphicsSceneContextMenuEvent>
+
+#include "file_data.h"
 
 namespace Ui {
 	class DuplicatePage;
@@ -18,6 +19,7 @@ class DuplicatePage : public QWidget
 		~DuplicatePage();
 
 		void setMap(const QMap<QString, QStringList> &map);
+		FileData currentFileData() const;
 
 	signals:
 		void changePage(int);
@@ -25,9 +27,6 @@ class DuplicatePage : public QWidget
 	public slots:
 		void renameFile();
 		void deleteFile();
-
-	protected:
-		void contextMenuEvent(QGraphicsSceneContextMenuEvent *e);
 
 	private slots:
 	        void on_backButton_clicked();
