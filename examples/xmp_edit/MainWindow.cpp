@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 
+#include <QMessageBox>
 #include <QDebug>
 
 #include "QExiv2.h"
@@ -89,13 +90,22 @@ void MainWindow::on_saveButton_clicked()
 	if (m_xmpUpdate) {
 		//m_model->sort(0);
 		QString rating = QString::number(ui->ratingSpinBox->value(), 'f', 1);
-		exiv2->setXmpTagString("Xmp.xmp.Rating", rating);
-
-                /*bool*/ exiv2->setXmpTagStringLangAlt("Xmp.dc.description", ui->description->toPlainText(), QString());
-
-		if (exiv2->setXmpTagStringBag("Xmp.dc.subject", m_model->stringList())) {
-			exiv2->save();
+		if (!exiv2->setXmpTagString("Xmp.xmp.Rating", rating)) {
+			QMessageBox::critical(this, tr("Error"), tr("Cannot set Xmp.xmp.Rating"), QMessageBox::Abort);
+			return;
 		}
+
+                if (!exiv2->setXmpTagStringLangAlt("Xmp.dc.description", ui->description->toPlainText(), QString())) {
+			QMessageBox::critical(this, tr("Error"), tr("Cannot set Xmp.dc.description"), QMessageBox::Abort);
+			return;
+		}
+
+		if (!exiv2->setXmpTagStringBag("Xmp.dc.subject", m_model->stringList())) {
+			QMessageBox::critical(this, tr("Error"), tr("Cannot set Xmp.dc.subject"), QMessageBox::Abort);
+			return;
+		}
+
+		exiv2->save();
 	}
 }
 
