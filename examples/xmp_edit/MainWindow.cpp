@@ -26,6 +26,9 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 	if (exiv2->load(file)) {
 		data = exiv2->xmpTagStringBag("Xmp.dc.subject", true);
 		ui->ratingSpinBox->setValue(exiv2->xmpTagString("Xmp.xmp.Rating", true).toDouble());
+
+		QString dsc = exiv2->getXmpTagStringLangAlt("Xmp.dc.description", QString(), false);
+		ui->description->setPlainText(dsc);
 	}
 
 	m_model = new QStringListModel(this);
@@ -36,6 +39,9 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 
 	connect(ui->lineEdit, SIGNAL(textChanged(QString)),
 		m_filter, SLOT(setFilterFixedString(QString)));
+
+	connect(ui->description, SIGNAL(textChanged()),
+		this, SLOT(descriptionChanged()));
 
 	m_filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	ui->listView->setModel(m_filter);
@@ -84,6 +90,9 @@ void MainWindow::on_saveButton_clicked()
 		//m_model->sort(0);
 		QString rating = QString::number(ui->ratingSpinBox->value(), 'f', 1);
 		exiv2->setXmpTagString("Xmp.xmp.Rating", rating);
+
+                /*bool*/ exiv2->setXmpTagStringLangAlt("Xmp.dc.description", ui->description->toPlainText(), QString());
+
 		if (exiv2->setXmpTagStringBag("Xmp.dc.subject", m_model->stringList())) {
 			exiv2->save();
 		}
@@ -91,6 +100,12 @@ void MainWindow::on_saveButton_clicked()
 }
 
 void MainWindow::on_ratingSpinBox_valueChanged(double)
+{
+	m_xmpUpdate = true;
+	ui->saveButton->setEnabled(m_xmpUpdate);
+}
+
+void MainWindow::descriptionChanged()
 {
 	m_xmpUpdate = true;
 	ui->saveButton->setEnabled(m_xmpUpdate);

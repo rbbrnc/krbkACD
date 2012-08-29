@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
 		void on_addToolButton_clicked();
 		void on_removeToolButton_clicked();
 		void on_ratingSpinBox_valueChanged(double val);
+		void descriptionChanged();
 	        void on_saveButton_clicked();
 
 	private:

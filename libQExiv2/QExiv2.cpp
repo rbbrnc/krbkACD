@@ -613,3 +613,88 @@ QImage QExiv2::getPreviewImage() const
 
 	return QImage();
 }
+
+
+QString QExiv2::detectLanguageAlt(const QString& value, QString& lang)
+{
+	// Ex. from an Xmp tag Xmp.tiff.copyright: "lang="x-default" (c) Gilles Caulier 2007"
+	if (value.size() > 6 && value.startsWith(QString("lang=\""))) {
+		int pos = value.indexOf(QString("\""), 6);
+		if (pos != -1) {
+			lang = value.mid(6, pos-6);
+			return (value.mid(pos + 2));
+		}
+	}
+
+	lang.clear();
+	return value;
+}
+
+QString QExiv2::getXmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR)
+{
+	try {
+		Exiv2::XmpData xmpData(d->xmpMetadata);
+		Exiv2::XmpKey key(xmpTagName);
+	        for (Exiv2::XmpData::iterator it = xmpData.begin(); it != xmpData.end(); ++it) {
+			if (it->key() == xmpTagName && it->typeId() == Exiv2::langAlt) {
+				for (int i = 0; i < it->count(); i++) {
+					std::ostringstream os;
+					os << it->toString(i);
+					QString lang;
+					QString tagValue = QString::fromUtf8(os.str().c_str());
+					//qDebug() << __func__ << tagValue;
+					tagValue = detectLanguageAlt(tagValue, lang);
+					if (langAlt == lang) {
+						if (escapeCR) {
+							tagValue.replace('\n', ' ');
+						}
+						//qDebug() << tagValue;
+						return tagValue;
+					}
+				}
+			}
+		}
+	} catch (Exiv2::Error& e) {
+		d->printExiv2ExceptionError(QString("Cannot find Xmp key '%1' into image using Exiv2").arg(xmpTagName), e);
+	}
+
+	return QString();
+}
+
+bool QExiv2::setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt)
+{
+	try {
+		QString language("x-default"); // default alternative language.
+
+		if (!langAlt.isEmpty()) {
+			language = langAlt;
+		}
+
+		QString txtLangAlt = QString("lang=%1 %2").arg(language).arg(value);
+
+		const std::string &txt(txtLangAlt.toUtf8().constData());
+		Exiv2::Value::AutoPtr xmpTxtVal = Exiv2::Value::create(Exiv2::langAlt);
+
+#if 0
+		// Search if an Xmp tag already exist.
+		AltLangMap map = getXmpTagStringListLangAlt(xmpTagName, false);
+		if (!map.isEmpty()) {
+			for (AltLangMap::iterator it = map.begin(); it != map.end(); ++it) {
+				if (it.key() != langAlt) {
+					const std::string &val((*it).toUtf8().constData());
+					xmpTxtVal->read(val);
+			                kDebug() << *it;
+				}
+			}
+		}
+#endif
+
+		xmpTxtVal->read(txt);
+		removeXmpTag(xmpTagName);
+		d->xmpMetadata.add(Exiv2::XmpKey(xmpTagName), xmpTxtVal.get());
+		return true;
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError("Cannot set Xmp tag string lang-alt into image using Exiv2 ", e);
+	}
+	return false;
+}

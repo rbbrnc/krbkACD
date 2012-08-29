@@ -62,6 +62,10 @@ class QExiv2
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
 		bool setXmpTagStringBag(const char *xmpTagName, const QStringList &bag);
 
+		QString getXmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR);
+		bool setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt);
+		QString detectLanguageAlt(const QString& value, QString& lang);
+
 		// Image Comment Functions
 		bool isImgCommentWritable() const;
 		bool hasComment() const;
