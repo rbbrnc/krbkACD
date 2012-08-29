@@ -52,10 +52,15 @@ class QExiv2
 		// XMP Functions
 		bool isXmpWritable() const;
 		bool hasXmp() const;
+
+		bool removeXmpTag(const char *xmpTagName);
 		QByteArray xmpPacket() const;
 
 		QString xmpTagString(const char *xmpTagName, bool escapeCR) const;
+		bool setXmpTagString(const char *xmpTagName, const QString &value);
+
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
+		bool setXmpTagStringBag(const char *xmpTagName, const QStringList &bag);
 
 		// Image Comment Functions
 		bool isImgCommentWritable() const;
