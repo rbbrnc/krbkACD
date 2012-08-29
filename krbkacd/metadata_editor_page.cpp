@@ -142,6 +142,13 @@ void MetadataEditorPage::clear()
 
 void MetadataEditorPage::setFileData(FileData fdata)
 {
+	if (!fdata.isImage()) {
+		ui->cancelButton->setEnabled(false);
+		ui->updateButton->setEnabled(false);
+		clear();
+		return;
+	}
+
 	m_metadata = fdata.metadata();
 
 	clear();
@@ -186,6 +193,9 @@ void MetadataEditorPage::setFileData(FileData fdata)
 	}
 
 	m_commentProperties->addSubProperty(item);
+
+	ui->cancelButton->setEnabled(true);
+	ui->updateButton->setEnabled(true);
 }
 
 void MetadataEditorPage::on_cancelButton_clicked()
@@ -204,9 +214,11 @@ void MetadataEditorPage::on_updateButton_clicked()
 // SLOT
 void MetadataEditorPage::propertyValueChanged(QtProperty *prop, const QVariant &val)
 {
+#if 10
+	Q_UNUSED(prop)
+	Q_UNUSED(val)
+#else
 	//qDebug() << __PRETTY_FUNCTION__ << prop->propertyName() << "val:" << val;
-
-#if 0
 	if ("Comment" == prop->propertyName()) {
 		qDebug() << __PRETTY_FUNCTION__
 			 << prop->propertyName() << "val:" << val;
