@@ -4,8 +4,8 @@
 #include <QSharedDataPointer>
 #include <QStringList>
 #include <QString>
-#include <QFileInfo>
 #include <QImage>
+#include <QDateTime>
 
 // For Tags
 #include "PTag.h"
@@ -43,6 +43,8 @@ class QExiv2
 		bool isExifWritable() const;
 		bool hasExif() const;
 		bool clearExif();
+		QString getExifTagString(const char *exifTagName, bool escapeCR) const;
+		QDateTime getExifTagDateTime(const char *exifTagName) const;
 
 		// IPTC Functions
 		bool isIptcWritable() const;

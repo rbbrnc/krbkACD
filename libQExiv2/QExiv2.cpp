@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QFileInfo>
 #include <QDebug>
 
 #include "QExiv2.h"
@@ -698,3 +699,59 @@ bool QExiv2::setXmpTagStringLangAlt(const char *xmpTagName, const QString &value
 	}
 	return false;
 }
+
+// [EXIF] Get a string tag
+QString QExiv2::getExifTagString(const char *exifTagName, bool escapeCR) const
+{
+	try {
+		Exiv2::ExifKey exifKey(exifTagName);
+		Exiv2::ExifData exifData(d->exifMetadata);
+		Exiv2::ExifData::iterator it = exifData.findKey(exifKey);
+		if (it != exifData.end()) {
+#if 0
+			// cfr KExiv2/libKexiv2: See B.K.O #184156 comment #13
+			std::string val  = it->print(&exifData);
+			QString tagValue = QString::fromLocal8Bit(val.c_str());
+#else
+			std::ostringstream os;
+			os << *it;
+			QString tagValue = QString::fromLocal8Bit(os.str().c_str());
+#endif
+			if (escapeCR) {
+				tagValue.replace('\n', ' ');
+			}
+
+			return tagValue;
+		}
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot find Exif key '%1' into image using Exiv2 ")
+                                  .arg(exifTagName), e);
+	}
+
+	return QString();
+}
+
+// [EXIF] Get a DateTime Tag
+QDateTime QExiv2::getExifTagDateTime(const char *exifTagName) const
+{
+	try {
+		if (!d->exifMetadata.empty()) {
+			Exiv2::ExifData exifData(d->exifMetadata);
+			Exiv2::ExifKey key(exifTagName);
+			Exiv2::ExifData::iterator it = exifData.findKey(key);
+			if (it != exifData.end()) {
+				QDateTime dateTime = QDateTime::fromString(it->toString().c_str(), Qt::ISODate);
+				if (dateTime.isValid()) {
+					//qDebug() << __PRETTY_FUNCTION__ << "[EXIF]" << exifTagName << dateTime;
+					return dateTime;
+				}
+			}
+		}
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot find Exif key '%1' into image using Exiv2 ")
+                                  .arg(exifTagName), e);
+	}
+
+	return QDateTime();
+}
+
