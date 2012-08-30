@@ -2,6 +2,7 @@
 #define FILE_DATA_H
 
 #include <QPixmap>
+#include <QFileInfo>
 #include "QExiv2.h"
 
 class FileData {

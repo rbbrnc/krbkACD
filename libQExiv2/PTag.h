@@ -11,23 +11,35 @@ class PTagDataPrivate;
 class PTag
 {
 	public:
+		enum RegionType {
+			MwgRegionType = 0,
+			MpRegionType
+		};
+
 		PTag();
 		PTag(const PTag &other);
 		~PTag();
 
 		PTag& operator=(const PTag &other);
 
-
-		QString text() const;
-		void setText(const QString &text);
+		QString description() const;
+		void setDescription(const QString &desc);
 
 		QRectF region() const;
 		void setRegion(const QString &region);
 
+		enum PTag::RegionType type() const;
+		void setType(PTag::RegionType type);
+
 		void debug() const;
+
+		QString name() const;
+		void setName(const QString &name);
 
 	private:
 		QSharedDataPointer<PTagDataPrivate> d;
+
+		enum PTag::RegionType m_type;
 };
 
 #endif

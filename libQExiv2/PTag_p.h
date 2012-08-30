@@ -5,6 +5,9 @@
 #include <QString>
 #include <QRectF>
 
+#include "MwgRegion.h"
+#include "MPRegion.h"
+
 class PTagDataPrivate : public QSharedData
 {
 	public:
@@ -26,6 +29,9 @@ class PTagDataPrivate : public QSharedData
 		double m_mwgStAreaH;	// Height of the area (rectangle)
 		double m_mwgStAreaD;	// Diameter of area (circle)
 		QString m_mwgStAreaUnit; // Only "normalized"
+
+		MwgRegionInfo m_mwgRegionInfo;
+		MPRegionInfo  m_mpRegionInfo;
 };
 
 #endif

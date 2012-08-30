@@ -326,6 +326,7 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 			//qDebug() << "stArea:d" << s;
 			region += s + "," + s;
 		}
+		ptag.setRegion(region);
 
 		s = xmpTagString(mwgUnit.arg(i).toLatin1(), false);
 		//qDebug() << "stArea:unit" << s;
@@ -334,13 +335,13 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 		//qDebug() << "mwg-rs:Type" << s;
 
 		s = xmpTagString(mwgDescription.arg(i).toLatin1(), false);
+		ptag.setDescription(s);
 		//qDebug() << "mwg-rs:Description" << s;
 
 		s = xmpTagString(mwgName.arg(i).toLatin1(), false);
 		//qDebug() << "mwg-rs:Name" << s;
+		ptag.setName(s);
 
-		ptag.setText(s);
-		ptag.setRegion(region);
 		tl.append(ptag);
 
 		i++;
@@ -371,9 +372,12 @@ QList<PTag> QExiv2::xmpPTags() const
 			break;
 		}
 		QString text = xmpTagString(textPath.arg(i).toLatin1(), false);
+
 		PTag ptag;
+		ptag.setType(PTag::MpRegionType);
 		ptag.setRegion(region);
-		ptag.setText(text);
+		ptag.setName(text);
+
 		tl.append(ptag);
 		i++;
 	}
