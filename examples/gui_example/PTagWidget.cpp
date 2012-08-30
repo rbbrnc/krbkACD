@@ -50,7 +50,7 @@ void PTagWidget::updateRect()
 	m_rect = rf.toRect();
 
 	QFontMetrics fm = this->fontMetrics();
-	int fmW = fm.width(m_ptag.text());
+	int fmW = fm.width(m_ptag.name());
 	int fmH = fm.height();
 
 	QRect wr(m_rect.x(), m_rect.y(), fmW, m_rect.height() + fmH + 1);
@@ -78,6 +78,6 @@ void PTagWidget::paintEvent(QPaintEvent *pe)
 	painter.setBackground(QBrush(Qt::black, Qt::SolidPattern));
 	painter.setBackgroundMode(Qt::OpaqueMode);
 
-	painter.drawText(m_textRect, Qt::AlignCenter, m_ptag.text(), 0);
+	painter.drawText(m_textRect, Qt::AlignCenter, m_ptag.name(), 0);
 	painter.end();
 }
