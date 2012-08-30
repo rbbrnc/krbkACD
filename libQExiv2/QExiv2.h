@@ -4,8 +4,8 @@
 #include <QSharedDataPointer>
 #include <QStringList>
 #include <QString>
-#include <QFileInfo>
 #include <QImage>
+#include <QDateTime>
 
 // For Tags
 #include "PTag.h"
@@ -43,6 +43,8 @@ class QExiv2
 		bool isExifWritable() const;
 		bool hasExif() const;
 		bool clearExif();
+		QString getExifTagString(const char *exifTagName, bool escapeCR) const;
+		QDateTime getExifTagDateTime(const char *exifTagName) const;
 
 		// IPTC Functions
 		bool isIptcWritable() const;
@@ -52,10 +54,19 @@ class QExiv2
 		// XMP Functions
 		bool isXmpWritable() const;
 		bool hasXmp() const;
+
+		bool removeXmpTag(const char *xmpTagName);
 		QByteArray xmpPacket() const;
 
 		QString xmpTagString(const char *xmpTagName, bool escapeCR) const;
+		bool setXmpTagString(const char *xmpTagName, const QString &value);
+
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
+		bool setXmpTagStringBag(const char *xmpTagName, const QStringList &bag);
+
+		QString getXmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR);
+		bool setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt);
+		QString detectLanguageAlt(const QString& value, QString& lang);
 
 		// Image Comment Functions
 		bool isImgCommentWritable() const;

@@ -33,7 +33,7 @@ void PTagGraphicsItem::updateRect()
 #endif
 
 	QFontMetrics fm(QApplication::font());
-	int fmW = fm.width(m_ptag.text());
+	int fmW = fm.width(m_ptag.name());
 	int fmH = fm.height();
 
 	QRect wr(m_rect.x(), m_rect.y(), fmW, m_rect.height() + fmH + 1);
@@ -121,7 +121,7 @@ void PTagGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *
 	painter->setPen(QPen(textColor, 1, Qt::SolidLine));
 	painter->setBackground(QBrush(textBackgroundColor, Qt::SolidPattern));
 	painter->setBackgroundMode(Qt::OpaqueMode);
-	painter->drawText(m_textRect, Qt::AlignCenter, m_ptag.text(), 0);
+	painter->drawText(m_textRect, Qt::AlignCenter, m_ptag.name(), 0);
 }
 
 void PTagGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)

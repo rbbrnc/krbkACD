@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QFileInfo>
 #include <QDebug>
 
 #include "QExiv2.h"
@@ -107,6 +108,12 @@ bool QExiv2::save()
 			}
 		}
 
+		if (isXmpWritable()) {
+			//d->xmpMetadata.sortByKey();
+			d->image->setXmpData(d->xmpMetadata);
+			update = true;
+		}
+
 		if (update) {
 			qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
 			d->image->writeMetadata();
@@ -136,6 +143,22 @@ bool QExiv2::isXmpWritable() const
 		return (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
 	} catch (Exiv2::Error& e) {
 		d->printExiv2ExceptionError(QString("Cannot check XMP access mode using Exiv2"), e);
+	}
+
+	return false;
+}
+
+bool QExiv2::removeXmpTag(const char* xmpTagName)
+{
+	try {
+		Exiv2::XmpKey xmpKey(xmpTagName);
+		Exiv2::XmpData::iterator it = d->xmpMetadata.findKey(xmpKey);
+		if (it != d->xmpMetadata.end()) {
+			d->xmpMetadata.erase(it);
+			return true;
+		}
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot remove Xmp tag '%1' using Exiv2").arg(xmpTagName), e);
 	}
 
 	return false;
@@ -191,24 +214,23 @@ QString QExiv2::xmpTagString(const char *xmpTagName, bool escapeCR) const
 	return QString();
 }
 
-QStringList QExiv2::xmpTagStringBag(const char* xmpTagName, bool escapeCR) const
+QStringList QExiv2::xmpTagStringBag(const char *xmpTagName, bool escapeCR) const
 {
 	try {
 		Exiv2::XmpData xmpData(d->xmpMetadata);
 		Exiv2::XmpKey key(xmpTagName);
 		Exiv2::XmpData::iterator it = xmpData.findKey(key);
 		if (it != xmpData.end()) {
-			qDebug() << __func__ << "TypeID: 0x" << QString::number(it->typeId(), 16);
+			//qDebug() << __func__ << "TypeID: 0x" << QString::number(it->typeId(), 16);
 			if (it->typeId() == Exiv2::xmpBag) {
-				qDebug() << __func__ << "Found a BAG!";
 				QStringList bag;
 				for (int i = 0; i < it->count(); i++) {
 					std::ostringstream os;
 					os << it->toString(i);
 					QString bagValue = QString::fromUtf8(os.str().c_str());
-					if (escapeCR)
+					if (escapeCR) {
 						bagValue.replace('\n', ' ');
-
+					}
 					bag.append(bagValue);
 				}
 				return bag;
@@ -219,6 +241,29 @@ QStringList QExiv2::xmpTagStringBag(const char* xmpTagName, bool escapeCR) const
 	}
 
 	return QStringList();
+}
+
+bool QExiv2::setXmpTagStringBag(const char* xmpTagName, const QStringList& bag)
+{
+	try {
+		if (bag.isEmpty()) {
+			removeXmpTag(xmpTagName);
+		} else {
+			QStringList list = bag;
+			Exiv2::Value::AutoPtr xmpTxtBag = Exiv2::Value::create(Exiv2::xmpBag);
+
+			for (QStringList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it) {
+				const std::string &txt((*it).toUtf8().constData());
+				xmpTxtBag->read(txt);
+			}
+			d->xmpMetadata[xmpTagName].setValue(xmpTxtBag.get());
+		}
+		return true;
+	} catch( Exiv2::Error& e ) {
+		d->printExiv2ExceptionError(QString("Cannot set Xmp tag string Bag '%1' into image using Exiv2 ").arg(xmpTagName), e);
+	}
+
+	return false;
 }
 
 //
@@ -257,7 +302,7 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 			qDebug() << "stArea:x Missing";
 			break;
 		}
-		qDebug() << "stArea:x" << s;
+		//qDebug() << "stArea:x" << s;
 		region = s + ",";
 
 		s = xmpTagString(mwgY.arg(i).toLatin1(), false);
@@ -265,37 +310,38 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 			qDebug() << "stArea:y Missing";
 			break;
 		}
-		qDebug() << "stArea:y" << s;
+		//qDebug() << "stArea:y" << s;
 		region += s + ",";
 
 		s = xmpTagString(mwgD.arg(i).toLatin1(), false);
 		if (s.isEmpty()) {
 			s = xmpTagString(mwgW.arg(i).toLatin1(), false);
-			qDebug() << "stArea:w" << s;
+			//qDebug() << "stArea:w" << s;
 			region += s + ",";
 
 			s = xmpTagString(mwgH.arg(i).toLatin1(), false);
-			qDebug() << "stArea:h" << s;
+			//qDebug() << "stArea:h" << s;
 			region += s;
 		} else {
-			qDebug() << "stArea:d" << s;
+			//qDebug() << "stArea:d" << s;
 			region += s + "," + s;
 		}
+		ptag.setRegion(region);
 
 		s = xmpTagString(mwgUnit.arg(i).toLatin1(), false);
-		qDebug() << "stArea:unit" << s;
+		//qDebug() << "stArea:unit" << s;
 
 		s = xmpTagString(mwgType.arg(i).toLatin1(), false);
-		qDebug() << "mwg-rs:Type" << s;
+		//qDebug() << "mwg-rs:Type" << s;
 
 		s = xmpTagString(mwgDescription.arg(i).toLatin1(), false);
-		qDebug() << "mwg-rs:Description" << s;
+		ptag.setDescription(s);
+		//qDebug() << "mwg-rs:Description" << s;
 
 		s = xmpTagString(mwgName.arg(i).toLatin1(), false);
-		qDebug() << "mwg-rs:Name" << s;
+		//qDebug() << "mwg-rs:Name" << s;
+		ptag.setName(s);
 
-		ptag.setText(s);
-		ptag.setRegion(region);
 		tl.append(ptag);
 
 		i++;
@@ -326,14 +372,32 @@ QList<PTag> QExiv2::xmpPTags() const
 			break;
 		}
 		QString text = xmpTagString(textPath.arg(i).toLatin1(), false);
+
 		PTag ptag;
+		ptag.setType(PTag::MpRegionType);
 		ptag.setRegion(region);
-		ptag.setText(text);
+		ptag.setName(text);
+
 		tl.append(ptag);
 		i++;
 	}
 
 	return tl;
+}
+
+bool QExiv2::setXmpTagString(const char *xmpTagName, const QString& value)
+{
+	try {
+		const std::string &txt(value.toUtf8().constData());
+		Exiv2::Value::AutoPtr xmpTxtVal = Exiv2::Value::create(Exiv2::xmpText);
+		xmpTxtVal->read(txt);
+		d->xmpMetadata[xmpTagName].setValue(xmpTxtVal.get());
+		return true;
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot set Xmp tag string '%1' into image using Exiv2 ").arg(xmpTagName), e);
+	}
+
+	return false;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -554,3 +618,144 @@ QImage QExiv2::getPreviewImage() const
 
 	return QImage();
 }
+
+
+QString QExiv2::detectLanguageAlt(const QString& value, QString& lang)
+{
+	// Ex. from an Xmp tag Xmp.tiff.copyright: "lang="x-default" (c) Gilles Caulier 2007"
+	if (value.size() > 6 && value.startsWith(QString("lang=\""))) {
+		int pos = value.indexOf(QString("\""), 6);
+		if (pos != -1) {
+			lang = value.mid(6, pos-6);
+			return (value.mid(pos + 2));
+		}
+	}
+
+	lang.clear();
+	return value;
+}
+
+QString QExiv2::getXmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR)
+{
+	try {
+		Exiv2::XmpData xmpData(d->xmpMetadata);
+		Exiv2::XmpKey key(xmpTagName);
+	        for (Exiv2::XmpData::iterator it = xmpData.begin(); it != xmpData.end(); ++it) {
+			if (it->key() == xmpTagName && it->typeId() == Exiv2::langAlt) {
+				for (int i = 0; i < it->count(); i++) {
+					std::ostringstream os;
+					os << it->toString(i);
+					QString lang;
+					QString tagValue = QString::fromUtf8(os.str().c_str());
+					//qDebug() << __func__ << tagValue;
+					tagValue = detectLanguageAlt(tagValue, lang);
+					if (langAlt == lang) {
+						if (escapeCR) {
+							tagValue.replace('\n', ' ');
+						}
+						//qDebug() << tagValue;
+						return tagValue;
+					}
+				}
+			}
+		}
+	} catch (Exiv2::Error& e) {
+		d->printExiv2ExceptionError(QString("Cannot find Xmp key '%1' into image using Exiv2").arg(xmpTagName), e);
+	}
+
+	return QString();
+}
+
+bool QExiv2::setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt)
+{
+	try {
+		QString language("x-default"); // default alternative language.
+
+		if (!langAlt.isEmpty()) {
+			language = langAlt;
+		}
+
+		QString txtLangAlt = QString("lang=%1 %2").arg(language).arg(value);
+
+		const std::string &txt(txtLangAlt.toUtf8().constData());
+		Exiv2::Value::AutoPtr xmpTxtVal = Exiv2::Value::create(Exiv2::langAlt);
+
+#if 0
+		// Search if an Xmp tag already exist.
+		AltLangMap map = getXmpTagStringListLangAlt(xmpTagName, false);
+		if (!map.isEmpty()) {
+			for (AltLangMap::iterator it = map.begin(); it != map.end(); ++it) {
+				if (it.key() != langAlt) {
+					const std::string &val((*it).toUtf8().constData());
+					xmpTxtVal->read(val);
+			                kDebug() << *it;
+				}
+			}
+		}
+#endif
+
+		xmpTxtVal->read(txt);
+		removeXmpTag(xmpTagName);
+		d->xmpMetadata.add(Exiv2::XmpKey(xmpTagName), xmpTxtVal.get());
+		return true;
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError("Cannot set Xmp tag string lang-alt into image using Exiv2 ", e);
+	}
+	return false;
+}
+
+// [EXIF] Get a string tag
+QString QExiv2::getExifTagString(const char *exifTagName, bool escapeCR) const
+{
+	try {
+		Exiv2::ExifKey exifKey(exifTagName);
+		Exiv2::ExifData exifData(d->exifMetadata);
+		Exiv2::ExifData::iterator it = exifData.findKey(exifKey);
+		if (it != exifData.end()) {
+#if 0
+			// cfr KExiv2/libKexiv2: See B.K.O #184156 comment #13
+			std::string val  = it->print(&exifData);
+			QString tagValue = QString::fromLocal8Bit(val.c_str());
+#else
+			std::ostringstream os;
+			os << *it;
+			QString tagValue = QString::fromLocal8Bit(os.str().c_str());
+#endif
+			if (escapeCR) {
+				tagValue.replace('\n', ' ');
+			}
+
+			return tagValue;
+		}
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot find Exif key '%1' into image using Exiv2 ")
+                                  .arg(exifTagName), e);
+	}
+
+	return QString();
+}
+
+// [EXIF] Get a DateTime Tag
+QDateTime QExiv2::getExifTagDateTime(const char *exifTagName) const
+{
+	try {
+		if (!d->exifMetadata.empty()) {
+			Exiv2::ExifData exifData(d->exifMetadata);
+			Exiv2::ExifKey key(exifTagName);
+			Exiv2::ExifData::iterator it = exifData.findKey(key);
+			if (it != exifData.end()) {
+				QDateTime dateTime = QDateTime::fromString(it->toString().c_str(), Qt::ISODate);
+				if (dateTime.isValid()) {
+					//qDebug() << __PRETTY_FUNCTION__ << "[EXIF]" << exifTagName << dateTime;
+					return dateTime;
+				}
+			}
+		}
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot find Exif key '%1' into image using Exiv2 ")
+                                  .arg(exifTagName), e);
+	}
+
+	return QDateTime();
+}
+
