@@ -2,6 +2,7 @@
 #include "ui_MainWindow.h"
 
 #include <QMessageBox>
+#include <QFileInfo>
 #include <QDebug>
 
 #include "QExiv2.h"
@@ -13,10 +14,14 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 	ui->setupUi(this);
 
 	m_xmpUpdate = false;
+	m_commentUpdate = false;
 	ui->saveButton->setEnabled(m_xmpUpdate);
 
 	//XXX check invalid file!
 	ui->fileName->setText(file);
+	ui->fileSize->setText(QString("%1 bytes").arg(QFileInfo(file).size()));
+
+
 	QPixmap thumbnail(file);
 	ui->thumbnail->setPixmap(thumbnail);
 	ui->dimension->setText(QString::number(thumbnail.width()) + "x" + QString::number(thumbnail.height()));
@@ -30,6 +35,16 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 
 		QString dsc = exiv2->getXmpTagStringLangAlt("Xmp.dc.description", QString(), false);
 		ui->description->setPlainText(dsc);
+
+		ui->exifDateTimeOriginal->setText(exiv2->getExifTagDateTime("Exif.Photo.DateTimeOriginal").toString());
+
+		if (exiv2->hasComment()) {
+			ui->imageComment->setPlainText(exiv2->imgComment());
+		}
+		if (!exiv2->isImgCommentWritable()) {
+			ui->imageComment->setReadOnly(true);
+			ui->imageCommentLabel->setText("Comment (ReadOnly)");
+		}
 	}
 
 	m_model = new QStringListModel(this);
@@ -43,6 +58,11 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 
 	connect(ui->description, SIGNAL(textChanged()),
 		this, SLOT(descriptionChanged()));
+
+	connect(ui->imageComment, SIGNAL(textChanged()),
+		this, SLOT(imageCommentChanged()));
+
+	connect(ui->cancelButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
 	m_filter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	ui->listView->setModel(m_filter);
@@ -104,9 +124,19 @@ void MainWindow::on_saveButton_clicked()
 			QMessageBox::critical(this, tr("Error"), tr("Cannot set Xmp.dc.subject"), QMessageBox::Abort);
 			return;
 		}
+	}
 
+	if (m_commentUpdate) {
+		if (!exiv2->setImgComment(ui->imageComment->toPlainText().toAscii())) {
+			QMessageBox::critical(this, tr("Error"), tr("Cannot set Image Comment"), QMessageBox::Abort);
+			return;
+		}
+	}
+
+	if (m_commentUpdate || m_xmpUpdate) {
 		exiv2->save();
 	}
+
 }
 
 void MainWindow::on_ratingSpinBox_valueChanged(double)
@@ -119,4 +149,10 @@ void MainWindow::descriptionChanged()
 {
 	m_xmpUpdate = true;
 	ui->saveButton->setEnabled(m_xmpUpdate);
+}
+
+void MainWindow::imageCommentChanged()
+{
+	m_commentUpdate = true;
+	ui->saveButton->setEnabled(m_commentUpdate);
 }

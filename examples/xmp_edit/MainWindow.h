@@ -26,6 +26,8 @@ class MainWindow : public QMainWindow
 		void on_removeToolButton_clicked();
 		void on_ratingSpinBox_valueChanged(double val);
 		void descriptionChanged();
+		void imageCommentChanged();
+
 	        void on_saveButton_clicked();
 
 	private:
@@ -35,6 +37,7 @@ class MainWindow : public QMainWindow
 
 		QExiv2 *exiv2;
 		bool m_xmpUpdate;
+		bool m_commentUpdate;
 };
 
 #endif // MAINWINDOW_H
