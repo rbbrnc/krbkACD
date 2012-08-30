@@ -35,6 +35,9 @@ class TagEditor : public QMainWindow
 		void mouseMoveEvent(QMouseEvent *);
 		void mouseReleaseEvent(QMouseEvent *);
 
+		void beginAddRegion();
+		void endAddRegion();
+
 	private:
 		Ui::TagEditor *ui;
 		QExiv2 *m_exiv2;

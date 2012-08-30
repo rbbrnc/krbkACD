@@ -66,10 +66,35 @@ void TagEditor::on_saveButton_clicked()
 void TagEditor::on_cancelButton_clicked()
 {
 	if (m_add) {
+		delete m_rubberBand;
 		m_add = false;
 		ui->addRegion->setEnabled(m_add);
-		delete m_rubberBand;
+		ui->regionListView->setEnabled(true);
 	}
+}
+
+void TagEditor::beginAddRegion()
+{
+	if (m_add) {
+		return;
+	}
+
+	m_add = true;
+	ui->addRegion->setEnabled(m_add);
+	ui->regionListView->setEnabled(false);
+}
+
+void TagEditor::endAddRegion()
+{
+	if (!m_add) {
+		return;
+	}
+
+	m_add = false;
+	ui->addRegion->setEnabled(m_add);
+	ui->regionListView->setEnabled(true);
+
+	delete m_rubberBand;
 }
 
 void TagEditor::mousePressEvent(QMouseEvent *event)
@@ -96,8 +121,7 @@ void TagEditor::mouseReleaseEvent(QMouseEvent *)
 	qDebug() << "RubberBand Geometry:" << m_rubberBand->geometry();
 	//m_rubberBand->hide();
 
-	m_add = true;
-	ui->addRegion->setEnabled(m_add);
+	beginAddRegion();
 }
 
 void TagEditor::updatePage(const QModelIndex &index)
@@ -118,7 +142,24 @@ void TagEditor::updatePage(const QModelIndex &index)
 
 void TagEditor::on_addRegion_clicked()
 {
+	QString str = ui->regionName->text();
+	if (str.isEmpty()) {
+		return;
+	}
 
+	str = str.simplified();
+
+	m_model->insertRows(m_model->rowCount(), 1);
+	if (m_model->setData(m_model->index(m_model->rowCount() - 1), str)) {
+		m_update = true;
+		ui->saveButton->setEnabled(m_update);
+	}
+
+        PTag *tag = new PTag();
+	tag->setName(str);
+	m_tagList.append(*tag);
+
+	endAddRegion();
 }
 
 void TagEditor::on_removeRegion_clicked()
@@ -128,8 +169,6 @@ void TagEditor::on_removeRegion_clicked()
 		m_tagList.removeAt(idx.row());
 		m_update = true;
 		ui->saveButton->setEnabled(m_update);
-
-		//on_regionListView_clicked(ui->regionListView->currentIndex());
 		updatePage(ui->regionListView->currentIndex());
 	}
 }
