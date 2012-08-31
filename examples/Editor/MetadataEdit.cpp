@@ -1,5 +1,5 @@
-#include "MainWindow.h"
-#include "ui_MainWindow.h"
+#include "MetadataEdit.h"
+#include "ui_MetadataEdit.h"
 
 #include <QMessageBox>
 #include <QFileInfo>
@@ -7,10 +7,13 @@
 
 #include "QExiv2.h"
 
-MainWindow::MainWindow(const QString file, QWidget *parent) :
-	QMainWindow(parent),
-	ui(new Ui::MainWindow)
+MetadataEdit::MetadataEdit(const QString file, QWidget *parent) :
+	QWidget(parent),
+	ui(new Ui::MetadataEdit)
 {
+	// Init resources on static libraries
+	Q_INIT_RESOURCE(SpotlightWidget);
+
 	ui->setupUi(this);
 
 	m_xmpUpdate = false;
@@ -66,19 +69,19 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 	ui->listView->setModel(m_filter);
 }
 
-MainWindow::~MainWindow()
+MetadataEdit::~MetadataEdit()
 {
 	delete exiv2;
 	delete ui;
 }
 
-void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
+void MetadataEdit::on_listView_doubleClicked(const QModelIndex &index)
 {
 	ui->lineEdit->setText(index.data().toString());
 }
 
 // Add a subject keyword tag to the list
-void MainWindow::addSubjectTag()
+void MetadataEdit::addSubjectTag()
 {
 	QString str = ui->lineEdit->text();
 	if (str.isEmpty())
@@ -96,7 +99,7 @@ void MainWindow::addSubjectTag()
 }
 
 // Removea subject keyword tag to the list
-void MainWindow::removeSubjectTag()
+void MetadataEdit::removeSubjectTag()
 {
 	QModelIndex idx = ui->listView->currentIndex();
 	if (m_model->removeRow(idx.row())) {
@@ -105,7 +108,7 @@ void MainWindow::removeSubjectTag()
 	}
 }
 
-void MainWindow::on_saveButton_clicked()
+void MetadataEdit::on_saveButton_clicked()
 {
 	if (m_xmpUpdate) {
 		//m_model->sort(0);
@@ -138,19 +141,19 @@ void MainWindow::on_saveButton_clicked()
 	}
 }
 
-void MainWindow::on_ratingSpinBox_valueChanged(double)
+void MetadataEdit::on_ratingSpinBox_valueChanged(double)
 {
 	m_xmpUpdate = true;
 	ui->saveButton->setEnabled(m_xmpUpdate);
 }
 
-void MainWindow::descriptionChanged()
+void MetadataEdit::descriptionChanged()
 {
 	m_xmpUpdate = true;
 	ui->saveButton->setEnabled(m_xmpUpdate);
 }
 
-void MainWindow::imageCommentChanged()
+void MetadataEdit::imageCommentChanged()
 {
 	m_commentUpdate = true;
 	ui->saveButton->setEnabled(m_commentUpdate);

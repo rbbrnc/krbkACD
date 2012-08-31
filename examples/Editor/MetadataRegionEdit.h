@@ -1,5 +1,5 @@
-#ifndef TAG_EDITOR_H
-#define TAG_EDITOR_H
+#ifndef METADATA_REGION_EDIT_H
+#define METADATA_REGION_EDIT_H
 
 #include <QMainWindow>
 #include <QMouseEvent>
@@ -10,16 +10,16 @@
 #include "QExiv2.h"
 
 namespace Ui {
-	class TagEditor;
+	class MetadataRegionEdit;
 }
 
-class TagEditor : public QMainWindow
+class MetadataRegionEdit : public QMainWindow
 {
 	Q_OBJECT
 
 	public:
-		explicit TagEditor(const QString file, QWidget *parent = 0);
-		~TagEditor();
+		explicit MetadataRegionEdit(const QString file, QWidget *parent = 0);
+		~MetadataRegionEdit();
 
 	private slots:
 	        void on_saveButton_clicked();
@@ -39,7 +39,7 @@ class TagEditor : public QMainWindow
 		void endAddRegion();
 
 	private:
-		Ui::TagEditor *ui;
+		Ui::MetadataRegionEdit *ui;
 		QExiv2 *m_exiv2;
 
 		bool m_update;
@@ -53,4 +53,4 @@ class TagEditor : public QMainWindow
 		QPoint mypoint;
 };
 
-#endif // TAG_EDITOR_H
+#endif

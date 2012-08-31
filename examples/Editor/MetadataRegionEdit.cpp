@@ -1,14 +1,14 @@
-#include "TagEditor.h"
-#include "ui_TagEditor.h"
+#include "MetadataRegionEdit.h"
+#include "ui_MetadataRegionEdit.h"
 
 #include <QMessageBox>
 #include <QDebug>
 
 #include "QExiv2.h"
 
-TagEditor::TagEditor(const QString file, QWidget *parent) :
+MetadataRegionEdit::MetadataRegionEdit(const QString file, QWidget *parent) :
 	QMainWindow(parent),
-	ui(new Ui::TagEditor)
+	ui(new Ui::MetadataRegionEdit)
 {
 	ui->setupUi(this);
 
@@ -49,21 +49,21 @@ TagEditor::TagEditor(const QString file, QWidget *parent) :
 		this, SLOT(updatePage(const QModelIndex &)));
 }
 
-TagEditor::~TagEditor()
+MetadataRegionEdit::~MetadataRegionEdit()
 {
 	delete m_exiv2;
 	delete m_model;
 	delete ui;
 }
 
-void TagEditor::on_saveButton_clicked()
+void MetadataRegionEdit::on_saveButton_clicked()
 {
 	if (m_update) {
 		// TODO on libQExiv2
 	}
 }
 
-void TagEditor::on_cancelButton_clicked()
+void MetadataRegionEdit::on_cancelButton_clicked()
 {
 	if (m_add) {
 		delete m_rubberBand;
@@ -73,7 +73,7 @@ void TagEditor::on_cancelButton_clicked()
 	}
 }
 
-void TagEditor::beginAddRegion()
+void MetadataRegionEdit::beginAddRegion()
 {
 	if (m_add) {
 		return;
@@ -84,7 +84,7 @@ void TagEditor::beginAddRegion()
 	ui->regionListView->setEnabled(false);
 }
 
-void TagEditor::endAddRegion()
+void MetadataRegionEdit::endAddRegion()
 {
 	if (!m_add) {
 		return;
@@ -97,7 +97,7 @@ void TagEditor::endAddRegion()
 	delete m_rubberBand;
 }
 
-void TagEditor::mousePressEvent(QMouseEvent *event)
+void MetadataRegionEdit::mousePressEvent(QMouseEvent *event)
 {
 	if (!m_add) {
 		// Only one rubber band at time!!
@@ -110,13 +110,13 @@ void TagEditor::mousePressEvent(QMouseEvent *event)
 	}
 }
 
-void TagEditor::mouseMoveEvent(QMouseEvent *event)
+void MetadataRegionEdit::mouseMoveEvent(QMouseEvent *event)
 {
 	// Area Bounding
 	m_rubberBand->setGeometry(QRect(mypoint, event->pos()).normalized());
 }
 
-void TagEditor::mouseReleaseEvent(QMouseEvent *)
+void MetadataRegionEdit::mouseReleaseEvent(QMouseEvent *)
 {
 	qDebug() << "RubberBand Geometry:" << m_rubberBand->geometry();
 	//m_rubberBand->hide();
@@ -124,7 +124,7 @@ void TagEditor::mouseReleaseEvent(QMouseEvent *)
 	beginAddRegion();
 }
 
-void TagEditor::updatePage(const QModelIndex &index)
+void MetadataRegionEdit::updatePage(const QModelIndex &index)
 {
 	if (!index.isValid()) {
 		ui->regionName->clear();
@@ -140,7 +140,7 @@ void TagEditor::updatePage(const QModelIndex &index)
 	ui->regionDescription->setPlainText(m_tagList.at(i).description());
 }
 
-void TagEditor::on_addRegion_clicked()
+void MetadataRegionEdit::on_addRegion_clicked()
 {
 	QString str = ui->regionName->text();
 	if (str.isEmpty()) {
@@ -162,7 +162,7 @@ void TagEditor::on_addRegion_clicked()
 	endAddRegion();
 }
 
-void TagEditor::on_removeRegion_clicked()
+void MetadataRegionEdit::on_removeRegion_clicked()
 {
 	QModelIndex idx = ui->regionListView->currentIndex();
 	if (m_model->removeRow(idx.row())) {

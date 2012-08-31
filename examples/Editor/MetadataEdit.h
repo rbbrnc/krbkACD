@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef METADATA_EDIT_H
+#define METADATA_EDIT_H
 
 #include <QMainWindow>
 #include <QListView>
@@ -9,16 +9,16 @@
 #include "QExiv2.h"
 
 namespace Ui {
-	class MainWindow;
+	class MetadataEdit;
 }
 
-class MainWindow : public QMainWindow
+class MetadataEdit : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		explicit MainWindow(const QString file, QWidget *parent = 0);
-		~MainWindow();
+		explicit MetadataEdit(const QString file, QWidget *parent = 0);
+		~MetadataEdit();
 
 	private slots:
 		void on_listView_doubleClicked(const QModelIndex &index);
@@ -31,7 +31,7 @@ class MainWindow : public QMainWindow
 	        void on_saveButton_clicked();
 
 	private:
-		Ui::MainWindow *ui;
+		Ui::MetadataEdit *ui;
 		QStringListModel *m_model;
 		QSortFilterProxyModel *m_filter;
 
@@ -40,4 +40,4 @@ class MainWindow : public QMainWindow
 		bool m_commentUpdate;
 };
 
-#endif // MAINWINDOW_H
+#endif

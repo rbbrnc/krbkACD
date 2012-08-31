@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TagEditor</class>
- <widget class="QMainWindow" name="TagEditor">
+ <class>MetadataRegionEdit</class>
+ <widget class="QWidget" name="MetadataRegionEdit">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -10,10 +10,15 @@
     <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>TagEditor</string>
-  </property>
-  <widget class="QWidget" name="centralWidget">
+  <widget class="QWidget" name="centralWidget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>731</width>
+     <height>566</height>
+    </rect>
+   </property>
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
@@ -89,13 +94,13 @@
    <widget class="QWidget" name="verticalLayoutWidget_2">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>340</y>
-      <width>441</width>
-      <height>45</height>
+      <x>230</x>
+      <y>330</y>
+      <width>230</width>
+      <height>26</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="regionTypeLayout">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">
        <property name="sizePolicy">
@@ -144,8 +149,8 @@
    <widget class="QWidget" name="verticalLayoutWidget_3">
     <property name="geometry">
      <rect>
-      <x>460</x>
-      <y>340</y>
+      <x>10</x>
+      <y>330</y>
       <width>211</width>
       <height>191</height>
      </rect>
@@ -189,9 +194,9 @@
    <widget class="QWidget" name="verticalLayoutWidget_4">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>380</y>
-      <width>441</width>
+      <x>230</x>
+      <y>360</y>
+      <width>231</width>
       <height>44</height>
      </rect>
     </property>
@@ -223,9 +228,9 @@
    <widget class="QWidget" name="verticalLayoutWidget_5">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>430</y>
-      <width>441</width>
+      <x>230</x>
+      <y>410</y>
+      <width>311</width>
       <height>91</height>
      </rect>
     </property>
@@ -260,7 +265,7 @@
       <x>240</x>
       <y>10</y>
       <width>201</width>
-      <height>16</height>
+      <height>17</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
