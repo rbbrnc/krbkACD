@@ -29,7 +29,6 @@ FileData::FileData(const QString &file)
 	m_fileInfo = QFileInfo(file);
 	m_path = m_fileInfo.absoluteFilePath();
 
-	//setMimeType();
 	m_mimeType = ::mimeType(m_path);
 
 	// load metadata only for mime type "image/xxxx"
