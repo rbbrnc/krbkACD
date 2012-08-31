@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 
 #include "pages.h"
+#include "MetadataDialog.h"
 
 #include <QDebug>
 
@@ -37,7 +38,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), this, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), this, SLOT(renameFile()));
 
-	connect(ui->actionDebug, SIGNAL(triggered()), m_photoPage, SLOT(debugAction()));
+	//connect(ui->actionDebug, SIGNAL(triggered()), m_photoPage, SLOT(debugAction()));
+	connect(ui->actionDebug, SIGNAL(triggered()), this, SLOT(debug()));
 
 	connect(ui->actionQuit,           SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui->actionWork_Page,      SIGNAL(triggered()), this, SLOT(showWorkPage()));
@@ -190,4 +192,11 @@ void MainWindow::deleteFile()
 	default:
 		break;
 	}
+}
+
+void MainWindow::debug()
+{
+	FileData fd = m_browserPage->currentFileData();
+	MetadataDialog dlg(fd.filePath());
+	dlg.exec();
 }

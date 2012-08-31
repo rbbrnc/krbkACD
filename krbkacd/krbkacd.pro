@@ -3,6 +3,7 @@ POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
 
 include(../../qtpropertybrowser/src/qtpropertybrowser.pri)
 include (../krbkACD.pri)
+include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
 
 TARGET = krbkACD
 
@@ -50,4 +51,20 @@ FORMS += mainwindow.ui \
 	metadata_editor_page.ui \
 	duplicate_page.ui
 
+SOURCES += \
+	FileGeneralInfo.cpp \
+	MetadataDialog.cpp \
+	MetadataEdit.cpp \
+	MetadataRegionEdit.cpp
+
+HEADERS += MetadataDialog.h \
+	FileGeneralInfo.h \
+	MetadataEdit.h \
+	MetadataRegionEdit.h
+
+FORMS += MetadataEdit.ui \
+	MetadataRegionEdit.ui \
+	FileGeneralInfo.ui
+
 LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a
+LIBS += -L../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
