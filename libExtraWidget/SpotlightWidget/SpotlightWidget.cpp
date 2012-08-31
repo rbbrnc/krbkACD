@@ -1,5 +1,5 @@
 #include <QStyle>
-#include "spotlight_widget.h"
+#include "SpotlightWidget.h"
 
 SpotlightWidget::SpotlightWidget(QWidget *parent)
 	: QLineEdit(parent)

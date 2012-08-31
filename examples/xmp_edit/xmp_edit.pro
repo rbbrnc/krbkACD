@@ -1,6 +1,7 @@
 TEMPLATE = app
 
 include (../../krbkACD.pri)
+include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -9,15 +10,10 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
-SOURCES += main.cpp \
-	spotlight_widget.cpp \
-        MainWindow.cpp
-
-HEADERS += MainWindow.h \
-	spotlight_widget.h \
-
-FORMS     += MainWindow.ui
-RESOURCES += spotlight_widget.qrc
+SOURCES += main.cpp MainWindow.cpp
+HEADERS += MainWindow.h
+FORMS   += MainWindow.ui
 
 LIBS += $$EXIV2_LDFLAGS -L../../libQExiv2 ../../libQExiv2/libQExiv2.a
+LIBS += -L$$OUT_PWD/../../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 

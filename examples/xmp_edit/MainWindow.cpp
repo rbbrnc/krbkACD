@@ -21,7 +21,6 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 	ui->fileName->setText(file);
 	ui->fileSize->setText(QString("%1 bytes").arg(QFileInfo(file).size()));
 
-
 	QPixmap thumbnail(file);
 	ui->thumbnail->setPixmap(thumbnail);
 	ui->dimension->setText(QString::number(thumbnail.width()) + "x" + QString::number(thumbnail.height()));
@@ -56,11 +55,10 @@ MainWindow::MainWindow(const QString file, QWidget *parent) :
 	connect(ui->lineEdit, SIGNAL(textChanged(QString)),
 		m_filter, SLOT(setFilterFixedString(QString)));
 
-	connect(ui->description, SIGNAL(textChanged()),
-		this, SLOT(descriptionChanged()));
-
-	connect(ui->imageComment, SIGNAL(textChanged()),
-		this, SLOT(imageCommentChanged()));
+	connect(ui->description, SIGNAL(textChanged()), this, SLOT(descriptionChanged()));
+	connect(ui->imageComment, SIGNAL(textChanged()), this, SLOT(imageCommentChanged()));
+	connect(ui->addToolButton,    SIGNAL(clicked()), this, SLOT(addSubjectTag()));
+	connect(ui->removeToolButton, SIGNAL(clicked()), this, SLOT(removeSubjectTag()));
 
 	connect(ui->cancelButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 
@@ -79,7 +77,8 @@ void MainWindow::on_listView_doubleClicked(const QModelIndex &index)
 	ui->lineEdit->setText(index.data().toString());
 }
 
-void MainWindow::on_addToolButton_clicked()
+// Add a subject keyword tag to the list
+void MainWindow::addSubjectTag()
 {
 	QString str = ui->lineEdit->text();
 	if (str.isEmpty())
@@ -96,7 +95,8 @@ void MainWindow::on_addToolButton_clicked()
 	ui->lineEdit->clear();
 }
 
-void MainWindow::on_removeToolButton_clicked()
+// Removea subject keyword tag to the list
+void MainWindow::removeSubjectTag()
 {
 	QModelIndex idx = ui->listView->currentIndex();
 	if (m_model->removeRow(idx.row())) {
@@ -136,7 +136,6 @@ void MainWindow::on_saveButton_clicked()
 	if (m_commentUpdate || m_xmpUpdate) {
 		exiv2->save();
 	}
-
 }
 
 void MainWindow::on_ratingSpinBox_valueChanged(double)

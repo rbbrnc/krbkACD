@@ -22,8 +22,8 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void on_listView_doubleClicked(const QModelIndex &index);
-		void on_addToolButton_clicked();
-		void on_removeToolButton_clicked();
+		void addSubjectTag();
+		void removeSubjectTag();
 		void on_ratingSpinBox_valueChanged(double val);
 		void descriptionChanged();
 		void imageCommentChanged();
@@ -32,8 +32,8 @@ class MainWindow : public QMainWindow
 
 	private:
 		Ui::MainWindow *ui;
-		QStringListModel* m_model;
-		QSortFilterProxyModel* m_filter;
+		QStringListModel *m_model;
+		QSortFilterProxyModel *m_filter;
 
 		QExiv2 *exiv2;
 		bool m_xmpUpdate;

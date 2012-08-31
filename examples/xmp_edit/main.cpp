@@ -3,9 +3,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w(argv[1]);
-    w.show();
+	Q_INIT_RESOURCE(SpotlightWidget);
 
-    return a.exec();
+	QApplication a(argc, argv);
+	MainWindow w(argv[1]);
+	w.show();
+
+	return a.exec();
 }
