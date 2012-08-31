@@ -395,7 +395,7 @@
   <customwidget>
    <class>SpotlightWidget</class>
    <extends>QLineEdit</extends>
-   <header>spotlight_widget.h</header>
+   <header>SpotlightWidget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
