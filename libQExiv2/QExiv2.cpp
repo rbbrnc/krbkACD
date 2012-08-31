@@ -80,10 +80,7 @@ bool QExiv2::load(const QString& filePath)
 		d->xmpMetadata  = image->xmpData();
 		d->imageComment = image->comment();
 
-		//d->debug();
 		d->image = image;
-
-		/*QImage*/ getPreviewImage();
 		return true;
 
 	} catch (Exiv2::Error &e) {
