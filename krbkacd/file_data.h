@@ -30,10 +30,6 @@ class FileData {
 		QImage image();
 
 	private:
-		void setMimeType();
-		void setMd5();
-
-	private:
 		QFileInfo  m_fileInfo;
 		QString    m_path;
 		QString    m_mimeType;

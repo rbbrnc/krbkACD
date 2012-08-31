@@ -1,10 +1,8 @@
-#include <magic.h>
-
 #include <QDir>
-#include <QCryptographicHash>
 
 #include <QDebug>
 
+#include "file_utils.h"
 #include "file_data.h"
 
 
@@ -17,7 +15,7 @@ FileData::FileData(const QFileInfo &fileInfo) :
 {
 	m_path = fileInfo.absoluteFilePath();
 
-	setMimeType();
+	m_mimeType = ::mimeType(m_path);
 
 	// load metadata only for mime type "image/xxxx"
 	if (isImage()) {
@@ -31,7 +29,8 @@ FileData::FileData(const QString &file)
 	m_fileInfo = QFileInfo(file);
 	m_path = m_fileInfo.absoluteFilePath();
 
-	setMimeType();
+	//setMimeType();
+	m_mimeType = ::mimeType(m_path);
 
 	// load metadata only for mime type "image/xxxx"
 	if (isImage()) {
@@ -127,61 +126,23 @@ const QExiv2 FileData::metadata() const
 	return m_metadata;
 }
 
-void FileData::setMimeType()
-{
-	magic_t cookie;
-
-	/* cfr. man libmagic */
-	cookie = magic_open(MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
-	if (cookie == NULL) {
-		qDebug() << __PRETTY_FUNCTION__ << "Error allocating magic cookie";
-	} else {
-		// load magic file (NULL default)
-		// XXX: Can be a custom magic file on .qrc?!
-		if (magic_load(cookie, NULL /*const char *filename*/) != 0) {
-			qDebug() << __PRETTY_FUNCTION__ << "Error loading magic data";
-		} else {
-			const char *s = magic_file(cookie, m_path.toAscii().constData());
-			if (s == NULL) {
-				qDebug() << __PRETTY_FUNCTION__
-					 << "FILE:" << qPrintable(m_path)
-					 << magic_error(cookie);
-			} else {
-				m_mimeType = QString(s);
-			}
-		}
-		magic_close(cookie);
-	}
-}
-
-void FileData::setMd5()
-{
-	QFile file(m_path);
-
-	if (!file.open(QIODevice::ReadOnly))
-		return;
-
-	QByteArray byteArray = file.readAll();
-	m_md5 = QCryptographicHash::hash(byteArray, QCryptographicHash::Md5);
-}
-
 QByteArray FileData::md5()
 {
 	if (m_md5.isEmpty()) {
-		setMd5();
+		m_md5 = ::md5(m_path);
 	}
 	return m_md5;
 }
 
 QByteArray FileData::imageMd5()
 {
-	QByteArray md5;
 	QImage img = image();
-	if (!img.isNull()) {
-		QByteArray ba((const char *) img.constBits());
-		md5 = QCryptographicHash::hash(ba, QCryptographicHash::Md5);
+	if (img.isNull()) {
+		return QByteArray();
 	}
-	return md5;
+
+	QByteArray ba((const char *) img.constBits());
+	return ::md5(ba);
 }
 
 void FileData::print()
