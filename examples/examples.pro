@@ -1,5 +1,7 @@
-TEMPLATE    = subdirs
-SUBDIRS     = core_example \
-	      gui_example \
-	      LineEditWidget \
-	      Editor \
+TEMPLATE = subdirs
+SUBDIRS  = \
+	ModelView \
+	core_example \
+	gui_example \
+	LineEditWidget \
+	Editor \

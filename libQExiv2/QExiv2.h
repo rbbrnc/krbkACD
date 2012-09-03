@@ -15,6 +15,9 @@ class QExiv2DataPrivate;
 
 
 struct exifData {
+	QString family;
+	QString group;
+	QString tagName;
 	QString key;
 	unsigned int tag;
 	QString typeName;

@@ -516,6 +516,9 @@ QList<exifData> QExiv2::exifDataList() const
 	for (Exiv2::ExifData::const_iterator md = d->exifMetadata.begin(); md != end; ++md) {
 		struct exifData ed;
 
+		ed.family   = QString(md->familyName());
+		ed.group    = QString(md->groupName().c_str());
+		ed.tagName  = QString(md->tagName().c_str());
 		ed.key      = QString(md->key().c_str());
 		ed.tag      = md->tag();
 		ed.typeName = QString(md->typeName());
@@ -542,6 +545,9 @@ QList<exifData> QExiv2::iptcDataList() const
 		struct exifData ed;
 
 		ed.key      = QString(md->key().c_str());
+		ed.family   = QString(md->familyName());
+		ed.group    = QString(md->groupName().c_str());
+		ed.tagName  = QString(md->tagName().c_str());
 		ed.tag      = md->tag();
 		ed.typeName = QString(md->typeName());
 		ed.typeId   = md->typeId();
@@ -567,6 +573,9 @@ QList<exifData> QExiv2::xmpDataList() const
 		struct exifData ed;
 
 		ed.key      = QString(md->key().c_str());
+		ed.family   = QString(md->familyName());
+		ed.group    = QString(md->groupName().c_str());
+		ed.tagName  = QString(md->tagName().c_str());
 		ed.tag      = md->tag();
 		ed.typeName = QString(md->typeName());
 		ed.typeId   = md->typeId();
@@ -739,6 +748,15 @@ QDateTime QExiv2::getExifTagDateTime(const char *exifTagName) const
 		if (!d->exifMetadata.empty()) {
 			Exiv2::ExifData exifData(d->exifMetadata);
 			Exiv2::ExifKey key(exifTagName);
+
+			qDebug() << "TAG Name:" << QString(key.tagName().c_str());
+			qDebug() << "TAG Label:" << QString(key.tagLabel().c_str());
+			qDebug() << "TAG GroupName:" << QString(key.groupName().c_str());
+			qDebug() << "TAG Family Name:" << QString(key.familyName());
+			qDebug() << "TAG Desc:" << QString(key.tagDesc().c_str());
+
+
+
 			Exiv2::ExifData::iterator it = exifData.findKey(key);
 			if (it != exifData.end()) {
 				QDateTime dateTime = QDateTime::fromString(it->toString().c_str(), Qt::ISODate);
