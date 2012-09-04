@@ -24,18 +24,7 @@ MetadataModel::MetadataModel(const QExiv2 *data, QObject *parent)
 		 << "Count";
 
 	rootItem = new MetadataItem(rootData);
-
-	if (data->hasExif()) {
-		addNode("EXIF", data->exifDataList(), rootItem);
-	}
-	if (data->hasIptc()) {
-		addNode("IPTC", data->iptcDataList(), rootItem);
-	}
-	if (data->hasXmp()) {
-		addNode("XMP", data->xmpDataList(), rootItem);
-	}
-
-//	setupModelData(data, rootItem);
+	setupModelData(data, rootItem);
 }
 
 MetadataModel::~MetadataModel()
@@ -45,10 +34,11 @@ MetadataModel::~MetadataModel()
 
 int MetadataModel::columnCount(const QModelIndex &parent) const
 {
-	if (parent.isValid())
+	if (parent.isValid()) {
 		return static_cast<MetadataItem*>(parent.internalPointer())->columnCount();
-	else
+	} else {
 		return rootItem->columnCount();
+	}
 }
 
 QVariant MetadataModel::data(const QModelIndex &index, int role) const
@@ -128,40 +118,77 @@ int MetadataModel::rowCount(const QModelIndex &parent) const
 	return parentItem->childCount();
 }
 
-void MetadataModel::addNode(const QString name, const QList<exifData> &data, MetadataItem *parent)
+MetadataItem *MetadataModel::addFamilyNode(const exifData &data, MetadataItem *parent)
 {
-	QList<QVariant> c;
-	c << name << "" << "" << "" << "" << "" << "";
-	MetadataItem *node = new MetadataItem(c, parent);
+	QList<QVariant> columnData;
+	columnData << data.family << "" << "" << "" << "" << "" << "";
+	MetadataItem *node = new MetadataItem(columnData, parent);
 	parent->appendChild(node);
+	return node;
+}
 
-	QList<MetadataItem *> parents;
-	parents << node;
+void MetadataModel::addNode(QHash<QString, MetadataItem *> &map, const exifData &data, MetadataItem *parent)
+{
+	QList<QVariant> columnData;
+	MetadataItem *groupItem;
 
-	for (int i = 0; i < data.size(); i++) {
-		struct exifData d = data.at(i);
-		QList<QVariant> columnData;
-		columnData << d.family;
-		columnData << d.group;
-		columnData << d.tagName;
-//		columnData << d.key;
-		columnData << d.value;
-		columnData << "0x" + QString::number(d.tag, 16);
-		columnData << d.typeName;
-		columnData << QString::number(d.count, 10);
-		parents.last()->appendChild(new MetadataItem(columnData, parents.last()));
+	//qDebug() << data.key;
+	if (!map.contains(data.group)) {
+		columnData << "" << data.group << "" << "" << "" << "" << "";
+		groupItem = new MetadataItem(columnData, parent);
+		parent->appendChild(groupItem);
+		map[data.group] = groupItem;
+	} else {
+		groupItem = map.value(data.group);
 	}
+
+	columnData.clear();
+	columnData << ""; //columnData << data.family;
+	columnData << ""; //columnData << data.group;
+	columnData << data.tagName;
+	columnData << data.value;
+	columnData << "0x" + QString::number(data.tag, 16);
+	columnData << data.typeName;
+	columnData << QString::number(data.count, 10);
+	MetadataItem *item =  new MetadataItem(columnData, groupItem);
+	groupItem->appendChild(item);
 }
 
 void MetadataModel::setupModelData(const QExiv2 *data, MetadataItem *parent)
 {
+	QList<exifData> exifData;
+	MetadataItem *family;
+
 	if (data->hasExif()) {
-		addNode("Exif", data->exifDataList(), parent);
+		exifData = data->exifDataList();
+		if (exifData.size() > 0) {
+			QHash<QString, MetadataItem *> groupMap;
+			family = addFamilyNode(exifData.at(0), parent);
+			for (int i = 0; i < exifData.size(); i++) {
+				addNode(groupMap, exifData.at(i), family);
+			}
+		}
 	}
+
 	if (data->hasIptc()) {
-		addNode("Iptc", data->iptcDataList(), parent);
+		exifData = data->iptcDataList();
+		if (exifData.size() > 0) {
+			QHash<QString, MetadataItem *> groupMap;
+			family = addFamilyNode(exifData.at(0), parent);
+			for (int i = 0; i < exifData.size(); i++) {
+				addNode(groupMap, exifData.at(i), family);
+			}
+		}
 	}
+
 	if (data->hasXmp()) {
-		addNode("Xmp", data->xmpDataList(), parent);
+		exifData = data->xmpDataList();
+		if (exifData.size() > 0) {
+			QHash<QString, MetadataItem *> groupMap;
+			family = addFamilyNode(exifData.at(0), parent);
+			for (int i = 0; i < exifData.size(); i++) {
+				addNode(groupMap, exifData.at(i), family);
+			}
+		}
 	}
 }

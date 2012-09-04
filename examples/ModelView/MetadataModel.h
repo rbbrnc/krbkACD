@@ -27,7 +27,9 @@ class MetadataModel : public QAbstractItemModel
 
 	private:
 		void setupModelData(const QExiv2 *data, MetadataItem *parent);
-		void addNode(const QString name, const QList<exifData> &data, MetadataItem *parent);
+		void addNode(QHash<QString, MetadataItem *> &map, const exifData &data, MetadataItem *parent);
+
+		MetadataItem *addFamilyNode(const exifData &data, MetadataItem *parent);
 
 	private:
 		MetadataItem *rootItem;
