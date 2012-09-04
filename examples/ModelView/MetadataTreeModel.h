@@ -1,5 +1,5 @@
-#ifndef METADATA_MODEL_H
-#define METADATA_MODEL_H
+#ifndef METADATA_TREE_MODEL_H
+#define METADATA_TREE_MODEL_H
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -7,15 +7,15 @@
 
 #include "QExiv2.h"
 
-class MetadataItem;
+class MetadataTreeItem;
 
-class MetadataModel : public QAbstractItemModel
+class MetadataTreeModel : public QAbstractItemModel
 {
 	Q_OBJECT
 
 	public:
-		MetadataModel(const QExiv2 *data, QObject *parent = 0);
-		~MetadataModel();
+		MetadataTreeModel(const QExiv2 *data, QObject *parent = 0);
+		~MetadataTreeModel();
 
 		QVariant data(const QModelIndex &index, int role) const;
 		Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -26,13 +26,13 @@ class MetadataModel : public QAbstractItemModel
 		int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
 	private:
-		void setupModelData(const QExiv2 *data, MetadataItem *parent);
-		void addNode(QHash<QString, MetadataItem *> &map, const exifData &data, MetadataItem *parent);
+		void setupModelData(const QExiv2 *data, MetadataTreeItem *parent);
+		void addNode(QHash<QString, MetadataTreeItem *> &map, const exifData &data, MetadataTreeItem *parent);
 
-		MetadataItem *addFamilyNode(const exifData &data, MetadataItem *parent);
+		MetadataTreeItem *addFamilyNode(const exifData &data, MetadataTreeItem *parent);
 
 	private:
-		MetadataItem *rootItem;
+		MetadataTreeItem *rootItem;
 };
 
 #endif

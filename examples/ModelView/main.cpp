@@ -1,7 +1,7 @@
 #include <QtGui>
 
 #include "QExiv2.h"
-#include "MetadataModel.h"
+#include "MetadataTreeModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,10 +11,11 @@ int main(int argc, char *argv[])
 
 	QExiv2 *exiv2 = new QExiv2();
 	if (exiv2->load(file)) {
-		MetadataModel model(exiv2);
+		MetadataTreeModel model(exiv2);
 		QTreeView view;
+		view.setUniformRowHeights(true);
 		view.setModel(&model);
-		view.setWindowTitle(QObject::tr("Simple Tree Model"));
+		view.setWindowTitle(QObject::tr("Metadata Tree Model"));
 		view.show();
 		return app.exec();
 	}

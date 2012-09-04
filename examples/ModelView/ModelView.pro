@@ -10,12 +10,12 @@ UI_DIR = ui
 RCC_DIR = resources
 
 SOURCES += main.cpp \
-	MetadataItem.cpp \
-	MetadataModel.cpp \
+	MetadataTreeItem.cpp \
+	MetadataTreeModel.cpp \
 
 HEADERS += MetadataDialog.h \
-	MetadataItem.h \
-	MetadataModel.h
+	MetadataTreeItem.h \
+	MetadataTreeModel.h
 
 LIBS += $$EXIV2_LDFLAGS
 LIBS += -L../../libQExiv2 ../../libQExiv2/libQExiv2.a

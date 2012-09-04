@@ -1,5 +1,5 @@
 /*
-    treemodel.cpp
+    Metadata Tree Model
 
     Provides a simple tree model to show how to create and use hierarchical
     models.
@@ -8,10 +8,10 @@
 #include <QtGui>
 #include <QDebug>
 
-#include "MetadataItem.h"
-#include "MetadataModel.h"
+#include "MetadataTreeItem.h"
+#include "MetadataTreeModel.h"
 
-MetadataModel::MetadataModel(const QExiv2 *data, QObject *parent)
+MetadataTreeModel::MetadataTreeModel(const QExiv2 *data, QObject *parent)
     : QAbstractItemModel(parent)
 {
 	QList<QVariant> rootData;
@@ -23,25 +23,25 @@ MetadataModel::MetadataModel(const QExiv2 *data, QObject *parent)
 		 << "Type"
 		 << "Count";
 
-	rootItem = new MetadataItem(rootData);
+	rootItem = new MetadataTreeItem(rootData);
 	setupModelData(data, rootItem);
 }
 
-MetadataModel::~MetadataModel()
+MetadataTreeModel::~MetadataTreeModel()
 {
 	delete rootItem;
 }
 
-int MetadataModel::columnCount(const QModelIndex &parent) const
+int MetadataTreeModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
-		return static_cast<MetadataItem*>(parent.internalPointer())->columnCount();
+		return static_cast<MetadataTreeItem*>(parent.internalPointer())->columnCount();
 	} else {
 		return rootItem->columnCount();
 	}
 }
 
-QVariant MetadataModel::data(const QModelIndex &index, int role) const
+QVariant MetadataTreeModel::data(const QModelIndex &index, int role) const
 {
 	if (!index.isValid())
 		return QVariant();
@@ -49,12 +49,12 @@ QVariant MetadataModel::data(const QModelIndex &index, int role) const
 	if (role != Qt::DisplayRole)
 		return QVariant();
 
-	MetadataItem *item = static_cast<MetadataItem*>(index.internalPointer());
+	MetadataTreeItem *item = static_cast<MetadataTreeItem*>(index.internalPointer());
 
 	return item->data(index.column());
 }
 
-Qt::ItemFlags MetadataModel::flags(const QModelIndex &index) const
+Qt::ItemFlags MetadataTreeModel::flags(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return 0;
@@ -62,7 +62,7 @@ Qt::ItemFlags MetadataModel::flags(const QModelIndex &index) const
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant MetadataModel::headerData(int section, Qt::Orientation orientation,
+QVariant MetadataTreeModel::headerData(int section, Qt::Orientation orientation,
                                int role) const
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
@@ -71,32 +71,32 @@ QVariant MetadataModel::headerData(int section, Qt::Orientation orientation,
 	return QVariant();
 }
 
-QModelIndex MetadataModel::index(int row, int column, const QModelIndex &parent) const
+QModelIndex MetadataTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
 	if (!hasIndex(row, column, parent))
 		return QModelIndex();
 
-	MetadataItem *parentItem;
+	MetadataTreeItem *parentItem;
 
 	if (!parent.isValid())
 		parentItem = rootItem;
 	else
-		parentItem = static_cast<MetadataItem*>(parent.internalPointer());
+		parentItem = static_cast<MetadataTreeItem*>(parent.internalPointer());
 
-	MetadataItem *childItem = parentItem->child(row);
+	MetadataTreeItem *childItem = parentItem->child(row);
 	if (childItem)
 		return createIndex(row, column, childItem);
 	else
 		return QModelIndex();
 }
 
-QModelIndex MetadataModel::parent(const QModelIndex &index) const
+QModelIndex MetadataTreeModel::parent(const QModelIndex &index) const
 {
 	if (!index.isValid())
 		return QModelIndex();
 
-	MetadataItem *childItem = static_cast<MetadataItem*>(index.internalPointer());
-	MetadataItem *parentItem = childItem->parent();
+	MetadataTreeItem *childItem = static_cast<MetadataTreeItem*>(index.internalPointer());
+	MetadataTreeItem *parentItem = childItem->parent();
 
 	if (parentItem == rootItem)
 		return QModelIndex();
@@ -104,38 +104,38 @@ QModelIndex MetadataModel::parent(const QModelIndex &index) const
 	return createIndex(parentItem->row(), 0, parentItem);
 }
 
-int MetadataModel::rowCount(const QModelIndex &parent) const
+int MetadataTreeModel::rowCount(const QModelIndex &parent) const
 {
-	MetadataItem *parentItem;
+	MetadataTreeItem *parentItem;
 	if (parent.column() > 0)
 		return 0;
 
 	if (!parent.isValid())
 		parentItem = rootItem;
 	else
-		parentItem = static_cast<MetadataItem*>(parent.internalPointer());
+		parentItem = static_cast<MetadataTreeItem*>(parent.internalPointer());
 
 	return parentItem->childCount();
 }
 
-MetadataItem *MetadataModel::addFamilyNode(const exifData &data, MetadataItem *parent)
+MetadataTreeItem *MetadataTreeModel::addFamilyNode(const exifData &data, MetadataTreeItem *parent)
 {
 	QList<QVariant> columnData;
 	columnData << data.family << "" << "" << "" << "" << "" << "";
-	MetadataItem *node = new MetadataItem(columnData, parent);
+	MetadataTreeItem *node = new MetadataTreeItem(columnData, parent);
 	parent->appendChild(node);
 	return node;
 }
 
-void MetadataModel::addNode(QHash<QString, MetadataItem *> &map, const exifData &data, MetadataItem *parent)
+void MetadataTreeModel::addNode(QHash<QString, MetadataTreeItem *> &map, const exifData &data, MetadataTreeItem *parent)
 {
 	QList<QVariant> columnData;
-	MetadataItem *groupItem;
+	MetadataTreeItem *groupItem;
 
 	//qDebug() << data.key;
 	if (!map.contains(data.group)) {
 		columnData << "" << data.group << "" << "" << "" << "" << "";
-		groupItem = new MetadataItem(columnData, parent);
+		groupItem = new MetadataTreeItem(columnData, parent);
 		parent->appendChild(groupItem);
 		map[data.group] = groupItem;
 	} else {
@@ -150,19 +150,19 @@ void MetadataModel::addNode(QHash<QString, MetadataItem *> &map, const exifData 
 	columnData << "0x" + QString::number(data.tag, 16);
 	columnData << data.typeName;
 	columnData << QString::number(data.count, 10);
-	MetadataItem *item =  new MetadataItem(columnData, groupItem);
+	MetadataTreeItem *item =  new MetadataTreeItem(columnData, groupItem);
 	groupItem->appendChild(item);
 }
 
-void MetadataModel::setupModelData(const QExiv2 *data, MetadataItem *parent)
+void MetadataTreeModel::setupModelData(const QExiv2 *data, MetadataTreeItem *parent)
 {
 	QList<exifData> exifData;
-	MetadataItem *family;
+	MetadataTreeItem *family;
 
 	if (data->hasExif()) {
 		exifData = data->exifDataList();
 		if (exifData.size() > 0) {
-			QHash<QString, MetadataItem *> groupMap;
+			QHash<QString, MetadataTreeItem *> groupMap;
 			family = addFamilyNode(exifData.at(0), parent);
 			for (int i = 0; i < exifData.size(); i++) {
 				addNode(groupMap, exifData.at(i), family);
@@ -173,7 +173,7 @@ void MetadataModel::setupModelData(const QExiv2 *data, MetadataItem *parent)
 	if (data->hasIptc()) {
 		exifData = data->iptcDataList();
 		if (exifData.size() > 0) {
-			QHash<QString, MetadataItem *> groupMap;
+			QHash<QString, MetadataTreeItem *> groupMap;
 			family = addFamilyNode(exifData.at(0), parent);
 			for (int i = 0; i < exifData.size(); i++) {
 				addNode(groupMap, exifData.at(i), family);
@@ -184,7 +184,7 @@ void MetadataModel::setupModelData(const QExiv2 *data, MetadataItem *parent)
 	if (data->hasXmp()) {
 		exifData = data->xmpDataList();
 		if (exifData.size() > 0) {
-			QHash<QString, MetadataItem *> groupMap;
+			QHash<QString, MetadataTreeItem *> groupMap;
 			family = addFamilyNode(exifData.at(0), parent);
 			for (int i = 0; i < exifData.size(); i++) {
 				addNode(groupMap, exifData.at(i), family);
