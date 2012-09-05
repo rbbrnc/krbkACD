@@ -35,10 +35,10 @@ MetadataEdit::MetadataEdit(const QString file, QWidget *parent) :
 		data = exiv2->xmpTagStringBag("Xmp.dc.subject", true);
 		ui->ratingSpinBox->setValue(exiv2->xmpTagString("Xmp.xmp.Rating", true).toDouble());
 
-		QString dsc = exiv2->getXmpTagStringLangAlt("Xmp.dc.description", QString(), false);
+		QString dsc = exiv2->xmpTagStringLangAlt("Xmp.dc.description", QString(), false);
 		ui->description->setPlainText(dsc);
 
-		ui->exifDateTimeOriginal->setText(exiv2->getExifTagDateTime("Exif.Photo.DateTimeOriginal").toString());
+		ui->exifDateTimeOriginal->setText(exiv2->exifTagDateTime("Exif.Photo.DateTimeOriginal").toString());
 
 		if (exiv2->hasComment()) {
 			ui->imageComment->setPlainText(exiv2->imgComment());

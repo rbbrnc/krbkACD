@@ -587,7 +587,7 @@ QList<exifData> QExiv2::xmpDataList() const
 	return lst;
 }
 
-QImage QExiv2::getPreviewImage() const
+QImage QExiv2::previewImage() const
 {
 	try {
 		// Get a list of preview images available in the image. The list is sorted
@@ -641,7 +641,7 @@ QString QExiv2::detectLanguageAlt(const QString& value, QString& lang)
 	return value;
 }
 
-QString QExiv2::getXmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR)
+QString QExiv2::xmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR)
 {
 	try {
 		Exiv2::XmpData xmpData(d->xmpMetadata);
@@ -711,7 +711,7 @@ bool QExiv2::setXmpTagStringLangAlt(const char *xmpTagName, const QString &value
 }
 
 // [EXIF] Get a string tag
-QString QExiv2::getExifTagString(const char *exifTagName, bool escapeCR) const
+QString QExiv2::exifTagString(const char *exifTagName, bool escapeCR) const
 {
 	try {
 		Exiv2::ExifKey exifKey(exifTagName);
@@ -742,7 +742,7 @@ QString QExiv2::getExifTagString(const char *exifTagName, bool escapeCR) const
 }
 
 // [EXIF] Get a DateTime Tag
-QDateTime QExiv2::getExifTagDateTime(const char *exifTagName) const
+QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 {
 	try {
 		if (!d->exifMetadata.empty()) {

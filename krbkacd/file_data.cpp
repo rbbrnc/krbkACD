@@ -75,7 +75,7 @@ bool FileData::isImage() const
 
 QPixmap FileData::previewPixmap(int w, int h)
 {
-	QImage preview = m_metadata.getPreviewImage();
+	QImage preview = m_metadata.previewImage();
 	if (preview.isNull()) {
 		if (m_pixmap.load(m_path)) {
 			return m_pixmap.scaled(w, h, Qt::KeepAspectRatio);
