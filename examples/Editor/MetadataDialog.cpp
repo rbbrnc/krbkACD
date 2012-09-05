@@ -2,6 +2,7 @@
 
 #include "MetadataEdit.h"
 #include "MetadataRegionEdit.h"
+#include "MetadataGPS.h"
 #include "FileGeneralInfo.h"
 #include "MetadataDialog.h"
 
@@ -14,6 +15,7 @@ MetadataDialog::MetadataDialog(const QString &fileName, QWidget *parent)
 	tabWidget->addTab(new FileGeneralInfo(fileInfo), tr("General"));
 	tabWidget->addTab(new MetadataEdit(fileName), tr("Metadata"));
 	tabWidget->addTab(new MetadataRegionEdit(fileName), tr("Regions"));
+	tabWidget->addTab(new MetadataGPS(fileInfo), tr("Locations/GPS"));
 
 	buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 

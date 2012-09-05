@@ -14,15 +14,18 @@ SOURCES += main.cpp \
 	FileGeneralInfo.cpp \
 	MetadataDialog.cpp \
 	MetadataEdit.cpp \
+	MetadataGPS.cpp \
 	MetadataRegionEdit.cpp
 
 HEADERS += MetadataDialog.h \
 	FileGeneralInfo.h \
 	MetadataEdit.h \
+	MetadataGPS.h \
 	MetadataRegionEdit.h
 
 FORMS   += MetadataEdit.ui \
 	MetadataRegionEdit.ui \
+	MetadataGPS.ui \
 	FileGeneralInfo.ui
 
 LIBS += $$EXIV2_LDFLAGS
