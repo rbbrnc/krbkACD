@@ -5,12 +5,7 @@
 #include <QModelIndex>
 #include <QVariant>
 
-#if 0
-class QExiv2;	// nascondere la struct exifData
-#else
-#include "QExiv2.h"
-#endif
-
+class QExiv2;
 class MetadataTreeItem;
 
 class MetadataTreeModel : public QAbstractItemModel
@@ -31,9 +26,9 @@ class MetadataTreeModel : public QAbstractItemModel
 
 	private:
 		void setupModelData(MetadataTreeItem *parent);
-		void addNode(QHash<QString, MetadataTreeItem *> &map, const exifData &data, MetadataTreeItem *parent);
-
-		MetadataTreeItem *addFamilyNode(const exifData &data, MetadataTreeItem *parent);
+		void addNode(QHash<QString, MetadataTreeItem *> &map,
+				QList<QVariant> &columnData,
+				MetadataTreeItem *parent);
 
 	private:
 		QExiv2 *m_metadata;

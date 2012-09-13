@@ -12,6 +12,8 @@
 #include <QtGui>
 #include <QDebug>
 
+#include "QExiv2.h"
+
 #include "MetadataTreeItem.h"
 #include "MetadataTreeModel.h"
 
@@ -58,7 +60,7 @@ QVariant MetadataTreeModel::data(const QModelIndex &index, int role) const
 		return item->data(index.column());
 	}
 
-	// Use Qt::WhatsThisRole for 'match' calls.
+	// Use Qt::WhatsThisRole for 'match' key data.
 	// return 7th column (key)
 	if (role == Qt::WhatsThisRole) {
 		MetadataTreeItem *item = static_cast<MetadataTreeItem*>(index.internalPointer());
@@ -140,98 +142,85 @@ int MetadataTreeModel::rowCount(const QModelIndex &parent) const
 	return parentItem->childCount();
 }
 
-MetadataTreeItem *MetadataTreeModel::addFamilyNode(const exifData &data, MetadataTreeItem *parent)
+void MetadataTreeModel::addNode(QHash<QString, MetadataTreeItem *> &map,
+				QList<QVariant> &columnData,
+				MetadataTreeItem *parent)
 {
-	QList<QVariant> columnData;
-	columnData << data.family << "" << "" << "" << "" << "" << "" << "";
-	MetadataTreeItem *node = new MetadataTreeItem(columnData, parent);
-	parent->appendChild(node);
-	return node;
-}
+	// Search for family Node
+	QModelIndexList fNodes = match(index(0, 0), Qt::DisplayRole, columnData[0]);
 
-void MetadataTreeModel::addNode(QHash<QString, MetadataTreeItem *> &map, const exifData &data, MetadataTreeItem *parent)
-{
-	QList<QVariant> columnData;
-	MetadataTreeItem *groupItem;
-
-	//qDebug() << data.key;
-	if (!map.contains(data.group)) {
-		columnData << "" << data.group << "" << "" << "" << "" << "" << "";
-		groupItem = new MetadataTreeItem(columnData, parent);
-		parent->appendChild(groupItem);
-		map[data.group] = groupItem;
+	MetadataTreeItem *familyNode;
+	if (fNodes.isEmpty()) {
+		// Add a new family node
+		QList<QVariant> familyData;
+		familyData << columnData[0] << "" << "" << "" << "" << "" << "" << "";
+		familyNode = new MetadataTreeItem(familyData, parent);
+		parent->appendChild(familyNode);
 	} else {
-		groupItem = map.value(data.group);
+		familyNode = static_cast<MetadataTreeItem*>(fNodes.at(0).internalPointer());
 	}
 
-	columnData.clear();
-	columnData << ""; //columnData << data.family;
-	columnData << ""; //columnData << data.group;
-	columnData << data.tagName;
-	columnData << data.value;
-	columnData << "0x" + QString::number(data.tag, 16);
-	columnData << data.typeName;
-	columnData << QString::number(data.count, 10);
-	columnData << data.key;
+	MetadataTreeItem *groupNode;
+	const QString  group  = columnData[1].toString();
 
-	MetadataTreeItem *item =  new MetadataTreeItem(columnData, groupItem);
-	groupItem->appendChild(item);
+	if (!map.contains(group)) {
+		// Add a new group node to the model and to the map of groups.
+		QList<QVariant> groupData;
+		groupData << "" << group << "" << "" << "" << "" << "" << "";
+		groupNode = new MetadataTreeItem(groupData, familyNode);
+		familyNode->appendChild(groupNode);
+		map[group] = groupNode;
+	} else {
+		groupNode = map.value(group);
+	}
+
+	// Clear 'family' and 'group' from leaf nodes
+	columnData[0] = QVariant();
+	columnData[1] = QVariant();
+	MetadataTreeItem *item = new MetadataTreeItem(columnData, groupNode);
+	groupNode->appendChild(item);
 }
 
+// Fill model with data
 void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 {
-	QList<exifData> exifData;
-	MetadataTreeItem *family;
+	QList<exifData> data;
 
 	if (m_metadata->hasExif()) {
-		exifData = m_metadata->exifDataList();
-		if (exifData.size() > 0) {
-			QHash<QString, MetadataTreeItem *> groupMap;
-			family = addFamilyNode(exifData.at(0), parent);
-			for (int i = 0; i < exifData.size(); i++) {
-				addNode(groupMap, exifData.at(i), family);
-			}
-		}
+		data = m_metadata->exifDataList();
 	}
 
 	if (m_metadata->hasIptc()) {
-		exifData = m_metadata->iptcDataList();
-		if (exifData.size() > 0) {
-			QHash<QString, MetadataTreeItem *> groupMap;
-			family = addFamilyNode(exifData.at(0), parent);
-			for (int i = 0; i < exifData.size(); i++) {
-				addNode(groupMap, exifData.at(i), family);
-			}
-		}
+		data += m_metadata->iptcDataList();
 	}
 
 	if (m_metadata->hasXmp()) {
-		exifData = m_metadata->xmpDataList();
-		if (exifData.size() > 0) {
-			QHash<QString, MetadataTreeItem *> groupMap;
-			family = addFamilyNode(exifData.at(0), parent);
-			for (int i = 0; i < exifData.size(); i++) {
-				addNode(groupMap, exifData.at(i), family);
-			}
+		data += m_metadata->xmpDataList();
+	}
+
+	if (data.size() > 0) {
+		QList<QVariant> columnData;
+		columnData << "" << "" << "" << "" << "" << "" << "" << "";
+		QHash<QString, MetadataTreeItem *> groupMap;
+		for (int i = 0; i < data.size(); i++) {
+			columnData[0] = data.at(i).family;
+			columnData[1] = data.at(i).group;
+			columnData[2] = data.at(i).tagName;
+			columnData[3] = data.at(i).value;
+			columnData[4] = "0x" + QString::number(data.at(i).tag, 16);
+			columnData[5] = data.at(i).typeName;
+			columnData[6] = QString::number(data.at(i).count, 10);
+			columnData[7] = data.at(i).key;
+
+			addNode(groupMap, columnData, parent);
 		}
 	}
 
+	// Image comment
 	if (m_metadata->hasComment()) {
 		QList<QVariant> columnData;
-		columnData << "Comment" << "" << "" << "" << "" << "" << "" << "";
-		MetadataTreeItem *node = new MetadataTreeItem(columnData, parent);
-		parent->appendChild(node);
-		columnData.clear();
-		columnData << "";
-		columnData << "";
-		columnData << "";
-		columnData << m_metadata->imgComment();
-		columnData << "";
-		columnData << "";
-		columnData << "";
-		columnData << "comment";
-		MetadataTreeItem *item =  new MetadataTreeItem(columnData, node);
-		node->appendChild(item);
+		columnData << "Comment" << "" << "" << m_metadata->imgComment() << "" << "" << "" << "";
+		parent->appendChild(new MetadataTreeItem(columnData, parent));
 	}
 
 #if 0
