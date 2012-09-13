@@ -216,6 +216,25 @@ void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 		}
 	}
 
+	if (m_metadata->hasComment()) {
+		QList<QVariant> columnData;
+		columnData << "Comment" << "" << "" << "" << "" << "" << "" << "";
+		MetadataTreeItem *node = new MetadataTreeItem(columnData, parent);
+		parent->appendChild(node);
+		columnData.clear();
+		columnData << "";
+		columnData << "";
+		columnData << "";
+		columnData << m_metadata->imgComment();
+		columnData << "";
+		columnData << "";
+		columnData << "";
+		columnData << "comment";
+		MetadataTreeItem *item =  new MetadataTreeItem(columnData, node);
+		node->appendChild(item);
+	}
+
+#if 0
 	// Match example
 	QModelIndexList Items = this->match(
 		this->index(0, 0),
@@ -229,4 +248,5 @@ void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 		MetadataTreeItem *item = static_cast<MetadataTreeItem*>(Items.at(i).internalPointer());
 		qDebug() << item->data(3);
 	}
+#endif
 }
