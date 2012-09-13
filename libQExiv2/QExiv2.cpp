@@ -45,7 +45,6 @@ bool QExiv2::loadFromData(const QByteArray& data)
 		d->xmpMetadata  = image->xmpData();
 		d->imageComment = image->comment();
 
-		//d->debug();
 		d->image = image;
 		return true;
 
