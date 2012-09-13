@@ -42,9 +42,9 @@ int MetadataTreeModel::columnCount(const QModelIndex &parent) const
 {
 	if (parent.isValid()) {
 		return static_cast<MetadataTreeItem*>(parent.internalPointer())->columnCount();
-	} else {
-		return rootItem->columnCount();
 	}
+
+	return rootItem->columnCount();
 }
 
 QVariant MetadataTreeModel::data(const QModelIndex &index, int role) const
@@ -65,56 +65,61 @@ QVariant MetadataTreeModel::data(const QModelIndex &index, int role) const
 		return item->data(7);
 	}
 
-
 	return QVariant();
 }
 
 Qt::ItemFlags MetadataTreeModel::flags(const QModelIndex &index) const
 {
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return 0;
+	}
 
 	return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant MetadataTreeModel::headerData(int section, Qt::Orientation orientation,
-                               int role) const
+QVariant MetadataTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-	if (orientation == Qt::Horizontal && role == Qt::DisplayRole)
+	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
 		return rootItem->data(section);
+	}
 
 	return QVariant();
 }
 
 QModelIndex MetadataTreeModel::index(int row, int column, const QModelIndex &parent) const
 {
-	if (!hasIndex(row, column, parent))
+	if (!hasIndex(row, column, parent)) {
 		return QModelIndex();
+	}
 
 	MetadataTreeItem *parentItem;
 
-	if (!parent.isValid())
+	if (!parent.isValid()) {
 		parentItem = rootItem;
-	else
+	} else {
 		parentItem = static_cast<MetadataTreeItem*>(parent.internalPointer());
+	}
 
 	MetadataTreeItem *childItem = parentItem->child(row);
-	if (childItem)
+	if (childItem) {
 		return createIndex(row, column, childItem);
-	else
-		return QModelIndex();
+	}
+
+	return QModelIndex();
 }
 
 QModelIndex MetadataTreeModel::parent(const QModelIndex &index) const
 {
-	if (!index.isValid())
+	if (!index.isValid()) {
 		return QModelIndex();
+	}
 
 	MetadataTreeItem *childItem = static_cast<MetadataTreeItem*>(index.internalPointer());
 	MetadataTreeItem *parentItem = childItem->parent();
 
-	if (parentItem == rootItem)
+	if (parentItem == rootItem) {
 		return QModelIndex();
+	}
 
 	return createIndex(parentItem->row(), 0, parentItem);
 }
@@ -122,13 +127,15 @@ QModelIndex MetadataTreeModel::parent(const QModelIndex &index) const
 int MetadataTreeModel::rowCount(const QModelIndex &parent) const
 {
 	MetadataTreeItem *parentItem;
-	if (parent.column() > 0)
+	if (parent.column() > 0) {
 		return 0;
+	}
 
-	if (!parent.isValid())
+	if (!parent.isValid()) {
 		parentItem = rootItem;
-	else
+	} else {
 		parentItem = static_cast<MetadataTreeItem*>(parent.internalPointer());
+	}
 
 	return parentItem->childCount();
 }
@@ -169,7 +176,6 @@ void MetadataTreeModel::addNode(QHash<QString, MetadataTreeItem *> &map, const e
 
 	MetadataTreeItem *item =  new MetadataTreeItem(columnData, groupItem);
 	groupItem->appendChild(item);
-
 }
 
 void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
@@ -210,7 +216,6 @@ void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 		}
 	}
 
-
 	// Match example
 	QModelIndexList Items = this->match(
 		this->index(0, 0),
@@ -220,9 +225,8 @@ void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 		Qt::MatchRecursive); // look *
 
 	qDebug()<< "MATCH=" << Items.size();
-	if (Items.size() > 0) {
-		MetadataTreeItem *item = static_cast<MetadataTreeItem*>(Items.at(0).internalPointer());
+	for (int i = 0; i < Items.size(); ++i) {
+		MetadataTreeItem *item = static_cast<MetadataTreeItem*>(Items.at(i).internalPointer());
 		qDebug() << item->data(3);
-
 	}
 }
