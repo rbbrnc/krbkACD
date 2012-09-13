@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
 		view.setUniformRowHeights(true);
 		view.setModel(&model);
 		view.setWindowTitle(QObject::tr("Metadata Tree Model"));
+
+		view.hideColumn(7); // hide key column
+
 		view.show();
 		return app.exec();
 	}
