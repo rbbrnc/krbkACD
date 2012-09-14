@@ -28,37 +28,29 @@ QExiv2& QExiv2::operator=(const QExiv2& other)
 	return *this;
 }
 
+bool QExiv2::isValid() const
+{
+	return d->metadataValid;
+}
+
 bool QExiv2::loadFromData(const QByteArray& data)
 {
 	if (data.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__ << "Empty data";
 		return false;
 	}
 
 	try {
-		Exiv2::Image::AutoPtr image;
-		image = Exiv2::ImageFactory::open((Exiv2::byte *) data.constData(), data.size());
-		image->readMetadata();
-
-		d->exifMetadata = image->exifData();
-		d->iptcMetadata = image->iptcData();
-		d->xmpMetadata  = image->xmpData();
-		d->imageComment = image->comment();
-
-		d->image = image;
-		return true;
-
+		d->image = Exiv2::ImageFactory::open((Exiv2::byte *) data.constData(), data.size());
 	} catch (Exiv2::Error &e) {
-		d->printExiv2ExceptionError("Cannot load metadata using Exiv2", e);
+		d->printExiv2ExceptionError("Cannot load metadata from Data using Exiv2", e);
 	}
 
-	return false;
+	return d->readMetadata();
 }
 
 bool QExiv2::load(const QString& filePath)
 {
 	if (filePath.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__ << "Empty filePath";
 		return false;
 	}
 
@@ -70,31 +62,24 @@ bool QExiv2::load(const QString& filePath)
 	}
 
 	try {
-		Exiv2::Image::AutoPtr image;
-		image = Exiv2::ImageFactory::open((const char *)(QFile::encodeName(filePath)));
-		image->readMetadata();
-
-		d->exifMetadata = image->exifData();
-		d->iptcMetadata = image->iptcData();
-		d->xmpMetadata  = image->xmpData();
-		d->imageComment = image->comment();
-
-		d->image = image;
-		return true;
-
+		d->image = Exiv2::ImageFactory::open((const char *)(QFile::encodeName(filePath)));
 	} catch (Exiv2::Error &e) {
 		d->printExiv2ExceptionError("Cannot load metadata using Exiv2", e);
+		return false;
 	}
 
-	return false;
+	return d->readMetadata();
 }
 
 // Se il file non ha i permessi in scrittura scatta l'exception
 bool QExiv2::save()
 {
-	bool update = false;
+	if (!isValid()) {
+		return false;
+	}
 
 	try {
+		bool update = false;
 		if (isImgCommentWritable()) {
 			if (d->image->comment() != d->imageComment) {
 				d->image->setComment(d->imageComment);
@@ -255,7 +240,7 @@ bool QExiv2::setXmpTagStringBag(const char* xmpTagName, const QStringList& bag)
 			d->xmpMetadata[xmpTagName].setValue(xmpTxtBag.get());
 		}
 		return true;
-	} catch( Exiv2::Error& e ) {
+	} catch (Exiv2::Error &e) {
 		d->printExiv2ExceptionError(QString("Cannot set Xmp tag string Bag '%1' into image using Exiv2 ").arg(xmpTagName), e);
 	}
 
@@ -501,7 +486,7 @@ bool QExiv2::clearExif()
 	return false;
 }
 
-
+// return a list of all Exif tags present.
 QList<exifData> QExiv2::exifDataList() const
 {
 	if (d->exifMetadata.empty()) {
@@ -588,6 +573,10 @@ QList<exifData> QExiv2::xmpDataList() const
 
 QImage QExiv2::previewImage() const
 {
+	if (!isValid()) {
+		return QImage();
+	}
+
 	try {
 		// Get a list of preview images available in the image. The list is sorted
 		// by the preview image pixel size, starting with the smallest preview.
@@ -624,22 +613,6 @@ QImage QExiv2::previewImage() const
 	return QImage();
 }
 
-
-QString QExiv2::detectLanguageAlt(const QString& value, QString& lang)
-{
-	// Ex. from an Xmp tag Xmp.tiff.copyright: "lang="x-default" (c) Gilles Caulier 2007"
-	if (value.size() > 6 && value.startsWith(QString("lang=\""))) {
-		int pos = value.indexOf(QString("\""), 6);
-		if (pos != -1) {
-			lang = value.mid(6, pos-6);
-			return (value.mid(pos + 2));
-		}
-	}
-
-	lang.clear();
-	return value;
-}
-
 QString QExiv2::xmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR)
 {
 	try {
@@ -653,12 +626,10 @@ QString QExiv2::xmpTagStringLangAlt(const char *xmpTagName, const QString &langA
 					QString lang;
 					QString tagValue = QString::fromUtf8(os.str().c_str());
 					//qDebug() << __func__ << tagValue;
-					tagValue = detectLanguageAlt(tagValue, lang);
 					if (langAlt == lang) {
 						if (escapeCR) {
 							tagValue.replace('\n', ' ');
 						}
-						//qDebug() << tagValue;
 						return tagValue;
 					}
 				}
@@ -717,15 +688,9 @@ QString QExiv2::exifTagString(const char *exifTagName, bool escapeCR) const
 		Exiv2::ExifData exifData(d->exifMetadata);
 		Exiv2::ExifData::iterator it = exifData.findKey(exifKey);
 		if (it != exifData.end()) {
-#if 0
-			// cfr KExiv2/libKexiv2: See B.K.O #184156 comment #13
-			std::string val  = it->print(&exifData);
-			QString tagValue = QString::fromLocal8Bit(val.c_str());
-#else
 			std::ostringstream os;
 			os << *it;
 			QString tagValue = QString::fromLocal8Bit(os.str().c_str());
-#endif
 			if (escapeCR) {
 				tagValue.replace('\n', ' ');
 			}
@@ -748,12 +713,13 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 			Exiv2::ExifData exifData(d->exifMetadata);
 			Exiv2::ExifKey key(exifTagName);
 
+#if 0
 			qDebug() << "TAG Name:" << QString(key.tagName().c_str());
 			qDebug() << "TAG Label:" << QString(key.tagLabel().c_str());
 			qDebug() << "TAG GroupName:" << QString(key.groupName().c_str());
 			qDebug() << "TAG Family Name:" << QString(key.familyName());
 			qDebug() << "TAG Desc:" << QString(key.tagDesc().c_str());
-
+#endif
 
 
 			Exiv2::ExifData::iterator it = exifData.findKey(key);

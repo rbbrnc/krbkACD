@@ -36,7 +36,8 @@ class QExiv2
 
 		QExiv2& operator=(const QExiv2& other);
 
-	public:
+		bool isValid() const;
+
 		bool load(const QString& filePath);
 		bool loadFromData(const QByteArray& data);
 
@@ -69,7 +70,6 @@ class QExiv2
 
 		QString xmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR);
 		bool setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt);
-		QString detectLanguageAlt(const QString& value, QString& lang);
 
 		// Image Comment Functions
 		bool isImgCommentWritable() const;
@@ -77,7 +77,6 @@ class QExiv2
 		bool clearImgComment();
 		QByteArray imgComment() const;
 		bool setImgComment(const QByteArray& data);
-
 
 		QImage previewImage() const;
 

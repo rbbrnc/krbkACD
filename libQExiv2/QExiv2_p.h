@@ -16,17 +16,18 @@
 #pragma GCC visibility pop
 #endif
 
-
 class QExiv2DataPrivate : public QSharedData
 {
 	public:
-		QExiv2DataPrivate() {}
-//		void clear();
-		void debug();
+		QExiv2DataPrivate();
 
 		void printExiv2ExceptionError(const QString &msg, Exiv2::Error &e) const;
 
+		bool readMetadata();
+
 	public:
+		bool	metadataValid;
+
 		Exiv2::Image::AutoPtr image;
 
 		std::string     imageComment;
