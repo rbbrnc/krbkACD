@@ -44,9 +44,13 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	QList<PTag> tl = e->xmpPTags();
-	for (int i = 0; i < tl.size(); i++) {
-		tl.at(i).debug();
+	if (e->hasXmpRegionTag()) {
+		QList<PTag> tl = e->xmpPTags();
+		for (int i = 0; i < tl.size(); i++) {
+			tl.at(i).debug();
+		}
+	} else {
+		qDebug() << "No region tags found!";
 	}
 
 	delete e;

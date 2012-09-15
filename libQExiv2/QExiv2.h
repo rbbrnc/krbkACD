@@ -58,6 +58,7 @@ class QExiv2
 		// XMP Functions
 		bool isXmpWritable() const;
 		bool hasXmp() const;
+		bool hasXmpRegionTag() const;
 
 		bool removeXmpTag(const char *xmpTagName);
 		QByteArray xmpPacket() const;

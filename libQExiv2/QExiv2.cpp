@@ -247,6 +247,23 @@ bool QExiv2::setXmpTagStringBag(const char* xmpTagName, const QStringList& bag)
 	return false;
 }
 
+bool QExiv2::hasXmpRegionTag() const
+{
+	if (d->xmpMetadata.empty()) {
+		return false;
+	}
+
+	if (!xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty()) {
+		return true;
+	}
+
+	if (!xmpTagString("Xmp.MP.RegionInfo", false).isEmpty()) {
+		return true;
+	}
+
+	return false;
+}
+
 //
 QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 {
