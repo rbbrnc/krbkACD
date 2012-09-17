@@ -33,7 +33,7 @@ class MetadataTreeModel : public QAbstractItemModel
 	private:
 		QExiv2 *m_metadata;
 
-		MetadataTreeItem *rootItem;
+		MetadataTreeItem *m_rootItem;
 };
 
 #endif

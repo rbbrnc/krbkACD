@@ -31,13 +31,13 @@ MetadataTreeModel::MetadataTreeModel(QExiv2 *data, QObject *parent)
 		 << "Count"
 		 << "key";
 
-	rootItem = new MetadataTreeItem(rootData);
-	setupModelData(rootItem);
+	m_rootItem = new MetadataTreeItem(rootData);
+	setupModelData(m_rootItem);
 }
 
 MetadataTreeModel::~MetadataTreeModel()
 {
-	delete rootItem;
+	delete m_rootItem;
 }
 
 int MetadataTreeModel::columnCount(const QModelIndex &parent) const
@@ -46,7 +46,7 @@ int MetadataTreeModel::columnCount(const QModelIndex &parent) const
 		return static_cast<MetadataTreeItem*>(parent.internalPointer())->columnCount();
 	}
 
-	return rootItem->columnCount();
+	return m_rootItem->columnCount();
 }
 
 QVariant MetadataTreeModel::data(const QModelIndex &index, int role) const
@@ -82,7 +82,7 @@ Qt::ItemFlags MetadataTreeModel::flags(const QModelIndex &index) const
 QVariant MetadataTreeModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
 	if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
-		return rootItem->data(section);
+		return m_rootItem->data(section);
 	}
 
 	return QVariant();
@@ -97,7 +97,7 @@ QModelIndex MetadataTreeModel::index(int row, int column, const QModelIndex &par
 	MetadataTreeItem *parentItem;
 
 	if (!parent.isValid()) {
-		parentItem = rootItem;
+		parentItem = m_rootItem;
 	} else {
 		parentItem = static_cast<MetadataTreeItem*>(parent.internalPointer());
 	}
@@ -119,7 +119,7 @@ QModelIndex MetadataTreeModel::parent(const QModelIndex &index) const
 	MetadataTreeItem *childItem = static_cast<MetadataTreeItem*>(index.internalPointer());
 	MetadataTreeItem *parentItem = childItem->parent();
 
-	if (parentItem == rootItem) {
+	if (parentItem == m_rootItem) {
 		return QModelIndex();
 	}
 
@@ -134,7 +134,7 @@ int MetadataTreeModel::rowCount(const QModelIndex &parent) const
 	}
 
 	if (!parent.isValid()) {
-		parentItem = rootItem;
+		parentItem = m_rootItem;
 	} else {
 		parentItem = static_cast<MetadataTreeItem*>(parent.internalPointer());
 	}
