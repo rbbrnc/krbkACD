@@ -26,7 +26,6 @@ class BrowserPage : public QWidget
 		FileData currentFileData() const;
 
 	signals:
-		void dirSelectionChanged(const QSet<QString> * const);
 		void changePage(int);
 
 	public slots:
