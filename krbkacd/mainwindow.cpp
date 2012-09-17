@@ -54,11 +54,20 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionRotateCCW,            SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
 	connect(ui->actionResetTransformations, SIGNAL(triggered()), m_photoPage, SLOT(resetTransformations()));
 	connect(ui->actionShowRegions,          SIGNAL(toggled(bool)), m_photoPage, SLOT(showRegions(bool)));
+
+	connect(m_browserPage, SIGNAL(currentChanged()), this, SLOT(updateStatusBar()));
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::updateStatusBar()
+{
+	QFileInfo fi = m_browserPage->currentFileData().fileInfo();
+	QString mime = m_browserPage->currentFileData().mimeType();
+	ui->statusBar->showMessage(QString("%1 %2 bytes").arg(mime).arg(fi.size()));
 }
 
 // SLOT for change UI pages

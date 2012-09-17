@@ -132,6 +132,8 @@ void BrowserPage::updateCurrentSelection(const QString file)
 		ui->metadataBrowser->setModel(m_metadataModel);
 		ui->metadataBrowser->hideColumn(7); // hide key column
 	}
+
+	emit currentChanged();
 }
 
 void BrowserPage::previewSplitterMoved(int, int)

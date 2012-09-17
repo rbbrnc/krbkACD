@@ -27,6 +27,7 @@ class BrowserPage : public QWidget
 
 	signals:
 		void changePage(int);
+		void currentChanged();
 
 	public slots:
 		void showHiddenFiles(bool show);

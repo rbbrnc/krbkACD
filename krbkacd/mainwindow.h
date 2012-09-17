@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow
 
 	public slots:
 		void changePageSlot(int);
+		void updateStatusBar();
 		void debug();
 
 	private slots:
