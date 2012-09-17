@@ -56,7 +56,7 @@ class PhotoWidget : public QWidget
                 PTagGraphicsItem *m_tagItem;
                 QList<PTagGraphicsItem *> m_tagItemList;
 
-                QExiv2      m_metadata;
+                QExiv2      *m_metadata;
                 QList<PTag> m_tagList;
 
 		QString m_currentFile;

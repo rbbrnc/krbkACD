@@ -1,13 +1,18 @@
 #include "browser_page.h"
 #include "ui_browser_page.h"
 
-//#include <QDebug>
+#include "MetadataTreeModel/MetadataTreeModel.h"
+
+#include <QDebug>
 
 BrowserPage::BrowserPage(QWidget *parent) :
 	QWidget(parent),
-	ui(new Ui::BrowserPage)
+	ui(new Ui::BrowserPage),
+	m_metadataModel(0)
 {
 	ui->setupUi(this);
+
+	ui->metadataBrowser->setUniformRowHeights(true);
 
 	// Start with single file browser
 	ui->secondBrowser->setVisible(false);
@@ -114,13 +119,18 @@ void BrowserPage::updateCurrentSelection(const QString file)
 	m_currentFileData = FileData(file);
 	//m_currentFileData.print();
 
-	ui->metadataBrowser->clearMetadata();
-
 	updatePreview();
 
+	// Setup model data.
+	if (m_metadataModel) {
+		delete m_metadataModel;
+		m_metadataModel = 0;
+	}
+
 	if (m_currentFileData.isImage()) {
-		ui->metadataBrowser->setFileData(m_currentFileData);
-		ui->metadataBrowser->readMetadata();
+		m_metadataModel = new MetadataTreeModel(m_currentFileData.metadata());
+		ui->metadataBrowser->setModel(m_metadataModel);
+		ui->metadataBrowser->hideColumn(7); // hide key column
 	}
 }
 

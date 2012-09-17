@@ -120,9 +120,14 @@ QPixmap FileData::fullPixmap()
 #endif
 }
 
-const QExiv2 FileData::metadata() const
+const QExiv2 FileData::const_metadata() const
 {
 	return m_metadata;
+}
+
+QExiv2 *FileData::metadata()
+{
+	return &m_metadata;
 }
 
 QByteArray FileData::md5()

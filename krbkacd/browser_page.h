@@ -11,6 +11,8 @@ namespace Ui {
 	class BrowserPage;
 }
 
+class MetadataTreeModel;
+
 class BrowserPage : public QWidget
 {
 	Q_OBJECT
@@ -60,6 +62,8 @@ class BrowserPage : public QWidget
 		QSet<QString> m_cDirSelection;
 
 		FileData m_currentFileData;
+
+		MetadataTreeModel *m_metadataModel;
 };
 
 #endif // BROWSER_PAGE_H

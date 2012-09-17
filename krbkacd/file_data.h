@@ -19,7 +19,8 @@ class FileData {
 		QPixmap previewPixmap(int w, int h);
 		QPixmap fullPixmap();
 
-		const QExiv2 metadata() const;
+		const QExiv2 const_metadata() const;
+		QExiv2 *metadata();
 
 		QFileInfo  fileInfo() const;
 		QString    filePath() const;

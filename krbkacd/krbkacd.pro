@@ -16,7 +16,6 @@ RCC_DIR = resources
 SOURCES += main.cpp \
         mainwindow.cpp \
 	filelistwidget.cpp \
-	metadata_view.cpp \
 	file_data.cpp \
 	PTagGraphicsItem.cpp \
 	photo_widget.cpp \
@@ -26,12 +25,13 @@ SOURCES += main.cpp \
 	histogram.cpp \
 	thumb_view.cpp \
 	file_utils.cpp \
+	MetadataTreeModel/MetadataTreeItem.cpp \
+	MetadataTreeModel/MetadataTreeModel.cpp \
 
 HEADERS += mainwindow.h \
 	pages.h \
 	browser_page.h \
 	filelistwidget.h \
-	metadata_view.h \
 	work_page.h \
 	file_data.h \
 	PTagGraphicsItem.h \
@@ -39,7 +39,9 @@ HEADERS += mainwindow.h \
 	histogram.h \
 	thumb_view.h \
 	file_utils.h \
-	duplicate_page.h
+	duplicate_page.h \
+	MetadataTreeModel/MetadataTreeItem.h \
+	MetadataTreeModel/MetadataTreeModel.h \
 
 FORMS += mainwindow.ui \
 	browser_page.ui \

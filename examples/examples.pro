@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 SUBDIRS  = \
-	ModelView \
+	MetadataModelView \
 	core_example \
 	gui_example \
 	LineEditWidget \

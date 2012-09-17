@@ -41,7 +41,7 @@
       <property name="orientation">
        <enum>Qt::Vertical</enum>
       </property>
-      <widget class="MetadataView" name="metadataBrowser"/>
+      <widget class="QTreeView" name="metadataBrowser"/>
       <widget class="QLabel" name="previewPixmap">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
@@ -66,11 +66,6 @@
    <class>FileListWidget</class>
    <extends>QListView</extends>
    <header>filelistwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>MetadataView</class>
-   <extends>QTreeView</extends>
-   <header>metadata_view.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

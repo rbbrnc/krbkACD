@@ -45,10 +45,10 @@ void PhotoWidget::setFileData(FileData fdata)
 	m_metadata = fdata.metadata();
 
 	// Check Microsoft MP regions
-	m_tagList  = m_metadata.xmpPTags();
+	m_tagList  = m_metadata->xmpPTags();
 	if (m_tagList.isEmpty()) {
 		// Check MWG regions
-		m_tagList  = m_metadata.xmpMWG_RegionsTags();
+		m_tagList  = m_metadata->xmpMWG_RegionsTags();
 	}
 
 	for (int i = 0; i < m_tagList.size(); i++) {
