@@ -13,6 +13,8 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
+INCLUDEPATH += FindDuplicates
+
 SOURCES += main.cpp \
         mainwindow.cpp \
 	filelistwidget.cpp \
@@ -20,34 +22,34 @@ SOURCES += main.cpp \
 	PTagGraphicsItem.cpp \
 	photo_widget.cpp \
 	browser_page.cpp \
-	work_page.cpp \
-	duplicate_page.cpp \
-	histogram.cpp \
-	thumb_view.cpp \
 	file_utils.cpp \
 	MetadataTreeModel/MetadataTreeItem.cpp \
 	MetadataTreeModel/MetadataTreeModel.cpp \
+	FindDuplicates/work_page.cpp \
+	FindDuplicates/duplicate_page.cpp \
+	FindDuplicates/histogram.cpp \
+	FindDuplicates/thumb_view.cpp \
 
 HEADERS += mainwindow.h \
 	pages.h \
 	browser_page.h \
 	filelistwidget.h \
-	work_page.h \
 	file_data.h \
 	PTagGraphicsItem.h \
 	photo_widget.h \
-	histogram.h \
-	thumb_view.h \
 	file_utils.h \
-	duplicate_page.h \
 	MetadataTreeModel/MetadataTreeItem.h \
 	MetadataTreeModel/MetadataTreeModel.h \
+	FindDuplicates/work_page.h \
+	FindDuplicates/duplicate_page.h \
+	FindDuplicates/histogram.h \
+	FindDuplicates/thumb_view.h \
 
 FORMS += mainwindow.ui \
 	browser_page.ui \
-	work_page.ui \
 	photo_widget.ui \
-	duplicate_page.ui
+	FindDuplicates/work_page.ui \
+	FindDuplicates/duplicate_page.ui
 
 SOURCES += \
 	FileGeneralInfo.cpp \
