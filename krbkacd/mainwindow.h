@@ -8,7 +8,7 @@
 #include "browser_page.h"
 #include "work_page.h"
 #include "photo_widget.h"
-#include "metadata_editor_page.h"
+//#include "metadata_editor_page.h"
 #include "duplicate_page.h"
 
 namespace Ui {
@@ -48,7 +48,7 @@ class MainWindow : public QMainWindow
 		BrowserPage *m_browserPage;
 		WorkPage    *m_workPage;
 		PhotoWidget *m_photoPage;
-		MetadataEditorPage *m_metadataEditorPage;
+//		MetadataEditorPage *m_metadataEditorPage;
 		DuplicatePage *m_duplicatePage;
 };
 

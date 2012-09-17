@@ -1,7 +1,6 @@
 TEMPLATE = app
 POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
 
-include(../../qtpropertybrowser/src/qtpropertybrowser.pri)
 include (../krbkACD.pri)
 include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
 
@@ -23,7 +22,6 @@ SOURCES += main.cpp \
 	photo_widget.cpp \
 	browser_page.cpp \
 	work_page.cpp \
-	metadata_editor_page.cpp \
 	duplicate_page.cpp \
 	histogram.cpp \
 	thumb_view.cpp \
@@ -38,7 +36,6 @@ HEADERS += mainwindow.h \
 	file_data.h \
 	PTagGraphicsItem.h \
 	photo_widget.h \
-	metadata_editor_page.h \
 	histogram.h \
 	thumb_view.h \
 	file_utils.h \
@@ -48,7 +45,6 @@ FORMS += mainwindow.ui \
 	browser_page.ui \
 	work_page.ui \
 	photo_widget.ui \
-	metadata_editor_page.ui \
 	duplicate_page.ui
 
 SOURCES += \

@@ -23,7 +23,6 @@
       <widget class="BrowserPage" name="browserPage"/>
       <widget class="WorkPage" name="workPage"/>
       <widget class="PhotoWidget" name="photoPage"/>
-      <widget class="MetadataEditorPage" name="metadataEditorPage"/>
       <widget class="DuplicatePage" name="duplicatePage"/>
      </widget>
     </item>
@@ -35,7 +34,7 @@
      <x>0</x>
      <y>0</y>
      <width>797</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuTest">
@@ -378,12 +377,6 @@
    <class>PhotoWidget</class>
    <extends>QWidget</extends>
    <header>photo_widget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>MetadataEditorPage</class>
-   <extends>QWidget</extends>
-   <header location="global">metadata_editor_page.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

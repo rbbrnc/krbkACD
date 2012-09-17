@@ -13,11 +13,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	m_browserPage = static_cast<BrowserPage *>(ui->stackedWidget->widget(0));
-	m_workPage    = static_cast<WorkPage *>(ui->stackedWidget->widget(1));
-	m_photoPage   = static_cast<PhotoWidget *>(ui->stackedWidget->widget(2));
-	m_metadataEditorPage = static_cast<MetadataEditorPage *>(ui->stackedWidget->widget(3));
-	m_duplicatePage = static_cast<DuplicatePage *>(ui->stackedWidget->widget(4));
+	m_browserPage = static_cast<BrowserPage *>(ui->stackedWidget->widget(BROWSER_PAGE));
+	m_workPage    = static_cast<WorkPage *>(ui->stackedWidget->widget(WORK_PAGE));
+	m_photoPage   = static_cast<PhotoWidget *>(ui->stackedWidget->widget(PHOTO_PAGE));
+//	m_metadataEditorPage = static_cast<MetadataEditorPage *>(ui->stackedWidget->widget(METADATA_EDITOR_PAGE));
+	m_duplicatePage = static_cast<DuplicatePage *>(ui->stackedWidget->widget(DUPLICATE_PAGE));
 
 	// Connect changePage signals
 	for (int i = 0; i < ui->stackedWidget->count(); i++) {
@@ -114,8 +114,6 @@ void MainWindow::fullScreen()
 		enableFullScreenActions(false);
 		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
 		break;
-	case METADATA_EDITOR_PAGE:
-		break;
 	default:
 		// Return to the browser page
 		enableFullScreenActions(false);
@@ -135,6 +133,7 @@ void MainWindow::showWorkPage()
 
 void MainWindow::showMetadataEditorPage()
 {
+#if 0
 	switch (ui->stackedWidget->currentIndex()) {
 	case BROWSER_PAGE:
 		m_prevPageIndex = BROWSER_PAGE;
@@ -158,6 +157,7 @@ void MainWindow::showMetadataEditorPage()
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
 		break;
 	}
+#endif
 }
 
 void MainWindow::renameFile()
