@@ -206,6 +206,6 @@ void MainWindow::deleteFile()
 void MainWindow::debug()
 {
 	FileData fd = m_browserPage->currentFileData();
-	MetadataDialog dlg(fd.filePath());
+	MetadataDialog dlg(fd.filePath(), fd.metadata());
 	dlg.exec();
 }

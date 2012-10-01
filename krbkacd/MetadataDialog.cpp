@@ -8,21 +8,18 @@
 #include "MetadataDialog.h"
 #include "QExiv2.h"
 
-MetadataDialog::MetadataDialog(const QString &fileName, QWidget *parent)
+MetadataDialog::MetadataDialog(const QString &fileName, QExiv2 *metadata,  QWidget *parent)
 	: QDialog(parent)
 {
 	QFileInfo fileInfo(fileName);
 
 	tabWidget = new QTabWidget;
 
-	m_metadata = new QExiv2();
-	if (m_metadata->load(fileName)) {
+	m_metadata = metadata;
+	if (m_metadata) {
 		tabWidget->addTab(new MetadataEdit(m_metadata), tr("Metadata"));
 		tabWidget->addTab(new MetadataRegionEdit(m_metadata), tr("Regions"));
 		tabWidget->addTab(new MetadataLocation(m_metadata), tr("Locations"));
-	} else {
-		delete m_metadata;
-		m_metadata = 0;
 	}
 
 	tabWidget->addTab(new FileGeneralInfo(fileInfo), tr("General"));
@@ -42,7 +39,6 @@ MetadataDialog::MetadataDialog(const QString &fileName, QWidget *parent)
 
 void MetadataDialog::accept()
 {
-	qDebug() << tabWidget->count();
 	if (m_metadata) {
 		m_metadata->save();
 	}

@@ -61,7 +61,7 @@ MetadataEdit::~MetadataEdit()
 	delete ui;
 }
 
-void MetadataEdit::on_listView_doubleClicked(const QModelIndex &index)
+void MetadataEdit::on_keywordsListView_doubleClicked(const QModelIndex &index)
 {
 	ui->keyword->setText(index.data().toString());
 }

@@ -21,7 +21,7 @@ class MetadataEdit : public QWidget
 		~MetadataEdit();
 
 	private slots:
-		void on_listView_doubleClicked(const QModelIndex &index);
+		void on_keywordsListView_doubleClicked(const QModelIndex &index);
 		void addSubjectTag();
 		void removeSubjectTag();
 		void on_ratingSpinBox_valueChanged(double val);
