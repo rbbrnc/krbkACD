@@ -6,7 +6,7 @@
 
 #include "QExiv2.h"
 
-MetadataRegionEdit::MetadataRegionEdit(const QString file, QWidget *parent) :
+MetadataRegionEdit::MetadataRegionEdit(QExiv2 *metadata, QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MetadataRegionEdit)
 {
@@ -17,20 +17,13 @@ MetadataRegionEdit::MetadataRegionEdit(const QString file, QWidget *parent) :
 	ui->saveButton->setEnabled(m_update);
 	ui->addRegion->setEnabled(m_add);
 
-	//XXX check invalid file!
-	ui->fileName->setText(file);
+	m_metadata = metadata;
 
-	QPixmap thumbnail(file);
-	ui->thumbnail->setPixmap(thumbnail);
-
-	m_exiv2 = new QExiv2();
-	if (m_exiv2->load(file)) {
-		// Check Microsoft MP regions
-		m_tagList = m_exiv2->xmpPTags();
-		if (m_tagList.isEmpty()) {
-			// Check MWG regions
-			m_tagList = m_exiv2->xmpMWG_RegionsTags();
-		}
+	// Check Microsoft MP regions
+	m_tagList = m_metadata->xmpPTags();
+	if (m_tagList.isEmpty()) {
+		// Check MWG regions
+		m_tagList = m_metadata->xmpMWG_RegionsTags();
 	}
 
 	QStringList data;
@@ -44,14 +37,12 @@ MetadataRegionEdit::MetadataRegionEdit(const QString file, QWidget *parent) :
 
 	ui->regionListView->setModel(m_model);
 
-//	connect(ui->cancelButton, SIGNAL(clicked()), qApp, SLOT(quit()));
 	connect(ui->regionListView, SIGNAL(clicked(const QModelIndex &)),
 		this, SLOT(updatePage(const QModelIndex &)));
 }
 
 MetadataRegionEdit::~MetadataRegionEdit()
 {
-	delete m_exiv2;
 	delete m_model;
 	delete ui;
 }

@@ -17,7 +17,7 @@ class MetadataEdit : public QWidget
 	Q_OBJECT
 
 	public:
-		explicit MetadataEdit(const QString file, QWidget *parent = 0);
+		explicit MetadataEdit(QExiv2 *metadata, QWidget *parent = 0);
 		~MetadataEdit();
 
 	private slots:
@@ -25,19 +25,17 @@ class MetadataEdit : public QWidget
 		void addSubjectTag();
 		void removeSubjectTag();
 		void on_ratingSpinBox_valueChanged(double val);
-		void descriptionChanged();
 		void imageCommentChanged();
 
-	        void on_saveButton_clicked();
+		void xmpEventChanged(const QString &text);
+		void xmpTitleChanged(const QString &text);
+		void xmpDescriptionChanged();
 
 	private:
 		Ui::MetadataEdit *ui;
 		QStringListModel *m_model;
 		QSortFilterProxyModel *m_filter;
-
-		QExiv2 *exiv2;
-		bool m_xmpUpdate;
-		bool m_commentUpdate;
+		QExiv2 *m_metadata;
 };
 
 #endif

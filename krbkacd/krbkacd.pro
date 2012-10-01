@@ -55,15 +55,18 @@ SOURCES += \
 	FileGeneralInfo.cpp \
 	MetadataDialog.cpp \
 	MetadataEdit.cpp \
+	MetadataLocation.cpp \
 	MetadataRegionEdit.cpp
 
 HEADERS += MetadataDialog.h \
 	FileGeneralInfo.h \
 	MetadataEdit.h \
+	MetadataLocation.h \
 	MetadataRegionEdit.h
 
 FORMS += MetadataEdit.ui \
 	MetadataRegionEdit.ui \
+	MetadataLocation.ui \
 	FileGeneralInfo.ui
 
 LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a

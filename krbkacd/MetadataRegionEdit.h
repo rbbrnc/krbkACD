@@ -18,7 +18,7 @@ class MetadataRegionEdit : public QMainWindow
 	Q_OBJECT
 
 	public:
-		explicit MetadataRegionEdit(const QString file, QWidget *parent = 0);
+		explicit MetadataRegionEdit(QExiv2 *metadata, QWidget *parent = 0);
 		~MetadataRegionEdit();
 
 	private slots:
@@ -40,7 +40,7 @@ class MetadataRegionEdit : public QMainWindow
 
 	private:
 		Ui::MetadataRegionEdit *ui;
-		QExiv2 *m_exiv2;
+		QExiv2 *m_metadata;
 
 		bool m_update;
 		bool m_add;
