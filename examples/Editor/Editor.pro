@@ -10,23 +10,27 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
+INCLUDEPATH += ../../krbkacd
+
 SOURCES += main.cpp \
-	FileGeneralInfo.cpp \
 	MetadataDialog.cpp \
-	MetadataEdit.cpp \
-	MetadataGPS.cpp \
-	MetadataRegionEdit.cpp
+	../../krbkacd/FileGeneralInfo.cpp \
+	../../krbkacd/MetadataEdit.cpp \
+	../../krbkacd/MetadataRegionEdit.cpp \
+	../../krbkacd/MetadataLocation.cpp \
 
 HEADERS += MetadataDialog.h \
-	FileGeneralInfo.h \
-	MetadataEdit.h \
-	MetadataGPS.h \
-	MetadataRegionEdit.h
+	../../krbkacd/FileGeneralInfo.h \
+	../../krbkacd/MetadataEdit.h \
+	../../krbkacd/MetadataRegionEdit.h \
+	../../krbkacd/MetadataLocation.h \
 
-FORMS   += MetadataEdit.ui \
-	MetadataRegionEdit.ui \
-	MetadataGPS.ui \
-	FileGeneralInfo.ui
+FORMS   += \
+	../../krbkacd/FileGeneralInfo.ui \
+	../../krbkacd/MetadataEdit.ui \
+	../../krbkacd/MetadataRegionEdit.ui \
+	../../krbkacd/MetadataLocation.ui \
+
 
 LIBS += $$EXIV2_LDFLAGS
 LIBS += -L../../libQExiv2 ../../libQExiv2/libQExiv2.a

@@ -1,21 +1,28 @@
 #include <QtGui>
+#include <QDebug>
 
 #include "MetadataEdit.h"
 #include "MetadataRegionEdit.h"
-#include "MetadataGPS.h"
+#include "MetadataLocation.h"
 #include "FileGeneralInfo.h"
 #include "MetadataDialog.h"
+#include "QExiv2.h"
 
-MetadataDialog::MetadataDialog(const QString &fileName, QWidget *parent)
+MetadataDialog::MetadataDialog(const QString &fileName, QExiv2 *metadata,  QWidget *parent)
 	: QDialog(parent)
 {
 	QFileInfo fileInfo(fileName);
 
 	tabWidget = new QTabWidget;
+
+	m_metadata = metadata;
+	if (m_metadata) {
+		tabWidget->addTab(new MetadataEdit(m_metadata), tr("Metadata"));
+		tabWidget->addTab(new MetadataRegionEdit(m_metadata), tr("Regions"));
+		tabWidget->addTab(new MetadataLocation(m_metadata), tr("Locations"));
+	}
+
 	tabWidget->addTab(new FileGeneralInfo(fileInfo), tr("General"));
-	tabWidget->addTab(new MetadataEdit(fileName), tr("Metadata"));
-	tabWidget->addTab(new MetadataRegionEdit(fileName), tr("Regions"));
-	tabWidget->addTab(new MetadataGPS(fileInfo), tr("Locations/GPS"));
 
 	buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
 
@@ -29,3 +36,13 @@ MetadataDialog::MetadataDialog(const QString &fileName, QWidget *parent)
 
 	setWindowTitle(tr("Tab Dialog"));
 }
+
+void MetadataDialog::accept()
+{
+	if (m_metadata) {
+		m_metadata->save();
+	}
+
+	QDialog::accept();
+}
+

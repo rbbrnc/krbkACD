@@ -7,24 +7,22 @@
 #include <QFileInfo>
 #include <QTabWidget>
 
-class GeneralTab : public QWidget
-{
-    Q_OBJECT
-
-public:
-    GeneralTab(const QFileInfo &fileInfo, QWidget *parent = 0);
-};
+class QExiv2;
 
 class MetadataDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
-		MetadataDialog(const QString &fileName, QWidget *parent = 0);
+		MetadataDialog(const QString &fileName, QExiv2 *metadata = 0, QWidget *parent = 0);
+
+	public slots:
+		virtual void accept();
 
 	private:
 		QTabWidget *tabWidget;
 		QDialogButtonBox *buttonBox;
+		QExiv2 *m_metadata;
 };
 
 #endif

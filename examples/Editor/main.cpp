@@ -1,6 +1,7 @@
 #include <QApplication>
 
 #include "MetadataDialog.h"
+#include "QExiv2.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,6 +13,12 @@ int main(int argc, char *argv[])
 	else
 		fileName = ".";
 
-	MetadataDialog dlg(fileName);
+	QExiv2 *metadata = new QExiv2();
+	if (!metadata->load(fileName)) {
+		delete metadata;
+		metadata = 0;
+	}
+
+	MetadataDialog dlg(fileName, metadata);
 	return dlg.exec();
 }
