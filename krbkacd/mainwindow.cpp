@@ -3,6 +3,7 @@
 
 #include "pages.h"
 #include "MetadataDialog.h"
+#include "ImageViewManager.h"
 
 #include <QDebug>
 
@@ -15,8 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	m_browserPage = static_cast<BrowserPage *>(ui->stackedWidget->widget(BROWSER_PAGE));
 	m_workPage    = static_cast<WorkPage *>(ui->stackedWidget->widget(WORK_PAGE));
-	m_photoPage   = static_cast<PhotoWidget *>(ui->stackedWidget->widget(PHOTO_PAGE));
-//	m_metadataEditorPage = static_cast<MetadataEditorPage *>(ui->stackedWidget->widget(METADATA_EDITOR_PAGE));
+	m_photoPage   = static_cast<ImageViewManager *>(ui->stackedWidget->widget(PHOTO_PAGE));
 	m_duplicatePage = static_cast<DuplicatePage *>(ui->stackedWidget->widget(DUPLICATE_PAGE));
 
 	// Connect changePage signals
@@ -45,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionWork_Page,      SIGNAL(triggered()), this, SLOT(showWorkPage()));
 	connect(ui->actionMetadataEditor, SIGNAL(triggered()), this, SLOT(showMetadataEditorPage()));
 	connect(ui->actionFullScreen,     SIGNAL(triggered()), this, SLOT(fullScreen()));
-
+/*
 	connect(ui->actionZoom_1_1,             SIGNAL(triggered()), m_photoPage, SLOT(zoom11()));
 	connect(ui->actionZoomToFit,            SIGNAL(triggered()), m_photoPage, SLOT(zoomToFit()));
 	connect(ui->actionZoomIn,               SIGNAL(triggered()), m_photoPage, SLOT(zoomIn()));
@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionRotateCCW,            SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
 	connect(ui->actionResetTransformations, SIGNAL(triggered()), m_photoPage, SLOT(resetTransformations()));
 	connect(ui->actionShowRegions,          SIGNAL(toggled(bool)), m_photoPage, SLOT(showRegions(bool)));
-
+*/
 	connect(m_browserPage, SIGNAL(currentChanged()), this, SLOT(updateStatusBar()));
 }
 
@@ -109,13 +109,15 @@ void MainWindow::fullScreen()
 	case BROWSER_PAGE:
 		m_prevPageIndex = BROWSER_PAGE;
 		enableFullScreenActions(true);
-		m_photoPage->setFileData(m_browserPage->currentFileData());
+		//m_photoPage->setFileData(m_browserPage->currentFileData());
+		m_photoPage->setImage(m_browserPage->currentFileData().fullPixmap());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;
 	case DUPLICATE_PAGE:
 		m_prevPageIndex = DUPLICATE_PAGE;
 		enableFullScreenActions(true);
-		m_photoPage->setFileData(m_duplicatePage->currentFileData());
+		//m_photoPage->setFileData(m_duplicatePage->currentFileData());
+		m_photoPage->setImage(m_duplicatePage->currentFileData().fullPixmap());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;
 	case PHOTO_PAGE:
@@ -179,7 +181,7 @@ void MainWindow::renameFile()
 		m_duplicatePage->renameFile();
 		break;
 	case PHOTO_PAGE:
-		m_photoPage->renameFile();
+		//m_photoPage->renameFile();
 		break;
 	default:
 		break;
@@ -196,7 +198,7 @@ void MainWindow::deleteFile()
 		m_duplicatePage->deleteFile();
 		break;
 	case PHOTO_PAGE:
-		m_photoPage->deleteFile();
+		//m_photoPage->deleteFile();
 		break;
 	default:
 		break;

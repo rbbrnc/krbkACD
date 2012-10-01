@@ -22,7 +22,7 @@
      <widget class="QStackedWidget" name="stackedWidget">
       <widget class="BrowserPage" name="browserPage"/>
       <widget class="WorkPage" name="workPage"/>
-      <widget class="PhotoWidget" name="photoPage"/>
+      <widget class="ImageViewManager" name="photoPage"/>
       <widget class="DuplicatePage" name="duplicatePage"/>
      </widget>
     </item>
@@ -374,9 +374,9 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>PhotoWidget</class>
+   <class>ImageViewManager</class>
    <extends>QWidget</extends>
-   <header>photo_widget.h</header>
+   <header>ImageViewManager.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

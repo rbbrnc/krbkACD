@@ -13,7 +13,9 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
-INCLUDEPATH += FindDuplicates
+INCLUDEPATH += \
+	FindDuplicates \
+	ImageView
 
 SOURCES += main.cpp \
         mainwindow.cpp \
@@ -23,6 +25,9 @@ SOURCES += main.cpp \
 	photo_widget.cpp \
 	browser_page.cpp \
 	file_utils.cpp \
+	ImageView/ImageGraphicsItem.cpp \
+	ImageView/ImageGraphicsView.cpp \
+	ImageView/ImageViewManager.cpp \
 	MetadataTreeModel/MetadataTreeItem.cpp \
 	MetadataTreeModel/MetadataTreeModel.cpp \
 	FindDuplicates/work_page.cpp \
@@ -38,6 +43,9 @@ HEADERS += mainwindow.h \
 	PTagGraphicsItem.h \
 	photo_widget.h \
 	file_utils.h \
+	ImageView/ImageGraphicsItem.h \
+	ImageView/ImageGraphicsView.h \
+	ImageView/ImageViewManager.h \
 	MetadataTreeModel/MetadataTreeItem.h \
 	MetadataTreeModel/MetadataTreeModel.h \
 	FindDuplicates/work_page.h \
