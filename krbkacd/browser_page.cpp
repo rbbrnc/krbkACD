@@ -203,4 +203,15 @@ void BrowserPage::makeNewDirectory()
 	}
 }
 
+QStringList BrowserPage::selectedFiles(QDir::Filter filters) const
+{
+	QStringList list;
 
+	if (ui->firstBrowser->hasFocus()) {
+		list = ui->firstBrowser->selectedFiles(filters);
+	} else if (ui->secondBrowser->hasFocus()) {
+		list = ui->secondBrowser->selectedFiles(filters);
+	}
+
+	return list;
+}

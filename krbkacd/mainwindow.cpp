@@ -107,16 +107,27 @@ void MainWindow::fullScreen()
 {
 	switch (ui->stackedWidget->currentIndex()) {
 	case BROWSER_PAGE:
+	{
+		QStringList files = m_browserPage->selectedFiles(QDir::Files);
+		if (files.isEmpty()) {
+			return;
+		}
+
+		// Speed up things if is a single file selection.
+		if (files.count() == 1) {
+			m_photoPage->setImage(m_browserPage->currentFileData().fullPixmap());
+		} else {
+			m_photoPage->setFiles(files);
+		}
+
 		m_prevPageIndex = BROWSER_PAGE;
 		enableFullScreenActions(true);
-		//m_photoPage->setFileData(m_browserPage->currentFileData());
-		m_photoPage->setImage(m_browserPage->currentFileData().fullPixmap());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;
+	}
 	case DUPLICATE_PAGE:
 		m_prevPageIndex = DUPLICATE_PAGE;
 		enableFullScreenActions(true);
-		//m_photoPage->setFileData(m_duplicatePage->currentFileData());
 		m_photoPage->setImage(m_duplicatePage->currentFileData().fullPixmap());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;

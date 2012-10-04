@@ -25,6 +25,8 @@ class BrowserPage : public QWidget
 		QString currentPath() const;
 		FileData currentFileData() const;
 
+		QStringList selectedFiles(QDir::Filter filters = QDir::Files) const;
+
 	signals:
 		void changePage(int);
 		void currentChanged();
