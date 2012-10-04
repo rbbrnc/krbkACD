@@ -14,6 +14,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	m_view  = new ImageGraphicsView(this);
 
 	m_view->setScene(m_scene);
+	m_view->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
 
 	QSize iconSize(32, 32);
 
