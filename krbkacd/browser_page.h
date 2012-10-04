@@ -58,13 +58,7 @@ class BrowserPage : public QWidget
 
 	private:
 		Ui::BrowserPage *ui;
-
-		/* Preview */
-		QPixmap m_cPix;
-		QSet<QString> m_cDirSelection;
-
 		FileData m_currentFileData;
-
 		MetadataTreeModel *m_metadataModel;
 };
 
