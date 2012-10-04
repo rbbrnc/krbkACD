@@ -1,6 +1,6 @@
 #include <QtGui>
 
-//#include <QDebug>
+#include <QDebug>
 
 #include "ImageViewManager.h"
 #include "ImageGraphicsItem.h"
@@ -195,6 +195,14 @@ void ImageViewManager::next()
 	updateButtons();
 }
 
+QString ImageViewManager::currentFile() const
+{
+	if (m_fileList.count() > 0) {
+		return m_fileList.at(m_currentFile);
+	}
+
+	return QString();
+}
 
 void ImageViewManager::showImageRegions(bool /*show*/)
 {

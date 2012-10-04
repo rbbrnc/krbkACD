@@ -14,6 +14,8 @@ class ImageViewManager : public QWidget
 		explicit ImageViewManager(QWidget *parent = 0);
 		~ImageViewManager();
 
+		QString currentFile() const;
+
 	public slots:
 		void setFile(const QString &file);
 		void setFiles(const QStringList &files);
