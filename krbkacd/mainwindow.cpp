@@ -38,23 +38,13 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionDeleteFile, SIGNAL(triggered()), this, SLOT(deleteFile()));
 	connect(ui->actionRenameFile, SIGNAL(triggered()), this, SLOT(renameFile()));
 
-	//connect(ui->actionDebug, SIGNAL(triggered()), m_photoPage, SLOT(debugAction()));
 	connect(ui->actionDebug, SIGNAL(triggered()), this, SLOT(debug()));
 
 	connect(ui->actionQuit,           SIGNAL(triggered()), this, SLOT(close()));
 	connect(ui->actionWork_Page,      SIGNAL(triggered()), this, SLOT(showWorkPage()));
 	connect(ui->actionMetadataEditor, SIGNAL(triggered()), this, SLOT(showMetadataEditorPage()));
 	connect(ui->actionFullScreen,     SIGNAL(triggered()), this, SLOT(fullScreen()));
-/*
-	connect(ui->actionZoom_1_1,             SIGNAL(triggered()), m_photoPage, SLOT(zoom11()));
-	connect(ui->actionZoomToFit,            SIGNAL(triggered()), m_photoPage, SLOT(zoomToFit()));
-	connect(ui->actionZoomIn,               SIGNAL(triggered()), m_photoPage, SLOT(zoomIn()));
-	connect(ui->actionZoomOut,              SIGNAL(triggered()), m_photoPage, SLOT(zoomOut()));
-	connect(ui->actionRotateCW,             SIGNAL(triggered()), m_photoPage, SLOT(rotateCW()));
-	connect(ui->actionRotateCCW,            SIGNAL(triggered()), m_photoPage, SLOT(rotateCCW()));
-	connect(ui->actionResetTransformations, SIGNAL(triggered()), m_photoPage, SLOT(resetTransformations()));
-	connect(ui->actionShowRegions,          SIGNAL(toggled(bool)), m_photoPage, SLOT(showRegions(bool)));
-*/
+
 	connect(m_browserPage, SIGNAL(currentChanged()), this, SLOT(updateStatusBar()));
 }
 
@@ -88,21 +78,6 @@ void MainWindow::changePageSlot(int page)
 	ui->stackedWidget->setCurrentIndex(page);
 }
 
-// Enable/Disable fullScreen Action
-void MainWindow::enableFullScreenActions(bool enable)
-{
-	ui->actionZoom_1_1->setEnabled(enable);
-	ui->actionZoomToFit->setEnabled(enable);
-	ui->actionZoomIn->setEnabled(enable);
-	ui->actionZoomOut->setEnabled(enable);
-
-	ui->actionRotateCW->setEnabled(enable);
-	ui->actionRotateCCW->setEnabled(enable);
-	ui->actionResetTransformations->setEnabled(enable);
-
-	ui->actionShowRegions->setEnabled(enable);
-}
-
 void MainWindow::fullScreen()
 {
 	switch (ui->stackedWidget->currentIndex()) {
@@ -121,24 +96,20 @@ void MainWindow::fullScreen()
 		}
 
 		m_prevPageIndex = BROWSER_PAGE;
-		enableFullScreenActions(true);
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;
 	}
 	case DUPLICATE_PAGE:
 		m_prevPageIndex = DUPLICATE_PAGE;
-		enableFullScreenActions(true);
 		m_photoPage->setImage(m_duplicatePage->currentFileData().fullPixmap());
 		ui->stackedWidget->setCurrentWidget(m_photoPage);
 		break;
 	case PHOTO_PAGE:
 		// return to prev page
-		enableFullScreenActions(false);
 		ui->stackedWidget->setCurrentIndex(m_prevPageIndex);
 		break;
 	default:
 		// Return to the browser page
-		enableFullScreenActions(false);
 		ui->stackedWidget->setCurrentWidget(m_browserPage);
 		break;
 	}

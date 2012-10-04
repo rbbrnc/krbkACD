@@ -36,7 +36,6 @@ class MainWindow : public QMainWindow
 		void debug();
 
 	private slots:
-		void enableFullScreenActions(bool enable);
 		void fullScreen();
 		void showWorkPage();
 		void showMetadataEditorPage();

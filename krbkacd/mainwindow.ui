@@ -73,24 +73,16 @@
      <property name="title">
       <string>Orientation</string>
      </property>
-     <addaction name="actionRotateCW"/>
-     <addaction name="actionRotateCCW"/>
-     <addaction name="actionResetTransformations"/>
     </widget>
     <widget class="QMenu" name="menuZoom">
      <property name="title">
       <string>Zoom</string>
      </property>
-     <addaction name="actionZoom_1_1"/>
-     <addaction name="actionZoomToFit"/>
-     <addaction name="actionZoomIn"/>
-     <addaction name="actionZoomOut"/>
     </widget>
     <widget class="QMenu" name="menuRegions">
      <property name="title">
       <string>Regions</string>
      </property>
-     <addaction name="actionShowRegions"/>
     </widget>
     <addaction name="actionFullScreen"/>
     <addaction name="actionWork_Page"/>
@@ -249,58 +241,6 @@
     <string>F4</string>
    </property>
   </action>
-  <action name="actionZoom_1_1">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Zoom 1:1</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Up</string>
-   </property>
-  </action>
-  <action name="actionZoomToFit">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Zoom to fit</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Down</string>
-   </property>
-  </action>
-  <action name="actionRotateCW">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Rotate Clockwise</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Right</string>
-   </property>
-  </action>
-  <action name="actionRotateCCW">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Rotate Counterclockwise</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Left</string>
-   </property>
-  </action>
-  <action name="actionResetTransformations">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Original State</string>
-   </property>
-  </action>
   <action name="actionMetadataEditor">
    <property name="text">
     <string>Metadata Editor</string>
@@ -323,39 +263,12 @@
     <string>F7</string>
    </property>
   </action>
-  <action name="actionZoomIn">
-   <property name="text">
-    <string>Zoom In</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl++</string>
-   </property>
-  </action>
-  <action name="actionZoomOut">
-   <property name="text">
-    <string>Zoom Out</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+-</string>
-   </property>
-  </action>
   <action name="actionFullScreen">
    <property name="text">
     <string>Toggle Full Screen</string>
    </property>
    <property name="shortcut">
     <string>F3</string>
-   </property>
-  </action>
-  <action name="actionShowRegions">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show Regions</string>
    </property>
   </action>
  </widget>
