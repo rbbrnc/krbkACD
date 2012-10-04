@@ -15,7 +15,13 @@ MetadataDialog::MetadataDialog(const QString &fileName, QExiv2 *metadata,  QWidg
 
 	tabWidget = new QTabWidget;
 
-	m_metadata = metadata;
+	m_metadata = 0;
+	if (metadata) {
+		if (metadata->isValid()) {
+			m_metadata = metadata;
+		}
+	}
+
 	if (m_metadata) {
 		tabWidget->addTab(new MetadataEdit(m_metadata), tr("Metadata"));
 		tabWidget->addTab(new MetadataRegionEdit(m_metadata), tr("Regions"));
