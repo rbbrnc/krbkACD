@@ -238,20 +238,35 @@ void FileListWidget::actionMkDir(const QString destPath)
 	::makeDir(destPath, this);
 }
 
-QStringList FileListWidget::selectedFiles()
+QStringList FileListWidget::selectedFiles(QDir::Filter filters)
 {
 	QStringList list;
 
 	m_selection = selectedIndexes();
-//	if (m_selection.isEmpty()) {
-//		return QStringList();
-//	}
 
 	m_model->setReadOnly(false);
 
+	QFlags<QDir::Filter> fflags(filters);
+
 	while (!m_selection.isEmpty()) {
-		list.append(m_model->fileInfo(m_selection.first()).absoluteFilePath());
-		m_selection.removeFirst();
+		QFileInfo fi = m_model->fileInfo(m_selection.first());
+
+		if (fflags.testFlag(QDir::Dirs)) {
+			if (fi.isDir()) {
+				if ((fi.fileName() != ".") && (fi.fileName() != "..")) {
+					list.append(fi.absoluteFilePath());
+				}
+			}
+			m_selection.removeFirst();
+			continue;
+		}
+
+		if (fflags.testFlag(QDir::Files)) {
+			if (fi.isFile()) {
+				list.append(m_model->fileInfo(m_selection.first()).absoluteFilePath());
+			}
+			m_selection.removeFirst();
+		}
 	}
 
 	m_model->setReadOnly(true);

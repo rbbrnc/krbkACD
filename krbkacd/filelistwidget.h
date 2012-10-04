@@ -14,10 +14,7 @@ class FileListWidget : public QListView
 
 		QString getPath();
 
-		// Return all directories from current selection
-		//QStringList selectedDirs();
-
-		QStringList selectedFiles();
+		QStringList selectedFiles(QDir::Filter filters);
 
 	signals:
 		void pathChanged(QString newPath);
