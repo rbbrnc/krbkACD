@@ -77,5 +77,7 @@ FORMS += MetadataEdit.ui \
 	MetadataLocation.ui \
 	FileGeneralInfo.ui
 
+RESOURCES += ImageView/icons.qrc
+
 LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a
 LIBS += -L../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME

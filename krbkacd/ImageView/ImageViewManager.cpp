@@ -1,6 +1,6 @@
 #include <QtGui>
 
-#include <QDebug>
+//#include <QDebug>
 
 #include "ImageViewManager.h"
 #include "ImageGraphicsItem.h"
@@ -15,17 +15,52 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 
 	m_view->setScene(m_scene);
 
-	QPushButton *zoomInButton  = new QPushButton("Zoom In");
-	QPushButton *zoomOutButton = new QPushButton("Zoom Out");
-	QPushButton *zoom11Button = new QPushButton("Zoom 1:1");
-	QPushButton *zoomToFitButton = new QPushButton("Zoom to Fit");
+	QSize iconSize(32, 32);
 
-	QPushButton *rotateCCWButton = new QPushButton("Rotate CCW");
-	QPushButton *rotateCWButton = new QPushButton("Rotate CW");
-	QPushButton *resetViewButton = new QPushButton("Reset View");
+	// Zoom In
+	QToolButton *zoomInButton  = new QToolButton();
+	zoomInButton->setIcon(QIcon(":/zoom_in.png"));
+	zoomInButton->setIconSize(iconSize);
 
-	/*QPushButton **/previousButton = new QPushButton("<-");
-	/*QPushButton **/nextButton = new QPushButton("->");
+	// Zoom Out
+	QToolButton *zoomOutButton   = new QToolButton();
+	zoomOutButton->setIcon(QIcon(":/zoom_out.png"));
+	zoomOutButton->setIconSize(iconSize);
+
+	// Zoom to Fit
+	QToolButton *zoomToFitButton = new QToolButton();
+	zoomToFitButton->setIcon(QIcon(":/zoom_best_fit.png"));
+	zoomToFitButton->setIconSize(iconSize);
+
+	// Zoom 1:1
+	QToolButton *zoom11Button    = new QToolButton();
+	zoom11Button->setIcon(QIcon(":/zoom_original.png"));
+	zoom11Button->setIconSize(iconSize);
+
+	// Rotate CCW
+	QToolButton *rotateCCWButton = new QToolButton();
+	rotateCCWButton->setIcon(QIcon(":/rotate_ccw.png"));
+	rotateCCWButton->setIconSize(iconSize);
+
+	// Rotate CW
+	QToolButton *rotateCWButton = new QToolButton();
+	rotateCWButton->setIcon(QIcon(":/rotate_cw.png"));
+	rotateCWButton->setIconSize(iconSize);
+
+	// Reset View to original
+	QToolButton *resetViewButton = new QToolButton();
+	resetViewButton->setIcon(QIcon(":/original.png"));
+	resetViewButton->setIconSize(iconSize);
+
+	// Previous Image
+	previousButton = new QToolButton();
+	previousButton->setIcon(QIcon(":/previous.png"));
+	previousButton->setIconSize(iconSize);
+
+	// Next Image
+	nextButton = new QToolButton();
+	nextButton->setIcon(QIcon(":/next.png"));
+	nextButton->setIconSize(iconSize);
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	buttonLayout->addWidget(zoomInButton);
@@ -111,7 +146,7 @@ void ImageViewManager::setFile(const QString &file)
 	}
 	setImage(pixmap);
 
-	qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << file;
+	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << file;
 }
 
 void ImageViewManager::setFiles(const QStringList &files)

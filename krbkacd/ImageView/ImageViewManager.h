@@ -41,19 +41,8 @@ class ImageViewManager : public QWidget
 		int m_currentFile;
 		QStringList m_fileList;
 
-		QPushButton *previousButton;
-		QPushButton *nextButton;
-
-/*
-                PTagGraphicsItem *m_tagItem;
-                QList<PTagGraphicsItem *> m_tagItemList;
-
-                Metadata           m_metadata;
-                QList<PhotoRegion> m_tagList;
-
-		QString m_currentFile;
-		FileData m_fileData;
-*/
+		QToolButton *previousButton;
+		QToolButton *nextButton;
 };
 
 #endif
