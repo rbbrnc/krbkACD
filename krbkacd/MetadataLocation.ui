@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>666</width>
-    <height>524</height>
+    <height>552</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -236,83 +236,23 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
-         <widget class="QLabel" name="lcCountryCode">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedCountryCode</string>
-          </property>
-         </widget>
-        </item>
         <item row="10" column="1">
-         <widget class="QLabel" name="lcSublocation">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedSublocation</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="lcCountryName">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedCountryName</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QLabel" name="lcWorldRegion">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedWorldRegion</string>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1">
-         <widget class="QLabel" name="lcProvinceState">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedProvinceState</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lcSublocation"/>
         </item>
         <item row="9" column="1">
-         <widget class="QLabel" name="lcCity">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedCity</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lcCity"/>
+        </item>
+        <item row="8" column="1">
+         <widget class="QLineEdit" name="lcProvinceState"/>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLineEdit" name="lcCountryName"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lcCountryCode"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lcWorldRegion"/>
         </item>
        </layout>
       </item>
@@ -541,83 +481,23 @@
           </property>
          </widget>
         </item>
-        <item row="6" column="1">
-         <widget class="QLabel" name="lsCountryCode">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationShownCountryCode</string>
-          </property>
-         </widget>
-        </item>
         <item row="10" column="1">
-         <widget class="QLabel" name="lsSublocation">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedSublocation</string>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="1">
-         <widget class="QLabel" name="lsCountryName">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationCreatedCountryName</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="1">
-         <widget class="QLabel" name="lsWorldRegion">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationShownWorldRegion</string>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="1">
-         <widget class="QLabel" name="lsProvinceState">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationShownProvinceState</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lsSublocation"/>
         </item>
         <item row="9" column="1">
-         <widget class="QLabel" name="lsCity">
-          <property name="font">
-           <font>
-            <weight>50</weight>
-            <bold>false</bold>
-           </font>
-          </property>
-          <property name="text">
-           <string>XMP:LocationShownCity</string>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="lsCity"/>
+        </item>
+        <item row="8" column="1">
+         <widget class="QLineEdit" name="lsProvinceState"/>
+        </item>
+        <item row="7" column="1">
+         <widget class="QLineEdit" name="lsCountryName"/>
+        </item>
+        <item row="6" column="1">
+         <widget class="QLineEdit" name="lsCountryCode"/>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lsWorldRegion"/>
         </item>
        </layout>
       </item>
