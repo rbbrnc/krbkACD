@@ -12,7 +12,7 @@ FileGeneralInfo::FileGeneralInfo(const QFileInfo &fileInfo, QWidget *parent)
 	ui->fileName->setText(fileInfo.fileName());
 	ui->filePath->setText(fileInfo.absoluteFilePath());
 
-	QPixmap thumbnail(fileInfo.fileName());
+	QPixmap thumbnail(fileInfo.absoluteFilePath());
 	ui->thumbnail->setPixmap(thumbnail);
 	ui->imageDimension->setText(QString::number(thumbnail.width()) + "x" + QString::number(thumbnail.height()));
 
