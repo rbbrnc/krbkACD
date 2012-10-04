@@ -94,7 +94,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Descriiption</string>
+          <string>Description</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
