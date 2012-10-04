@@ -23,13 +23,12 @@
 FileListWidget::FileListWidget(QWidget *parent) :
 	QListView(parent),
 	m_model(new QFileSystemModel(this)),
-	//currentDir(QDir::homePath())
-	currentDir(QDir::current())
+	m_currentDir(QDir::current())
 {
 	setModel(m_model);
-	setRootIndex(m_model->index(currentDir.absolutePath()));
+	setRootIndex(m_model->index(m_currentDir.absolutePath()));
 
-	m_model->setRootPath(currentDir.absolutePath());
+	m_model->setRootPath(m_currentDir.absolutePath());
 	m_model->setFilter(QDir::Files | QDir::System | QDir::NoDot | QDir::Dirs);
 	m_model->setReadOnly(false);
 
@@ -37,8 +36,8 @@ FileListWidget::FileListWidget(QWidget *parent) :
 
 	setSelectionMode(QAbstractItemView::SingleSelection);
 
-	selModel = selectionModel();
-	connect(selModel,
+	m_selectionModel = selectionModel();
+	connect(m_selectionModel,
                 SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
                 this,
                 SLOT(fileSelect(const QModelIndex &, const QModelIndex &)));
@@ -96,29 +95,29 @@ void FileListWidget::actionRename()
  */
 void FileListWidget::actionDelete()
 {
-	selectedFiles = selectedIndexes();
+	m_selection = selectedIndexes();
 
-	if (selectedFiles.isEmpty()) {
+	if (m_selection.isEmpty()) {
 		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 	} else {
 		QString message = "Delete ";
-		int count = selectedFiles.count();
+		int count = m_selection.count();
 		if (count == 1) {
-			message += m_model->fileName(selectedFiles.first()) + "?";
+			message += m_model->fileName(m_selection.first()) + "?";
 		} else {
 			message += QString::number(count) + " files?";
 		}
 		if (QMessageBox::Yes == QMessageBox::warning(this, tr("Delete"), message, QMessageBox::Yes, QMessageBox::No)) {
 			m_model->setReadOnly(false);
-			selectedFiles = selectedIndexes();
+			m_selection = selectedIndexes();
 			//delete files until filelist empty or error occured
-			while (!selectedFiles.isEmpty()) {
-				if (m_model->remove(selectedFiles.first())) {
-					selectedFiles.removeFirst();
+			while (!m_selection.isEmpty()) {
+				if (m_model->remove(m_selection.first())) {
+					m_selection.removeFirst();
 				} else {
 					QMessageBox::critical(this,
 							      tr("Error!"),
-							      tr("Deleting file %1 failed").arg(m_model->fileName(selectedFiles.first())),
+							      tr("Deleting file %1 failed").arg(m_model->fileName(m_selection.first())),
 							      QMessageBox::Ok);
 					break;
 				}
@@ -134,7 +133,7 @@ void FileListWidget::actionDelete()
 /**  @return Current directory shown  */
 QString FileListWidget::getPath()
 {
-	return currentDir.absolutePath();
+	return m_currentDir.absolutePath();
 }
 
 /*  SLOT [public]
@@ -145,8 +144,8 @@ QString FileListWidget::getPath()
  */
 void FileListWidget::changePath(QString path)
 {
-	currentDir.cd(path);
-	QString newPath = currentDir.absolutePath();
+	m_currentDir.cd(path);
+	QString newPath = m_currentDir.absolutePath();
 
 	m_model->setRootPath(newPath);
 	clearSelection();
@@ -184,19 +183,19 @@ void FileListWidget::handleItemActivation(QModelIndex index)
 
 void FileListWidget::actionCopyFile(const QString destPath)
 {
-	selectedFiles = selectedIndexes();
-	if (selectedFiles.isEmpty()) {
+	m_selection = selectedIndexes();
+	if (m_selection.isEmpty()) {
 		return;
 	}
 
 	m_model->setReadOnly(false);
 
 	// Copy files until filelist is empty or error occured
-	while (!selectedFiles.isEmpty()) {
-		if (!::copyFile(destPath, m_model->fileInfo(selectedFiles.first()).absoluteFilePath(), this)) {
+	while (!m_selection.isEmpty()) {
+		if (!::copyFile(destPath, m_model->fileInfo(m_selection.first()).absoluteFilePath(), this)) {
 			break;
 		}
-		selectedFiles.removeFirst();
+		m_selection.removeFirst();
 	}
 
 	m_model->setReadOnly(true);
@@ -210,18 +209,19 @@ void FileListWidget::actionCopyFile(const QString destPath)
  */
 void FileListWidget::actionMoveFile(const QString destPath)
 {
-	selectedFiles = selectedIndexes();
-	if (selectedFiles.isEmpty())
+	m_selection = selectedIndexes();
+	if (m_selection.isEmpty()) {
 		return;
+	}
 
 	m_model->setReadOnly(false);
 
 	// Move files until filelist is empty or error occured
-	while (!selectedFiles.isEmpty()) {
-		if (!::moveFile(destPath, m_model->fileInfo(selectedFiles.first()).absoluteFilePath(), this)) {
+	while (!m_selection.isEmpty()) {
+		if (!::moveFile(destPath, m_model->fileInfo(m_selection.first()).absoluteFilePath(), this)) {
 			break;
 		}
-		selectedFiles.removeFirst();
+		m_selection.removeFirst();
 	}
 
 	m_model->setReadOnly(true);
@@ -236,4 +236,26 @@ void FileListWidget::actionMoveFile(const QString destPath)
 void FileListWidget::actionMkDir(const QString destPath)
 {
 	::makeDir(destPath, this);
+}
+
+QStringList FileListWidget::selectedFiles()
+{
+	QStringList list;
+
+	m_selection = selectedIndexes();
+//	if (m_selection.isEmpty()) {
+//		return QStringList();
+//	}
+
+	m_model->setReadOnly(false);
+
+	while (!m_selection.isEmpty()) {
+		list.append(m_model->fileInfo(m_selection.first()).absoluteFilePath());
+		m_selection.removeFirst();
+	}
+
+	m_model->setReadOnly(true);
+	clearSelection();
+	setSelectionMode(QAbstractItemView::SingleSelection);
+	return list;
 }

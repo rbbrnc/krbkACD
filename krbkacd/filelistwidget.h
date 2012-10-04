@@ -17,6 +17,8 @@ class FileListWidget : public QListView
 		// Return all directories from current selection
 		//QStringList selectedDirs();
 
+		QStringList selectedFiles();
+
 	signals:
 		void pathChanged(QString newPath);
 		void selectionChanged(const QString newPath);
@@ -38,9 +40,11 @@ class FileListWidget : public QListView
 
 	private:
 		QFileSystemModel *m_model;
-		QDir currentDir;
-		QModelIndexList selectedFiles;
-		QItemSelectionModel *selModel;
+
+		QDir m_currentDir;
+
+		QModelIndexList      m_selection;
+		QItemSelectionModel *m_selectionModel;
 };
 
 #endif // FILELISTWIDGET_H
