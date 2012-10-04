@@ -16,3 +16,4 @@ FORMS += \
 	$$PWD/work_page.ui \
 	$$PWD/duplicate_page.ui
 
+RESOURCES += $$PWD/FindDuplicates.qrc

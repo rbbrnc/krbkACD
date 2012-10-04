@@ -10,46 +10,11 @@
     <height>653</height>
    </rect>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="compareSettingsLayout">
      <item>
-      <widget class="QTreeView" name="dirTree"/>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="_6">
-       <item>
-        <widget class="QPushButton" name="insertDir">
-         <property name="text">
-          <string>+</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="removeDir">
-         <property name="text">
-          <string>-</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="clearDir">
-         <property name="text">
-          <string>clear</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QListWidget" name="dirList"/>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="_5">
-     <item>
-      <widget class="QGroupBox" name="groupBox">
+      <widget class="QGroupBox" name="compareSettingsGroupBox">
        <property name="title">
         <string>Compare Settings</string>
        </property>
@@ -72,7 +37,7 @@
          </widget>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="_4">
+         <layout class="QHBoxLayout" name="compareTypeLayout">
           <item>
            <widget class="QLabel" name="label">
             <property name="sizePolicy">
@@ -174,7 +139,7 @@
          </spacer>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="_3">
+         <layout class="QHBoxLayout" name="buttonLayout">
           <item>
            <spacer name="horizontalSpacer">
             <property name="orientation">
@@ -235,8 +200,66 @@
      </item>
     </layout>
    </item>
+   <item>
+    <layout class="QHBoxLayout" name="folderSelectionLayout">
+     <item>
+      <widget class="QListWidget" name="dirList"/>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="folderSelectionButtonsLayout">
+       <item>
+        <widget class="QToolButton" name="clearDir">
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/images/folder_clear.png</normaloff>:/images/folder_clear.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="removeDir">
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/images/folder_remove.png</normaloff>:/images/folder_remove.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="insertDir">
+         <property name="icon">
+          <iconset resource="icons.qrc">
+           <normaloff>:/images/folder_add.png</normaloff>:/images/folder_add.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QTreeView" name="dirTree"/>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>
