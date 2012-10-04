@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-include (../../krbkACD.pri)
+include (../../libQExiv2/libQExiv2.pri)
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -11,5 +11,4 @@ RCC_DIR = resources
 
 SOURCES += main.cpp
 
-#LIBS += $$EXIV2_LDFLAGS -lmagic
-LIBS += $$EXIV2_LDFLAGS -L../../libQExiv2 ../../libQExiv2/libQExiv2.a
+LIBS += -L../../libQExiv2 -lQExiv2

@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-include (../../krbkACD.pri)
+include (../../libQExiv2/libQExiv2.pri)
 include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
 
 #-- Places for generated files
@@ -32,7 +32,6 @@ FORMS   += \
 	../../krbkacd/MetadataLocation.ui \
 
 
-LIBS += $$EXIV2_LDFLAGS
-LIBS += -L../../libQExiv2 ../../libQExiv2/libQExiv2.a
+LIBS += -L../../libQExiv2 -lQExiv2
 LIBS += -L../../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 

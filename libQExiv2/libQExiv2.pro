@@ -1,6 +1,8 @@
 TARGET = QExiv2
 TEMPLATE = lib
 
+include ($$PWD/libQExiv2.pri)
+
 #-- Places for generated files
 #DESTDIR = ../libs
 OBJECTS_DIR = objs
@@ -22,9 +24,3 @@ HEADERS += QExiv2.h \
 	   MPRegion.h \
 
 CONFIG += staticlib
-
-EXIV2_CXXFLAGS = $$system(pkg-config exiv2 --cflags)
-EXIV2_LDFLAGS  = $$system(pkg-config exiv2 --libs)
-
-LIBS += $$EXIV2_LDFLAGS
-QMAKE_CXXFLAGS += $$EXIV2_CXXFLAGS

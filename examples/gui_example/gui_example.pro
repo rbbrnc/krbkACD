@@ -1,6 +1,6 @@
 TEMPLATE = app
 
-include (../../krbkACD.pri)
+include (../../libQExiv2/libQExiv2.pri)
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -16,5 +16,4 @@ SOURCES += main_gui.cpp \
 HEADERS += widget.h \
 	   PTagWidget.h \
 
-#LIBS += $$EXIV2_LDFLAGS -lmagic
-LIBS += $$EXIV2_LDFLAGS -L../../libQExiv2 ../../libQExiv2/libQExiv2.a
+LIBS += -L../../libQExiv2 -lQExiv2

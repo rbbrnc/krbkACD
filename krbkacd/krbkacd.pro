@@ -1,8 +1,11 @@
 TEMPLATE = app
 POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
 
-include (../krbkACD.pri)
+include (../../libQExiv2/libQExiv2.pri)
 include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
+include (MetadataTreeModel/MetadataTreeModel.pri)
+include (FindDuplicates/FindDuplicates.pri)
+include (ImageView/ImageView.pri)
 
 TARGET = krbkACD
 
@@ -10,30 +13,21 @@ TARGET = krbkACD
 DESTDIR = ../
 OBJECTS_DIR = objs
 MOC_DIR = mocs
-UI_DIR = ui
+UI_DIR  = ui
 RCC_DIR = resources
-
-INCLUDEPATH += \
-	FindDuplicates \
-	ImageView
 
 SOURCES += main.cpp \
         mainwindow.cpp \
 	filelistwidget.cpp \
 	file_data.cpp \
 	PTagGraphicsItem.cpp \
-	photo_widget.cpp \
 	browser_page.cpp \
 	file_utils.cpp \
-	ImageView/ImageGraphicsItem.cpp \
-	ImageView/ImageGraphicsView.cpp \
-	ImageView/ImageViewManager.cpp \
-	MetadataTreeModel/MetadataTreeItem.cpp \
-	MetadataTreeModel/MetadataTreeModel.cpp \
-	FindDuplicates/work_page.cpp \
-	FindDuplicates/duplicate_page.cpp \
-	FindDuplicates/histogram.cpp \
-	FindDuplicates/thumb_view.cpp \
+	FileGeneralInfo.cpp \
+	MetadataDialog.cpp \
+	MetadataEdit.cpp \
+	MetadataLocation.cpp \
+	MetadataRegionEdit.cpp
 
 HEADERS += mainwindow.h \
 	pages.h \
@@ -41,43 +35,19 @@ HEADERS += mainwindow.h \
 	filelistwidget.h \
 	file_data.h \
 	PTagGraphicsItem.h \
-	photo_widget.h \
 	file_utils.h \
-	ImageView/ImageGraphicsItem.h \
-	ImageView/ImageGraphicsView.h \
-	ImageView/ImageViewManager.h \
-	MetadataTreeModel/MetadataTreeItem.h \
-	MetadataTreeModel/MetadataTreeModel.h \
-	FindDuplicates/work_page.h \
-	FindDuplicates/duplicate_page.h \
-	FindDuplicates/histogram.h \
-	FindDuplicates/thumb_view.h \
-
-FORMS += mainwindow.ui \
-	browser_page.ui \
-	photo_widget.ui \
-	FindDuplicates/work_page.ui \
-	FindDuplicates/duplicate_page.ui
-
-SOURCES += \
-	FileGeneralInfo.cpp \
-	MetadataDialog.cpp \
-	MetadataEdit.cpp \
-	MetadataLocation.cpp \
-	MetadataRegionEdit.cpp
-
-HEADERS += MetadataDialog.h \
+	MetadataDialog.h \
 	FileGeneralInfo.h \
 	MetadataEdit.h \
 	MetadataLocation.h \
 	MetadataRegionEdit.h
 
-FORMS += MetadataEdit.ui \
+FORMS += mainwindow.ui \
+	browser_page.ui \
+	MetadataEdit.ui \
 	MetadataRegionEdit.ui \
 	MetadataLocation.ui \
 	FileGeneralInfo.ui
 
-RESOURCES += ImageView/icons.qrc
-
-LIBS += $$EXIV2_LDFLAGS -lmagic -L../libQExiv2 ../libQExiv2/libQExiv2.a
+LIBS += -lmagic -L../libQExiv2 -lQExiv2
 LIBS += -L../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
