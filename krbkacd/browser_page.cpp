@@ -1,9 +1,9 @@
 #include "browser_page.h"
 #include "ui_browser_page.h"
 
-#include "MetadataTreeModel/MetadataTreeModel.h"
+#include "MetadataTreeModel.h"
 
-#include <QDebug>
+//#include <QDebug>
 
 BrowserPage::BrowserPage(QWidget *parent) :
 	QWidget(parent),
