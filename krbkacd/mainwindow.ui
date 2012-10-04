@@ -58,6 +58,7 @@
     <addaction name="actionShowSecondBrowser"/>
     <addaction name="actionShowHidden"/>
     <addaction name="actionShowIcons"/>
+    <addaction name="actionFullScreen"/>
    </widget>
    <widget class="QMenu" name="menuDebug">
     <property name="title">
@@ -67,38 +68,13 @@
    </widget>
    <widget class="QMenu" name="menuImage">
     <property name="title">
-     <string>Image</string>
+     <string>Tools</string>
     </property>
-    <widget class="QMenu" name="menuOrientation">
-     <property name="title">
-      <string>Orientation</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuZoom">
-     <property name="title">
-      <string>Zoom</string>
-     </property>
-    </widget>
-    <widget class="QMenu" name="menuRegions">
-     <property name="title">
-      <string>Regions</string>
-     </property>
-    </widget>
-    <addaction name="actionFullScreen"/>
     <addaction name="actionWork_Page"/>
-    <addaction name="menuZoom"/>
-    <addaction name="menuOrientation"/>
-    <addaction name="menuRegions"/>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Edit</string>
-    </property>
     <addaction name="actionMetadataEditor"/>
    </widget>
    <addaction name="menuTest"/>
    <addaction name="menuView"/>
-   <addaction name="menuEdit"/>
    <addaction name="menuImage"/>
    <addaction name="menuDebug"/>
   </widget>

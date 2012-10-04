@@ -7,8 +7,6 @@
 // UI Pages
 #include "browser_page.h"
 #include "work_page.h"
-//#include "photo_widget.h"
-//#include "metadata_editor_page.h"
 #include "duplicate_page.h"
 
 class ImageViewManager;
@@ -49,9 +47,7 @@ class MainWindow : public QMainWindow
 		int m_prevPageIndex;
 		BrowserPage *m_browserPage;
 		WorkPage    *m_workPage;
-//		PhotoWidget *m_photoPage;
 		ImageViewManager *m_photoPage;
-//		MetadataEditorPage *m_metadataEditorPage;
 		DuplicatePage *m_duplicatePage;
 };
 
