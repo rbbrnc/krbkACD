@@ -1,41 +1,24 @@
 #include <QDir>
-
 #include <QDebug>
 
 #include "file_utils.h"
 #include "file_data.h"
 
-
-FileData::FileData()
+FileData::FileData() :
+	m_isImage(false)
 {
 }
 
 FileData::FileData(const QFileInfo &fileInfo) :
 	m_fileInfo(fileInfo)
 {
-	m_path = fileInfo.absoluteFilePath();
-
-	m_mimeType = ::mimeType(m_path);
-
-	// load metadata only for mime type "image/xxxx"
-	if (isImage()) {
-		m_image = QImage();
-		m_metadata.load(m_path);
-	}
+	init();
 }
 
-FileData::FileData(const QString &file)
+FileData::FileData(const QString &file) :
+	m_fileInfo(QFileInfo(file))
 {
-	m_fileInfo = QFileInfo(file);
-	m_path = m_fileInfo.absoluteFilePath();
-
-	m_mimeType = ::mimeType(m_path);
-
-	// load metadata only for mime type "image/xxxx"
-	if (isImage()) {
-		m_image = QImage();
-		m_metadata.load(m_path);
-	}
+	init();
 }
 
 FileData::FileData(const FileData &other) :
@@ -45,8 +28,25 @@ FileData::FileData(const FileData &other) :
 	m_md5(other.m_md5),
 	m_pixmap(other.m_pixmap),
 	m_image(other.m_image),
-	m_metadata(other.m_metadata)
+	m_metadata(other.m_metadata),
+	m_isImage(other.m_isImage)
 {
+}
+
+void FileData::init()
+{
+	m_path     = m_fileInfo.absoluteFilePath();
+	m_mimeType = ::mimeType(m_path);
+	m_isImage  = m_mimeType.contains("image/", Qt::CaseInsensitive);
+
+	// load metadata only for mime type "image/xxxx"
+	if (isImage()) {
+		//qDebug() << __PRETTY_FUNCTION__ << "- load" << m_path;
+		m_image.load(m_path);
+		if (!m_image.isNull()) {
+			m_metadata.load(m_path);
+		}
+	}
 }
 
 FileData::~FileData()
@@ -70,54 +70,39 @@ QString FileData::mimeType() const
 
 bool FileData::isImage() const
 {
-	return m_mimeType.contains("image/", Qt::CaseInsensitive);
+	return m_isImage;
 }
 
 QPixmap FileData::previewPixmap(int w, int h)
 {
 	QImage preview = m_metadata.previewImage();
 	if (preview.isNull()) {
-		if (m_pixmap.load(m_path)) {
-			return m_pixmap.scaled(w, h, Qt::KeepAspectRatio);
+		if (m_image.isNull()) {
+			return QPixmap();
+		} else {
+			preview = m_image;
 		}
-
-		return QPixmap();
 	}
 	//qDebug() << __PRETTY_FUNCTION__ - use EXIF preview";
 	QPixmap p;
 	p.convertFromImage(preview);
-	return p;
+	return p.scaled(w, h, Qt::KeepAspectRatio);
 }
 
 QImage FileData::image()
 {
-	if (m_image.isNull()) {
-		//qDebug() << __PRETTY_FUNCTION__ - load" << m_path;
-		m_image.load(m_path);
-	}
-
 	return m_image;
 }
 
 QPixmap FileData::fullPixmap()
 {
-#if 10
 	if (m_image.isNull()) {
-		//qDebug() << __PRETTY_FUNCTION__ - load" << m_path;
-		m_image.load(m_path);
+		return QPixmap();
 	}
 
 	QPixmap p;
 	p.convertFromImage(m_image);
 	return p;
-#else
-	if (m_pixmap.load(m_path)) {
-		//qDebug() << __PRETTY_FUNCTION__ - load" << m_path;
-		return m_pixmap;
-	}
-
-	return QPixmap();
-#endif
 }
 
 const QExiv2 FileData::const_metadata() const
@@ -140,20 +125,9 @@ QByteArray FileData::md5()
 
 QByteArray FileData::imageMd5()
 {
-	QImage img = image();
-	if (img.isNull()) {
+	if (m_image.isNull()) {
 		return QByteArray();
 	}
-
-	QByteArray ba((const char *) img.constBits());
+	QByteArray ba((const char *) m_image.constBits());
 	return ::md5(ba);
-}
-
-void FileData::print()
-{
-	md5();
-	qDebug() << __PRETTY_FUNCTION__
-		 << "FILE:" << qPrintable(m_path)
-		 << m_mimeType
-		 << m_md5.toHex();
 }

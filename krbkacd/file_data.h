@@ -5,15 +5,14 @@
 #include <QFileInfo>
 #include "QExiv2.h"
 
-class FileData {
+class FileData
+{
 	public:
 		FileData();
 		FileData(const QString &file);
 		FileData(const QFileInfo &fileInfo);
 		FileData(const FileData &other);
 		~FileData();
-
-		void print();
 
 		bool isImage() const;
 		QPixmap previewPixmap(int w, int h);
@@ -31,6 +30,9 @@ class FileData {
 		QImage image();
 
 	private:
+		void init();
+
+	private:
 		QFileInfo  m_fileInfo;
 		QString    m_path;
 		QString    m_mimeType;
@@ -38,6 +40,7 @@ class FileData {
 		QPixmap    m_pixmap;
 		QImage	   m_image;
 		QExiv2     m_metadata;
+		bool       m_isImage;
 };
 
 #endif
