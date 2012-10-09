@@ -5,6 +5,8 @@
 PatternWidget::PatternWidget(const QString &name, QWidget *parent)
     : QWidget(parent)
 {
+
+	m_type = PatternWidget::text;
 	m_dateTimeEdit = 0;
 	QHBoxLayout *mainLayout = new QHBoxLayout;
 
@@ -22,9 +24,9 @@ PatternWidget::PatternWidget(const QString &name, QWidget *parent)
 
 	m_textEdit = new QLineEdit();
 
-	mainLayout->addWidget(m_deleteMeButton);
 	mainLayout->addWidget(m_typeComboBox);
 	mainLayout->addWidget(m_textEdit);
+	mainLayout->addWidget(m_deleteMeButton);
 	setLayout(mainLayout);
 }
 
@@ -41,19 +43,30 @@ PatternWidget::~PatternWidget()
 	}
 }
 
-QString PatternWidget::value() const
+QVariant PatternWidget::value() const
 {
 	return m_textEdit->text();
+}
+
+enum PatternWidget::PatternType PatternWidget::type() const
+{
+	return m_type;
 }
 
 void PatternWidget::currentTypeChanged(const QString &text)
 {
 	qDebug() << __PRETTY_FUNCTION__ << "to" << text;
 	if (text == "Text") {
+		m_type = PatternWidget::text;
 	} else if (text == "Date") {
+		m_type = PatternWidget::date;
 
+
+	} else if (text == "Count") {
+		m_type = PatternWidget::count;
 	} else {
-
+		// default
+		m_type = PatternWidget::text;
 	}
 }
 
@@ -75,8 +88,15 @@ Widget::Widget(QWidget *parent)
 
 	m_mainLayout = new QVBoxLayout;
 
+	QHBoxLayout *buttonLayout = new QHBoxLayout;
 	QPushButton *addButton = new QPushButton("Add", this);
 	connect(addButton, SIGNAL(clicked()), this, SLOT(addPattern()));
+
+	QPushButton *okButton = new QPushButton("Ok", this);
+	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
+
+	buttonLayout->addWidget(addButton);
+	buttonLayout->addWidget(okButton);
 
 	m_patternLayout = new QVBoxLayout;
 	PatternWidget *pw = new PatternWidget(QString::number(m_patternList.count()), this);
@@ -84,7 +104,7 @@ Widget::Widget(QWidget *parent)
 	m_patternList.append(pw);
 	m_patternLayout->addWidget(pw);
 
-	m_mainLayout->addWidget(addButton);
+	m_mainLayout->addLayout(buttonLayout);
 	m_mainLayout->addLayout(m_patternLayout);
 	setLayout(m_mainLayout);
 }
@@ -96,6 +116,27 @@ Widget::~Widget()
 	}
 	delete m_patternLayout;
 	delete m_mainLayout;
+}
+
+void Widget::ok()
+{
+	QString s;
+	for (int i = 0; i < m_patternList.count(); i++) {
+		PatternWidget *pw = m_patternList.at(i);
+		switch (pw->type()) {
+		case PatternWidget::text:
+			s += pw->value().toString();
+			break;
+		case PatternWidget::date:
+			s += "DATE";
+			break;
+		case PatternWidget::count:
+			s += "COUNT";
+			break;
+		}
+	}
+
+	qDebug() << s;
 }
 
 void Widget::addPattern()

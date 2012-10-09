@@ -15,5 +15,5 @@ HEADERS += \
     dynamic.h
 
 RESOURCES += \
-	Dynamic.qrc
+	$$PWD/Dynamic.qrc
 

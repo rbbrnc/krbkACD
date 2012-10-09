@@ -10,10 +10,18 @@ class PatternWidget : public QWidget
 	Q_OBJECT
 
 	public:
+
+		enum PatternType {
+			text = 0,
+			date,
+			count
+		};
+
 		PatternWidget(const QString &name, QWidget *parent = 0);
 		~PatternWidget();
 
-		QString value() const;
+		QVariant value() const;
+		enum PatternType type() const;
 
 	signals:
 		void deleteMe();
@@ -24,6 +32,7 @@ class PatternWidget : public QWidget
 		void currentTypeChanged(int index);
 
 	private:
+		enum PatternType m_type;
 		QToolButton   *m_deleteMeButton;
 		QComboBox     *m_typeComboBox;
 		QLineEdit     *m_textEdit;
@@ -41,6 +50,7 @@ class Widget : public QWidget
 	private slots:
 		void addPattern();
 		void removePattern();
+		void ok();
 
 	private:
 		QList<PatternWidget *> m_patternList;
