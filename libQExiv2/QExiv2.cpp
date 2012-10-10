@@ -247,6 +247,59 @@ bool QExiv2::setXmpTagStringBag(const char* xmpTagName, const QStringList& bag)
 	return false;
 }
 
+QStringList QExiv2::xmpTagStringSeq(const char *xmpTagName, bool escapeCR) const
+{
+	try {
+		Exiv2::XmpData xmpData(d->xmpMetadata);
+		Exiv2::XmpKey key(xmpTagName);
+		Exiv2::XmpData::iterator it = xmpData.findKey(key);
+		if (it != xmpData.end()) {
+			if (it->typeId() == Exiv2::xmpSeq) {
+				QStringList seq;
+				for (int i = 0; i < it->count(); i++) {
+					std::ostringstream os;
+					os << it->toString(i);
+					QString seqValue = QString::fromUtf8(os.str().c_str());
+
+					if (escapeCR)
+						seqValue.replace('\n', ' ');
+
+					seq.append(seqValue);
+				}
+				qDebug() << "XMP String Seq (" << xmpTagName << "): " << seq;
+				return seq;
+			}
+		}
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot find Xmp key '%1' into image using Exiv2 ").arg(xmpTagName), e);
+	}
+
+	return QStringList();
+}
+
+bool QExiv2::setXmpTagStringSeq(const char *xmpTagName, const QStringList &seq)
+{
+	try {
+		if (seq.isEmpty()) {
+			removeXmpTag(xmpTagName);
+		} else {
+			const QStringList list = seq;
+			Exiv2::Value::AutoPtr xmpTxtSeq = Exiv2::Value::create(Exiv2::xmpSeq);
+
+			for (QStringList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it ) {
+				const std::string &txt((*it).toUtf8().constData());
+				xmpTxtSeq->read(txt);
+			}
+			d->xmpMetadata[xmpTagName].setValue(xmpTxtSeq.get());
+		}
+		return true;
+	} catch (Exiv2::Error &e) {
+		d->printExiv2ExceptionError(QString("Cannot set Xmp tag string Seq '%1' into image using Exiv2 ").arg(xmpTagName), e);
+	}
+
+	return false;
+}
+
 bool QExiv2::hasXmpRegionTag() const
 {
 	if (d->xmpMetadata.empty()) {
@@ -755,4 +808,5 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 
 	return QDateTime();
 }
+
 

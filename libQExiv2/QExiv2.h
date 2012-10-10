@@ -69,6 +69,9 @@ class QExiv2
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
 		bool setXmpTagStringBag(const char *xmpTagName, const QStringList &bag);
 
+		QStringList xmpTagStringSeq(const char *xmpTagName, bool escapeCR) const;
+		bool setXmpTagStringSeq(const char *xmpTagName, const QStringList &seq);
+
 		QString xmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR);
 		bool setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt);
 
