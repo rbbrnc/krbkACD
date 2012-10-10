@@ -37,6 +37,14 @@ Widget::Widget(QString file, QWidget *parent)
 		exiv2 = new QExiv2();
 		if (exiv2->load(file)) {
 			m_tagList = exiv2->xmpPTags();
+			if (m_tagList.isEmpty()) {
+				// Check MWG regions
+				m_tagList = exiv2->xmpMWG_RegionsTags();
+				if (m_tagList.isEmpty()) {
+					return;
+				}
+			}
+
 			for (int i = 0; i < m_tagList.size(); i++) {
 				m_tag = new PTagWidget(m_tagList.at(i), QSize(w, h), this);
 				m_tagWidgetList.append(m_tag);
