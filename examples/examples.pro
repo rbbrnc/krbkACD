@@ -5,3 +5,4 @@ SUBDIRS  = \
 	gui_example \
 	LineEditWidget \
 	Editor \
+	RegionEdit \
