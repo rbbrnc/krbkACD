@@ -56,13 +56,11 @@ void RegionEditManager::sceneChanged(const QList<QRectF> &region)
 // public slots:
 void RegionEditManager::setFile(const QString &file)
 {
-	//QPixmap pixmap;
-	//if (!pixmap.load(file)) {
-	//	return;
-	//}
-	QPixmap pixmap(1024, 1024);
-	pixmap.fill(Qt::gray);
-
+	QPixmap pixmap;
+	if (!pixmap.load(file)) {
+		pixmap = QPixmap(1024, 1024);
+		pixmap.fill(Qt::gray);
+	}
 	setImage(pixmap);
 
 	if (m_metadata) {
