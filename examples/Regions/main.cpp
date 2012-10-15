@@ -6,9 +6,16 @@
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
-	QString file(argv[1]);
 	RegionEditManager manager;
-	manager.setFile(file);
+
+	if (argc >= 2) {
+		QString fileName;
+		fileName = argv[1];
+		manager.setFile(fileName);
+	} else {
+		manager.setFile(QString());
+	}
+
 	manager.show();
 	return app.exec();
 }
