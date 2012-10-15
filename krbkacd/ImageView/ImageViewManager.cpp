@@ -139,10 +139,19 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setCursor(Qt::ArrowCursor);
 		m_view->setDragMode(QGraphicsView::RubberBandDrag);
 		m_view->setInteractive(true);
+
+		for (int i = 0; i < m_regionList.size(); ++i) {
+			m_regionList.at(i)->show();
+		}
 	} else {
 		m_view->setCursor(Qt::OpenHandCursor);
 		m_view->setDragMode(QGraphicsView::ScrollHandDrag);
 		m_view->setInteractive(false);
+
+		for (int i = 0; i < m_regionList.size(); ++i) {
+			m_regionList.at(i)->hide();
+		}
+
 	}
 }
 
@@ -242,6 +251,7 @@ void ImageViewManager::addRectRegion(const QRectF &region)
 {
 	qDebug() << region << "Image:" << m_image->boundingRect();
 	QGraphicsRectItem *ir = m_scene->addRect(region);
+	m_regionList.append(ir);
 }
 
 

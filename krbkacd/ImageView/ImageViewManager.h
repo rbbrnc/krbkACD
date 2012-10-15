@@ -44,6 +44,7 @@ class ImageViewManager : public QWidget
 
 		int m_currentFile;
 		QStringList m_fileList;
+		QList<QGraphicsRectItem *> m_regionList;
 
 		QToolButton *previousButton;
 		QToolButton *nextButton;
