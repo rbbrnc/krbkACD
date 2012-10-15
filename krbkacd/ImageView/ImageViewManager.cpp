@@ -24,7 +24,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	zoomInButton->setIconSize(iconSize);
 
 	// Zoom Out
-	QToolButton *zoomOutButton   = new QToolButton();
+	QToolButton *zoomOutButton = new QToolButton();
 	zoomOutButton->setIcon(QIcon(":/zoom_out.png"));
 	zoomOutButton->setIconSize(iconSize);
 
@@ -34,7 +34,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	zoomToFitButton->setIconSize(iconSize);
 
 	// Zoom 1:1
-	QToolButton *zoom11Button    = new QToolButton();
+	QToolButton *zoom11Button = new QToolButton();
 	zoom11Button->setIcon(QIcon(":/zoom_original.png"));
 	zoom11Button->setIconSize(iconSize);
 
@@ -52,6 +52,12 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	QToolButton *resetViewButton = new QToolButton();
 	resetViewButton->setIcon(QIcon(":/original.png"));
 	resetViewButton->setIconSize(iconSize);
+
+	// View Mode for Panning image or for region selection.
+	QToolButton *modeButton = new QToolButton();
+	modeButton->setCheckable(true);
+//	modeButton->setIcon(QIcon(":/original.png"));
+//	modeButton->setIconSize(iconSize);
 
 	// Previous Image
 	previousButton = new QToolButton();
@@ -71,6 +77,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	buttonLayout->addWidget(rotateCCWButton);
 	buttonLayout->addWidget(rotateCWButton);
 	buttonLayout->addWidget(resetViewButton);
+	buttonLayout->addWidget(modeButton);
 	buttonLayout->addWidget(previousButton);
 	buttonLayout->addWidget(nextButton);
 
@@ -79,20 +86,23 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	layout->addLayout(buttonLayout);
 	setLayout(layout);
 
-	connect(zoomInButton, SIGNAL(clicked()), m_view, SLOT(zoomIn()));
-	connect(zoomOutButton, SIGNAL(clicked()), m_view, SLOT(zoomOut()));
-	connect(zoom11Button, SIGNAL(clicked()), m_view, SLOT(zoom11()));
+	connect(zoomInButton,    SIGNAL(clicked()), m_view, SLOT(zoomIn()));
+	connect(zoomOutButton,   SIGNAL(clicked()), m_view, SLOT(zoomOut()));
+	connect(zoom11Button,    SIGNAL(clicked()), m_view, SLOT(zoom11()));
 	connect(zoomToFitButton, SIGNAL(clicked()), m_view, SLOT(zoomToFit()));
 
 	connect(rotateCCWButton, SIGNAL(clicked()), m_view, SLOT(rotateCCW()));
-	connect(rotateCWButton, SIGNAL(clicked()), m_view, SLOT(rotateCW()));
+	connect(rotateCWButton,  SIGNAL(clicked()), m_view, SLOT(rotateCW()));
 
 	connect(resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
 
+	connect(modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
+
 	connect(previousButton, SIGNAL(clicked()), this, SLOT(previous()));
-	connect(nextButton, SIGNAL(clicked()), this, SLOT(next()));
+	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
+	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
 
 	nextButton->setEnabled(false);
 	previousButton->setEnabled(false);
@@ -120,6 +130,22 @@ void ImageViewManager::updateButtons()
 	}
 }
 
+// [SLOT private]
+// checked = true -> Set image panning mode
+// checked = true -> Set region select mode.
+void ImageViewManager::enableRegionSelection(bool enable)
+{
+	if (enable) {
+		m_view->setCursor(Qt::ArrowCursor);
+		m_view->setDragMode(QGraphicsView::RubberBandDrag);
+		m_view->setInteractive(true);
+	} else {
+		m_view->setCursor(Qt::OpenHandCursor);
+		m_view->setDragMode(QGraphicsView::ScrollHandDrag);
+		m_view->setInteractive(false);
+	}
+}
+
 // [SLOT]
 void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 {
@@ -127,6 +153,7 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 		return;
 	}
 
+	qDebug() << __PRETTY_FUNCTION__;
 	// Don't resize the image if is totally contained
 	// in the scene rect.
 //	if (zoomToFitOption) {
@@ -209,4 +236,12 @@ void ImageViewManager::showImageRegions(bool /*show*/)
 {
 
 }
+
+// [SLOT public]
+void ImageViewManager::addRectRegion(const QRectF &region)
+{
+	qDebug() << region << "Image:" << m_image->boundingRect();
+	QGraphicsRectItem *ir = m_scene->addRect(region);
+}
+
 

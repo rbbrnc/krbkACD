@@ -10,14 +10,14 @@ ImageGraphicsView::ImageGraphicsView(QWidget *parent)
 	m_angle(0)
 {
 	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-	setCursor(Qt::OpenHandCursor);
 
+	// Default scrollHandDrag non interactive.
+	setCursor(Qt::OpenHandCursor);
 	setDragMode(QGraphicsView::ScrollHandDrag);
 	setInteractive(false);
+
 	setOptimizationFlags(QGraphicsView::DontSavePainterState);
 	setViewportUpdateMode(QGraphicsView::SmartViewportUpdate);
-	// Default
-	//setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 }
 
 ImageGraphicsView::~ImageGraphicsView()
@@ -37,13 +37,12 @@ QPointF ImageGraphicsView::GetCenter()
  * sidebar case.  This function will claim the centerPoint to sceneRec ie.
  * the centerPoint must be within the sceneRec.
  */
-//Set the current centerpoint in the
-void ImageGraphicsView::SetCenter(const QPointF& centerPoint)
+void ImageGraphicsView::SetCenter(const QPointF &centerPoint)
 {
-	//Get the rectangle of the visible area in scene coords
+	// Get the rectangle of the visible area in scene coords
 	QRectF visibleArea = mapToScene(rect()).boundingRect();
 
-        //Get the scene area
+        // Get the scene area
         QRectF sceneBounds = sceneRect();
 
 	double boundX = visibleArea.width() / 2.0;
@@ -51,22 +50,22 @@ void ImageGraphicsView::SetCenter(const QPointF& centerPoint)
 	double boundWidth = sceneBounds.width() - 2.0 * boundX;
 	double boundHeight = sceneBounds.height() - 2.0 * boundY;
 
-	//The max boundary that the centerPoint can be to
+	// The max boundary that the centerPoint can be to
 	QRectF bounds(boundX, boundY, boundWidth, boundHeight);
 
 	if(bounds.contains(centerPoint)) {
-		//We are within the bounds
+		// We are within the bounds
 		CurrentCenterPoint = centerPoint;
 	} else {
-		//We need to clamp or use the center of the screen
+		// We need to clamp or use the center of the screen
 		if(visibleArea.contains(sceneBounds)) {
-			//Use the center of scene ie. we can see the whole scene
+			// Use the center of scene ie. we can see the whole scene
 			CurrentCenterPoint = sceneBounds.center();
 		} else {
 			CurrentCenterPoint = centerPoint;
 
-			//We need to clamp the center. The centerPoint is too large
-			if(centerPoint.x() > bounds.x() + bounds.width()) {
+			// We need to clamp the center. The centerPoint is too large
+			if (centerPoint.x() > bounds.x() + bounds.width()) {
 				CurrentCenterPoint.setX(bounds.x() + bounds.width());
 			} else if(centerPoint.x() < bounds.x()) {
 				CurrentCenterPoint.setX(bounds.x());
@@ -80,22 +79,20 @@ void ImageGraphicsView::SetCenter(const QPointF& centerPoint)
 		}
 	}
 
-	//Update the scrollbars
+	// Update the scrollbars
 	centerOn(CurrentCenterPoint);
 }
 
-/**
- * Zoom the view in and out.
- */
+// Zoom the view in and out.
 void ImageGraphicsView::wheelEvent(QWheelEvent* event)
 {
 	// Get the position of the mouse before scaling, in scene coords
 	QPointF pointBeforeScale(mapToScene(event->pos()));
 
 	// Get the original screen centerpoint
-	QPointF screenCenter = GetCenter(); //CurrentCenterPoint; //(visRect.center());
+	QPointF screenCenter = GetCenter();
 
-	//Scale the view ie. do the zoom
+	// Scale the view ie. do the zoom
 	double scaleFactor = 1.15; //How fast we zoom
 	if (event->delta() > 0) {
 		// Zoom in
@@ -105,50 +102,79 @@ void ImageGraphicsView::wheelEvent(QWheelEvent* event)
 		scale(1.0 / scaleFactor, 1.0 / scaleFactor);
 	}
 
-	//Get the position after scaling, in scene coords
+	// Get the position after scaling, in scene coords
 	QPointF pointAfterScale(mapToScene(event->pos()));
 
-	//Get the offset of how the screen moved
+	// Get the offset of how the screen moved
 	QPointF offset = pointBeforeScale - pointAfterScale;
 
-	//Adjust to the new center for correct zooming
+	// Adjust to the new center for correct zooming
 	QPointF newCenter = screenCenter + offset;
 	SetCenter(newCenter);
 }
 
-/**
- * Handles when the mouse button is pressed
- */
+// Handles when the mouse button is pressed
 void ImageGraphicsView::mousePressEvent(QMouseEvent *event)
 {
-	// For panning the view
-	LastPanPoint = event->pos();
-	setCursor(Qt::ClosedHandCursor);
+	if (isInteractive()) {
+		// For region selection
+		QPointF origin = mapToScene(event->pos());
+		m_selRect.setTopLeft(origin);
+		QGraphicsView::mousePressEvent(event);
+	} else {
+		// For panning the view
+		LastPanPoint = event->pos();
+		setCursor(Qt::ClosedHandCursor);
+	}
 }
 
-/**
- * Handles when the mouse button is released
- */
+// Handles when the mouse button is released
 void ImageGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-	setCursor(Qt::OpenHandCursor);
-	LastPanPoint = QPoint();
+	if (isInteractive()) {
+		QPointF origin = m_selRect.topLeft();
+		QPointF end    = mapToScene(event->pos());
+
+		if (end.x() < origin.x()) {
+			m_selRect.setX(end.x());
+			m_selRect.setWidth(origin.x() - end.x());
+		} else {
+			m_selRect.setWidth(end.x() - origin.x());
+		}
+
+		if (end.y() < origin.y()) {
+			m_selRect.setY(end.y());
+			m_selRect.setHeight(origin.y() - end.y());
+		} else {
+			m_selRect.setHeight(end.y() - origin.y());
+		}
+
+		qDebug() << __PRETTY_FUNCTION__ << m_selRect;
+		QGraphicsView::mouseReleaseEvent(event);
+		emit newRectRegion(m_selRect);
+	} else {
+		setCursor(Qt::OpenHandCursor);
+		LastPanPoint = QPoint();
+	}
 }
 
-/**
- * Handles the mouse move event
- */
+// Handles the mouse move event
 void ImageGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-	if (!LastPanPoint.isNull()) {
-		// Get how much we panned
-		QPointF delta = mapToScene(LastPanPoint) - mapToScene(event->pos());
-		LastPanPoint = event->pos();
+	if (isInteractive()) {
+		QGraphicsView::mouseMoveEvent(event);
+	} else {
+		if (!LastPanPoint.isNull()) {
+			// Get how much we panned
+			QPointF delta = mapToScene(LastPanPoint) - mapToScene(event->pos());
+			LastPanPoint = event->pos();
 
-		// Update the center ie. do the pan
-		SetCenter(GetCenter() + delta);
+			// Update the center ie. do the pan
+			SetCenter(GetCenter() + delta);
+		}
+	}
 }
-                                                               }
+
 /**
  * Need to update the center so there is no jolt in the
  * interaction after resizing the widget.
@@ -222,44 +248,44 @@ void ImageGraphicsView::rotate(const enum RotationType type)
 	setTransform(t, true);
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::reset()
 {
 	m_angle = 0;
 	resetTransform();
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::zoomIn()
 {
 	zoom(ImageGraphicsView::ZoomIn);
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::zoomOut()
 {
 	zoom(ImageGraphicsView::ZoomOut);
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::zoom11()
 {
 	zoom(ImageGraphicsView::ZoomOriginal);
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::zoomToFit()
 {
 	zoom(ImageGraphicsView::ZoomToFit);
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::rotateCW()
 {
 	rotate(ImageGraphicsView::Rotation90CW);
 }
 
-// [SLOT]
+// [SLOT public]
 void ImageGraphicsView::rotateCCW()
 {
 	rotate(ImageGraphicsView::Rotation90CCW);

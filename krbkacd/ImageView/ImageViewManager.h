@@ -24,10 +24,12 @@ class ImageViewManager : public QWidget
 		void previous();
 		void next();
 
+		void addRectRegion(const QRectF &region);
 		void showImageRegions(bool show);
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
+		void enableRegionSelection(bool enable);
 
 	private:
 		void updateButtons();

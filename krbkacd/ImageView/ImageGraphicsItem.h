@@ -9,10 +9,10 @@ class ImageGraphicsItem : public QGraphicsPixmapItem
 		explicit ImageGraphicsItem(QGraphicsItem *parent = 0);
 		~ImageGraphicsItem();
 
-		void showImageRegions(bool show);
-
-	private:
-		//QImage m_image;
+	protected:
+		virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
+		virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+		virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 };
 
 #endif

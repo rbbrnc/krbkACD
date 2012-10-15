@@ -14,6 +14,9 @@ class ImageGraphicsView : public QGraphicsView
 		ImageGraphicsView(QWidget *parent = 0);
 		~ImageGraphicsView();
 
+	signals:
+		void newRectRegion(const QRectF &rect);
+
 	public slots:
 		void reset();
 
@@ -62,6 +65,9 @@ class ImageGraphicsView : public QGraphicsView
 		// Hold the curent rotation angle for restore
 		// the current rotation after a Zoom 1:1.
 		qreal m_angle;
+
+		// Selection rectangle (interactive mode)
+		QRectF m_selRect;
 };
 
 #endif
