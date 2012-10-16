@@ -12,6 +12,10 @@ ImageGraphicsItem::ImageGraphicsItem(const QPixmap &pixmap, QGraphicsItem *paren
 {
 }
 
+ImageGraphicsItem::~ImageGraphicsItem()
+{
+}
+
 void ImageGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 	QGraphicsPixmapItem::mouseMoveEvent(event);
