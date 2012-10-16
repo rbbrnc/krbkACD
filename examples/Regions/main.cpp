@@ -3,9 +3,6 @@
 #include "QExiv2.h"
 #include "RegionEditManager.h"
 
-
-
-
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
@@ -18,7 +15,6 @@ int main(int argc, char *argv[])
 	} else {
 		manager.setFile(QString());
 	}
-
 
 	QList<PTag> m_tagList;
 	QExiv2 exiv2;
@@ -33,6 +29,7 @@ int main(int argc, char *argv[])
 		}
 		for (int i = 0; i < m_tagList.size(); i++) {
 			qDebug() << m_tagList.at(i).region();
+			manager.addRegion(m_tagList.at(i).region(), m_tagList.at(i).name());
 		}
 	}
 

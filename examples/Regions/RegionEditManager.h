@@ -23,6 +23,7 @@ class RegionEditManager : public QWidget
 		void setFiles(const QStringList &files);
 
 		void addRectRegion(const QRectF &region);
+		void addRegion(const QRectF &region, const QString &text="<noname>");
 		void showImageRegions(bool show);
 
 	private slots:
@@ -33,6 +34,8 @@ class RegionEditManager : public QWidget
 
 	private:
 		ImageGraphicsItem *m_image;
+		QSizeF m_imageSize;
+
 		ImageGraphicsView *m_view;
 
 		QGraphicsScene *m_scene;

@@ -11,17 +11,22 @@ class ImageRegionItem : public QGraphicsRectItem
 		ImageRegionItem(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent = 0);
 		~ImageRegionItem();
 
+		void setText(const QString &text);
+
 	protected:
 
 		virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 		virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-/*
+		virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event);
+
 		virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
 		virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 		virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-*/
+		virtual void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 	private:
 		void init();
+
+		QString m_text;
 };
 
 #endif

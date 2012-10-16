@@ -28,7 +28,7 @@ RegionEditManager::RegionEditManager(QWidget *parent)
 	setLayout(layout);
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
-	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
+	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)),	this, SLOT(addRectRegion(const QRectF &)));
 }
 
 RegionEditManager::~RegionEditManager()
@@ -55,7 +55,7 @@ void RegionEditManager::sceneChanged(const QList<QRectF> &region)
 		return;
 	}
 
-	qDebug() << __func__;
+//	qDebug() << __func__;
 
 
 	// Don't resize the image if is totally contained
@@ -78,6 +78,7 @@ void RegionEditManager::setFile(const QString &file)
 		pixmap.fill(Qt::gray);
 	}
 	setImage(pixmap);
+	m_imageSize = pixmap.size();;
 
 	if (m_metadata) {
 		delete m_metadata;
@@ -133,9 +134,26 @@ void RegionEditManager::showImageRegions(bool /*show*/)
 }
 
 // [SLOT public]
+void RegionEditManager::addRegion(const QRectF &region, const QString &text)
+{
+
+	QRectF rf(region.left() * m_imageSize.width(),
+		  region.top() * m_imageSize.height(),
+		  region.width() * m_imageSize.width(),
+		  region.height() * m_imageSize.height());
+
+	ImageRegionItem *ir = new ImageRegionItem(rf);
+	ir->setText(text);
+	m_scene->addItem(ir);
+	m_regionList.append(ir);
+
+	qDebug() << __PRETTY_FUNCTION__ << region << text;
+}
+
+// [SLOT public]
 void RegionEditManager::addRectRegion(const QRectF &region)
 {
-	qDebug() << region << "Image:" << m_image->boundingRect();
+//	qDebug() << region << "Image:" << m_image->boundingRect();
 	//ImageRegionItem *ir = m_scene->addRect(region);
 
 	ImageRegionItem *ir = new ImageRegionItem(region);
@@ -143,4 +161,3 @@ void RegionEditManager::addRectRegion(const QRectF &region)
 	m_scene->addItem(ir);
 	m_regionList.append(ir);
 }
-
