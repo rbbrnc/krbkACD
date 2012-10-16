@@ -110,8 +110,8 @@ void RegionEditManager::setImage(const QPixmap &pixmap)
 		m_view->reset();
 	}
 
-	m_image = new ImageGraphicsItem();
-	m_image->setPixmap(pixmap);
+	m_image = new ImageGraphicsItem(pixmap);
+//	m_image->setPixmap(pixmap);
 	m_scene->addItem(m_image);
 
 	// QGraphicsScene's boundingRect will grow when items are added,
@@ -136,7 +136,6 @@ void RegionEditManager::showImageRegions(bool /*show*/)
 // [SLOT public]
 void RegionEditManager::addRegion(const QRectF &region, const QString &text)
 {
-
 	QRectF rf(region.left() * m_imageSize.width(),
 		  region.top() * m_imageSize.height(),
 		  region.width() * m_imageSize.width(),

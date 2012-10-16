@@ -4,6 +4,12 @@
 #include "ImageGraphicsItem.h"
 
 ImageGraphicsItem::ImageGraphicsItem(QGraphicsItem *parent)
+	: QGraphicsPixmapItem(parent)
+{
+}
+
+ImageGraphicsItem::ImageGraphicsItem(const QPixmap &pixmap, QGraphicsItem *parent)
+	: QGraphicsPixmapItem(pixmap, parent)
 {
 }
 
