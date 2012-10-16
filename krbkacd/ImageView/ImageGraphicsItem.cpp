@@ -1,25 +1,17 @@
 #include <QtGui>
-//#include <QDebug>
 
 #include "ImageGraphicsItem.h"
 
 ImageGraphicsItem::ImageGraphicsItem(QGraphicsItem *parent)
+	: QGraphicsPixmapItem(parent)
 {
 }
 
-ImageGraphicsItem::~ImageGraphicsItem()
+ImageGraphicsItem::ImageGraphicsItem(const QPixmap &pixmap, QGraphicsItem *parent)
+	: QGraphicsPixmapItem(pixmap, parent)
 {
 }
 
-/*
-void ImageGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
-{
-	QPointF mousePosition = event->pos();
-	QRgb rgbValue = pixmap().toImage().pixel(mousePosition.x(), mousePostion.y());
-
-	emit currentPositionRgbChanged(mousePosition, rgbValue);
-}
-*/
 void ImageGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
 	QGraphicsPixmapItem::mouseMoveEvent(event);

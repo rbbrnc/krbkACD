@@ -6,7 +6,8 @@
 class ImageGraphicsItem : public QGraphicsPixmapItem
 {
 	public:
-		explicit ImageGraphicsItem(QGraphicsItem *parent = 0);
+		ImageGraphicsItem(QGraphicsItem *parent = 0);
+		ImageGraphicsItem(const QPixmap &pixmap, QGraphicsItem *parent = 0);
 		~ImageGraphicsItem();
 
 	protected:
