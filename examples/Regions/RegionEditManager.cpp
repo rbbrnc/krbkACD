@@ -4,6 +4,7 @@
 
 #include "RegionEditManager.h"
 #include "ImageGraphicsItem.h"
+#include "ImageRegionItem.h"
 #include "ImageGraphicsView.h"
 #include "QExiv2.h"
 
@@ -15,6 +16,10 @@ RegionEditManager::RegionEditManager(QWidget *parent)
 	m_scene = new QGraphicsScene(this);
 	m_view  = new ImageGraphicsView(this);
 
+	m_view->setCursor(Qt::ArrowCursor);
+	m_view->setDragMode(QGraphicsView::RubberBandDrag);
+	m_view->setInteractive(true);
+
 	m_view->setScene(m_scene);
 	m_view->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
 
@@ -23,14 +28,22 @@ RegionEditManager::RegionEditManager(QWidget *parent)
 	setLayout(layout);
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
+	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
 }
 
 RegionEditManager::~RegionEditManager()
 {
+
+	for (int i = 0; i < m_regionList.size(); i++) {
+		delete m_regionList.at(i);
+	}
+
 	if (m_image) {
 		delete m_image;
 	}
 
+
+	//XXX delete all region items.!!!!
 	delete m_scene;
 	delete m_view;
 }
@@ -41,6 +54,9 @@ void RegionEditManager::sceneChanged(const QList<QRectF> &region)
 	if (region.count() <= 0) {
 		return;
 	}
+
+	qDebug() << __func__;
+
 
 	// Don't resize the image if is totally contained
 	// in the scene rect.
@@ -114,5 +130,17 @@ QString RegionEditManager::currentFile() const
 void RegionEditManager::showImageRegions(bool /*show*/)
 {
 
+}
+
+// [SLOT public]
+void RegionEditManager::addRectRegion(const QRectF &region)
+{
+	qDebug() << region << "Image:" << m_image->boundingRect();
+	//ImageRegionItem *ir = m_scene->addRect(region);
+
+	ImageRegionItem *ir = new ImageRegionItem(region);
+//	ir->setRect(region);
+	m_scene->addItem(ir);
+	m_regionList.append(ir);
 }
 

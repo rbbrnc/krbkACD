@@ -5,7 +5,6 @@
 #include <QWheelEvent>
 #include <QGraphicsRectItem>
 #include <QGraphicsView>
-#include <QRubberBand>
 
 class ImageGraphicsView : public QGraphicsView
 {
@@ -14,6 +13,9 @@ class ImageGraphicsView : public QGraphicsView
 	public:
 		ImageGraphicsView(QWidget *parent = 0);
 		~ImageGraphicsView();
+
+	signals:
+		void newRectRegion(const QRectF &rect);
 
 	public slots:
 		void reset();
@@ -64,12 +66,8 @@ class ImageGraphicsView : public QGraphicsView
 		// the current rotation after a Zoom 1:1.
 		qreal m_angle;
 
-	/* For drawing rubber-band on the image. */
-	QRubberBand *m_selection;
-	/* Starting point of selection */
-	QPointF m_selOrigin;
-	/* Rubber band selection rect */
-	QRectF m_selRect;
+		// Selection rectangle (interactive mode)
+		QRectF m_selRect;
 };
 
 #endif

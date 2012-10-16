@@ -6,6 +6,7 @@
 class ImageGraphicsView;
 class ImageGraphicsItem;
 class QExiv2;
+class ImageRegionItem;
 
 class RegionEditManager : public QWidget
 {
@@ -21,6 +22,7 @@ class RegionEditManager : public QWidget
 		void setFile(const QString &file);
 		void setFiles(const QStringList &files);
 
+		void addRectRegion(const QRectF &region);
 		void showImageRegions(bool show);
 
 	private slots:
@@ -41,6 +43,8 @@ class RegionEditManager : public QWidget
 		QStringList m_fileList;
 
 		QExiv2 *m_metadata;
+
+		QList<ImageRegionItem *> m_regionList;
 };
 
 #endif
