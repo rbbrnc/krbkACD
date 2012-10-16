@@ -205,8 +205,7 @@ void ImageViewManager::setImage(const QPixmap &pixmap)
 		m_view->reset();
 	}
 
-	m_image = new ImageGraphicsItem();
-	m_image->setPixmap(pixmap);
+	m_image = new ImageGraphicsItem(pixmap);
 	m_scene->addItem(m_image);
 
 	// QGraphicsScene's boundingRect will grow when items are added,
