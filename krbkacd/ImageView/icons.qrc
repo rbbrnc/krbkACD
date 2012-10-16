@@ -1,13 +1,14 @@
 <RCC>
     <qresource prefix="/">
-        <file>zoom_in.png</file>
-        <file>zoom_out.png</file>
-        <file>zoom_best_fit.png</file>
-        <file>zoom_original.png</file>
-        <file>rotate_ccw.png</file>
-        <file>rotate_cw.png</file>
-        <file>original.png</file>
-        <file>previous.png</file>
-        <file>next.png</file>
+        <file>images/zoom_in.png</file>
+        <file>images/zoom_out.png</file>
+        <file>images/zoom_best_fit.png</file>
+        <file>images/zoom_original.png</file>
+        <file>images/rotate_ccw.png</file>
+        <file>images/rotate_cw.png</file>
+        <file>images/original.png</file>
+        <file>images/previous.png</file>
+        <file>images/next.png</file>
+        <file>images/select.png</file>
     </qresource>
 </RCC>

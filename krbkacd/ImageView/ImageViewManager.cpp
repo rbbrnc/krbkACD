@@ -20,53 +20,53 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 
 	// Zoom In
 	QToolButton *zoomInButton  = new QToolButton();
-	zoomInButton->setIcon(QIcon(":/zoom_in.png"));
+	zoomInButton->setIcon(QIcon(":/images/zoom_in.png"));
 	zoomInButton->setIconSize(iconSize);
 
 	// Zoom Out
 	QToolButton *zoomOutButton = new QToolButton();
-	zoomOutButton->setIcon(QIcon(":/zoom_out.png"));
+	zoomOutButton->setIcon(QIcon(":/images/zoom_out.png"));
 	zoomOutButton->setIconSize(iconSize);
 
 	// Zoom to Fit
 	QToolButton *zoomToFitButton = new QToolButton();
-	zoomToFitButton->setIcon(QIcon(":/zoom_best_fit.png"));
+	zoomToFitButton->setIcon(QIcon(":/images/zoom_best_fit.png"));
 	zoomToFitButton->setIconSize(iconSize);
 
 	// Zoom 1:1
 	QToolButton *zoom11Button = new QToolButton();
-	zoom11Button->setIcon(QIcon(":/zoom_original.png"));
+	zoom11Button->setIcon(QIcon(":/images/zoom_original.png"));
 	zoom11Button->setIconSize(iconSize);
 
 	// Rotate CCW
 	QToolButton *rotateCCWButton = new QToolButton();
-	rotateCCWButton->setIcon(QIcon(":/rotate_ccw.png"));
+	rotateCCWButton->setIcon(QIcon(":/images/rotate_ccw.png"));
 	rotateCCWButton->setIconSize(iconSize);
 
 	// Rotate CW
 	QToolButton *rotateCWButton = new QToolButton();
-	rotateCWButton->setIcon(QIcon(":/rotate_cw.png"));
+	rotateCWButton->setIcon(QIcon(":/images/rotate_cw.png"));
 	rotateCWButton->setIconSize(iconSize);
 
 	// Reset View to original
 	QToolButton *resetViewButton = new QToolButton();
-	resetViewButton->setIcon(QIcon(":/original.png"));
+	resetViewButton->setIcon(QIcon(":/images/original.png"));
 	resetViewButton->setIconSize(iconSize);
 
 	// View Mode for Panning image or for region selection.
 	QToolButton *modeButton = new QToolButton();
 	modeButton->setCheckable(true);
-//	modeButton->setIcon(QIcon(":/original.png"));
-//	modeButton->setIconSize(iconSize);
+	modeButton->setIcon(QIcon(":/images/select.png"));
+	modeButton->setIconSize(iconSize);
 
 	// Previous Image
 	previousButton = new QToolButton();
-	previousButton->setIcon(QIcon(":/previous.png"));
+	previousButton->setIcon(QIcon(":/images/previous.png"));
 	previousButton->setIconSize(iconSize);
 
 	// Next Image
 	nextButton = new QToolButton();
-	nextButton->setIcon(QIcon(":/next.png"));
+	nextButton->setIcon(QIcon(":/images/next.png"));
 	nextButton->setIconSize(iconSize);
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
