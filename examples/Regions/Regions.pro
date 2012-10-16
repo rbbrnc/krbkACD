@@ -14,12 +14,14 @@ RCC_DIR = resources
 SOURCES += main.cpp \
 	RegionEditManager.cpp \
 	ImageGraphicsView.cpp \
-	ImageGraphicsItem.cpp
+	ImageGraphicsItem.cpp \
+	ImageRegionItem.cpp
 
 HEADERS += \
 	RegionEditManager.h \
 	ImageGraphicsItem.h \
-	ImageGraphicsView.h
+	ImageGraphicsView.h \
+	ImageRegionItem.h
 
 
 #LIBS += -L../../libQExiv2 -lQExiv2
