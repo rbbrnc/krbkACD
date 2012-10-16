@@ -1,5 +1,5 @@
-#ifndef IMAGE_VIEW_H
-#define IMAGE_VIEW_H
+#ifndef IMAGE_GRAPHICS_ITEM_H
+#define IMAGE_GRAPHICS_ITEM_H
 
 #include <QGraphicsPixmapItem>
 
