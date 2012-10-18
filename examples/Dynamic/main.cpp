@@ -1,13 +1,18 @@
 #include <QApplication>
 #include <QDebug>
-#include "dynamic.h"
+#include "RenameDialog.h"
 
 int main(int argc, char *argv[])
 {
 	Q_INIT_RESOURCE(Dynamic);
 
 	QApplication app(argc, argv);
-	Widget w;
-	w.show();
-	return app.exec();
+
+	RenameDialog dlg(argv[1]);
+
+	if (dlg.exec() == QDialog::Accepted) {
+		qDebug() << dlg.newFileName();
+	}
+
+	return 0;
 }

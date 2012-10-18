@@ -8,12 +8,16 @@ UI_DIR = ui
 RCC_DIR = resources
 
 SOURCES += main.cpp \
-    dynamic.cpp
-
+    PatternWidget.cpp \
+    RenameDialog.cpp
 
 HEADERS += \
-    dynamic.h
+    PatternWidget.h \
+    RenameDialog.h
 
 RESOURCES += \
 	$$PWD/Dynamic.qrc
+
+FORMS += \
+    RenameDialog.ui
 
