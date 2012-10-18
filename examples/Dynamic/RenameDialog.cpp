@@ -34,7 +34,7 @@ void RenameDialog::addPattern()
 {
 	QString type = ui->patternComboBox->currentText();
 
-	PatternWidget *pw = new PatternWidget(type + " " + QString::number(m_patternList.count()), this);
+	PatternWidget *pw = new PatternWidget(type, this);
 	m_patternList.append(pw);
 	m_patternLayout->addWidget(pw);
 	connect(pw, SIGNAL(deleteMe()), this, SLOT(removePattern()));

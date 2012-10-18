@@ -14,8 +14,13 @@ PatternWidget::PatternWidget(const QString &name, QWidget *parent)
 	m_deleteMeButton->setIcon(QIcon(":/remove.png"));
 	connect(m_deleteMeButton, SIGNAL(clicked()), this, SLOT(deleteMeClicked()));
 
+	QStringList patternTypeNames;
+	patternTypeNames << "Text"
+			 << "Date"
+			 << "UUID";
+
 	m_typeComboBox = new QComboBox();
-	m_typeComboBox->insertItems(0, QStringList() << "Text" << "Date" << "Count");
+	m_typeComboBox->insertItems(0, patternTypeNames);
 	connect(m_typeComboBox, SIGNAL(currentIndexChanged(const QString &)),
 		this, SLOT(currentTypeChanged(const QString &)));
 

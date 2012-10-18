@@ -1,6 +1,7 @@
 // Base Class for pattern widgets
 #include "PatternWidget.h"
 
+#include <uuid/uuid.h>
 #include <QDebug>
 
 PatternWidget::PatternWidget(const QString &name, QWidget *parent)
@@ -18,11 +19,19 @@ PatternWidget::PatternWidget(const QString &name, QWidget *parent)
 	m_deleteMeButton->setIcon(QIcon(":/images/remove.png"));
 	connect(m_deleteMeButton, SIGNAL(clicked()), this, SLOT(deleteMeClicked()));
 
+
+	QSizePolicy sp(QSizePolicy::Fixed, QSizePolicy::Fixed);
+	sp.setHorizontalStretch(0);
+	sp.setVerticalStretch(0);
 	m_typeLabel = new QLabel(name);
+	sp.setHeightForWidth(m_typeLabel->sizePolicy().hasHeightForWidth());
+	m_typeLabel->setSizePolicy(sp);
+
 	m_mainLayout->addWidget(m_typeLabel);
 
+	qDebug() << __func__ << name;
 	if (name == "UUID") {
-		m_uuidLabel = new QLabel("uuid_");
+		uuidPatternSetup();
 	} else {
 		m_textEdit = new QLineEdit();
 		m_mainLayout->addWidget(m_textEdit);
@@ -67,27 +76,25 @@ enum PatternWidget::PatternType PatternWidget::type() const
 	return m_type;
 }
 
-#if 0
-void PatternWidget::currentTypeChanged(const QString &text)
+void  PatternWidget::uuidPatternSetup()
 {
-	qDebug() << __PRETTY_FUNCTION__ << "to" << text;
-	if (text == "Text") {
-		m_type = PatternWidget::text;
-	} else if (text == "Date") {
-		m_type = PatternWidget::date;
-
-
-	} else if (text == "Count") {
-		m_type = PatternWidget::count;
-	} else {
-		// default
-		m_type = PatternWidget::text;
+	char hex_char[] = "0123456789ABCDEF";
+	char uuidstr[sizeof(uuid_t) * 2 + 1];
+	uuid_t uuid;
+	uuid_generate(uuid);
+	size_t byte_nbr;
+	for (byte_nbr = 0; byte_nbr < sizeof(uuid_t); byte_nbr++) {
+		uuidstr[byte_nbr * 2 + 0] = hex_char[uuid [byte_nbr] >> 4];
+		uuidstr[byte_nbr * 2 + 1] = hex_char[uuid [byte_nbr] & 15];
 	}
-}
 
-void PatternWidget::currentTypeChanged(int index)
-{
-	qDebug() << __PRETTY_FUNCTION__;
-}
-#endif
+	QSizePolicy sp(QSizePolicy::Fixed, QSizePolicy::Expanding);
+	sp.setHorizontalStretch(0);
+	sp.setVerticalStretch(0);
 
+	m_uuidLabel = new QLabel(QString(uuidstr));
+	sp.setHeightForWidth(false/*m_uuidLabel->sizePolicy().hasHeightForWidth()*/);
+	m_uuidLabel->setFrameShape(QFrame::Box);
+	m_uuidLabel->setSizePolicy(sp);
+	m_mainLayout->addWidget(m_uuidLabel);
+}

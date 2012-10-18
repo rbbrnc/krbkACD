@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>657</width>
-    <height>445</height>
+    <height>459</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -33,9 +33,9 @@
    <property name="geometry">
     <rect>
      <x>390</x>
-     <y>170</y>
+     <y>90</y>
      <width>241</width>
-     <height>61</height>
+     <height>51</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="patternSelectLayout">
@@ -53,6 +53,9 @@
         <bold>true</bold>
        </font>
       </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
       <property name="text">
        <string>Pattern</string>
       </property>
@@ -65,8 +68,9 @@
       </item>
       <item>
        <widget class="QToolButton" name="addPatternButton">
-        <property name="text">
-         <string>+</string>
+        <property name="icon">
+         <iconset resource="Dynamic.qrc">
+          <normaloff>:/images/add.png</normaloff>:/images/add.png</iconset>
         </property>
        </widget>
       </item>
@@ -77,8 +81,8 @@
   <widget class="QScrollArea" name="scrollArea">
    <property name="geometry">
     <rect>
-     <x>19</x>
-     <y>239</y>
+     <x>20</x>
+     <y>160</y>
      <width>611</width>
      <height>121</height>
     </rect>
@@ -113,15 +117,15 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>611</width>
-     <height>51</height>
+     <width>192</width>
+     <height>25</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="defaultLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <item>
      <widget class="QLabel" name="label_2">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -147,15 +151,15 @@
     <rect>
      <x>20</x>
      <y>110</y>
-     <width>611</width>
-     <height>51</height>
+     <width>341</width>
+     <height>17</height>
     </rect>
    </property>
-   <layout class="QVBoxLayout" name="newNameLayout">
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
     <item>
      <widget class="QLabel" name="label_3">
       <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
         <horstretch>0</horstretch>
         <verstretch>0</verstretch>
        </sizepolicy>
@@ -186,8 +190,23 @@
     </item>
    </layout>
   </widget>
+  <widget class="QCheckBox" name="patternCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>30</y>
+     <width>151</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Use Pattern</string>
+   </property>
+  </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="Dynamic.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>

@@ -21,6 +21,9 @@ class PatternWidget : public QWidget
 		virtual QVariant value() const;
 		virtual enum PatternType type() const;
 
+	private:
+		void uuidPatternSetup();
+
 	signals:
 		void deleteMe();
 
