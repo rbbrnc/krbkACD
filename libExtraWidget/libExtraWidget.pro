@@ -1,2 +1,3 @@
-TEMPLATE    = subdirs
-SUBDIRS     = SpotlightWidget
+TEMPLATE = subdirs
+SUBDIRS  = SpotlightWidget \
+	   RenameDialog

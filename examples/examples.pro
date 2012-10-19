@@ -6,3 +6,4 @@ SUBDIRS  = \
 	LineEditWidget \
 	Editor \
 	RegionEdit \
+	RenameFile \
