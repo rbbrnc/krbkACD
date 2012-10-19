@@ -3,6 +3,7 @@ POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
 
 include (../../libQExiv2/libQExiv2.pri)
 include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
+include (../../libExtraWidget/RenameDialog/RenameDialog.pri)
 include (MetadataTreeModel/MetadataTreeModel.pri)
 include (FindDuplicates/FindDuplicates.pri)
 include (ImageView/ImageView.pri)
@@ -51,3 +52,4 @@ FORMS += mainwindow.ui \
 
 LIBS += -lmagic -L../libQExiv2 -lQExiv2
 LIBS += -L../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
+LIBS += -L../libExtraWidget/RenameDialog -l$$RENAME_DIALOG_LIBNAME

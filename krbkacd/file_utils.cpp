@@ -11,6 +11,8 @@
 
 #include <QDebug>
 
+#include "RenameDialog.h"
+
 #include "file_utils.h"
 
 /* TODO
@@ -25,6 +27,22 @@
 void renameFile(QString filePath, QWidget *parent)
 {
 	QFileInfo fi(filePath);
+
+#if 10
+	RenameDialog dlg(fi.absoluteFilePath());
+	if (dlg.exec() != QDialog::Accepted) {
+		return;
+	}
+
+	QString newName = dlg.newFileName();
+
+	if (!QFile::rename(fi.absoluteFilePath(), newName)) {
+		QMessageBox::critical(parent,
+		      QObject::tr("Error"),
+		      QObject::tr("Renaming file '%1' failed").arg(fi.fileName()),
+		      QMessageBox::Abort);
+	}
+#else
 	QString newName = QInputDialog::getText(parent,
 				QObject::tr("Rename"),
 	                        QObject::tr("New filename: "),
@@ -39,6 +57,7 @@ void renameFile(QString filePath, QWidget *parent)
 			      QMessageBox::Abort);
 		}
 	}
+#endif
 }
 
 /* Delete File */
