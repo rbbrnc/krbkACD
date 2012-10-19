@@ -19,20 +19,29 @@ class RenameDialog : public QDialog
 
 		QString newFileName();
 
+	private:
+		void updateName();
+
 	public slots:
 		virtual void accept();
 
 	private slots:
+		void usePattern(bool enable);
 		void addPattern();
 		void removePattern();
+		void patternChanged(const QString &);
 
 	private:
 		Ui::RenameDialog *ui;
 
-		QList<PatternWidget *> m_patternList;
-		QString m_originalName;
-
 		QVBoxLayout *m_patternLayout;
+
+		bool    m_usePattern;
+		QString m_originalName;
+		QString m_newName;
+
+		QList<PatternWidget *> m_patternList;
+		QMap<PatternWidget *, QString> m_patternMap;
 };
 
 #endif

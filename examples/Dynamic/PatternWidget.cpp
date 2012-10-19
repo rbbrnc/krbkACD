@@ -1,17 +1,14 @@
-// Base Class for pattern widgets
 #include "PatternWidget.h"
 
-#include <uuid/uuid.h>
+#include <QUuid>
 #include <QDebug>
 
 PatternWidget::PatternWidget(const QString &name, QWidget *parent)
 	: QWidget(parent),
 	  m_textEdit(0),
-	  m_uuidLabel(0),
 	  m_dateTimeEdit(0)
 
 {
-	m_type = PatternWidget::text;
 	m_dateTimeEdit = 0;
 	m_mainLayout = new QHBoxLayout;
 
@@ -29,21 +26,29 @@ PatternWidget::PatternWidget(const QString &name, QWidget *parent)
 
 	m_mainLayout->addWidget(m_typeLabel);
 
-	qDebug() << __func__ << name;
+	m_textEdit = new QLineEdit();
+
 	if (name == "UUID") {
-		uuidPatternSetup();
+		QString uuid = QUuid::createUuid().toString();
+		uuid.remove('{');
+		uuid.remove('}');
+		uuid.remove('-');
+		uuid = uuid.toUpper();
+		m_textEdit->setText(uuid);
+		m_textEdit->setReadOnly(true);
 	} else {
-		m_textEdit = new QLineEdit();
-		m_mainLayout->addWidget(m_textEdit);
 	}
 
+	m_mainLayout->addWidget(m_textEdit);
 	m_mainLayout->addWidget(m_deleteMeButton);
 	setLayout(m_mainLayout);
+
+	connect(m_textEdit, SIGNAL(textChanged(const QString &)),
+		this, SLOT(textChangedNotify(const QString &)));
 }
 
 PatternWidget::~PatternWidget()
 {
-	//qDebug() << __PRETTY_FUNCTION__;
 	delete m_typeLabel;
 	delete m_deleteMeButton;
 	if (m_textEdit) {
@@ -51,11 +56,6 @@ PatternWidget::~PatternWidget()
 	}
 
 	if (m_dateTimeEdit) {
-		delete m_dateTimeEdit;
-	}
-
-	if (m_uuidLabel) {
-		delete m_uuidLabel;
 	}
 
 	delete m_mainLayout;
@@ -71,30 +71,7 @@ QVariant PatternWidget::value() const
 	return m_textEdit->text();
 }
 
-enum PatternWidget::PatternType PatternWidget::type() const
+void PatternWidget::textChangedNotify(const QString &text)
 {
-	return m_type;
-}
-
-void  PatternWidget::uuidPatternSetup()
-{
-	char hex_char[] = "0123456789ABCDEF";
-	char uuidstr[sizeof(uuid_t) * 2 + 1];
-	uuid_t uuid;
-	uuid_generate(uuid);
-	size_t byte_nbr;
-	for (byte_nbr = 0; byte_nbr < sizeof(uuid_t); byte_nbr++) {
-		uuidstr[byte_nbr * 2 + 0] = hex_char[uuid [byte_nbr] >> 4];
-		uuidstr[byte_nbr * 2 + 1] = hex_char[uuid [byte_nbr] & 15];
-	}
-
-	QSizePolicy sp(QSizePolicy::Fixed, QSizePolicy::Expanding);
-	sp.setHorizontalStretch(0);
-	sp.setVerticalStretch(0);
-
-	m_uuidLabel = new QLabel(QString(uuidstr));
-	sp.setHeightForWidth(false/*m_uuidLabel->sizePolicy().hasHeightForWidth()*/);
-	m_uuidLabel->setFrameShape(QFrame::Box);
-	m_uuidLabel->setSizePolicy(sp);
-	m_mainLayout->addWidget(m_uuidLabel);
+	emit valueChanged(text);
 }
