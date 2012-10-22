@@ -1,7 +1,6 @@
 #include "RenameDialog.h"
 #include "ui_RenameDialog.h"
 
-//#include <QFileInfo>
 #include <QDebug>
 #include "PatternWidget.h"
 
@@ -29,7 +28,7 @@ RenameDialog::RenameDialog(const QString &fileName, QWidget *parent) :
 	}
 
 	m_newName = m_originalName;
-	m_newExt = m_originalExt;
+	m_newExt  = m_originalExt;
 
 	ui->fileNameEdit->setText(m_newName + m_newExt);
 	ui->newName->setText(m_newName + m_newExt);

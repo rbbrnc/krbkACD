@@ -1,5 +1,5 @@
-#ifndef RENAMEDIALOG_H
-#define RENAMEDIALOG_H
+#ifndef RENAME_DIALOG_H
+#define RENAME_DIALOG_H
 
 #include <QtGui>
 #include <QDialog>

@@ -36,6 +36,8 @@ PatternWidget::PatternWidget(const QString &name, QWidget *parent)
 		uuid = uuid.toUpper();
 		m_textEdit->setText(uuid);
 		m_textEdit->setReadOnly(true);
+	} else if (name == "DateTime") {
+		m_textEdit->setText("YYYYMMDDTHHMMSS");
 	} else {
 	}
 

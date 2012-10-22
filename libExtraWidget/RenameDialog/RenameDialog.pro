@@ -8,13 +8,17 @@ UI_DIR = ui
 RCC_DIR = resources
 
 SOURCES += PatternWidget.cpp \
-	RenameDialog.cpp
+	RenameDialog.cpp \
+	BatchRenameDialog.cpp
 
 HEADERS += PatternWidget.h \
-	RenameDialog.h
+	RenameDialog.h \
+	BatchRenameDialog.h
 
 RESOURCES += $$PWD/RenameDialog.qrc
-FORMS     += RenameDialog.ui
+
+FORMS += RenameDialog.ui \
+	BatchRenameDialog.ui
 
 CONFIG += static
 
