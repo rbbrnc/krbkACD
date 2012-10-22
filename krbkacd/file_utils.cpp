@@ -12,6 +12,7 @@
 #include <QDebug>
 
 #include "RenameDialog.h"
+#include "BatchRenameDialog.h"
 
 #include "file_utils.h"
 
@@ -39,6 +40,50 @@ void renameFile(QString filePath, QWidget *parent)
 		      QObject::tr("Error"),
 		      QObject::tr("Renaming file '%1' failed").arg(fi.fileName()),
 		      QMessageBox::Abort);
+	}
+}
+
+/* Rename files */
+void renameFiles(QStringList files, QWidget *parent)
+{
+	if (files.isEmpty()) {
+		qDebug() << __PRETTY_FUNCTION__ << "Empty file list!";
+		return;
+	}
+
+	QStringList *filesOut = 0;
+	int n = files.count();
+	if (n == 1) {
+		RenameDialog dlg(files.at(0));
+		if (dlg.exec() == QDialog::Accepted) {
+			filesOut = new QStringList(dlg.newFileName());
+		} else {
+			qDebug() << "Single Reject";
+		}
+	} else if (n > 1) {
+		BatchRenameDialog dlg(files);
+		if (dlg.exec() == QDialog::Accepted) {
+			filesOut = new QStringList(dlg.newFileNames());
+		} else {
+			qDebug() << "Multi Reject";
+		}
+	} else {
+		qDebug() << __PRETTY_FUNCTION__ << "Error 3";
+		qDebug() << "Input:" << files;
+		return;
+	}
+
+	if (filesOut) {
+		for (int i = 0; i < filesOut->count(); i++) {
+			qDebug() << "In:" << files.at(i) << "-->" << filesOut->at(i);
+			if (!QFile::rename(files.at(i), filesOut->at(i))) {
+				QMessageBox::critical(parent,
+				      QObject::tr("Error"),
+				      QObject::tr("Renaming file '%1' failed").arg(files.at(i)),
+				      QMessageBox::Abort);
+			}
+		}
+		delete filesOut;
 	}
 }
 

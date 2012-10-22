@@ -12,7 +12,6 @@
 /* TODO
  *
  * Add Warning on delete directory not empty!
- * Batch rename
  * Confirm on Copy & Move
  *
  */
@@ -84,9 +83,27 @@ void FileListWidget::actionShowHidden(bool show)
  */
 void FileListWidget::actionRename()
 {
+#if 0
 	QString file = m_model->fileInfo(selectedIndexes().first()).filePath();
 	::renameFile(file, this);
 	setSelectionMode(QAbstractItemView::SingleSelection);
+#else
+	m_selection = selectedIndexes();
+
+	if (m_selection.isEmpty()) {
+		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
+	} else {
+		m_model->setReadOnly(false);
+		QStringList files;
+		for (int i = 0; i < m_selection.count(); i++) {
+			files << m_model->fileInfo(selectedIndexes().at(i)).filePath();
+		}
+		::renameFiles(files, this);
+		m_model->setReadOnly(true);
+	}
+
+	setSelectionMode(QAbstractItemView::SingleSelection);
+#endif
 }
 
 /* SLOT [public]

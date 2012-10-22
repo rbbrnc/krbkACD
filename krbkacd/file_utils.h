@@ -4,6 +4,7 @@
 void deleteFile(QString filePath, QWidget *parent);
 void deleteFiles(QStringList fileList, QWidget *parent);
 void renameFile(QString filePath, QWidget *parent);
+void renameFiles(QStringList files, QWidget *parent);
 bool copyFile(const QString destPath, const QString filePath, QWidget *parent);
 bool moveFile(const QString destPath, const QString fileName, QWidget *parent);
 void makeDir(const QString destPath, QWidget *parent);
