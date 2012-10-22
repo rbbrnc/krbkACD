@@ -22,7 +22,11 @@ RenameDialog::RenameDialog(const QString &fileName, QWidget *parent) :
 	QFileInfo fi(fileName);
 	m_originalPath = fi.absolutePath();
 	m_originalName = fi.completeBaseName();
-	m_originalExt  = "." + fi.suffix();
+	if (fi.suffix().isEmpty()) {
+		m_originalExt  = "";
+	} else {
+		m_originalExt  = "." + fi.suffix();
+	}
 
 	m_newName = m_originalName;
 	m_newExt = m_originalExt;
