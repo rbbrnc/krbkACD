@@ -63,7 +63,7 @@ MetadataLocation::MetadataLocation(QExiv2 *metadata, QWidget *parent)
 	ui->lcWorldRegion->setText("");
 
 	// XMP:LocationCreatedCountryCode
-	ui->lcCountryCode->setText("");
+	ui->lcCountryCode->setText(m_md->xmpTagString("Xmp.iptcExt.CountryCode", false));
 
 	// XMP:LocationCreatedCountryName
 	ui->lcCountryName->setText(m_md->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName", false));
