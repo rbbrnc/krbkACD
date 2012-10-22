@@ -12,6 +12,7 @@ BatchRenameDialog::BatchRenameDialog(const QStringList &files, QWidget *parent) 
 {
 	ui->setupUi(this);
 
+	ui->fileExtensionEdit->hide();
 	m_patternLayout = ui->patternLayout;
 
 	// Set file path, names and extensions
@@ -74,13 +75,47 @@ QStringList BatchRenameDialog::newFileNames()
 	return sl;
 }
 
+// [SLOT public]
 void BatchRenameDialog::reject()
 {
+	emit rejected();
 	QDialog::reject();
 }
 
+// [SLOT public]
 void BatchRenameDialog::accept()
 {
+	updateNames();
+
+	// Lists consistency check!
+	if (m_newName.count() != m_originalName.count()) {
+		reject();
+		return;
+	}
+
+	for (int i = 0; i < m_newName.count(); i++) {
+		if (m_newName.at(i).isEmpty()) {
+			if (m_newExt.at(i) != m_originalExt.at(i)) {
+				// Only an extension modify
+				m_newName.replace(i, m_originalName.at(i));
+			} else {
+				qDebug() << m_newName.at(i) + m_newExt.at(i) << " Rejected (Empty Name)";
+				reject();
+				return;
+			}
+		}
+		// Reject if the old name is equal to the new or new is empty.
+		if (m_newName.at(i) + m_newExt.at(i) == m_originalName.at(i) + m_originalExt.at(i)) {
+			qDebug() << i << ":"
+				 << m_originalName.at(i) + m_originalExt.at(i)
+				 << "-->"
+				 << m_newName.at(i) + m_newExt.at(i)
+				 << " Rejected (same names)";
+			reject();
+			return;
+		}
+	}
+
 	QDialog::accept();
 }
 
@@ -117,6 +152,7 @@ void BatchRenameDialog::fileExtensionUpdate(int index)
 		}
 		ui->fileExtensionEdit->setText("");
 		ui->fileExtensionEdit->setReadOnly(true);
+		ui->fileExtensionEdit->hide();
 		break;
 	case 1:
 		// Original lower case
@@ -125,6 +161,7 @@ void BatchRenameDialog::fileExtensionUpdate(int index)
 		}
 		ui->fileExtensionEdit->setText("");
 		ui->fileExtensionEdit->setReadOnly(true);
+		ui->fileExtensionEdit->hide();
 		break;
 	case 2:
 		// Original upper case
@@ -133,11 +170,13 @@ void BatchRenameDialog::fileExtensionUpdate(int index)
 		}
 		ui->fileExtensionEdit->setText("");
 		ui->fileExtensionEdit->setReadOnly(true);
+		ui->fileExtensionEdit->hide();
 
 		break;
 	case 3:
 		// Free text
 		ui->fileExtensionEdit->setReadOnly(false);
+		ui->fileExtensionEdit->show();
 		break;
 	default:
 		break;
