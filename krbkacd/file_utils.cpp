@@ -27,8 +27,6 @@
 void renameFile(QString filePath, QWidget *parent)
 {
 	QFileInfo fi(filePath);
-
-#if 10
 	RenameDialog dlg(fi.absoluteFilePath());
 	if (dlg.exec() != QDialog::Accepted) {
 		return;
@@ -42,22 +40,6 @@ void renameFile(QString filePath, QWidget *parent)
 		      QObject::tr("Renaming file '%1' failed").arg(fi.fileName()),
 		      QMessageBox::Abort);
 	}
-#else
-	QString newName = QInputDialog::getText(parent,
-				QObject::tr("Rename"),
-	                        QObject::tr("New filename: "),
-				QLineEdit::Normal,
-				fi.fileName());
-
-	if ((newName != fi.fileName()) && (!newName.isEmpty())) {
-		if (!QFile::rename(fi.absoluteFilePath(), fi.absolutePath() + "/" + newName)) {
-			QMessageBox::critical(parent,
-			      QObject::tr("Error"),
-			      QObject::tr("Renaming file '%1' failed").arg(fi.fileName()),
-			      QMessageBox::Abort);
-		}
-	}
-#endif
 }
 
 /* Delete File */
