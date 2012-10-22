@@ -2,6 +2,8 @@ TEMPLATE = app
 
 include (../../libExtraWidget/RenameDialog/RenameDialog.pri)
 
+PRE_TARGETDEPS += $$OUT_PWD/../../libExtraWidget/RenameDialog/lib$${RENAME_DIALOG_LIBNAME}.a
+
 #-- Places for generated files
 DESTDIR = ../..
 OBJECTS_DIR = objs
