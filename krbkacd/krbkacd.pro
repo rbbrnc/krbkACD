@@ -1,5 +1,5 @@
 TEMPLATE = app
-POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
+#POST_TARGETDEPS += ../libQExiv2/libQExiv2.a
 
 include (../../libQExiv2/libQExiv2.pri)
 include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
@@ -7,6 +7,10 @@ include (../../libExtraWidget/RenameDialog/RenameDialog.pri)
 include (MetadataTreeModel/MetadataTreeModel.pri)
 include (FindDuplicates/FindDuplicates.pri)
 include (ImageView/ImageView.pri)
+
+PRE_TARGETDEPS += $$OUT_PWD/../libQExiv2/libQExiv2.a
+PRE_TARGETDEPS += $$OUT_PWD/../libExtraWidget/RenameDialog/lib$${RENAME_DIALOG_LIBNAME}.a
+PRE_TARGETDEPS += $$OUT_PWD/../libExtraWidget/SpotlightWidget/lib$${SPOTLIGHT_WIDGET_LIBNAME}.a
 
 TARGET = krbkACD
 
