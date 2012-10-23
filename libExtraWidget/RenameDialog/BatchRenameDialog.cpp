@@ -1,9 +1,7 @@
 #include "BatchRenameDialog.h"
 #include "ui_BatchRenameDialog.h"
 
-#include <QtGui>
 #include <QDebug>
-
 #include "PatternWidget.h"
 
 BatchRenameDialog::BatchRenameDialog(const QStringList &files, QWidget *parent) :
@@ -19,8 +17,6 @@ BatchRenameDialog::BatchRenameDialog(const QStringList &files, QWidget *parent) 
 	QFileInfo fi(files.at(0));
 	m_originalPath = fi.absolutePath();
 
-	QString oldName;
-	QString newName;
 	for (int i = 0; i < files.count(); i++) {
 		fi = QFileInfo(files.at(i));
 		m_originalName << fi.completeBaseName();
@@ -38,12 +34,7 @@ BatchRenameDialog::BatchRenameDialog(const QStringList &files, QWidget *parent) 
 		ui->newNamesListWidget->addItem(m_newName.at(i) + m_newExt.at(i));
 	}
 
-	QStringList patternTypeNames;
-	patternTypeNames << "Text"
-			 << "DateTime"
-			 << "UUID";
-
-	ui->patternComboBox->insertItems(0, patternTypeNames);
+	ui->patternComboBox->insertItems(0, PatternWidget::typeNames());
 
 	QStringList fileExtensionOptions;
 	fileExtensionOptions << "Original"
@@ -73,6 +64,28 @@ QStringList BatchRenameDialog::newFileNames()
 		sl << m_originalPath + "/" + m_newName.at(i) + m_newExt.at(i);
 	}
 	return sl;
+}
+
+// [private]
+void BatchRenameDialog::updateNames()
+{
+	ui->newNamesListWidget->clear();
+
+	for (int i = 0; i < m_newName.count(); i++) {
+		if (m_patternList.size() > 0) {
+			QString newName;
+			for (int j = 0; j < m_patternList.size(); j++) {
+				newName += m_patternMap[m_patternList.at(j)];
+			}
+			// Add count pattern!
+			newName += QString("_") + QString::number(i);
+			m_newName.replace(i, newName);
+		} else {
+			m_newName.replace(i, m_originalName.at(i));
+		}
+
+		ui->newNamesListWidget->addItem(m_newName.at(i) + m_newExt.at(i));
+	}
 }
 
 // [SLOT public]
@@ -119,26 +132,46 @@ void BatchRenameDialog::accept()
 	QDialog::accept();
 }
 
-// [private]
-void BatchRenameDialog::updateNames()
+// [SLOT private]
+void BatchRenameDialog::addPattern()
 {
-	ui->newNamesListWidget->clear();
+	QString type = ui->patternComboBox->currentText();
 
-	for (int i = 0; i < m_newName.count(); i++) {
-		if (m_patternList.size() > 0) {
-			QString newName;
-			for (int j = 0; j < m_patternList.size(); j++) {
-				newName += m_patternMap[m_patternList.at(j)];
-			}
-			// Add count pattern!
-			newName += QString("_") + QString::number(i);
-			m_newName.replace(i, newName);
-		} else {
-			m_newName.replace(i, m_originalName.at(i));
-		}
+	PatternWidget *pw = new PatternWidget(type, QVariant(), this);
+	m_patternList.append(pw);
+	m_patternLayout->addWidget(pw);
+	connect(pw, SIGNAL(deleteMe()), this, SLOT(removePattern()));
+	connect(pw, SIGNAL(valueChanged(const QString &)),
+		this, SLOT(patternChanged(const QString &)));
 
-		ui->newNamesListWidget->addItem(m_newName.at(i) + m_newExt.at(i));
+	m_patternMap.insert(pw, pw->value().toString());
+
+	// For pattern with predefined text.
+	QString value = pw->value().toString();
+	if (!value.isEmpty()) {
+		updateNames();
 	}
+}
+
+// [SLOT private]
+void BatchRenameDialog::removePattern()
+{
+	PatternWidget *pw = static_cast<PatternWidget *>(sender());
+	m_patternList.removeOne(pw);
+	pw->hide();
+	m_patternLayout->removeWidget(pw);
+	m_patternMap.remove(pw);
+	updateNames();
+
+	delete pw;
+}
+
+// [SLOT private]
+void BatchRenameDialog::patternChanged(const QString &pattern)
+{
+	PatternWidget *pw = static_cast<PatternWidget *>(sender());
+	m_patternMap[pw] = pattern; //m_patternMap[pw] = pw->value().toString();
+	updateNames();
 }
 
 // [SLOT private]
@@ -190,48 +223,6 @@ void BatchRenameDialog::fileExtensionChanged(const QString &text)
 	for (int i = 0; i < m_newExt.count(); i++) {
 		m_newExt.replace(i, text);
 	}
-	updateNames();
-}
-
-// [SLOT private]
-void BatchRenameDialog::addPattern()
-{
-	QString type = ui->patternComboBox->currentText();
-
-	PatternWidget *pw = new PatternWidget(type, this);
-	m_patternList.append(pw);
-	m_patternLayout->addWidget(pw);
-	connect(pw, SIGNAL(deleteMe()), this, SLOT(removePattern()));
-	connect(pw, SIGNAL(valueChanged(const QString &)),
-		this, SLOT(patternChanged(const QString &)));
-
-	m_patternMap.insert(pw, pw->value().toString());
-
-	// For pattern with predefined text.
-	QString value = pw->value().toString();
-	if (!value.isEmpty()) {
-		updateNames();
-	}
-}
-
-// [SLOT private]
-void BatchRenameDialog::removePattern()
-{
-	PatternWidget *pw = static_cast<PatternWidget *>(sender());
-	m_patternList.removeOne(pw);
-	pw->hide();
-	m_patternLayout->removeWidget(pw);
-	m_patternMap.remove(pw);
-	updateNames();
-
-	delete pw;
-}
-
-// [SLOT private]
-void BatchRenameDialog::patternChanged(const QString &pattern)
-{
-	PatternWidget *pw = static_cast<PatternWidget *>(sender());
-	m_patternMap[pw] = pattern; //m_patternMap[pw] = pw->value().toString();
 	updateNames();
 }
 

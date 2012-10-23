@@ -36,12 +36,7 @@ RenameDialog::RenameDialog(const QString &fileName, QWidget *parent) :
 	ui->fileExtensionEdit->setText(m_newExt);
 	ui->fileExtensionEdit->setReadOnly(true);
 
-	QStringList patternTypeNames;
-	patternTypeNames << "Text"
-			 << "DateTime"
-			 << "UUID";
-
-	ui->patternComboBox->insertItems(0, patternTypeNames);
+	ui->patternComboBox->insertItems(0, PatternWidget::typeNames());
 
 	QStringList fileExtensionOptions;
 	fileExtensionOptions << "Original"
@@ -51,13 +46,11 @@ RenameDialog::RenameDialog(const QString &fileName, QWidget *parent) :
 	ui->fileExtensionComboBox->insertItems(0, fileExtensionOptions);
 	connect(ui->fileExtensionComboBox, SIGNAL(currentIndexChanged(int)),
 		this, SLOT(fileExtensionUpdate(int)));
-
-
-	connect(ui->addPatternButton, SIGNAL(clicked()), this, SLOT(addPattern()));
-	connect(ui->patternCheckBox,  SIGNAL(toggled(bool)), this, SLOT(usePattern(bool)));
 	connect(ui->fileExtensionEdit, SIGNAL(textChanged(const QString &)),
 		this, SLOT(fileExtensionChanged(const QString &)));
 
+	connect(ui->addPatternButton, SIGNAL(clicked()), this, SLOT(addPattern()));
+	connect(ui->patternCheckBox,  SIGNAL(toggled(bool)), this, SLOT(usePattern(bool)));
 }
 
 RenameDialog::~RenameDialog()
@@ -141,7 +134,13 @@ void RenameDialog::addPattern()
 {
 	QString type = ui->patternComboBox->currentText();
 
-	PatternWidget *pw = new PatternWidget(type, this);
+	PatternWidget *pw;
+	if (type == "FileName") {
+		pw = new PatternWidget(type, m_originalName, this);
+	} else {
+		pw = new PatternWidget(type, QVariant(), this);
+	}
+
 	m_patternList.append(pw);
 	m_patternLayout->addWidget(pw);
 	connect(pw, SIGNAL(deleteMe()), this, SLOT(removePattern()));

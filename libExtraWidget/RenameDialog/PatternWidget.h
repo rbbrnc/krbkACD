@@ -9,10 +9,12 @@ class PatternWidget : public QWidget
 	Q_OBJECT
 
 	public:
-		PatternWidget(const QString &name, QWidget *parent = 0);
+		PatternWidget(const QString &name, const QVariant &value, QWidget *parent = 0);
 		~PatternWidget();
 
 		virtual QVariant value() const;
+
+		static QStringList typeNames();
 
 	signals:
 		void deleteMe();
