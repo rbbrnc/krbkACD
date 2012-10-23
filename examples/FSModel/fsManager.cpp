@@ -58,6 +58,7 @@ QModelIndex FSManager::nextRow(int current) const
 {
 	return m_currentIndex.child(++current, 0);
 }
+
 QModelIndex FSManager::previousRow(const QModelIndex &current) const
 {
 	int row = current.row();

@@ -19,11 +19,12 @@ class Widget : public QWidget
 
 		QVBoxLayout *m_mainLayout;
 		QComboBox     *m_typeComboBox;
+		QLineEdit     *m_dimEdit;
 		QLineEdit     *m_posEdit;
 		QLineEdit     *m_descEdit;
 		QLineEdit     *m_nameEdit;
 
-		QSize  m_dimension;
+		QSizeF m_dimension;
 		QRectF m_area;
 		int m_tagCount;
 };

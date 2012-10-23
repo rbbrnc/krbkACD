@@ -1,55 +1,59 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef FILEMANAGER_H
+#define FILEMANAGER_H
 
-#include <QMainWindow>
+#include <QWidget>
 #include <QFileSystemModel>
 #include <QDir>
 #include <QItemSelectionModel>
 #include <QKeyEvent>
 
 namespace Ui {
-	class MainWindow;
+	class FileManager;
 }
 
 class FSManager;
-class MainWindow : public QMainWindow
+class FileManager : public QWidget
 {
 	Q_OBJECT
 
 	public:
-		explicit MainWindow(QWidget *parent = 0);
-		~MainWindow();
+		FileManager(const QString &path = 0, QWidget *parent = 0);
+		~FileManager();
+
+		QString currentPath() const;
 
 	private slots:
-		void on_prevButton_clicked();
-		void on_nextButton_clicked();
 
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
 		void handleItemActivation(QModelIndex index);
 
-		void on_pushButton_clicked();
+//		void on_pushButton_clicked();
+
+	public slots:
+		void previous();
+		void next();
 
 		void mkDir();
 		void remove();
 	        void rename();
+	        void copy(const QString &destPath);
+	        void move(const QString &destPath);
 
-	public slots:
-		void changePath(const QString &path);
 		void iconMode(bool enable);
+		void showHidden(bool show);
 
 	protected:
 		void keyPressEvent(QKeyEvent *event);
 		void keyReleaseEvent(QKeyEvent *event);
 
 	private:
-		Ui::MainWindow *ui;
+		Ui::FileManager *ui;
 
-		FSManager *m_fs;	// Filesystem manager
+		QFileSystemModel *m_model;
+		QModelIndex m_currentIndex;
 
-		//QFileSystemModel *m_model;
 		QDir m_currentDir;
 		QModelIndexList m_selection;
 		QItemSelectionModel *m_selectionModel;
-		QModelIndex m_currentIndex;
 };
 #endif

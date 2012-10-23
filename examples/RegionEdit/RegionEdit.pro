@@ -3,7 +3,7 @@ TEMPLATE = app
 include (../../libQExiv2/libQExiv2.pri)
 
 #-- Places for generated files
-#DESTDIR = ../..
+DESTDIR = ../..
 OBJECTS_DIR = objs
 MOC_DIR = mocs
 UI_DIR = ui

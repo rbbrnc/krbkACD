@@ -7,3 +7,4 @@ SUBDIRS  = \
 	Editor \
 	RegionEdit \
 	BatchRename \
+	FileManager \

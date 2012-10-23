@@ -59,7 +59,12 @@ RenameDialog::~RenameDialog()
 }
 
 // [public]
-QString RenameDialog::newFileName()
+QString RenameDialog::newFileName() const
+{
+	return m_newName + m_newExt;
+}
+
+QString RenameDialog::newFilePath() const
 {
 	return m_originalPath + "/" + m_newName + m_newExt;
 }

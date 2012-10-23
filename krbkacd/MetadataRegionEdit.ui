@@ -28,7 +28,7 @@
       <height>281</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
+    <layout class="QVBoxLayout" name="photoLayout">
      <item>
       <widget class="QLabel" name="thumbnail">
        <property name="text">
@@ -57,7 +57,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -69,7 +69,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Type (mwg-rs:Type)</string>
+        <string>Type</string>
        </property>
       </widget>
      </item>
@@ -169,7 +169,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Name (mwg-rs:Name)</string>
+        <string>Name</string>
        </property>
       </widget>
      </item>
@@ -203,7 +203,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Description (mwg-rs:Description)</string>
+        <string>Description</string>
        </property>
       </widget>
      </item>
@@ -215,8 +215,8 @@
    <widget class="QWidget" name="verticalLayoutWidget_6">
     <property name="geometry">
      <rect>
-      <x>240</x>
-      <y>10</y>
+      <x>250</x>
+      <y>520</y>
       <width>201</width>
       <height>17</height>
      </rect>
@@ -301,6 +301,28 @@
      </item>
     </layout>
    </widget>
+   <widget class="QCheckBox" name="showAllRegionsCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>350</y>
+      <width>85</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Show All</string>
+    </property>
+   </widget>
+   <zorder>verticalLayoutWidget</zorder>
+   <zorder>verticalLayoutWidget_2</zorder>
+   <zorder>verticalLayoutWidget_3</zorder>
+   <zorder>verticalLayoutWidget_4</zorder>
+   <zorder>verticalLayoutWidget_5</zorder>
+   <zorder>verticalLayoutWidget_6</zorder>
+   <zorder>layoutWidget</zorder>
+   <zorder>label_6</zorder>
+   <zorder>showAllRegionsCheckBox</zorder>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>

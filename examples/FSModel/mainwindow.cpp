@@ -3,6 +3,8 @@
 
 #include "fsManager.h"
 #include <QDebug>
+#include <QMessageBox>
+#include <QInputDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -10,14 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	FSManager *mgr = FSManager::instance();
+	m_fs = FSManager::instance();
+//	m_fs->currentIndex();
 
-	m_model = mgr->model();
-
-	mgr->currentIndex();
-
-	ui->listView->setModel(m_model);
-	ui->listView->setRootIndex(mgr->currentIndex());
+	ui->listView->setModel(m_fs->model());
+	ui->listView->setRootIndex(m_fs->currentIndex());
 	ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
 
 	m_selectionModel = ui->listView->selectionModel();
@@ -30,11 +29,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->listView, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
 
-	connect(ui->hiddenButton, SIGNAL(toggled(bool)),
-		mgr /*FSManager::instance()*/, SLOT(showHiddenFiles(bool)));
-
+	connect(ui->hiddenButton, SIGNAL(toggled(bool)), m_fs, SLOT(showHiddenFiles(bool)));
 	connect(ui->iconButton, SIGNAL(toggled(bool)), this, SLOT(iconMode(bool)));
-
+	connect(ui->mkDirButton, SIGNAL(clicked()), this, SLOT(mkDir()));
+	connect(ui->removeButton, SIGNAL(clicked()), this, SLOT(remove()));
+	connect(ui->renameButton, SIGNAL(clicked()), this, SLOT(rename()));
 }
 
 MainWindow::~MainWindow()
@@ -45,8 +44,7 @@ MainWindow::~MainWindow()
 /*  SLOT [private] */
 void MainWindow::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
-	FSManager *mgr = FSManager::instance();
-	ui->label->setText(mgr->model()->fileName(current));
+	ui->label->setText(m_fs->model()->fileName(current));
 }
 
 /*  SLOT [public]
@@ -57,25 +55,23 @@ void MainWindow::fileSelect(const QModelIndex &current, const QModelIndex &/*pre
  */
 void MainWindow::changePath(const QString &path)
 {
-	FSManager *mgr = FSManager::instance();
-
         m_currentDir.cd(path);
         QString newPath = m_currentDir.absolutePath();
 
-	mgr->changePath(newPath);
+	m_fs->changePath(newPath);
         ui->listView->clearSelection();
 
-        ui->listView->setRootIndex(mgr->currentIndex());
+        ui->listView->setRootIndex(m_fs->currentIndex());
 
         //emit pathChanged(newPath);
         ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
-        ui->listView->setCurrentIndex(mgr->firstRow());
+        ui->listView->setCurrentIndex(m_fs->firstRow());
 }
 /*  SLOT [private] */
 void MainWindow::handleItemActivation(QModelIndex index)
 {
 	if (ui->listView->selectionMode() == QAbstractItemView::SingleSelection) {
-		QFileInfo file = m_model->fileInfo(index);
+		QFileInfo file = m_fs->model()->fileInfo(index);
 		if (file.isDir()) {
 			changePath(file.absoluteFilePath());
 		}
@@ -85,40 +81,36 @@ void MainWindow::handleItemActivation(QModelIndex index)
 
 void MainWindow::on_prevButton_clicked()
 {
-	FSManager *mgr = FSManager::instance();
 	//QModelIndex mi = m->previousRow(ui->listView->currentIndex());
-	QModelIndex mi = mgr->previousRow(ui->listView->currentIndex().row());
+	QModelIndex mi = m_fs->previousRow(ui->listView->currentIndex().row());
 	if (mi.isValid()) {
 		ui->listView->setCurrentIndex(mi);
-		ui->label->setText(m_model->fileName(mi));
+		ui->label->setText(m_fs->model()->fileName(mi));
 	}
 }
 
 void MainWindow::on_nextButton_clicked()
 {
-	FSManager *mgr = FSManager::instance();
 	//QModelIndex mi = m->nextRow(ui->listView->currentIndex());
-	QModelIndex mi = mgr->nextRow(ui->listView->currentIndex().row());
+	QModelIndex mi = m_fs->nextRow(ui->listView->currentIndex().row());
 	if (mi.isValid()) {
 		ui->listView->setCurrentIndex(mi);
-		ui->label->setText(m_model->fileName(mi));
+		ui->label->setText(m_fs->model()->fileName(mi));
 	}
 }
 
 void MainWindow::on_pushButton_clicked()
 {
-	FSManager *mgr = FSManager::instance();
-	QModelIndex index = mgr->firstRow();
+	QModelIndex index = m_fs->firstRow();
 	do {
 		if (index.isValid())
-			qDebug() << mgr->model()->fileName(index);
+			qDebug() << m_fs->model()->fileName(index);
 		else
 			break;
 
-		index = mgr->nextRow(index);
+		index = m_fs->nextRow(index);
 	} while (index.isValid());
 }
-
 
 // [SLOT public]
 //
@@ -138,8 +130,6 @@ void MainWindow::iconMode(bool enable)
 	}
 }
 
-
-
 void MainWindow::keyPressEvent(QKeyEvent *event)
 {
 	if ((event->key() == Qt::Key_Control) || (event->key() == Qt::Key_Shift)) {
@@ -158,3 +148,62 @@ void MainWindow::keyReleaseEvent(QKeyEvent *event)
 	}
 }
 
+// [SLOT private]
+void MainWindow::mkDir()
+{
+	QString dirName = QInputDialog::getText(this,
+				QObject::tr("Create a new directory"),
+				QObject::tr("Enter directory name: "),
+				QLineEdit::Normal);
+	// Remove whitespaces
+	dirName = dirName.simplified();
+
+	if (dirName.isEmpty()) {
+		return;
+	}
+
+	QModelIndex index = m_fs->model()->mkdir(m_fs->currentIndex(), dirName);
+	if (!index.isValid()) {
+		QMessageBox::critical(this,
+			QObject::tr("Error"),
+			QObject::tr("Creating dir '%1' failed").arg(dirName),
+			QMessageBox::Abort);
+	}
+}
+
+// [SLOT private]
+void MainWindow::remove()
+{
+	QModelIndex index = ui->listView->currentIndex();
+	QString msg;
+
+	if (m_fs->model()->isDir(index)) {
+		msg = tr("Delete Directory %1?").arg(m_fs->model()->fileName(index));
+	} else {
+		msg = tr("Delete File %1?").arg(m_fs->model()->fileName(index));
+	}
+
+	if (QMessageBox::No == QMessageBox::warning(this, "Delete", msg, QMessageBox::Yes, QMessageBox::No)) {
+		return;
+	}
+
+	if (m_fs->model()->remove(index)) {
+		return;
+	}
+
+	QMessageBox::critical(this, QObject::tr("Error"),
+		tr("Cannot Remove '%1'").arg(m_fs->model()->filePath(index)),
+		QMessageBox::Abort);
+}
+
+// [SLOT private]
+void MainWindow::rename()
+{
+	qDebug() << __PRETTY_FUNCTION__;
+	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
+	while (!m_selection.isEmpty()) {
+		qDebug() << m_fs->model()->fileName(m_selection.first());
+		m_selection.removeFirst();
+	}
+
+}

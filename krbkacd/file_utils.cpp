@@ -33,7 +33,7 @@ void renameFile(QString filePath, QWidget *parent)
 		return;
 	}
 
-	QString newName = dlg.newFileName();
+	QString newName = dlg.newFilePath();
 
 	if (!QFile::rename(fi.absoluteFilePath(), newName)) {
 		QMessageBox::critical(parent,
@@ -56,7 +56,7 @@ void renameFiles(QStringList files, QWidget *parent)
 	if (n == 1) {
 		RenameDialog dlg(files.at(0));
 		if (dlg.exec() == QDialog::Accepted) {
-			filesOut = new QStringList(dlg.newFileName());
+			filesOut = new QStringList(dlg.newFilePath());
 		} else {
 			qDebug() << "Single Reject";
 		}

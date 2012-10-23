@@ -54,28 +54,32 @@ Widget::Widget(QWidget *parent)
 	QPushButton *okButton = new QPushButton("Ok", this);
 	connect(okButton, SIGNAL(clicked()), this, SLOT(ok()));
 
-	QLabel *l0 = new QLabel("X,Y,W,H:");
+	QLabel *l0 = new QLabel("Dim W,H:");
+	m_dimEdit  = new QLineEdit();
+	QLabel *l1 = new QLabel("X,Y,W,H:");
 	m_posEdit  = new QLineEdit();
-	QLabel *l1 = new QLabel("Name:");
+	QLabel *l2 = new QLabel("Name:");
 	m_nameEdit = new QLineEdit();
-	QLabel *l2 = new QLabel("Description:");
+	QLabel *l3 = new QLabel("Description:");
 	m_descEdit = new QLineEdit();
 
 	m_typeComboBox = new QComboBox();
 	m_typeComboBox->insertItems(0, QStringList() << "Face" << "Pet" << "Focus" << "BarCode");
 
 	m_mainLayout->addWidget(l0);
-	m_mainLayout->addWidget(m_posEdit);
+	m_mainLayout->addWidget(m_dimEdit);
 	m_mainLayout->addWidget(l1);
-	m_mainLayout->addWidget(m_nameEdit);
+	m_mainLayout->addWidget(m_posEdit);
 	m_mainLayout->addWidget(l2);
+	m_mainLayout->addWidget(m_nameEdit);
+	m_mainLayout->addWidget(l3);
 	m_mainLayout->addWidget(m_descEdit);
 	m_mainLayout->addWidget(m_typeComboBox);
 	m_mainLayout->addWidget(okButton);
 
 	setLayout(m_mainLayout);
 
-	m_dimension = QSize(640, 480);
+	m_dimension = QSizeF(640, 480);
 	m_area.setRect(0.275312, 0.3775, 0.164375, 0.28125);
 	m_tagCount = 0;
 }
