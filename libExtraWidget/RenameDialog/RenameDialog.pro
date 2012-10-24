@@ -9,16 +9,19 @@ RCC_DIR = resources
 
 SOURCES += PatternWidget.cpp \
 	RenameDialog.cpp \
-	BatchRenameDialog.cpp
+	BatchRenameDialog.cpp \
+	CopyMoveDialog.cpp
 
 HEADERS += PatternWidget.h \
 	RenameDialog.h \
-	BatchRenameDialog.h
+	BatchRenameDialog.h \
+	CopyMoveDialog.h
 
 RESOURCES += $$PWD/RenameDialog.qrc
 
 FORMS += RenameDialog.ui \
-	BatchRenameDialog.ui
+	BatchRenameDialog.ui \
+	CopyMoveDialog.ui
 
 CONFIG += static
 

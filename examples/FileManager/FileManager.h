@@ -21,12 +21,14 @@ class FileManager : public QWidget
 		~FileManager();
 
 		QString currentPath() const;
+		QString currentFile() const;
 
 	private slots:
 
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
 		void handleItemActivation(QModelIndex index);
 
+//		void currentPathChanged(const QString &newPath);
 //		void on_pushButton_clicked();
 
 	public slots:
@@ -42,6 +44,9 @@ class FileManager : public QWidget
 		void iconMode(bool enable);
 		void showHidden(bool show);
 
+	signals:
+		void currentChanged(const QString &newFile);
+
 	protected:
 		void keyPressEvent(QKeyEvent *event);
 		void keyReleaseEvent(QKeyEvent *event);
@@ -52,7 +57,9 @@ class FileManager : public QWidget
 		QFileSystemModel *m_model;
 		QModelIndex m_currentIndex;
 
-		QDir m_currentDir;
+		QString m_currentFileName;
+		QDir    m_currentDir;
+
 		QModelIndexList m_selection;
 		QItemSelectionModel *m_selectionModel;
 };

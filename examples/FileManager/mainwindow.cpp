@@ -28,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_copyButton  = new QPushButton("copy");
 	m_moveButton  = new QPushButton("move");
 
+	QPushButton *m_Button  = new QPushButton("BTN");
+
 	connect(m_hiddenButton, SIGNAL(toggled(bool)), m_manager, SLOT(showHidden(bool)));
 	connect(m_iconButton,   SIGNAL(toggled(bool)), m_manager, SLOT(iconMode(bool)));
 
@@ -40,6 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(m_copyButton,   SIGNAL(clicked()), this, SLOT(copy()));
 	connect(m_moveButton,   SIGNAL(clicked()), this, SLOT(move()));
 
+//	connect(m_Button,   SIGNAL(clicked()), this, SLOT(test()));
+	connect(m_manager, SIGNAL(currentChanged(const QString &)),
+		this, SLOT(test(const QString &)));
+
 	m_mainLayout->addWidget(m_manager);
 	m_mainLayout->addWidget(m_renameButton);
 	m_mainLayout->addWidget(m_deleteButton);
@@ -50,6 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_mainLayout->addWidget(m_moveButton);
 	m_mainLayout->addWidget(m_prevButton);
 	m_mainLayout->addWidget(m_nextButton);
+	m_mainLayout->addWidget(m_Button);
 
 	setLayout(m_mainLayout);
 }
@@ -74,4 +81,11 @@ void MainWindow::move()
 {
 	m_manager->move(".");
 }
+
+void MainWindow::test(const QString &str)
+{
+	//qDebug() << m_manager->currentPath() << m_manager->currentFile();
+	qDebug() << str;
+}
+
 

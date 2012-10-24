@@ -7,6 +7,7 @@
 
 #include "RenameDialog.h"
 #include "BatchRenameDialog.h"
+#include "CopyMoveDialog.h"
 
 FileManager::FileManager(const QString &path, QWidget *parent) :
 	QWidget(parent),
@@ -37,6 +38,10 @@ FileManager::FileManager(const QString &path, QWidget *parent) :
 
 	connect(ui->listView, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
+
+
+//	connect(m_model, SIGNAL(rootPathChanged(const QString &)),
+//		this, SLOT(currentPathChanged(const QString &)));
 }
 
 FileManager::~FileManager()
@@ -45,17 +50,32 @@ FileManager::~FileManager()
 	delete ui;
 }
 
+#if 0
+void FileManager::currentPathChanged(const QString &newPath)
+{
+	qDebug() << newPath;
+}
+#endif
+
 /* @return Current directory shown  */
 QString FileManager::currentPath() const
 {
 	return m_currentDir.absolutePath();
 }
 
+/* @return last selected file name  */
+QString FileManager::currentFile() const
+{
+	return m_currentFileName;
+}
 
 /*  SLOT [private] */
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
-	ui->label->setText(m_model->fileName(current));
+	m_currentFileName = m_model->fileName(current);
+	ui->label->setText(m_currentFileName);
+
+	emit currentChanged(m_currentFileName);
 }
 
 /*  SLOT [private] */
@@ -63,10 +83,9 @@ void FileManager::handleItemActivation(QModelIndex index)
 {
 	QListView *lw = ui->listView; //static_cast<QListView *>(sender());
 	if (lw->selectionMode() == QAbstractItemView::SingleSelection) {
-		QFileInfo file = m_model->fileInfo(index);
-		if (file.isDir()) {
+		if (m_model->isDir(index)) {
 			// Change Path
-		        m_currentDir.cd(file.absoluteFilePath());
+		        m_currentDir.cd(m_model->filePath(index));
 			m_currentIndex = m_model->setRootPath(m_currentDir.absolutePath());
 
 		        lw->clearSelection();
@@ -243,13 +262,19 @@ void FileManager::rename()
 		// Multi files
 		QStringList files;
 		for (int i = 0; i < m_selection.count(); i++) {
-			files << m_model->filePath(m_selection.at(i));
+			files << m_model->fileName(m_selection.at(i));
 			//qDebug() << m_model->filePath(m_selection.at(i));
 		}
 
 		BatchRenameDialog dlg(files);
 		if (dlg.exec() == QDialog::Accepted) {
 			QStringList filesOut = dlg.newFileNames();
+			for (int i = 0; i < m_selection.count(); i++) {
+				qDebug() << m_model->fileName(m_selection.at(i)) << "--" << filesOut.at(i);
+				if (m_model->setData(m_selection.at(i), filesOut.at(i))) {
+					ui->listView->update(m_selection.at(i));
+				}
+			}
 		}
 	}
 
@@ -269,19 +294,45 @@ void FileManager::copy(const QString &destPath)
 		return;
 	}
 
+	int dc;
+	if (m_selection.count() == 1) {
+		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+		dlg.setWindowTitle("Copy File");
+		dc = dlg.exec();
+	} else {
+		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+		dlg.setWindowTitle("Copy File(s)");
+		dc = dlg.exec();
+	}
+
+	if (QDialog::Accepted != dc) {
+		return;
+	}
+
 	m_model->setReadOnly(false);
 
+	QString dest;
 	// Copy files until filelist is empty or error occured
 	while (!m_selection.isEmpty()) {
-#if 0
-		if (!::copyFile(destPath, m_model->filePath(m_selection.first()), this)) {
-			break;
+		dest = destPath + "/" + m_model->fileName(m_selection.first());
+		if (QFile::exists(dest)) {
+			QMessageBox::critical(this, tr("Copy Error"), tr("File '%1' already exists").arg(dest), QMessageBox::Abort);
+			m_model->setReadOnly(true);
+			return;
 		}
-#else
-		qDebug() << m_model->filePath(m_selection.first());
+#if 0
+		if (!QFile::copy(m_model->filePath(m_selection.first(),	dest)) {
+			QMessageBox::critical(this, tr("Copy Error"),
+				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first()),
+				QMessageBox::Abort);
+
+			m_model->setReadOnly(true);
+			return;
+		}
 #endif
 		m_selection.removeFirst();
 	}
+
 	m_model->setReadOnly(true);
 	ui->listView->clearSelection();
 	ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -299,16 +350,42 @@ void FileManager::move(const QString &destPath)
 		return;
 	}
 
+	int dc;
+
+	if (m_selection.count() == 1) {
+		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+		dlg.setWindowTitle("Move File");
+		dc = dlg.exec();
+	} else {
+		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+		dlg.setWindowTitle("Move File(s)");
+		dc = dlg.exec();
+	}
+
+	if (QDialog::Accepted != dc) {
+		return;
+	}
+
 	m_model->setReadOnly(false);
 
+	QString dest;
 	// Move files until filelist is empty or error occured
 	while (!m_selection.isEmpty()) {
-#if 0
-		if (!::moveFile(destPath, m_model->filePath(m_selection.first()), this)) {
-			break;
+		dest = destPath + "/" + m_model->fileName(m_selection.first());
+		if (QFile::exists(dest)) {
+			QMessageBox::critical(this, tr("Move Error"), tr("File '%1' already exists").arg(dest), QMessageBox::Abort);
+			m_model->setReadOnly(true);
+			return;
 		}
-#else
-		qDebug() << m_model->filePath(m_selection.first());
+#if 0
+		if (!QFile::rename(m_model->filePath(m_selection.first(), dest))) {
+			QMessageBox::critical(this, tr("Copy Error"),
+				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first()),
+				QMessageBox::Abort);
+
+			m_model->setReadOnly(true);
+			return;
+		}
 #endif
 		m_selection.removeFirst();
 	}

@@ -16,6 +16,9 @@ class MainWindow : public QWidget
 		void copy();
 		void move();
 
+		//void test();
+		void test(const QString &str);
+
 	private:
 		QVBoxLayout *m_mainLayout;
 		FileManager *m_manager;

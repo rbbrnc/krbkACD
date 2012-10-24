@@ -61,11 +61,21 @@ QStringList BatchRenameDialog::newFileNames()
 	QStringList sl;
 
 	for (int i = 0; i < m_newName.count(); i++) {
-		sl << m_originalPath + "/" + m_newName.at(i) + m_newExt.at(i);
+		sl << m_newName.at(i) + m_newExt.at(i);
 	}
 	return sl;
 }
 
+// [public]
+QStringList BatchRenameDialog::newFilePaths()
+{
+	QStringList sl;
+
+	for (int i = 0; i < m_newName.count(); i++) {
+		sl << m_originalPath + "/" + m_newName.at(i) + m_newExt.at(i);
+	}
+	return sl;
+}
 // [private]
 void BatchRenameDialog::updateNames()
 {
