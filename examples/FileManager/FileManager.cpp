@@ -264,14 +264,21 @@ void FileManager::copy(const QString &destPath)
 		return;
 	}
 
+	if (destPath.isNull() || destPath.isEmpty()) {
+		qDebug() << __PRETTY_FUNCTION__ << "Invalid destPath!";
+		return;
+	}
+
 	m_model->setReadOnly(false);
 
 	// Copy files until filelist is empty or error occured
 	while (!m_selection.isEmpty()) {
 #if 0
-		if (!::copyFile(destPath, m_model->fileInfo(m_selection.first()).absoluteFilePath(), this)) {
+		if (!::copyFile(destPath, m_model->filePath(m_selection.first()), this)) {
 			break;
 		}
+#else
+		qDebug() << m_model->filePath(m_selection.first());
 #endif
 		m_selection.removeFirst();
 	}
@@ -287,6 +294,11 @@ void FileManager::move(const QString &destPath)
 		return;
 	}
 
+	if (destPath.isNull() || destPath.isEmpty()) {
+		qDebug() << __PRETTY_FUNCTION__ << "Invalid destPath!";
+		return;
+	}
+
 	m_model->setReadOnly(false);
 
 	// Move files until filelist is empty or error occured
@@ -295,9 +307,9 @@ void FileManager::move(const QString &destPath)
 		if (!::moveFile(destPath, m_model->filePath(m_selection.first()), this)) {
 			break;
 		}
-#endif
+#else
 		qDebug() << m_model->filePath(m_selection.first());
-
+#endif
 		m_selection.removeFirst();
 	}
 	m_model->setReadOnly(true);
