@@ -9,18 +9,15 @@
 #include "BatchRenameDialog.h"
 #include "CopyMoveDialog.h"
 
-FileManager::FileManager(const QString &path, QWidget *parent) :
+FileManager::FileManager(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::FileManager)
 {
 	ui->setupUi(this);
 
 	m_model = new QFileSystemModel();
-	if (path.isNull() || path.isEmpty()) {
-		m_currentIndex = m_model->setRootPath(QDir::current().absolutePath());
-	} else {
-		m_currentIndex = m_model->setRootPath(path);
-	}
+
+	m_currentIndex = m_model->setRootPath(QDir::current().absolutePath());
 
 	m_model->setFilter(QDir::Files | QDir::System | QDir::NoDot | QDir::Dirs);
 	m_model->setReadOnly(true);

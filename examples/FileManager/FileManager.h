@@ -17,7 +17,7 @@ class FileManager : public QWidget
 	Q_OBJECT
 
 	public:
-		FileManager(const QString &path = 0, QWidget *parent = 0);
+		FileManager(QWidget *parent = 0);
 		~FileManager();
 
 		QString currentPath() const;

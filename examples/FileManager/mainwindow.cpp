@@ -88,4 +88,3 @@ void MainWindow::test(const QString &str)
 	qDebug() << str;
 }
 
-
