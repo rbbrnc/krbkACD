@@ -6,12 +6,13 @@ PRE_TARGETDEPS += $$OUT_PWD/../../libExtraWidget/RenameDialog/lib$${RENAME_DIALO
 
 DESTDIR = ../..
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        MainWindow.cpp \
         FileManager.cpp \
 
-HEADERS  += mainwindow.h \
+HEADERS  += MainWindow.h \
         FileManager.h \
 
-FORMS    += FileManager.ui \
+FORMS += FileManager.ui \
+        MainWindow.ui \
 
 LIBS += -L$$OUT_PWD/../../libExtraWidget/RenameDialog -l$$RENAME_DIALOG_LIBNAME

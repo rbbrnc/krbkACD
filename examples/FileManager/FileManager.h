@@ -22,6 +22,7 @@ class FileManager : public QWidget
 
 		QString currentPath() const;
 		QString currentFile() const;
+		bool isActive() const;
 
 	private slots:
 

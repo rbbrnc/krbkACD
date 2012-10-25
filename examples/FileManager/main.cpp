@@ -12,10 +12,9 @@ int main(int argc, char *argv[])
 		/*bool*/ QDir::setCurrent(QString(argv[1]));
 	}
 
-	qDebug() << "App CWD:" << QDir::current();
+//	qDebug() << "App CWD:" << QDir::current();
 
 	MainWindow w;
-	w.resize(300, 700);
 	w.show();
 
 	return a.exec();

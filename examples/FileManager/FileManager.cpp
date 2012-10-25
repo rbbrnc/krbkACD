@@ -36,9 +36,10 @@ FileManager::FileManager(QWidget *parent) :
 	connect(ui->listView, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
 
-
 //	connect(m_model, SIGNAL(rootPathChanged(const QString &)),
 //		this, SLOT(currentPathChanged(const QString &)));
+
+	ui->pathLabel->setText(m_model->rootPath());
 }
 
 FileManager::~FileManager()
@@ -66,11 +67,17 @@ QString FileManager::currentFile() const
 	return m_currentFileName;
 }
 
+// [public]
+bool FileManager::isActive() const
+{
+	return ui->listView->hasFocus();
+}
+
 /*  SLOT [private] */
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
 	m_currentFileName = m_model->fileName(current);
-	ui->label->setText(m_currentFileName);
+	ui->fileLabel->setText(m_currentFileName);
 
 	emit currentChanged(m_currentFileName);
 }
@@ -84,6 +91,7 @@ void FileManager::handleItemActivation(QModelIndex index)
 			// Change Path
 		        m_currentDir.cd(m_model->filePath(index));
 			m_currentIndex = m_model->setRootPath(m_currentDir.absolutePath());
+			ui->pathLabel->setText(m_model->rootPath());
 
 		        lw->clearSelection();
 			lw->setRootIndex(m_currentIndex);
@@ -102,7 +110,7 @@ void FileManager::previous()
 
 	if (mi.isValid()) {
 		ui->listView->setCurrentIndex(mi);
-		ui->label->setText(m_model->fileName(mi));
+		ui->fileLabel->setText(m_model->fileName(mi));
 	}
 }
 
@@ -113,7 +121,7 @@ void FileManager::next()
 	QModelIndex mi = m_currentIndex.child(++current_row, 0);
 	if (mi.isValid()) {
 		ui->listView->setCurrentIndex(mi);
-		ui->label->setText(m_model->fileName(mi));
+		ui->fileLabel->setText(m_model->fileName(mi));
 	}
 }
 
@@ -283,6 +291,7 @@ void FileManager::copy(const QString &destPath)
 {
 	m_selection = m_selectionModel->selectedIndexes();
 	if (m_selection.isEmpty()) {
+		qDebug() << __PRETTY_FUNCTION__ << "Selection Empty";
 		return;
 	}
 
@@ -317,16 +326,14 @@ void FileManager::copy(const QString &destPath)
 			m_model->setReadOnly(true);
 			return;
 		}
-#if 0
-		if (!QFile::copy(m_model->filePath(m_selection.first(),	dest)) {
+		if (!QFile::copy(m_model->filePath(m_selection.first()), dest)) {
 			QMessageBox::critical(this, tr("Copy Error"),
-				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first()),
+				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first())),
 				QMessageBox::Abort);
 
 			m_model->setReadOnly(true);
 			return;
 		}
-#endif
 		m_selection.removeFirst();
 	}
 
@@ -374,16 +381,14 @@ void FileManager::move(const QString &destPath)
 			m_model->setReadOnly(true);
 			return;
 		}
-#if 0
-		if (!QFile::rename(m_model->filePath(m_selection.first(), dest))) {
+		if (!QFile::rename(m_model->filePath(m_selection.first()), dest)) {
 			QMessageBox::critical(this, tr("Copy Error"),
-				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first()),
+				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first())),
 				QMessageBox::Abort);
 
 			m_model->setReadOnly(true);
 			return;
 		}
-#endif
 		m_selection.removeFirst();
 	}
 	m_model->setReadOnly(true);
