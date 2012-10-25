@@ -24,6 +24,9 @@ class FileManager : public QWidget
 		QString currentFile() const;
 		bool isActive() const;
 
+	private:
+		void updateInfo();
+
 	private slots:
 
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
@@ -44,6 +47,7 @@ class FileManager : public QWidget
 
 		void iconMode(bool enable);
 		void showHidden(bool show);
+		void showInfo(bool show);
 
 	signals:
 		void currentChanged(const QString &newFile);

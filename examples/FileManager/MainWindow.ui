@@ -52,6 +52,7 @@
     <addaction name="actionShowIcons"/>
     <addaction name="actionShowHidden"/>
     <addaction name="actionShowSecondBrowser"/>
+    <addaction name="actionShowInfo"/>
     <addaction name="separator"/>
     <addaction name="actionNextFile"/>
     <addaction name="actionPreviousFile"/>
@@ -149,6 +150,17 @@
    </property>
    <property name="shortcut">
     <string>Left</string>
+   </property>
+  </action>
+  <action name="actionShowInfo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Show Info</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
    </property>
   </action>
  </widget>

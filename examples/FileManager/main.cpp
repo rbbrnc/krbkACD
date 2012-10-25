@@ -1,5 +1,6 @@
 #include <QApplication>
-#include "mainwindow.h"
+#include "MainWindow.h"
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
@@ -7,12 +8,9 @@ int main(int argc, char *argv[])
 
 	QApplication a(argc, argv);
 
-
 	if (argc > 1) {
-		/*bool*/ QDir::setCurrent(QString(argv[1]));
+		QDir::setCurrent(QString(argv[1]));
 	}
-
-//	qDebug() << "App CWD:" << QDir::current();
 
 	MainWindow w;
 	w.show();

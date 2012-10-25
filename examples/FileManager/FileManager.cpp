@@ -40,6 +40,10 @@ FileManager::FileManager(QWidget *parent) :
 //		this, SLOT(currentPathChanged(const QString &)));
 
 	ui->pathLabel->setText(m_model->rootPath());
+
+	connect(ui->infoCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
+	connect(ui->moreInfoCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
+	connect(ui->previewCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
 }
 
 FileManager::~FileManager()
@@ -77,8 +81,7 @@ bool FileManager::isActive() const
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
 	m_currentFileName = m_model->fileName(current);
-	ui->fileLabel->setText(m_currentFileName);
-
+	updateInfo();
 	emit currentChanged(m_currentFileName);
 }
 
@@ -91,7 +94,8 @@ void FileManager::handleItemActivation(QModelIndex index)
 			// Change Path
 		        m_currentDir.cd(m_model->filePath(index));
 			m_currentIndex = m_model->setRootPath(m_currentDir.absolutePath());
-			ui->pathLabel->setText(m_model->rootPath());
+
+			updateInfo();
 
 		        lw->clearSelection();
 			lw->setRootIndex(m_currentIndex);
@@ -110,7 +114,7 @@ void FileManager::previous()
 
 	if (mi.isValid()) {
 		ui->listView->setCurrentIndex(mi);
-		ui->fileLabel->setText(m_model->fileName(mi));
+		updateInfo();
 	}
 }
 
@@ -121,7 +125,7 @@ void FileManager::next()
 	QModelIndex mi = m_currentIndex.child(++current_row, 0);
 	if (mi.isValid()) {
 		ui->listView->setCurrentIndex(mi);
-		ui->fileLabel->setText(m_model->fileName(mi));
+		updateInfo();
 	}
 }
 
@@ -167,6 +171,64 @@ void FileManager::showHidden(bool show)
         } else {
                 m_model->setFilter(m_model->filter() &~ QDir::Hidden);
         }
+}
+
+void FileManager::updateInfo()
+{
+	if (!ui->infoContainerWidget->isVisible()) {
+		return;
+	}
+
+	if (ui->infoWidget->isVisible()) {
+		ui->pathLabel->setText(m_model->rootPath());
+		ui->fileLabel->setText(m_currentFileName);
+
+		if (!m_currentFileName.isEmpty()) {
+			QModelIndex mi = m_currentIndex.child(ui->listView->currentIndex().row(), 0);
+			//QFileIconProvider *ip = m_model->iconProvider();
+			//ui->kindLabel->setPixmap(ip->icon(m_currentFileName).pixmap(32));
+		//	ui->kindLabel->setText(m_model->type(mi));
+			ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(mi)));
+			ui->modifiedLabel->setText(m_model->lastModified(mi).toString());
+
+			QFileInfo fi(m_currentFileName);
+			ui->createdLabel->setText(fi.created().toString());
+#if 0
+			ui->ownerLabel->setText(fi.owner());
+			ui->groupLabel->setText(fi.group());
+			ui->fileReadPermission->setChecked(fileInfo.isReadable());
+		        ui->fileWritePermission->setChecked(fileInfo.isWritable());
+		        ui->fileExecPermission->setChecked(fileInfo.isExecutable());
+			ui->fileLastRead->setText(fileInfo.lastRead().toString());
+			ui->fileLastModified->setText(fileInfo.lastModified().toString());
+#endif
+		}
+	}
+
+}
+
+// [SLOT public]
+void FileManager::showInfo(bool show)
+{
+	QCheckBox *cb = static_cast<QCheckBox *>(sender());
+	QWidget   *container;
+
+	if (cb == ui->infoCheckBox) {
+		container = ui->infoWidget;
+	} else if (cb == ui->moreInfoCheckBox) {
+		container = ui->moreInfoWidget;
+	} else if (cb == ui->previewCheckBox) {
+		container = static_cast<QWidget *>(ui->previewLabel);
+	} else {
+		container = ui->infoContainerWidget;
+	}
+
+	if (show) {
+		container->show();
+		updateInfo();
+	} else {
+		container->hide();
+	}
 }
 
 // [EVENT]

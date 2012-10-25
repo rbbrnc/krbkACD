@@ -17,14 +17,21 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->fs2Layout->addWidget(m_fs2);
 	m_fs2->hide();
 
+	m_fs1->showInfo(false);
+	m_fs2->showInfo(false);
+
 	connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
 	connect(ui->actionShowSecondBrowser, SIGNAL(toggled(bool)), this, SLOT(showSecondFs(bool)));
+
 	connect(ui->actionShowIcons, SIGNAL(toggled(bool)), m_fs1, SLOT(iconMode(bool)));
 	connect(ui->actionShowIcons, SIGNAL(toggled(bool)), m_fs2, SLOT(iconMode(bool)));
 
 	connect(ui->actionShowHidden, SIGNAL(toggled(bool)), m_fs1, SLOT(showHidden(bool)));
 	connect(ui->actionShowHidden, SIGNAL(toggled(bool)), m_fs2, SLOT(showHidden(bool)));
+
+	connect(ui->actionShowInfo, SIGNAL(toggled(bool)), m_fs1, SLOT(showInfo(bool)));
+	connect(ui->actionShowInfo, SIGNAL(toggled(bool)), m_fs2, SLOT(showInfo(bool)));
 
 	connect(ui->actionCopyFiles, SIGNAL(triggered()), this, SLOT(copyFiles()));
 	connect(ui->actionMoveFiles, SIGNAL(triggered()), this, SLOT(moveFiles()));
