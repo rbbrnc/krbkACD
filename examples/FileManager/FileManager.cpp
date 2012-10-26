@@ -9,6 +9,7 @@
 #include "BatchRenameDialog.h"
 #include "CopyMoveDialog.h"
 #include "QMagic.h"
+#include "QExiv2.h"
 
 FileManager::FileManager(QWidget *parent) :
 	QWidget(parent),
@@ -188,33 +189,110 @@ void FileManager::updateInfo()
 		return;
 	}
 
+	QModelIndex mi = m_currentIndex.child(ui->listView->currentIndex().row(), 0);
+	QString file   = m_model->filePath(mi);
+
+	ui->pathLabel->setText(m_model->rootPath());
+	ui->fileLabel->setText(m_model->fileName(mi));
+
+	if (file.isEmpty() || file.isNull()) {
+		if (ui->infoWidget->isVisible()) {
+			ui->kindLabel->setText("");
+			ui->sizeLabel->setText("");
+			ui->modifiedLabel->setText("");
+			ui->createdLabel->setText("");
+			ui->ownerLabel->setText("");
+			ui->groupLabel->setText("");
+			ui->permissionsLabel->setText("");
+		}
+		if (ui->moreInfoWidget->isVisible()) {
+			ui->dimensionLabel->hide();
+			ui->exifLabel->setText("-");
+			ui->iptcLabel->setText("-");
+			ui->xmpLabel->setText("-");
+			ui->commentLabel->setText("-");
+		}
+
+		if (ui->previewLabel->isVisible()) {
+			ui->previewLabel->setPixmap(QPixmap());
+		}
+		return;
+	}
+
+//	qDebug() << __PRETTY_FUNCTION__ << m_model->filePath(mi);
+	QString mimeType = QMagic::mimeType(file);
+
+
 	if (ui->infoWidget->isVisible()) {
-		ui->pathLabel->setText(m_model->rootPath());
-		ui->fileLabel->setText(m_currentFileName);
+		//ui->kindLabel->setText(QMagic::mimeDescription(file));
+		ui->kindLabel->setText(mimeType);
+		ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(mi)));
+		ui->modifiedLabel->setText(m_model->lastModified(mi).toString());
 
-		if (!m_currentFileName.isEmpty()) {
-			QModelIndex mi = m_currentIndex.child(ui->listView->currentIndex().row(), 0);
-			//QFileIconProvider *ip = m_model->iconProvider();
-			//ui->kindLabel->setPixmap(ip->icon(m_currentFileName).pixmap(32));
-			//ui->kindLabel->setText(QMagic::mimeType(m_currentFileName));
-			ui->kindLabel->setText(QMagic::mimeDescription(m_currentFileName));
-			ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(mi)));
-			ui->modifiedLabel->setText(m_model->lastModified(mi).toString());
+		QFileInfo fi(file);
+		ui->createdLabel->setText(fi.created().toString());
+		ui->ownerLabel->setText(fi.owner());
+		ui->groupLabel->setText(fi.group());
 
-			QFileInfo fi(m_currentFileName);
-			ui->createdLabel->setText(fi.created().toString());
-#if 0
-			ui->ownerLabel->setText(fi.owner());
-			ui->groupLabel->setText(fi.group());
-			ui->fileReadPermission->setChecked(fileInfo.isReadable());
-		        ui->fileWritePermission->setChecked(fileInfo.isWritable());
-		        ui->fileExecPermission->setChecked(fileInfo.isExecutable());
-			ui->fileLastRead->setText(fileInfo.lastRead().toString());
-			ui->fileLastModified->setText(fileInfo.lastModified().toString());
-#endif
+		QFile::Permissions fp = fi.permissions();
+		QString perm;
+		perm  = (fp & QFile::ReadOwner)  ? 'r' : '-';
+		perm += (fp & QFile::WriteOwner) ? 'w' : '-';
+		perm += (fp & QFile::ExeOwner)   ? "x " : "- ";
+		perm += (fp & QFile::ReadGroup)  ? 'r' : '-';
+		perm += (fp & QFile::WriteGroup) ? 'w' : '-';
+		perm += (fp & QFile::ExeGroup)   ? "x " : "- ";
+		perm += (fp & QFile::ReadOther)  ? 'r' : '-';
+		perm += (fp & QFile::WriteOther) ? 'w' : '-';
+		perm += (fp & QFile::ExeOther)   ? "x " : "- ";
+		ui->permissionsLabel->setText(perm);
+	}
+
+	bool isImage = mimeType.contains("image");
+	if (ui->moreInfoWidget->isVisible()) {
+		QExiv2 metadata;
+		if (isImage) {
+			QImageReader ir(file);
+			ui->dimensionLabel->setText(QString("%1 x %2").arg(ir.size().width()).arg(ir.size().height()));
+			ui->dimensionLabel->show();
+			 if (ir.supportsOption(QImageIOHandler::Description)) {
+				qDebug() << ir.textKeys();
+				qDebug() << ir.text("XML"/* const QString & key*/);
+				qDebug() << ir.text("Description"/* const QString & key*/);
+			}
+
+			qDebug() << "A";
+			metadata.load(file);
+			qDebug() << "B";
+		} else {
+			ui->dimensionLabel->hide();
+		}
+
+		if (metadata.isValid()) {
+			ui->exifLabel->setText((metadata.hasExif()) ? "Yes" : "No");
+			ui->iptcLabel->setText((metadata.hasIptc()) ? "Yes" : "No");
+			ui->xmpLabel->setText((metadata.hasXmp()) ? "Yes" : "No");
+			ui->commentLabel->setText((metadata.hasComment()) ? "Yes" : "No");
+		} else {
+			ui->exifLabel->setText("-");
+			ui->iptcLabel->setText("-");
+			ui->xmpLabel->setText("-");
+			ui->commentLabel->setText("-");
 		}
 	}
 
+	if (ui->previewLabel->isVisible()) {
+		QPixmap pix;
+		if (isImage) {
+			//QMimeData md;
+			//QMagic::mimeData(md, file);
+			//QImage image = qvariant_cast<QImage>(md.imageData());
+			//image = image.scaled(128, 128, Qt::KeepAspectRatio, Qt::FastTransformation);
+			//ui->previewLabel->setPixmap(QPixmap::fromImage(image));
+			pix = QPixmap(file).scaled(128, 128, Qt::KeepAspectRatio, Qt::FastTransformation);
+		}
+		ui->previewLabel->setPixmap(pix);
+	}
 }
 
 // [SLOT public]

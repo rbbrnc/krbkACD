@@ -1,8 +1,8 @@
 // For libmagic
 #include <magic.h>
 
-#include <QString>
 #include <QDebug>
+#include <QImage>
 
 #include "QMagic.h"
 
@@ -10,6 +10,12 @@ static QString getMagic(const QString &file, int flags)
 {
 	magic_t cookie;
 	QString magicString;
+
+
+	if ((file.isNull()) || (file.isEmpty())) {
+		qDebug() << __PRETTY_FUNCTION__ << "NULL";
+		return magicString;
+	}
 
 	/* cfr. man libmagic */
 	cookie = magic_open(flags);
@@ -45,4 +51,17 @@ QString QMagic::mimeDescription(const QString &file)
 QString QMagic::mimeType(const QString &file)
 {
 	return getMagic(file, MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
+}
+
+// Fill the QMimeData class
+void QMagic::mimeData(QMimeData &mimeData, const QString &file)
+{
+	QByteArray data;
+	QString mime = QMagic::mimeType(file);
+
+	mimeData.setData(mime, data);
+
+	if (mime.contains("image")) {
+		mimeData.setImageData(QImage(file));
+	}
 }

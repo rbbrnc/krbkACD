@@ -1,13 +1,13 @@
 #ifndef QMAGIC_H
 #define QMAGIC_H
 
-class QString;
+#include <QMimeData>
 
 namespace QMagic {
 
 // MIME type using libmagic
-QString mimeType(const QString &filePath);
-QString mimeDescription(const QString &filePath);
-
+QString mimeType(const QString &file);
+QString mimeDescription(const QString &file);
+void mimeData(QMimeData &mimeData, const QString &file);
 }
 #endif
