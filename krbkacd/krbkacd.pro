@@ -4,6 +4,7 @@ TEMPLATE = app
 include (../../libQExiv2/libQExiv2.pri)
 include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
 include (../../libExtraWidget/RenameDialog/RenameDialog.pri)
+include (../../libExtraWidget/QMagic/QMagic.pri)
 include (MetadataTreeModel/MetadataTreeModel.pri)
 include (FindDuplicates/FindDuplicates.pri)
 include (ImageView/ImageView.pri)
@@ -11,6 +12,7 @@ include (ImageView/ImageView.pri)
 PRE_TARGETDEPS += $$OUT_PWD/../libQExiv2/libQExiv2.a
 PRE_TARGETDEPS += $$OUT_PWD/../libExtraWidget/RenameDialog/lib$${RENAME_DIALOG_LIBNAME}.a
 PRE_TARGETDEPS += $$OUT_PWD/../libExtraWidget/SpotlightWidget/lib$${SPOTLIGHT_WIDGET_LIBNAME}.a
+PRE_TARGETDEPS += $$OUT_PWD/../libExtraWidget/QMagic/lib$${QMAGIC_LIBNAME}.a
 
 TARGET = krbkACD
 
@@ -54,6 +56,7 @@ FORMS += mainwindow.ui \
 	MetadataLocation.ui \
 	FileGeneralInfo.ui
 
-LIBS += -lmagic -L../libQExiv2 -lQExiv2
+LIBS += -L../libQExiv2 -lQExiv2
 LIBS += -L../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 LIBS += -L../libExtraWidget/RenameDialog -l$$RENAME_DIALOG_LIBNAME
+LIBS += -L../libExtraWidget/QMagic $$LIB_QMAGIC

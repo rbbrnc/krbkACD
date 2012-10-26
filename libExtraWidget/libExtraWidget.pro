@@ -1,3 +1,4 @@
 TEMPLATE = subdirs
 SUBDIRS  = SpotlightWidget \
-	   RenameDialog
+	   RenameDialog \
+	   QMagic

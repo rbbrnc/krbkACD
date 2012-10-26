@@ -8,6 +8,7 @@
 #include "RenameDialog.h"
 #include "BatchRenameDialog.h"
 #include "CopyMoveDialog.h"
+#include "QMagic.h"
 
 FileManager::FileManager(QWidget *parent) :
 	QWidget(parent),
@@ -40,6 +41,14 @@ FileManager::FileManager(QWidget *parent) :
 //		this, SLOT(currentPathChanged(const QString &)));
 
 	ui->pathLabel->setText(m_model->rootPath());
+
+	// Defaut for info box
+	ui->infoCheckBox->setChecked(true);
+	ui->moreInfoCheckBox->setChecked(false);
+	ui->moreInfoWidget->hide();
+	ui->previewCheckBox->setChecked(false);
+	ui->previewLabel->hide();
+//	ui->infoContainerWidget;
 
 	connect(ui->infoCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
 	connect(ui->moreInfoCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
@@ -187,7 +196,8 @@ void FileManager::updateInfo()
 			QModelIndex mi = m_currentIndex.child(ui->listView->currentIndex().row(), 0);
 			//QFileIconProvider *ip = m_model->iconProvider();
 			//ui->kindLabel->setPixmap(ip->icon(m_currentFileName).pixmap(32));
-		//	ui->kindLabel->setText(m_model->type(mi));
+			//ui->kindLabel->setText(QMagic::mimeType(m_currentFileName));
+			ui->kindLabel->setText(QMagic::mimeDescription(m_currentFileName));
 			ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(mi)));
 			ui->modifiedLabel->setText(m_model->lastModified(mi).toString());
 

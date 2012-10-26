@@ -3,6 +3,7 @@
 
 #include "file_utils.h"
 #include "file_data.h"
+#include "QMagic.h"
 
 FileData::FileData() :
 	m_isImage(false)
@@ -36,7 +37,7 @@ FileData::FileData(const FileData &other) :
 void FileData::init()
 {
 	m_path     = m_fileInfo.absoluteFilePath();
-	m_mimeType = ::mimeType(m_path);
+	m_mimeType = QMagic::mimeType(m_path);
 	m_isImage  = m_mimeType.contains("image/", Qt::CaseInsensitive);
 
 	// load metadata only for mime type "image/xxxx"
