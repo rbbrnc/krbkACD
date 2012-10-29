@@ -21,10 +21,20 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>1</number>
+       <number>2</number>
       </property>
       <widget class="FileManagerPage" name="fsManagerPage"/>
       <widget class="ImageViewManager" name="ivManagerPage"/>
+      <widget class="QWidget" name="metadataViewPage">
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="margin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QTreeView" name="treeView"/>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -68,9 +78,16 @@
     </property>
     <addaction name="actionViewImage"/>
    </widget>
+   <widget class="QMenu" name="menuMetadata">
+    <property name="title">
+     <string>Metadata</string>
+    </property>
+    <addaction name="actionViewMetadata"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
    <addaction name="menuView_2"/>
+   <addaction name="menuMetadata"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
@@ -178,6 +195,17 @@
    </property>
    <property name="shortcut">
     <string>F3</string>
+   </property>
+  </action>
+  <action name="actionViewMetadata">
+   <property name="text">
+    <string>View Metadata</string>
+   </property>
+   <property name="toolTip">
+    <string>View Metadata</string>
+   </property>
+   <property name="shortcut">
+    <string>F2</string>
    </property>
   </action>
  </widget>

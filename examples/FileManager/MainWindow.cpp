@@ -5,6 +5,8 @@
 #include "FileManager.h"
 #include "FileManagerPage.h"
 #include "ImageViewManager.h"
+#include "MetadataTreeModel.h"
+#include "QExiv2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -14,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	m_fmPage = ui->fsManagerPage;
 	m_ivPage = ui->ivManagerPage;
+	m_mvPage = ui->metadataViewPage;
 
 	ui->stackedWidget->setCurrentWidget(m_fmPage);
 
@@ -35,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionNextFile    , SIGNAL(triggered()), this, SLOT(nextFile()));
 
 	connect(ui->actionViewImage,  SIGNAL(triggered()), this, SLOT(showImage()));
+	connect(ui->actionViewMetadata,  SIGNAL(triggered()), this, SLOT(showMetadata()));
 }
 
 MainWindow::~MainWindow()
@@ -47,10 +51,41 @@ void MainWindow::showImage()
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
 		m_fmPage->setActiveFileManager();
 		m_ivPage->setFile(m_fmPage->currentFile(true));
+		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFile(true);
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
 	}
+}
+
+void MainWindow::showMetadata()
+{
+#if 0
+	if (ui->stackedWidget->currentWidget() == m_fmPage) {
+		m_fmPage->setActiveFileManager();
+
+		// Setup model data.
+		if (m_metadataModel) {
+			delete m_metadataModel;
+			m_metadataModel = 0;
+		}
+
+		if (m_currentFileData.isImage()) {
+			m_metadataModel = new MetadataTreeModel(m_currentFileData.metadata());
+			ui->metadataBrowser->setModel(m_metadataModel);
+			ui->metadataBrowser->hideColumn(7); // hide key column
+		}
+		ui->stackedWidget->setCurrentWidget(m_mvPage);
+	} else if (ui->stackedWidget->currentWidget() == m_mvPage) {
+		ui->stackedWidget->setCurrentWidget(m_fmPage);
+	}
+
+	if (ui->stackedWidget->currentWidget() != m_mvPage) {
+		m_ivPage->setFile(m_fmPage->currentFile(true));
+		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFile(true);
+		ui->stackedWidget->setCurrentWidget(m_mvPage);
+	}
+#endif
 }
 
 void MainWindow::prevFile()

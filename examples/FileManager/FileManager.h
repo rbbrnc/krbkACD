@@ -11,6 +11,7 @@ namespace Ui {
 	class FileManager;
 }
 
+class MetadataTreeModel;
 class FSManager;
 class FileManager : public QWidget
 {
@@ -67,5 +68,7 @@ class FileManager : public QWidget
 
 		QModelIndexList m_selection;
 		QItemSelectionModel *m_selectionModel;
+
+		MetadataTreeModel *m_metadataModel;
 };
 #endif

@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 
 	private slots:
 		void showImage();
+		void showMetadata();
 		void nextFile();
 		void prevFile();
 
@@ -29,6 +30,7 @@ class MainWindow : public QMainWindow
 		int m_currentFileManager;
 
 		ImageViewManager *m_ivPage;
+		QWidget *m_mvPage;
 
 };
 

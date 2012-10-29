@@ -10,6 +10,7 @@
 #include "CopyMoveDialog.h"
 #include "QMagic.h"
 #include "QExiv2.h"
+#include "MetadataTreeModel.h"
 
 FileManager::FileManager(QWidget *parent) :
 	QWidget(parent),
@@ -266,6 +267,17 @@ void FileManager::updateInfo()
 		}
 
 		if (metadata.isValid()) {
+			// Setup model data.
+			if (m_metadataModel) {
+				delete m_metadataModel;
+				m_metadataModel = 0;
+			}
+
+			m_metadataModel = new MetadataTreeModel(&metadata);
+			ui->treeView->setModel(m_metadataModel);
+			ui->treeView->hideColumn(7); // hide key column
+
+
 			ui->exifLabel->setText((metadata.hasExif()) ? "Yes" : "No");
 			ui->iptcLabel->setText((metadata.hasIptc()) ? "Yes" : "No");
 			ui->xmpLabel->setText((metadata.hasXmp()) ? "Yes" : "No");
