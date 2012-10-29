@@ -7,7 +7,8 @@ namespace Ui {
 	class MainWindow;
 }
 
-class FileManager;
+class FileManagerPage;
+class ImageViewManager;
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -16,23 +17,19 @@ class MainWindow : public QMainWindow
 		explicit MainWindow(QWidget *parent = 0);
 		~MainWindow();
 
-	private:
-		FileManager *activeFileManager() const;
-
 	private slots:
-		void showSecondFs(bool checked);
-		void previousFile();
+		void showImage();
 		void nextFile();
-		void mkDir();
-		void deleteFiles();
-		void renameFiles();
-		void copyFiles();
-		void moveFiles();
+		void prevFile();
 
 	private:
 		Ui::MainWindow *ui;
-		FileManager *m_fs1;
-		FileManager *m_fs2;
+
+		FileManagerPage  *m_fmPage;
+		int m_currentFileManager;
+
+		ImageViewManager *m_ivPage;
+
 };
 
-#endif // MAINWINDOW_H
+#endif

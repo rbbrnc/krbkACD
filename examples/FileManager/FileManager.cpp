@@ -260,10 +260,7 @@ void FileManager::updateInfo()
 				qDebug() << ir.text("XML"/* const QString & key*/);
 				qDebug() << ir.text("Description"/* const QString & key*/);
 			}
-
-			qDebug() << "A";
 			metadata.load(file);
-			qDebug() << "B";
 		} else {
 			ui->dimensionLabel->hide();
 		}
