@@ -441,12 +441,12 @@ void FileManager::copy(const QString &destPath)
 {
 	m_selection = m_selectionModel->selectedIndexes();
 	if (m_selection.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__ << "Selection Empty";
+		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 		return;
 	}
 
 	if (destPath.isNull() || destPath.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__ << "Invalid destPath!";
+		QMessageBox::critical(this, tr("Error"), tr("Invalid destPath!"), QMessageBox::Ok);
 		return;
 	}
 
@@ -496,11 +496,12 @@ void FileManager::move(const QString &destPath)
 {
 	m_selection = m_selectionModel->selectedIndexes();
 	if (m_selection.isEmpty()) {
+		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 		return;
 	}
 
 	if (destPath.isNull() || destPath.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__ << "Invalid destPath!";
+		QMessageBox::critical(this, tr("Error"), tr("Invalid destPath!"), QMessageBox::Ok);
 		return;
 	}
 
@@ -532,8 +533,8 @@ void FileManager::move(const QString &destPath)
 			return;
 		}
 		if (!QFile::rename(m_model->filePath(m_selection.first()), dest)) {
-			QMessageBox::critical(this, tr("Copy Error"),
-				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first())),
+			QMessageBox::critical(this, tr("Move Error"),
+				tr("Moving file '%1' failed").arg(m_model->fileName(m_selection.first())),
 				QMessageBox::Abort);
 
 			m_model->setReadOnly(true);
