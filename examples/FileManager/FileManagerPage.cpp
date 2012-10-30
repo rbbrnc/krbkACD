@@ -16,9 +16,10 @@ FileManagerPage::FileManagerPage(QWidget *parent) :
 
 	ui->fs1Layout->addWidget(m_fs1);
 	ui->fs2Layout->addWidget(m_fs2);
-	m_fs2->hide();
 
-	m_fs1->showInfo(false);
+	ui->fs2Widget->hide();
+
+	//m_fs1->showInfo(false);
 	m_fs2->showInfo(false);
 }
 
@@ -31,7 +32,7 @@ FileManagerPage::~FileManagerPage()
 
 void FileManagerPage::showSecondFs(bool checked)
 {
-	m_fs2->setVisible(checked);
+	ui->fs2Widget->setVisible(checked);
 }
 
 QString FileManagerPage::currentFile(bool useLastActiveFm) const

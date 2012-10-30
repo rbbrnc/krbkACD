@@ -16,17 +16,31 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <widget class="QWidget" name="verticalLayoutWidget">
-      <layout class="QVBoxLayout" name="fs1Layout"/>
+     <property name="childrenCollapsible">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="fs1Widget" native="true">
+      <layout class="QVBoxLayout" name="fs1Layout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </layout>
      </widget>
-     <widget class="QWidget" name="verticalLayoutWidget_2">
-      <layout class="QVBoxLayout" name="fs2Layout"/>
+     <widget class="QWidget" name="fs2Widget" native="true">
+      <layout class="QVBoxLayout" name="fs2Layout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </layout>
      </widget>
     </widget>
    </item>

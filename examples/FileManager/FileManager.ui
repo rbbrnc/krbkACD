@@ -16,7 +16,7 @@
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_3">
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
     <widget class="QSplitter" name="splitter">
      <property name="orientation">
@@ -34,6 +34,12 @@
       </property>
      </widget>
      <widget class="QWidget" name="infoContainerWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <layout class="QVBoxLayout" name="verticalLayout">
        <item>
         <widget class="QCheckBox" name="previewCheckBox">
@@ -71,6 +77,12 @@
           </property>
          </widget>
          <widget class="QToolBox" name="infoToolBox">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
           <property name="currentIndex">
            <number>0</number>
           </property>
@@ -79,8 +91,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>267</width>
-             <height>475</height>
+             <width>278</width>
+             <height>497</height>
             </rect>
            </property>
            <attribute name="label">
@@ -385,8 +397,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>267</width>
-             <height>475</height>
+             <width>278</width>
+             <height>497</height>
             </rect>
            </property>
            <attribute name="label">
@@ -566,8 +578,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>83</width>
-             <height>72</height>
+             <width>278</width>
+             <height>497</height>
             </rect>
            </property>
            <attribute name="label">

@@ -89,7 +89,6 @@
    <addaction name="menuView_2"/>
    <addaction name="menuMetadata"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionQuit">
    <property name="text">
     <string>Quit</string>
