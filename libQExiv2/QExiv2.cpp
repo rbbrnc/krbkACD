@@ -43,6 +43,7 @@ bool QExiv2::loadFromData(const QByteArray& data)
 		d->image = Exiv2::ImageFactory::open((Exiv2::byte *) data.constData(), data.size());
 	} catch (Exiv2::Error &e) {
 		d->printExiv2ExceptionError("Cannot load metadata from Data using Exiv2", e);
+		return false;
 	}
 
 	return d->readMetadata();
@@ -64,7 +65,7 @@ bool QExiv2::load(const QString& filePath)
 	try {
 		d->image = Exiv2::ImageFactory::open((const char *)(QFile::encodeName(filePath)));
 	} catch (Exiv2::Error &e) {
-		d->printExiv2ExceptionError("Cannot load metadata using Exiv2", e);
+		d->printExiv2ExceptionError("Cannot load metadata from File using Exiv2", e);
 		return false;
 	}
 
