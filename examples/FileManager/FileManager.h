@@ -28,10 +28,17 @@ class FileManager : public QWidget
 	private:
 		void updateInfo();
 
+		void updateGeneralInfo(const QModelIndex &index);
+		void updateMoreInfo(const QModelIndex &index);
+		void updateMetadataInfo(const QModelIndex &index);
+		void updatePreview(const QModelIndex &index);
+
 	private slots:
 
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
 		void handleItemActivation(QModelIndex index);
+
+		void updateInfoToolBox(int index);
 
 //		void currentPathChanged(const QString &newPath);
 //		void on_pushButton_clicked();

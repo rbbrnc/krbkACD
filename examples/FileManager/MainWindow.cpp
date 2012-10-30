@@ -50,8 +50,8 @@ void MainWindow::showImage()
 {
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
 		m_fmPage->setActiveFileManager();
-		m_ivPage->setFile(m_fmPage->currentFile(true));
-		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFile(true);
+		m_ivPage->setFile(m_fmPage->currentFilePath(true));
+		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath(true);
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
@@ -92,7 +92,7 @@ void MainWindow::prevFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->previousFile(true);
-		m_ivPage->setFile(m_fmPage->currentFile(true));
+		m_ivPage->setFile(m_fmPage->currentFilePath(true));
 	}
 }
 
@@ -100,7 +100,7 @@ void MainWindow::nextFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->nextFile(true);
-		m_ivPage->setFile(m_fmPage->currentFile(true));
+		m_ivPage->setFile(m_fmPage->currentFilePath(true));
 	}
 }
 

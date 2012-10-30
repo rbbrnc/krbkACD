@@ -54,6 +54,17 @@ QString FileManagerPage::currentPath(bool useLastActiveFm) const
 	return QString();
 }
 
+QString FileManagerPage::currentFilePath(bool useLastActiveFm) const
+{
+	FileManager *fm = activeFileManager(useLastActiveFm);
+	if (fm) {
+		return fm->currentPath() + "/" + fm->currentFile();
+	}
+
+	qDebug() << __PRETTY_FUNCTION__ << "Invalid FileManager";
+	return QString();
+}
+
 void FileManagerPage::showIcons(bool show)
 {
 	FileManager *fm = activeFileManager();

@@ -19,6 +19,7 @@ class FileManagerPage : public QWidget
 		void setActiveFileManager();
 		QString currentPath(bool useLastActiveFm = 0) const;
 		QString currentFile(bool useLastActiveFm = 0) const;
+		QString currentFilePath(bool useLastActiveFm = 0) const;
 		void previousFile(bool useLastActiveFm = 0);
 		void nextFile(bool useLastActiveFm = 0);
 
