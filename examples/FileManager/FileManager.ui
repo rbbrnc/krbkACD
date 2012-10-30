@@ -64,7 +64,7 @@
            </size>
           </property>
           <property name="text">
-           <string>TextLabel</string>
+           <string>preview</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -72,7 +72,7 @@
          </widget>
          <widget class="QToolBox" name="infoToolBox">
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="GeneralInfo">
            <property name="geometry">
@@ -80,7 +80,7 @@
              <x>0</x>
              <y>0</y>
              <width>267</width>
-             <height>520</height>
+             <height>475</height>
             </rect>
            </property>
            <attribute name="label">
@@ -386,7 +386,7 @@
              <x>0</x>
              <y>0</y>
              <width>267</width>
-             <height>520</height>
+             <height>475</height>
             </rect>
            </property>
            <attribute name="label">
@@ -566,8 +566,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>267</width>
-             <height>520</height>
+             <width>83</width>
+             <height>72</height>
             </rect>
            </property>
            <attribute name="label">

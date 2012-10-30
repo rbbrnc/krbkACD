@@ -9,16 +9,13 @@ QExiv2DataPrivate::QExiv2DataPrivate()
 
 bool QExiv2DataPrivate::readMetadata()
 {
-	if (image.get() == 0) {
-		metadataValid = false;
-	} else {
-		qDebug() << __PRETTY_FUNCTION__ << "A";
+	metadataValid = false;
 
+	if (image.get()) {
 		try {
 			image->readMetadata();
 		} catch (Exiv2::Error &e) {
 			printExiv2ExceptionError("Cannot read metadata using Exiv2", e);
-			metadataValid = false;
 			return false;
 		}
 

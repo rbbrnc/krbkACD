@@ -203,14 +203,14 @@
    <item>
     <layout class="QHBoxLayout" name="folderSelectionLayout">
      <item>
-      <widget class="QListWidget" name="dirList"/>
+      <widget class="QTreeView" name="dirTree"/>
      </item>
      <item>
       <layout class="QVBoxLayout" name="folderSelectionButtonsLayout">
        <item>
         <widget class="QToolButton" name="clearDir">
          <property name="icon">
-          <iconset resource="icons.qrc">
+          <iconset resource="FindDuplicates.qrc">
            <normaloff>:/images/folder_clear.png</normaloff>:/images/folder_clear.png</iconset>
          </property>
          <property name="iconSize">
@@ -224,7 +224,7 @@
        <item>
         <widget class="QToolButton" name="removeDir">
          <property name="icon">
-          <iconset resource="icons.qrc">
+          <iconset resource="FindDuplicates.qrc">
            <normaloff>:/images/folder_remove.png</normaloff>:/images/folder_remove.png</iconset>
          </property>
          <property name="iconSize">
@@ -238,7 +238,7 @@
        <item>
         <widget class="QToolButton" name="insertDir">
          <property name="icon">
-          <iconset resource="icons.qrc">
+          <iconset resource="FindDuplicates.qrc">
            <normaloff>:/images/folder_add.png</normaloff>:/images/folder_add.png</iconset>
          </property>
          <property name="iconSize">
@@ -252,14 +252,14 @@
       </layout>
      </item>
      <item>
-      <widget class="QTreeView" name="dirTree"/>
+      <widget class="QListWidget" name="dirList"/>
      </item>
     </layout>
    </item>
   </layout>
  </widget>
  <resources>
-  <include location="icons.qrc"/>
+  <include location="FindDuplicates.qrc"/>
  </resources>
  <connections/>
 </ui>

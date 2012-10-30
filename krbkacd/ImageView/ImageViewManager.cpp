@@ -162,9 +162,8 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 		return;
 	}
 
-	qDebug() << __PRETTY_FUNCTION__;
-	// Don't resize the image if is totally contained
-	// in the scene rect.
+	//qDebug() << __PRETTY_FUNCTION__;
+	// Don't resize the image if is totally contained in the scene rect.
 //	if (zoomToFitOption) {
 		QSize viewSize = m_view->viewport()->size();
 		if ((viewSize.width()  < region.at(0).toRect().width()) ||
