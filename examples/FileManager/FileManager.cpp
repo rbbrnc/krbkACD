@@ -138,7 +138,7 @@ void FileManager::next()
 	}
 }
 
-void FileManager::updateInfoToolBox(int index)
+void FileManager::updateInfoToolBox(int /*index*/)
 {
 	updateInfo();
 }
