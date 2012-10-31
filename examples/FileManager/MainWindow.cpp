@@ -41,6 +41,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionViewMetadata,  SIGNAL(triggered()), this, SLOT(showMetadata()));
 
 	connect(ui->actionFullScreen,  SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
+
+	// So the shortcut works without the menu
+	this->addAction(ui->actionFullScreen);
 }
 
 MainWindow::~MainWindow()
@@ -56,7 +59,7 @@ void MainWindow::fullScreen(bool enable)
 		showNormal();
 	}
 
-//	ui->menubar->setVisible(!enable);
+	ui->menubar->setVisible(!enable);
 //	ui->statusbar->setVisible(!enable);
 //	ui->toolbar->setVisible(!enable);
 }
