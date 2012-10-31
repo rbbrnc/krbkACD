@@ -39,11 +39,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionViewImage,  SIGNAL(triggered()), this, SLOT(showImage()));
 	connect(ui->actionViewMetadata,  SIGNAL(triggered()), this, SLOT(showMetadata()));
+
+	connect(ui->actionFullScreen,  SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::fullScreen(bool enable)
+{
+	if (enable) {
+		showFullScreen();
+	} else {
+		showNormal();
+	}
+
+//	ui->menubar->setVisible(!enable);
+//	ui->statusbar->setVisible(!enable);
+//	ui->toolbar->setVisible(!enable);
 }
 
 void MainWindow::showImage()

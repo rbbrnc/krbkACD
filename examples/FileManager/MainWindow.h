@@ -23,6 +23,8 @@ class MainWindow : public QMainWindow
 		void nextFile();
 		void prevFile();
 
+		void fullScreen(bool enable);
+
 	private:
 		Ui::MainWindow *ui;
 
