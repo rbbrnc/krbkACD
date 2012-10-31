@@ -579,7 +579,7 @@ QList<exifData> QExiv2::exifDataList() const
 		ed.typeName = QString(md->typeName());
 		ed.typeId   = md->typeId();
 		ed.count    = md->count();
-		ed.value    = QString(md->value().toString().c_str());
+		ed.value    = QString::fromUtf8(md->value().toString().c_str());
 		lst.append(ed);
 	}
 
@@ -607,7 +607,7 @@ QList<exifData> QExiv2::iptcDataList() const
 		ed.typeName = QString(md->typeName());
 		ed.typeId   = md->typeId();
 		ed.count    = md->count();
-		ed.value    = QString(md->value().toString().c_str());
+		ed.value    = QString::fromUtf8(md->value().toString().c_str());
 		lst.append(ed);
 	}
 
@@ -635,7 +635,7 @@ QList<exifData> QExiv2::xmpDataList() const
 		ed.typeName = QString(md->typeName());
 		ed.typeId   = md->typeId();
 		ed.count    = md->count();
-		ed.value    = QString(md->value().toString().c_str());
+		ed.value    = QString::fromUtf8(md->value().toString().c_str());
 		lst.append(ed);
 	}
 
