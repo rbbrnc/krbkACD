@@ -249,8 +249,9 @@ void FileManager::updateMetadataInfo(const QModelIndex &index)
 	QString file = m_model->filePath(index);
 	QString mimeType = QMagic::mimeType(file);
 	bool isImage = mimeType.contains("image");
+	bool isVideo = mimeType.contains("video");
 
-	if (!isImage) {
+	if (!isImage && !isVideo) {
 		return;
 	}
 
