@@ -23,12 +23,21 @@ VideoWidget::VideoWidget(const QString &fileName, QWidget *parent)
 	label = new QLabel(this);
 	label->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
 
-	resize(320, 240);
 
 	m_avThread = new VideoDecode(fileName);
+
+	if (m_avThread->mediaValid()) {
+		resize(m_avThread->videoSize());
+	} else {
+		resize(320, 240);
+	}
+
 	updateLabel();
 
 	connect(m_avThread, SIGNAL(frameReady()), this, SLOT(updateLabel()));
+
+	m_avThread->videoLengthMs();
+
 	m_avThread->start();
 }
 

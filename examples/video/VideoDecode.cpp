@@ -7,6 +7,7 @@
 VideoDecode::VideoDecode(const QString &fileName)
 {
 	videoStream = -1;
+	m_mediaValid = false;
 
 	avFormatCtx = NULL;
 	avCodecCtx = NULL;
@@ -34,6 +35,7 @@ void VideoDecode::initFFMPEG()
 
 void VideoDecode::closeAVInput()
 {
+	m_mediaValid = false;
 	if (avFormatCtx) {
 		avformat_close_input(&avFormatCtx);
 		avFormatCtx = NULL;
@@ -79,6 +81,40 @@ void VideoDecode::setAVInput(const QString &fileName)
 	        return;
 	}
 
+	int tb_num = avFormatCtx->streams[videoStream]->time_base.num;
+	int tb_den = avFormatCtx->streams[videoStream]->time_base.den;
+	int fr_num = avFormatCtx->streams[videoStream]->r_frame_rate.num;
+	int fr_den = avFormatCtx->streams[videoStream]->r_frame_rate.den;
+
+	qDebug() << "STREAM TIME BASE" << videoStream << "FPS:" << tb_num << "/" << tb_den;
+	qDebug() << "STREAM R_FRAMERATE" << videoStream << "FPS:" << fr_num << "/" << fr_den;
+	qDebug() << "CODEC"
+		 << videoStream
+		 << "FPS:"
+		 << avFormatCtx->streams[videoStream]->codec->time_base.num
+		 << "/"
+		 << avFormatCtx->streams[videoStream]->codec->time_base.den;
+
+
+	//double AvgTimePerFrame;
+	if (tb_den != fr_num || tb_num != fr_den) {
+		//AvgTimePerFrame = (((double)(fr_den)) / ((double)(fr_num)))*10000000;
+		//qDebug() << "AVGTimePerFrame (Frate):" << AvgTimePerFrame << "ms";
+		m_frameRate = (((double)(fr_den)) / ((double)(fr_num)))*1000000;//0;
+		qDebug() << "AVGTimePerFrame (Frate):" << m_frameRate << "us";
+	} else {
+		//AvgTimePerFrame = (((double)(tb_num))/((double)(tb_den)))*10000000;
+		//qDebug() << "AVGTimePerFrame (TimeBase):" << AvgTimePerFrame;
+		m_frameRate = (((double)(tb_num))/((double)(tb_den)))*1000000;//0;
+		qDebug() << "AVGTimePerFrame (TimeBase):" << m_frameRate << "us";
+	}
+
+
+	m_fps = av_q2d(avFormatCtx->streams[videoStream]->r_frame_rate);
+	qDebug() << "fps:" << m_fps;
+	//qDebug() << "timebase fps:" << av_q2d(avFormatCtx->streams[videoStream]->time_base);
+
+
 	// Get a pointer to the codec context for the video stream
 	avCodecCtx = avFormatCtx->streams[videoStream]->codec;
 
@@ -105,12 +141,12 @@ void VideoDecode::setAVInput(const QString &fileName)
 	int w = avCodecCtx->width;
 	int h = avCodecCtx->height;
 
-	qDebug() << w << "x" << h;
+	//qDebug() << w << "x" << h;
 
 
 	// Calculate the bytes needed for the output image
 	int nbytes = avpicture_get_size(AV_PIX_FMT_RGB24, w, h);
-	qDebug() <<  "nbytes:" << nbytes;
+	//qDebug() <<  "nbytes:" << nbytes;
 
 	// Create buffer for the output image
 	outbuffer = (uint8_t *) av_malloc(nbytes);
@@ -128,12 +164,42 @@ void VideoDecode::setAVInput(const QString &fileName)
 	}
 
 	LastFrame = QImage(w, h, QImage::Format_RGB888);
+	m_mediaValid = true;
+}
+
+bool VideoDecode::mediaValid() const
+{
+	return m_mediaValid;
 }
 
 QImage VideoDecode::lastFrame()
 {
 	return LastFrame;
 }
+
+QSize VideoDecode::videoSize() const
+{
+	if (!m_mediaValid) {
+		return QSize(0,0);
+	}
+	return QSize(avCodecCtx->width, avCodecCtx->height);
+}
+
+int VideoDecode::videoLengthMs() const
+{
+	if (!m_mediaValid) {
+		return -1;
+	}
+
+	int secs = avFormatCtx->duration / AV_TIME_BASE;
+	int us   = avFormatCtx->duration % AV_TIME_BASE;
+	int ms   = secs*1000 + us/1000;
+
+	qDebug() << __PRETTY_FUNCTION__ << ms << "ms";
+	//qDebug() << avFormatCtx->nb_index_entries;
+	return ms;
+}
+
 
 void VideoDecode::stop()
 {
@@ -149,6 +215,10 @@ void VideoDecode::run()
 //		updatePLCPoints();
 //		emit plcUpdate(m_plc);
 //	}
+
+	if (!m_mediaValid) {
+		return;
+	}
 
 	int frameFinished;
 
@@ -179,8 +249,9 @@ void VideoDecode::run()
 #endif
 
 				emit frameReady();
+				//qDebug() << "Frame:" << count;
 				count++;
-				this->msleep(200);
+				this->usleep((unsigned long) m_frameRate);
 			}
 		}
 

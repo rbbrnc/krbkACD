@@ -30,7 +30,11 @@ class VideoDecode : public QThread
 		VideoDecode(const QString &fileName);
 
 		void setAVInput(const QString &fileName);
+
 		QImage lastFrame();
+		QSize  videoSize() const;
+		bool   mediaValid() const;
+		int    videoLengthMs() const;
 
 		void run();
 		void stop(void);
@@ -44,6 +48,7 @@ class VideoDecode : public QThread
 
 	private:
 		int videoStream;
+		bool m_mediaValid;
 
 		AVFrame *outFrame;
 		AVFrame *frameRGB;
@@ -60,6 +65,9 @@ class VideoDecode : public QThread
 		AVPacket packet;
 
 		QImage LastFrame;
+
+		double m_fps;
+		double m_frameRate; // micro seconds
 };
 
 #endif
