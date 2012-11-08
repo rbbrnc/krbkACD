@@ -69,7 +69,7 @@ void MainWindow::showImage()
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
 		m_fmPage->setActiveFileManager();
 		m_ivPage->setFile(m_fmPage->currentFilePath(true));
-		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath(true);
+//		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath(true);
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
