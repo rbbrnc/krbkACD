@@ -49,6 +49,7 @@ class VideoDecode : public QThread
 	private:
 		int videoStream;
 		bool m_mediaValid;
+		bool m_run;
 
 		AVFrame *outFrame;
 		AVFrame *frameRGB;
@@ -68,6 +69,8 @@ class VideoDecode : public QThread
 
 		double m_fps;
 		double m_frameRate; // micro seconds
+
+		unsigned int m_frameCounter;
 };
 
 #endif

@@ -6,8 +6,10 @@
 
 VideoDecode::VideoDecode(const QString &fileName)
 {
+	m_run = false;
 	videoStream = -1;
 	m_mediaValid = false;
+	m_frameCounter = 0;
 
 	avFormatCtx = NULL;
 	avCodecCtx = NULL;
@@ -35,6 +37,10 @@ void VideoDecode::initFFMPEG()
 
 void VideoDecode::closeAVInput()
 {
+	if (isRunning()) {
+		stop();
+	}
+
 	m_mediaValid = false;
 	if (avFormatCtx) {
 		avformat_close_input(&avFormatCtx);
@@ -49,7 +55,12 @@ void VideoDecode::closeAVInput()
 
 void VideoDecode::setAVInput(const QString &fileName)
 {
+	if (isRunning()) {
+		stop();
+	}
+
 	int err = 0;
+	m_frameCounter = 0;
 
 	// Open video file
 	err = avformat_open_input(&avFormatCtx, (const char *)(QFile::encodeName(fileName)), NULL, NULL);
@@ -203,30 +214,21 @@ int VideoDecode::videoLengthMs() const
 
 void VideoDecode::stop()
 {
-	//m_sc_run = false;
+	m_run = false;
 }
 
 void VideoDecode::run()
 {
-//	m_plc.init = true;
-//	m_sc_run = true;
-
-//	while (m_sc_run) {
-//		updatePLCPoints();
-//		emit plcUpdate(m_plc);
-//	}
-
 	if (!m_mediaValid) {
 		return;
 	}
 
+	m_run = true;
 	int frameFinished;
-
-	unsigned int count = 0;
 	int w = avCodecCtx->width;
 	int h = avCodecCtx->height;
 
-	while (av_read_frame(avFormatCtx, &packet) >= 0) {
+	while ((m_run) && (av_read_frame(avFormatCtx, &packet) >= 0)) {
 		// Is this a packet from the video stream?
 		if (packet.stream_index == videoStream) {
 		        // Decode video frame
@@ -241,16 +243,16 @@ void VideoDecode::run()
 					memcpy(LastFrame.scanLine(y), outFrame->data[0] + y*outFrame->linesize[0], w*3);
 				}
 #if 0
-				QString s = QString("frame%1.png").arg(count);
+				QString s = QString("frame%1.png").arg(m_frameCounter);
 				qDebug() << s;
-				if (count == 10) {
+				if (m_frameCounter == 10) {
 					LastFrame.save(s,"PNG");
 				}
 #endif
 
 				emit frameReady();
-				//qDebug() << "Frame:" << count;
-				count++;
+				//qDebug() << "Frame:" << m_frameCounter;
+				m_frameCounter++;
 				this->usleep((unsigned long) m_frameRate);
 			}
 		}

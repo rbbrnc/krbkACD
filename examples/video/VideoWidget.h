@@ -16,6 +16,7 @@ class VideoWidget : public QWidget
 
 	private slots:
 		void updateLabel();
+		void playVideo();
 
 	protected:
 		void resizeEvent(QResizeEvent *event);
