@@ -24,6 +24,7 @@ class VideoWidget : public QWidget
 
 	private:
 		QLabel *label;
+		QPushButton *playButton;
 		QPixmap m_pic;
 
 		VideoDecode *m_avThread;

@@ -41,12 +41,11 @@ VideoWidget::VideoWidget(const QString &fileName, QWidget *parent)
 
 //	updateLabel();
 
-	QPushButton *play = new QPushButton("Play");
-	connect(play, SIGNAL(clicked()), this, SLOT(playVideo()));
-
+	playButton = new QPushButton("Play");
+	connect(playButton, SIGNAL(clicked()), this, SLOT(playVideo()));
 
 	layout->addWidget(label);
-	layout->addWidget(play);
+	layout->addWidget(playButton);
 	setLayout(layout);
 
 	connect(m_avThread, SIGNAL(frameReady()), this, SLOT(updateLabel()));
@@ -69,11 +68,11 @@ void VideoWidget::updateLabel()
 void VideoWidget::playVideo()
 {
 	if (m_avThread->isRunning()) {
-		qDebug() << __PRETTY_FUNCTION__ << "STOP";
 		m_avThread->stop();
+		playButton->setText("PLAY");
 	} else {
-		qDebug() << __PRETTY_FUNCTION__ << "PLAY";
 		m_avThread->start();
+		playButton->setText("STOP");
 	}
 }
 
