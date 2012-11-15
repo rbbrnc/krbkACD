@@ -43,9 +43,6 @@ FileManager::FileManager(QWidget *parent) :
 	connect(ui->infoToolBox, SIGNAL(currentChanged(int)),
 		this, SLOT(updateInfoToolBox(int)));
 
-//	connect(m_model, SIGNAL(rootPathChanged(const QString &)),
-//		this, SLOT(currentPathChanged(const QString &)));
-
 	ui->pathLabel->setText(m_model->rootPath());
 
 	// Defaut for info box
@@ -60,13 +57,6 @@ FileManager::~FileManager()
 	delete m_model;
 	delete ui;
 }
-
-#if 0
-void FileManager::currentPathChanged(const QString &newPath)
-{
-	qDebug() << newPath;
-}
-#endif
 
 /* @return Current directory shown  */
 QString FileManager::currentPath() const
@@ -142,22 +132,6 @@ void FileManager::updateInfoToolBox(int /*index*/)
 {
 	updateInfo();
 }
-
-/*
-void FileManager::on_pushButton_clicked()
-{
-	// index = first row
-	QModelIndex index = m_currentIndex.child(0, 0);
-	do {
-		if (index.isValid())
-			qDebug() << m_model->fileName(index);
-		else
-			break;
-
-		index = m_fs->nextRow(index);
-	} while (index.isValid());
-}
-*/
 
 // [SLOT public]
 //
@@ -573,5 +547,4 @@ void FileManager::move(const QString &destPath)
 	ui->listView->clearSelection();
 	ui->listView->setSelectionMode(QAbstractItemView::SingleSelection);
 }
-
 

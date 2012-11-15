@@ -40,9 +40,6 @@ class FileManager : public QWidget
 
 		void updateInfoToolBox(int index);
 
-//		void currentPathChanged(const QString &newPath);
-//		void on_pushButton_clicked();
-
 	public slots:
 		void previous();
 		void next();
