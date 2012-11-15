@@ -393,26 +393,31 @@ void FileManager::remove()
 		return;
 	}
 
-	QModelIndex index = ui->listView->currentIndex();
 	QString msg;
-
-	if (m_model->isDir(index)) {
-		msg = tr("Delete Directory %1?").arg(m_model->fileName(index));
+	int count = m_selection.count();
+	if (count == 1) {
+		QModelIndex index = ui->listView->currentIndex();
+		if (m_model->isDir(index)) {
+			msg = tr("Delete Directory %1?").arg(m_model->fileName(index));
+		} else {
+			msg = tr("Delete File %1?").arg(m_model->fileName(index));
+		}
 	} else {
-		msg = tr("Delete File %1?").arg(m_model->fileName(index));
+		msg = tr("Delete %1 Files?").arg(count);
 	}
 
 	if (QMessageBox::No == QMessageBox::warning(this, "Delete", msg, QMessageBox::Yes, QMessageBox::No)) {
 		return;
 	}
 
-	if (m_model->remove(index)) {
-		return;
+	for (int i = 0; i < count; i++) {
+		if (!m_model->remove(m_selection.at(i))) {
+			QMessageBox::critical(this, QObject::tr("Error"),
+				tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
+				QMessageBox::Abort);
+			return;
+		}
 	}
-
-	QMessageBox::critical(this, QObject::tr("Error"),
-		tr("Cannot Remove '%1'").arg(m_model->filePath(index)),
-		QMessageBox::Abort);
 }
 
 // [SLOT public]
