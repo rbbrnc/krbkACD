@@ -245,10 +245,20 @@ void ImageViewManager::showImageRegions(bool /*show*/)
 }
 
 // [SLOT public]
+void ImageViewManager::addRectRegions(const QList<QRectF> regions)
+{
+	for (int i = 0; i < regions.count(); ++i) {
+		//qDebug() << __PRETTY_FUNCTION__ << "Add:" << regions.at(i);
+		addRectRegion(regions.at(i));
+	}
+}
+
+// [SLOT public]
 void ImageViewManager::addRectRegion(const QRectF &region)
 {
 	qDebug() << region << "Image:" << m_image->boundingRect();
 	QGraphicsRectItem *ir = m_scene->addRect(region);
+	ir->setVisible(m_view->isInteractive());
 	m_regionList.append(ir);
 }
 

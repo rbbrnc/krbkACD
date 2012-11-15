@@ -25,6 +25,7 @@ class ImageViewManager : public QWidget
 		void next();
 
 		void addRectRegion(const QRectF &region);
+		void addRectRegions(const QList<QRectF> regions);
 		void showImageRegions(bool show);
 
 	private slots:
