@@ -16,15 +16,11 @@ class FileManagerPage : public QWidget
 		explicit FileManagerPage(QWidget *parent = 0);
 		~FileManagerPage();
 
-		void setActiveFileManager();
-		QString currentPath(bool useLastActiveFm = 0) const;
-		QString currentFile(bool useLastActiveFm = 0) const;
-		QString currentFilePath(bool useLastActiveFm = 0) const;
-		void previousFile(bool useLastActiveFm = 0);
-		void nextFile(bool useLastActiveFm = 0);
-
-	private:
-		FileManager *activeFileManager(bool useLastActiveFm = 0) const;
+		QString currentPath() const;
+		QString currentFile() const;
+		QString currentFilePath() const;
+		void previousFile();
+		void nextFile();
 
 	private slots:
 		void showSecondFs(bool checked);
@@ -38,6 +34,8 @@ class FileManagerPage : public QWidget
 		void renameFiles();
 		void copyFiles();
 		void moveFiles();
+
+		void setFileManager(const QString &);
 
 	private:
 		Ui::FileManagerPage *ui;

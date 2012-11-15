@@ -10,7 +10,6 @@ FileManagerPage::FileManagerPage(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	m_lastActive = NULL;
 	m_fs1 = new FileManager();
 	m_fs2 = new FileManager();
 
@@ -18,9 +17,21 @@ FileManagerPage::FileManagerPage(QWidget *parent) :
 	ui->fs2Layout->addWidget(m_fs2);
 
 	ui->fs2Widget->hide();
-
 	//m_fs1->showInfo(false);
 	m_fs2->showInfo(false);
+
+	// Set 1st as lastActive file manager
+	m_lastActive = m_fs1;
+
+
+	// XXX:
+	// Use selection change of listViews to catch change of current
+	// FileManager. (we can use focus??)
+	connect(m_fs1, SIGNAL(currentChanged(const QString&)),
+		this,  SLOT(setFileManager(const QString&)));
+
+	connect(m_fs2, SIGNAL(currentChanged(const QString&)),
+		this,  SLOT(setFileManager(const QString&)));
 }
 
 FileManagerPage::~FileManagerPage()
@@ -32,149 +43,106 @@ FileManagerPage::~FileManagerPage()
 
 void FileManagerPage::showSecondFs(bool checked)
 {
+	if (!checked) {
+		m_lastActive = m_fs1;
+	}
+
 	ui->fs2Widget->setVisible(checked);
 }
 
-QString FileManagerPage::currentFile(bool useLastActiveFm) const
+QString FileManagerPage::currentFile() const
 {
-	FileManager *fm = activeFileManager(useLastActiveFm);
-	if (fm) {
-		return fm->currentFile();
-	}
-
-	qDebug() << __PRETTY_FUNCTION__ << "Invalid FileManager";
-	return QString();
+	return m_lastActive->currentFile();
 }
 
-QString FileManagerPage::currentPath(bool useLastActiveFm) const
+QString FileManagerPage::currentPath() const
 {
-	FileManager *fm = activeFileManager(useLastActiveFm);
-	if (fm) {
-		return fm->currentPath();
-	}
-	return QString();
+	return m_lastActive->currentPath();
 }
 
-QString FileManagerPage::currentFilePath(bool useLastActiveFm) const
+QString FileManagerPage::currentFilePath() const
 {
-	FileManager *fm = activeFileManager(useLastActiveFm);
-	if (fm) {
-		return fm->currentPath() + "/" + fm->currentFile();
-	}
-
-	qDebug() << __PRETTY_FUNCTION__ << "Invalid FileManager";
-	return QString();
+	return m_lastActive->currentPath() + "/" + m_lastActive->currentFile();
 }
 
 void FileManagerPage::showIcons(bool show)
 {
-	FileManager *fm = activeFileManager();
-	if (fm) {
-		fm->iconMode(show);
-	}
+	m_lastActive->iconMode(show);
 }
 
 void FileManagerPage::showHidden(bool show)
 {
-	FileManager *fm = activeFileManager();
-	if (fm) {
-		fm->showHidden(show);
-	}
+	m_lastActive->showHidden(show);
 }
 
 void FileManagerPage::showInfo(bool show)
 {
-	FileManager *fm = activeFileManager();
-	if (fm) {
-		fm->showInfo(show);
+	m_lastActive->showInfo(show);
+}
+
+void FileManagerPage::setFileManager(const QString &)
+{
+	FileManager *fm = static_cast<FileManager *>(sender());
+
+	if (m_lastActive != fm) {
+		m_lastActive = fm;
 	}
 }
 
-void FileManagerPage::setActiveFileManager()
+void FileManagerPage::previousFile()
 {
-	m_lastActive = activeFileManager(false);
+	m_lastActive->previous();
 }
 
-FileManager *FileManagerPage::activeFileManager(bool useLastActive) const
+void FileManagerPage::nextFile()
 {
-	if (m_fs1->isActive()) {
-		return m_fs1;
-	} else if (m_fs2->isActive()) {
-		return m_fs2;
-	} else {
-		if (useLastActive) {
-			return (m_lastActive) ? m_lastActive : NULL;
-		}
-	}
-	return NULL;
-}
-
-void FileManagerPage::previousFile(bool useLastActiveFm)
-{
-	FileManager *fm = activeFileManager(useLastActiveFm);
-	if (fm) {
-		fm->previous();
-	}
-}
-
-void FileManagerPage::nextFile(bool useLastActiveFm)
-{
-	FileManager *fm = activeFileManager(useLastActiveFm);
-	if (fm) {
-		fm->next();
-	}
+	m_lastActive->next();
 }
 
 void FileManagerPage::mkDir()
 {
-	FileManager *fm = activeFileManager();
-	if (fm) {
-		fm->mkDir();
-	}
+	m_lastActive->mkDir();
 }
 
 void FileManagerPage::deleteFiles()
 {
-	FileManager *fm = activeFileManager();
-	if (fm) {
-		fm->remove();
-	}
+	m_lastActive->remove();
 }
 
 void FileManagerPage::renameFiles()
 {
-	FileManager *fm = activeFileManager();
-	if (fm) {
-		fm->rename();
-	}
+	m_lastActive->rename();
 }
 
 void FileManagerPage::copyFiles()
 {
 	// Copy only is 2nd browser is visible
-	if (m_fs2->isHidden()) {
+	if (ui->fs2Widget->isHidden()) {
 		return;
 	}
 
-	FileManager *fm = activeFileManager();
-	if (!fm) {
+	if (m_fs1 == m_lastActive) {
+		m_fs1->copy(m_fs2->currentPath());
+	} else if (m_fs2 == m_lastActive) {
+		m_fs2->copy(m_fs1->currentPath());
+	} else {
 		return;
 	}
-
-	fm->copy((m_fs1->isActive()) ? m_fs2->currentPath() : m_fs1->currentPath());
 }
 
 void FileManagerPage::moveFiles()
 {
 	// Move only is 2nd browser is visible
-	if (m_fs2->isHidden()) {
-		return;
-	}
-	FileManager *fm = activeFileManager();
-	if (!fm) {
+	if (ui->fs2Widget->isHidden()) {
 		return;
 	}
 
-	fm->move((m_fs1->isActive()) ? m_fs2->currentPath() : m_fs1->currentPath());
+	if (m_fs1 == m_lastActive) {
+		m_fs1->move(m_fs2->currentPath());
+	} else if (m_fs2 == m_lastActive) {
+		m_fs2->move(m_fs1->currentPath());
+	} else {
+		return;
+	}
 }
 

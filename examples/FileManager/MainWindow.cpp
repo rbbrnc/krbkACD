@@ -67,9 +67,8 @@ void MainWindow::fullScreen(bool enable)
 void MainWindow::showImage()
 {
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
-		m_fmPage->setActiveFileManager();
-		m_ivPage->setFile(m_fmPage->currentFilePath(true));
-//		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath(true);
+		m_ivPage->setFile(m_fmPage->currentFilePath());
+//		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
@@ -80,8 +79,6 @@ void MainWindow::showMetadata()
 {
 #if 0
 	if (ui->stackedWidget->currentWidget() == m_fmPage) {
-		m_fmPage->setActiveFileManager();
-
 		// Setup model data.
 		if (m_metadataModel) {
 			delete m_metadataModel;
@@ -109,16 +106,16 @@ void MainWindow::showMetadata()
 void MainWindow::prevFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
-		m_fmPage->previousFile(true);
-		m_ivPage->setFile(m_fmPage->currentFilePath(true));
+		m_fmPage->previousFile();
+		m_ivPage->setFile(m_fmPage->currentFilePath());
 	}
 }
 
 void MainWindow::nextFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
-		m_fmPage->nextFile(true);
-		m_ivPage->setFile(m_fmPage->currentFilePath(true));
+		m_fmPage->nextFile();
+		m_ivPage->setFile(m_fmPage->currentFilePath());
 	}
 }
 
