@@ -77,30 +77,13 @@ void MainWindow::showImage()
 
 void MainWindow::showMetadata()
 {
-#if 0
-	if (ui->stackedWidget->currentWidget() == m_fmPage) {
-		// Setup model data.
-		if (m_metadataModel) {
-			delete m_metadataModel;
-			m_metadataModel = 0;
-		}
-
-		if (m_currentFileData.isImage()) {
-			m_metadataModel = new MetadataTreeModel(m_currentFileData.metadata());
-			ui->metadataBrowser->setModel(m_metadataModel);
-			ui->metadataBrowser->hideColumn(7); // hide key column
-		}
+	if (ui->stackedWidget->currentWidget() != m_mvPage) {
+//		m_mvPage->setFile(m_fmPage->currentFilePath());
+		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
 		ui->stackedWidget->setCurrentWidget(m_mvPage);
-	} else if (ui->stackedWidget->currentWidget() == m_mvPage) {
+	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
 	}
-
-	if (ui->stackedWidget->currentWidget() != m_mvPage) {
-		m_ivPage->setFile(m_fmPage->currentFile(true));
-		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFile(true);
-		ui->stackedWidget->setCurrentWidget(m_mvPage);
-	}
-#endif
 }
 
 void MainWindow::prevFile()
