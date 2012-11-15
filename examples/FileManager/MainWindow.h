@@ -7,6 +7,7 @@ namespace Ui {
 	class MainWindow;
 }
 
+class QExiv2;
 class FileManagerPage;
 class ImageViewManager;
 class MainWindow : public QMainWindow
@@ -33,6 +34,8 @@ class MainWindow : public QMainWindow
 
 		ImageViewManager *m_ivPage;
 		QWidget *m_mvPage;
+
+		QExiv2 *m_exiv2;
 
 };
 

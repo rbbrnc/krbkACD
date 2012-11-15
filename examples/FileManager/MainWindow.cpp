@@ -44,10 +44,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
+
+	m_exiv2 = new QExiv2();
 }
 
 MainWindow::~MainWindow()
 {
+	delete m_exiv2;
 	delete ui;
 }
 
@@ -69,8 +72,34 @@ void MainWindow::showImage()
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
 		m_ivPage->setFile(m_fmPage->currentFilePath());
 //		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
+//
+		QList<PTag> tagList;
+		if (m_exiv2->load(m_fmPage->currentFilePath())) {
+			tagList = m_exiv2->xmpPTags();
+			if (tagList.isEmpty()) {
+				// Check MWG regions
+				tagList = m_exiv2->xmpMWG_RegionsTags();
+			}
+
+			if (!tagList.isEmpty()) {
+				QList<QRectF> regions;
+				for (int i = 0; i < tagList.size(); i++) {
+					regions << tagList.at(i).region();
+				}
+				m_ivPage->addRectRegions(regions);
+			}
+		}
+
+/*
+		regions << QRectF(10.0, 10.0, 25, 25);
+		regions << QRectF(50.0, 50.0, 25, 25);
+*/
+
+//		m_ivPage->addRectRegion(QRectF(10.0, 10.0, 25, 25));
+
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
+		qDebug() << m_ivPage->rectRegions();
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
 	}
 }
@@ -79,7 +108,7 @@ void MainWindow::showMetadata()
 {
 	if (ui->stackedWidget->currentWidget() != m_mvPage) {
 //		m_mvPage->setFile(m_fmPage->currentFilePath());
-		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
+//		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
 		ui->stackedWidget->setCurrentWidget(m_mvPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
