@@ -244,6 +244,16 @@ void ImageViewManager::showImageRegions(bool /*show*/)
 
 }
 
+// public
+QList<QRectF> ImageViewManager::rectRegions() const
+{
+	QList<QRectF> rlist;
+	for (int i = 0; i < m_regionList.count(); ++i) {
+		rlist << m_regionList.at(i)->boundingRect();
+	}
+	return rlist;
+}
+
 // [SLOT public]
 void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 {

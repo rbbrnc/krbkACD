@@ -15,6 +15,7 @@ class ImageViewManager : public QWidget
 		~ImageViewManager();
 
 		QString currentFile() const;
+		QList<QRectF> rectRegions() const;
 
 	public slots:
 		void setFile(const QString &file);
