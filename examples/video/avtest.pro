@@ -5,11 +5,18 @@ DEPENDPATH += .
 # Input
 SOURCES += main.cpp \
 	VideoDecode.cpp \
-	VideoWidget.cpp \
+	AvManager.cpp
+
+#	VideoWidget.cpp \
 
 HEADERS += \
 	VideoDecode.h \
-	VideoWidget.h \
+	AvManager.h
+
+#	VideoWidget.h \
+
+
+FORMS += AvManager.ui
 
 QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -O0 -g -ggdb
 

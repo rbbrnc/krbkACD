@@ -43,6 +43,12 @@ class VideoDecode : public QThread
 		void initFFMPEG();
 		void closeAVInput();
 
+		void seekVideoFrame();
+		void decodeVideoFrame();
+
+	public slots:
+		void seekRequest(double seconds);
+
 	signals:
 		void frameReady();
 
@@ -50,6 +56,10 @@ class VideoDecode : public QThread
 		int videoStream;
 		bool m_mediaValid;
 		bool m_run;
+
+		// Frame dimensions (w, h)
+		int m_width;
+		int m_height;
 
 		AVFrame *outFrame;
 		AVFrame *frameRGB;
@@ -63,7 +73,7 @@ class VideoDecode : public QThread
 
 		SwsContext *swsCtx;
 
-		AVPacket packet;
+		AVPacket m_packet;
 
 		QImage LastFrame;
 
@@ -71,6 +81,17 @@ class VideoDecode : public QThread
 		double m_frameRate; // micro seconds
 
 		unsigned int m_frameCounter;
+
+		int64_t DesiredFrameNumber;
+
+		bool    m_seekRequest;
+		int     m_seekFlags;
+		int64_t m_seekPos;
+
+		double m_timePos; // seconds
+
+		int64_t m_frameCurrentTime;
+		int64_t m_frameStartTime;
 };
 
 #endif

@@ -4,9 +4,13 @@
 
 #include <QDebug>
 
+#include <limits>
+
 VideoDecode::VideoDecode(const QString &fileName)
 {
 	m_run = false;
+	m_seekRequest = false;
+
 	videoStream = -1;
 	m_mediaValid = false;
 	m_frameCounter = 0;
@@ -149,14 +153,11 @@ void VideoDecode::setAVInput(const QString &fileName)
 	frame    = avcodec_alloc_frame();
 	outFrame = avcodec_alloc_frame();
 
-	int w = avCodecCtx->width;
-	int h = avCodecCtx->height;
-
-	//qDebug() << w << "x" << h;
-
+	m_width  = avCodecCtx->width;
+	m_height = avCodecCtx->height;
 
 	// Calculate the bytes needed for the output image
-	int nbytes = avpicture_get_size(AV_PIX_FMT_RGB24, w, h);
+	int nbytes = avpicture_get_size(AV_PIX_FMT_RGB24, m_width, m_height);
 	//qDebug() <<  "nbytes:" << nbytes;
 
 	// Create buffer for the output image
@@ -164,17 +165,22 @@ void VideoDecode::setAVInput(const QString &fileName)
 
 	// This will set the pointers in the frame structures to the right points in
 	// the input and output buffers.
-	avpicture_fill((AVPicture*) outFrame, outbuffer, AV_PIX_FMT_RGB24, w, h);
+	avpicture_fill((AVPicture*) outFrame, outbuffer, AV_PIX_FMT_RGB24, m_width, m_height);
 
 	// Convert the image format (init the context the first time)
-	swsCtx = sws_getCachedContext(swsCtx, w, h, avCodecCtx->pix_fmt, w, h, PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
+	swsCtx = sws_getCachedContext(swsCtx, m_width, m_height,
+				      avCodecCtx->pix_fmt, m_width, m_height,
+				      PIX_FMT_RGB24, SWS_BICUBIC, NULL, NULL, NULL);
 	if (swsCtx == NULL) {
 		qDebug() << __PRETTY_FUNCTION__ << "Error initializing Conversion Context!";
 		closeAVInput();
 		return;
 	}
 
-	LastFrame = QImage(w, h, QImage::Format_RGB888);
+	LastFrame = QImage(m_width, m_height, QImage::Format_RGB888);
+
+	m_timePos = 0.0;
+
 	m_mediaValid = true;
 }
 
@@ -211,10 +217,134 @@ int VideoDecode::videoLengthMs() const
 	return ms;
 }
 
-
-void VideoDecode::stop()
+// [SLOT public]
+void VideoDecode::seekRequest(double seconds)
 {
-	m_run = false;
+	if (!m_seekRequest) {
+		m_timePos += seconds;
+//		if (seek_by_bytes) {
+//			m_seekFlags |= AVSEEK_FLAG_BYTE;
+//		} else {
+			m_seekFlags &= ~AVSEEK_FLAG_BYTE;
+			//m_seekPos = (int64_t)(m_timePos * AV_TIME_BASE);
+			m_seekPos = m_frameCurrentTime + (int64_t)(m_timePos * AV_TIME_BASE / 1000000);
+//		}
+
+		m_seekRequest = true;
+		qDebug() << __PRETTY_FUNCTION__ << "to" << m_seekPos;
+	}
+}
+
+void VideoDecode::seekVideoFrame()
+{
+	int64_t seekTarget = m_seekPos;
+	int64_t seekMin = std::numeric_limits<int64_t>::min(); /* INT64_MIN */
+	int64_t seekMax = std::numeric_limits<int64_t>::max(); /* INT64_MAX */
+	int rc;
+
+	rc = avformat_seek_file(avFormatCtx, -1, seekMin, seekTarget, seekMax, m_seekFlags);
+	if (rc < 0) {
+		qDebug() << "Error while seeking";
+	} else {
+		if (videoStream >= 0) {
+			avcodec_flush_buffers(avCodecCtx);
+		}
+	}
+}
+
+/*
+double getFrameRate()
+{
+        if (video_st == null) {
+            return super.getFrameRate();
+        } else {
+            AVRational r = video_st.r_frame_rate();
+            return (double)r.num() / r.den();
+        }
+}
+*/
+#if 0
+void setTimestamp(long timestamp)
+{
+        int ret;
+        if (oc == null || video_c == null) {
+            super.setTimestamp(timestamp);
+        } else {
+            timestamp = timestamp * AV_TIME_BASE / 1000000;
+            /* add the stream start time */
+            if (oc.start_time() != AV_NOPTS_VALUE) {
+                timestamp += oc.start_time();
+            }
+            if ((ret = avformat_seek_file(oc, -1, Long.MIN_VALUE, timestamp, Long.MAX_VALUE, AVSEEK_FLAG_BACKWARD)) < 0) {
+                throw new Exception("avformat_seek_file() error " + ret + ": Could not seek file to timestamp " + timestamp + ".");
+            }
+            avcodec_flush_buffers(video_c);
+            if (audio_c != null) {
+                avcodec_flush_buffers(audio_c);
+            }
+            while (this.timestamp > timestamp && grab(false) != null) {
+                // flush frames if seeking backwards
+           }
+           while (this.timestamp < timestamp && grab(false) != null) {
+              // decode up to the desired frame
+            }
+           frameGrabbed = true;
+}
+}
+#endif
+
+void VideoDecode::decodeVideoFrame()
+{
+	int frameFinished;
+
+	// Is this a packet from the video stream?
+	if (m_packet.stream_index == videoStream) {
+	        // Decode video frame
+		int len = avcodec_decode_video2(avCodecCtx, frame, &frameFinished, &m_packet);
+		// Did we get a video frame?
+		if ((len > 0) && frameFinished) {
+
+			int64_t pts = av_frame_get_best_effort_timestamp(frame);
+			//AVRational time_base = avFormatCtx->streams[videoStream]->time_base;
+			int tb_num = avFormatCtx->streams[videoStream]->time_base.num;
+			int tb_den = avFormatCtx->streams[videoStream]->time_base.den;
+
+			int64_t timestamp = 1000000 * pts * tb_num / tb_den;
+			// best guess, AVCodecContext.frame_number = number of decoded frames...
+			//frameNumber = (int)(1000000 * getFrameRate() / timestamp);
+
+			// Convert the image from its native format to RGB
+			sws_scale(swsCtx, frame->data, frame->linesize, 0, avCodecCtx->height, outFrame->data, outFrame->linesize);
+
+			// Convert the frame to QImage
+			for (int y = 0; y < m_height; y++) {
+				memcpy(LastFrame.scanLine(y),
+				       outFrame->data[0] + y*outFrame->linesize[0],
+				       m_width * 3);
+			}
+#if 0
+			QString s = QString("frame%1.png").arg(m_frameCounter);
+			qDebug() << s;
+			if (m_frameCounter == 10) {
+				LastFrame.save(s,"PNG");
+			}
+#endif
+			emit frameReady();
+
+			m_frameCurrentTime = timestamp; //av_gettime() - avFormatCtx->start_time;
+			//qDebug() << "start_time:" << avFormatCtx->start_time;
+
+			qDebug() << "Frame" << m_frameCounter << "K:" << frame->key_frame
+				 << "PTS:" << m_packet.pts
+				 << "DTS:" << m_packet.dts
+				 << "Dur:" << m_packet.duration
+				 << "BETs:" << av_frame_get_best_effort_timestamp(frame)
+				 << "av time:" << m_frameCurrentTime;
+
+			m_frameCounter++;
+			this->usleep((unsigned long) m_frameRate);
+		}
+	}
 }
 
 void VideoDecode::run()
@@ -224,40 +354,28 @@ void VideoDecode::run()
 	}
 
 	m_run = true;
-	int frameFinished;
-	int w = avCodecCtx->width;
-	int h = avCodecCtx->height;
 
-	while ((m_run) && (av_read_frame(avFormatCtx, &packet) >= 0)) {
-		// Is this a packet from the video stream?
-		if (packet.stream_index == videoStream) {
-		        // Decode video frame
-			avcodec_decode_video2(avCodecCtx, frame, &frameFinished, &packet);
-			// Did we get a video frame?
-			if (frameFinished) {
-				// Convert the image from its native format to RGB
-				sws_scale(swsCtx, frame->data, frame->linesize, 0, h /*avCodecCtx->height*/, outFrame->data, outFrame->linesize);
+	int rc;
 
-				// Convert the frame to QImage
-				for (int y = 0; y < h; y++) {
-					memcpy(LastFrame.scanLine(y), outFrame->data[0] + y*outFrame->linesize[0], w*3);
-				}
-#if 0
-				QString s = QString("frame%1.png").arg(m_frameCounter);
-				qDebug() << s;
-				if (m_frameCounter == 10) {
-					LastFrame.save(s,"PNG");
-				}
-#endif
+	m_frameStartTime = av_gettime();
 
-				emit frameReady();
-				//qDebug() << "Frame:" << m_frameCounter;
-				m_frameCounter++;
-				this->usleep((unsigned long) m_frameRate);
-			}
+	while (m_run) {
+		if (m_seekRequest) {
+			seekVideoFrame();
+			m_seekRequest = false;
 		}
+		rc = av_read_frame(avFormatCtx, &m_packet);
+		if (rc >= 0) {
+			decodeVideoFrame();
 
-		// Free the packet that was allocated by av_read_frame
-		av_free_packet(&packet);
+			// Free the packet that was allocated by av_read_frame
+			av_free_packet(&m_packet);
+		}
 	}
 }
+
+void VideoDecode::stop()
+{
+	m_run = false;
+}
+

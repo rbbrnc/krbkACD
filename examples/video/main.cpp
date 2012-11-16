@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <QDebug>
 
-#include "VideoWidget.h"
+#include "AvManager.h"
 
 int main(int argc, char **argv)
 {
@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 	}
 
 	QString fileName = argv[1];
-	VideoWidget *w = new VideoWidget(fileName);
+	AvManager *w = new AvManager(fileName);
 	w->show();
 
 	return app.exec();
