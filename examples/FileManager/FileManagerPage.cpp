@@ -1,3 +1,6 @@
+/*
+ * FileManagerPage - Wrapper class to handle two FileManager classes.
+ */
 #include "FileManagerPage.h"
 #include "ui_FileManagerPage.h"
 
@@ -22,7 +25,6 @@ FileManagerPage::FileManagerPage(QWidget *parent) :
 
 	// Set 1st as lastActive file manager
 	m_lastActive = m_fs1;
-
 
 	// XXX:
 	// Use selection change of listViews to catch change of current
@@ -65,21 +67,25 @@ QString FileManagerPage::currentFilePath() const
 	return m_lastActive->currentPath() + "/" + m_lastActive->currentFile();
 }
 
+// [SLOT private]
 void FileManagerPage::showIcons(bool show)
 {
 	m_lastActive->iconMode(show);
 }
 
+// [SLOT private]
 void FileManagerPage::showHidden(bool show)
 {
 	m_lastActive->showHidden(show);
 }
 
+// [SLOT private]
 void FileManagerPage::showInfo(bool show)
 {
 	m_lastActive->showInfo(show);
 }
 
+// [SLOT private]
 void FileManagerPage::setFileManager(const QString &)
 {
 	FileManager *fm = static_cast<FileManager *>(sender());
@@ -89,31 +95,37 @@ void FileManagerPage::setFileManager(const QString &)
 	}
 }
 
+// [SLOT private]
 void FileManagerPage::previousFile()
 {
 	m_lastActive->previous();
 }
 
+// [SLOT private]
 void FileManagerPage::nextFile()
 {
 	m_lastActive->next();
 }
 
+// [SLOT private]
 void FileManagerPage::mkDir()
 {
 	m_lastActive->mkDir();
 }
 
+// [SLOT private]
 void FileManagerPage::deleteFiles()
 {
 	m_lastActive->remove();
 }
 
+// [SLOT private]
 void FileManagerPage::renameFiles()
 {
 	m_lastActive->rename();
 }
 
+// [SLOT private]
 void FileManagerPage::copyFiles()
 {
 	// Copy only is 2nd browser is visible
@@ -130,6 +142,7 @@ void FileManagerPage::copyFiles()
 	}
 }
 
+// [SLOT private]
 void FileManagerPage::moveFiles()
 {
 	// Move only is 2nd browser is visible
