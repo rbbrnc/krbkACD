@@ -81,7 +81,6 @@ class VideoDecode : public QThread
 
 		double  m_fps;		// Frame Per Seconds
 		double  m_frameRate;	// micro seconds
-		int64_t m_frameCounter;
 		int64_t m_frameCurrentTime;
 
 		bool    m_seekRequest;

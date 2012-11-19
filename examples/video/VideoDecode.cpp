@@ -24,7 +24,6 @@ void VideoDecode::init()
 
 	m_videoStream = -1;
 	m_mediaValid = false;
-	m_frameCounter = 0;
 
 	avFormatCtx = NULL;
 	avCodecCtx = NULL;
@@ -73,7 +72,6 @@ void VideoDecode::setAVInput(const QString &fileName)
 	}
 
 	int err = 0;
-	m_frameCounter = 0;
 
 	// Open video file
 	err = avformat_open_input(&avFormatCtx, (const char *)(QFile::encodeName(fileName)), NULL, NULL);
@@ -133,7 +131,6 @@ void VideoDecode::setAVInput(const QString &fileName)
 	qDebug() << "STREAM TIME BASE (FPS)"   << tb_num << "/" << tb_den;
 	qDebug() << "STREAM R_FRAMERATE (FPS)" << fr_num << "/" << fr_den;
 	qDebug() << "CODEC (FPS)"              << ctb_num << "/" << ctb_den;
-
 
 	// Get a pointer to the codec context for the video stream
 	avCodecCtx = avFormatCtx->streams[m_videoStream]->codec;
@@ -292,18 +289,16 @@ void VideoDecode::decodeVideoFrame()
 
 			emit frameReady(m_frameCurrentTime);
 
-#if 0
-			// DEBUG
+#if 0	// DEBUG
 			QTime tm;
 			tm = tm.addMSecs(m_frameCurrentTime / 1000);
-			qDebug() << "Frame" << m_frameCounter << "K:" << m_frame->key_frame
-				 //<< "PTS:" << m_packet.pts
-				 //<< "DTS:" << m_packet.dts
+			qDebug() << "Frame K:" << m_frame->key_frame
+				 << "PTS:" << m_packet.pts
+				 << "DTS:" << m_packet.dts
 				 //<< "Dur:" << m_packet.duration
 				 //<< "BETs:" << av_frame_get_best_effort_timestamp(m_frame)
 				 << "Time:" << m_frameCurrentTime << "us" << tm.toString("HH:mm:ss:zzz");
 #endif
-			m_frameCounter++;
 			this->usleep((unsigned long) m_frameRate);
 		}
 	}
@@ -322,7 +317,6 @@ void VideoDecode::run()
 	while (m_run) {
 		if (m_seekRequest) {
 			seekVideoFrame();
-			qDebug() << "SR";
 			m_seekRequest = false;
 		}
 		rc = av_read_frame(avFormatCtx, &m_packet);
