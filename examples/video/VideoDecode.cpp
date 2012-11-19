@@ -6,6 +6,11 @@
 
 #include <limits>
 
+VideoDecode::VideoDecode()
+{
+	init();
+}
+
 VideoDecode::VideoDecode(const QString &fileName)
 {
 	init();
@@ -208,22 +213,31 @@ QSize VideoDecode::videoSize() const
  * milliseconds = seconds*1000 + microseconds/1000;
  *
  */
-int VideoDecode::videoLengthMs() const
+qint64 VideoDecode::videoLengthMs() const
 {
 	if (!m_mediaValid) {
 		return -1;
 	}
 
-	return  (avFormatCtx->duration / AV_TIME_BASE)*1000 +
-		(avFormatCtx->duration % AV_TIME_BASE)/1000;
+	return  (avFormatCtx->duration / AV_TIME_BASE) * 1000 +
+		(avFormatCtx->duration % AV_TIME_BASE) / 1000;
 }
 
 // [SLOT public]
+void VideoDecode::seekToAbsoluteTime(qint64 microseconds)
+{
+	if (!m_seekRequest) {
+		m_seekFlags &= ~AVSEEK_FLAG_BYTE; /* seek by time */
+		m_seekTarget = microseconds;
+		m_seekRequest = true;
+		qDebug() << __PRETTY_FUNCTION__ << "Seek to:" << microseconds;
+	}
+}
+
 void VideoDecode::seekRequest(double seconds)
 {
 	if (!m_seekRequest) {
 		m_seekFlags &= ~AVSEEK_FLAG_BYTE; /* seek by time */
-		//m_seekTarget = (int64_t)(seconds * AV_TIME_BASE);	// Absolute time seek
 		m_seekTarget = m_frameCurrentTime + (int64_t)(seconds * AV_TIME_BASE);
 		m_seekRequest = true;
 
@@ -278,6 +292,8 @@ void VideoDecode::decodeVideoFrame()
 
 			emit frameReady(m_frameCurrentTime);
 
+#if 0
+			// DEBUG
 			QTime tm;
 			tm = tm.addMSecs(m_frameCurrentTime / 1000);
 			qDebug() << "Frame" << m_frameCounter << "K:" << m_frame->key_frame
@@ -286,7 +302,7 @@ void VideoDecode::decodeVideoFrame()
 				 //<< "Dur:" << m_packet.duration
 				 //<< "BETs:" << av_frame_get_best_effort_timestamp(m_frame)
 				 << "Time:" << m_frameCurrentTime << "us" << tm.toString("HH:mm:ss:zzz");
-
+#endif
 			m_frameCounter++;
 			this->usleep((unsigned long) m_frameRate);
 		}
@@ -306,6 +322,7 @@ void VideoDecode::run()
 	while (m_run) {
 		if (m_seekRequest) {
 			seekVideoFrame();
+			qDebug() << "SR";
 			m_seekRequest = false;
 		}
 		rc = av_read_frame(avFormatCtx, &m_packet);
@@ -314,7 +331,7 @@ void VideoDecode::run()
 			// Free the packet that was allocated by av_read_frame
 			av_free_packet(&m_packet);
 		} else {
-			qDebug() << "av_read_frame error - rc =" << rc;
+			qDebug() << "av_read_frame:" << av_err2str(rc);
 			stop();
 		}
 	}

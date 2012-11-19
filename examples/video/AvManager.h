@@ -19,11 +19,15 @@ class AvManager : public QWidget
 
 		~AvManager();
 
+	private:
+		void updateTimeLabel(qint64 time);
+
 	private slots:
 		void updateFrame(qint64 time);
 		void playVideo();
 		void ffwdVideo();
 		void rewVideo();
+		void seekFrame();
 
 	private:
 		Ui::AvManager *ui;
@@ -31,6 +35,8 @@ class AvManager : public QWidget
 		QPixmap m_pic;
 
 		VideoDecode *m_avThread;
+
+		qint64 m_duration;
 };
 
 #endif

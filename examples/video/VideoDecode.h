@@ -27,6 +27,7 @@ class VideoDecode : public QThread
 	Q_OBJECT
 
 	public:
+		VideoDecode();
 		VideoDecode(const QString &fileName);
 
 		void setAVInput(const QString &fileName);
@@ -34,7 +35,7 @@ class VideoDecode : public QThread
 		QImage lastFrame();
 		QSize  videoSize() const;
 		bool   mediaValid() const;
-		int    videoLengthMs() const;
+		qint64 videoLengthMs() const;
 
 		void run();
 		void stop(void);
@@ -47,6 +48,7 @@ class VideoDecode : public QThread
 		void decodeVideoFrame();
 
 	public slots:
+		void seekToAbsoluteTime(qint64 microseconds);
 		void seekRequest(double seconds);
 		void save(const QString &fname);
 

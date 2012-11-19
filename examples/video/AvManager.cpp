@@ -36,10 +36,21 @@ AvManager::AvManager(const QString &fileName, QWidget *parent)
 	connect(ui->ffwdButton, SIGNAL(clicked()), this, SLOT(ffwdVideo()));
 	connect(ui->rewButton, SIGNAL(clicked()), this, SLOT(rewVideo()));
 	connect(m_avThread, SIGNAL(frameReady(qint64)), this, SLOT(updateFrame(qint64)));
+	connect(ui->seekSlider, SIGNAL(sliderReleased()), this, SLOT(seekFrame()));
+
+	// duration in microseconds.
+	m_duration = m_avThread->videoLengthMs() * 1000;
 
 	QTime tm;
 	tm = tm.addMSecs(m_avThread->videoLengthMs());
 	qDebug() << "Duration:" << tm.toString("HH:mm:ss:zzz");
+}
+
+void AvManager::updateTimeLabel(qint64 time)
+{
+	QTime tm;
+	tm = tm.addMSecs(time / 1000);
+	ui->currentTime->setText(tm.toString("HH:mm:ss:zzz"));
 }
 
 void AvManager::updateFrame(qint64 time)
@@ -47,9 +58,12 @@ void AvManager::updateFrame(qint64 time)
 	QImage img = m_avThread->lastFrame();
 	ui->label->setPixmap(QPixmap::fromImage(img));
 
-	QTime tm;
-	tm = tm.addMSecs(time / 1000);
-	ui->currentTime->setText(tm.toString("HH:mm:ss:zzz"));
+	updateTimeLabel(time);
+
+	qint64 pos = (time * 100) / m_duration;
+	//qDebug() << time << m_duration << pos << "%";
+
+	ui->seekSlider->setSliderPosition(pos);
 }
 
 void AvManager::ffwdVideo()
@@ -74,3 +88,17 @@ void AvManager::playVideo()
 		ui->playButton->setText("STOP");
 	}
 }
+
+void AvManager::seekFrame()
+{
+	if (m_avThread->isRunning()) {
+		return;
+	}
+
+	qint64 pos = m_duration * ui->seekSlider->value() / 100;
+	m_avThread->seekToAbsoluteTime(pos);
+
+	updateTimeLabel(pos);
+}
+
+

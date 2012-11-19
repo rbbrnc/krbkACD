@@ -73,6 +73,9 @@
    </item>
    <item>
     <widget class="QSlider" name="seekSlider">
+     <property name="maximum">
+      <number>100</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
