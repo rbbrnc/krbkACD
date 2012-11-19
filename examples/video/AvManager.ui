@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>182</width>
-    <height>80</height>
+    <width>420</width>
+    <height>99</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -60,6 +60,16 @@
       </widget>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="currentTime">
+     <property name="text">
+      <string>00:00:00:000</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QSlider" name="seekSlider">

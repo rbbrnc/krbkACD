@@ -40,7 +40,7 @@ class VideoDecode : public QThread
 		void stop(void);
 
 	private:
-		void initFFMPEG();
+		void init();
 		void closeAVInput();
 
 		void seekVideoFrame();
@@ -48,12 +48,14 @@ class VideoDecode : public QThread
 
 	public slots:
 		void seekRequest(double seconds);
+		void save(const QString &fname);
 
 	signals:
 		void frameReady();
+		void frameReady(qint64 frameTimestamp);
 
 	private:
-		int videoStream;
+		int  m_videoStream;	// Video stream index
 		bool m_mediaValid;
 		bool m_run;
 
@@ -61,37 +63,28 @@ class VideoDecode : public QThread
 		int m_width;
 		int m_height;
 
-		AVFrame *outFrame;
-		AVFrame *frameRGB;
-		AVCodec *pCodec;
-
 		AVFormatContext *avFormatCtx;
 		AVCodecContext  *avCodecCtx;
-		AVFrame *frame;
+		SwsContext      *m_swsCtx;
 
-		uint8_t *outbuffer;
-
-		SwsContext *swsCtx;
+		AVCodec *m_videoCodec;
 
 		AVPacket m_packet;
 
-		QImage LastFrame;
+		AVFrame *m_frame;
+		AVFrame *m_outFrame;
+		uint8_t *m_outFrameBuffer;
 
-		double m_fps;
-		double m_frameRate; // micro seconds
+		QImage m_image;		// Current frame picture
 
-		unsigned int m_frameCounter;
-
-		int64_t DesiredFrameNumber;
+		double  m_fps;		// Frame Per Seconds
+		double  m_frameRate;	// micro seconds
+		int64_t m_frameCounter;
+		int64_t m_frameCurrentTime;
 
 		bool    m_seekRequest;
-		int     m_seekFlags;
-		int64_t m_seekPos;
-
-		double m_timePos; // seconds
-
-		int64_t m_frameCurrentTime;
-		int64_t m_frameStartTime;
+		int     m_seekFlags;	// ffmpeg seek flags
+		int64_t m_seekTarget;	// seek target position
 };
 
 #endif

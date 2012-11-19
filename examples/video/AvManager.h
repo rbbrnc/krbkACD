@@ -20,7 +20,7 @@ class AvManager : public QWidget
 		~AvManager();
 
 	private slots:
-		void updateLabel();
+		void updateFrame(qint64 time);
 		void playVideo();
 		void ffwdVideo();
 		void rewVideo();
