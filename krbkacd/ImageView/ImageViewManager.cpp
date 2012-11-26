@@ -140,8 +140,18 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setDragMode(QGraphicsView::RubberBandDrag);
 		m_view->setInteractive(true);
 
+		qDebug() << __PRETTY_FUNCTION__ << "RegionListSize:" << m_regionList.size();
 		for (int i = 0; i < m_regionList.size(); ++i) {
 			m_regionList.at(i)->show();
+		}
+
+		QList<QGraphicsItem *> li = m_scene->items();
+		for (int i = 0; i < li.size(); ++i) {
+			qDebug() << __PRETTY_FUNCTION__
+				 << "Type:" << li.at(i)->type()
+				 << "Obscured:" << li.at(i)->isObscured()
+				 << "Scene Pos:" << li.at(i)->scenePos()
+				 << "Bounding Rect:" << li.at(i)->boundingRect();
 		}
 	} else {
 		m_view->setCursor(Qt::OpenHandCursor);
@@ -151,7 +161,6 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		for (int i = 0; i < m_regionList.size(); ++i) {
 			m_regionList.at(i)->hide();
 		}
-
 	}
 }
 
@@ -203,6 +212,7 @@ void ImageViewManager::setImage(const QPixmap &pixmap)
 		delete m_image;
 		m_scene->clear();
 		m_view->reset();
+		m_regionList.clear();
 	}
 
 	m_image = new ImageGraphicsItem(pixmap);
@@ -259,8 +269,23 @@ QList<QRectF> ImageViewManager::rectRegions() const
 void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 {
 	for (int i = 0; i < regions.count(); ++i) {
+		QRectF ir = m_image->boundingRect();
+		qreal x = regions.at(i).x() * ir.width();
+		qreal y = regions.at(i).y() * ir.height();
+		qreal w = regions.at(i).width() * ir.width();
+		if (w < 2) {
+			w = 2;
+		}
+		qreal h = regions.at(i).height() * ir.height();
+		if (h < 2) {
+			h = 2;
+		}
+
+		QRectF r(x, y, w, h);
+
+		//qDebug() << __PRETTY_FUNCTION__ << "ir:" << ir << "r:" << r;
 		//qDebug() << __PRETTY_FUNCTION__ << "Add:" << regions.at(i);
-		addRectRegion(regions.at(i));
+		addRectRegion(r);
 	}
 }
 
