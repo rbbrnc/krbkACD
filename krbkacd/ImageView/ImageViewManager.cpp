@@ -178,9 +178,10 @@ void ImageViewManager::setFile(const QString &file)
 {
 	QPixmap pixmap;
 	if (!pixmap.load(file)) {
-		return;
+		setImage(QPixmap());
+	} else {
+		setImage(pixmap);
 	}
-	setImage(pixmap);
 
 	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << file;
 }
@@ -266,7 +267,7 @@ void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 // [SLOT public]
 void ImageViewManager::addRectRegion(const QRectF &region)
 {
-	qDebug() << region << "Image:" << m_image->boundingRect();
+	//qDebug() << region << "Image:" << m_image->boundingRect();
 	QGraphicsRectItem *ir = m_scene->addRect(region);
 	ir->setVisible(m_view->isInteractive());
 	m_regionList.append(ir);

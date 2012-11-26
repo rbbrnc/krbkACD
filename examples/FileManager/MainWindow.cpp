@@ -71,35 +71,31 @@ void MainWindow::showImage()
 {
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
 		m_ivPage->setFile(m_fmPage->currentFilePath());
-//		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
-//
+
+		//qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
+
 		QList<PTag> tagList;
 		if (m_exiv2->load(m_fmPage->currentFilePath())) {
+			//qDebug() << __PRETTY_FUNCTION__ << "Check MP regions";
 			tagList = m_exiv2->xmpPTags();
 			if (tagList.isEmpty()) {
 				// Check MWG regions
+				//qDebug() << __PRETTY_FUNCTION__ << "Check MWG regions";
 				tagList = m_exiv2->xmpMWG_RegionsTags();
 			}
 
 			if (!tagList.isEmpty()) {
+				//qDebug() << __PRETTY_FUNCTION__ << "Found regions";
 				QList<QRectF> regions;
 				for (int i = 0; i < tagList.size(); i++) {
 					regions << tagList.at(i).region();
+					//qDebug() << __PRETTY_FUNCTION__ << "Region:" << i << regions.at(i);
 				}
 				m_ivPage->addRectRegions(regions);
 			}
 		}
-
-/*
-		regions << QRectF(10.0, 10.0, 25, 25);
-		regions << QRectF(50.0, 50.0, 25, 25);
-*/
-
-//		m_ivPage->addRectRegion(QRectF(10.0, 10.0, 25, 25));
-
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
-		qDebug() << m_ivPage->rectRegions();
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
 	}
 }
