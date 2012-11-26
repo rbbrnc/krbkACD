@@ -61,21 +61,21 @@ void AvManager::updateFrame(qint64 time)
 	updateTimeLabel(time);
 
 	qint64 pos = (time * 100) / m_duration;
-	//qDebug() << time << m_duration << pos << "%";
+	//qDebug() << __PRETTY_FUNCTION__ << time << m_duration << pos << "%";
 
 	ui->seekSlider->setSliderPosition(pos);
 }
 
 void AvManager::ffwdVideo()
 {
-	// seek forward of 5 secs.
-	m_avThread->seekRequest(5.0);
+	// seek forward of 10 secs.
+	m_avThread->seekRequest(10.0);
 }
 
 void AvManager::rewVideo()
 {
-	// seek backward of 5 secs.
-	m_avThread->seekRequest(-5.0);
+	// seek backward of 10 secs.
+	m_avThread->seekRequest(-10.0);
 }
 
 void AvManager::playVideo()
@@ -95,10 +95,18 @@ void AvManager::seekFrame()
 		return;
 	}
 
+	// before seek at least 1 frame must be readed.
+//	bool b = m_avThread->readVideoFrame();
+
 	qint64 pos = m_duration * ui->seekSlider->value() / 100;
 	m_avThread->seekToAbsoluteTime(pos);
 
+	bool b = false;
+	while (!b) {
+		b = m_avThread->readVideoFrame();
+	}
+
+	qDebug() << __PRETTY_FUNCTION__ << b;
 	updateTimeLabel(pos);
 }
-
 

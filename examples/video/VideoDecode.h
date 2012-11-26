@@ -37,6 +37,8 @@ class VideoDecode : public QThread
 		bool   mediaValid() const;
 		qint64 videoLengthMs() const;
 
+		bool readVideoFrame();
+
 		void run();
 		void stop(void);
 
@@ -45,7 +47,10 @@ class VideoDecode : public QThread
 		void closeAVInput();
 
 		void seekVideoFrame();
-		void decodeVideoFrame();
+		bool decodeVideoFrame();
+
+		void fpsEstimation();
+		void dumpVideoPacket(int frameFinished) const;
 
 	public slots:
 		void seekToAbsoluteTime(qint64 microseconds);
@@ -57,7 +62,7 @@ class VideoDecode : public QThread
 		void frameReady(qint64 frameTimestamp);
 
 	private:
-		int  m_videoStream;	// Video stream index
+		int  m_videoStreamIndex;	// Video stream index
 		bool m_mediaValid;
 		bool m_run;
 
@@ -70,6 +75,7 @@ class VideoDecode : public QThread
 		SwsContext      *m_swsCtx;
 
 		AVCodec *m_videoCodec;
+		AVStream *m_videoStream;
 
 		AVPacket m_packet;
 
