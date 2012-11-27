@@ -27,6 +27,9 @@ class MainWindow : public QMainWindow
 		void fullScreen(bool enable);
 
 	private:
+		void imageRegions(const QString &fileName);
+
+	private:
 		Ui::MainWindow *ui;
 
 		FileManagerPage  *m_fmPage;
