@@ -16,6 +16,8 @@ FileManager::FileManager(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::FileManager)
 {
+	m_metadataModel = 0;
+
 	ui->setupUi(this);
 
 	m_model = new QFileSystemModel();
@@ -54,6 +56,11 @@ FileManager::FileManager(QWidget *parent) :
 
 FileManager::~FileManager()
 {
+	if (m_metadataModel) {
+		delete m_metadataModel;
+		m_metadataModel = 0;
+	}
+
 	delete m_model;
 	delete ui;
 }
@@ -234,6 +241,7 @@ void FileManager::updateMetadataInfo(const QModelIndex &index)
 	}
 
 	QExiv2 metadata;
+
 	metadata.load(file);
 	if (!metadata.isValid()) {
 		return;
