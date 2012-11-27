@@ -4,6 +4,7 @@
 
 #include "ImageViewManager.h"
 #include "ImageGraphicsItem.h"
+#include "RegionGraphicsItem.h"
 #include "ImageGraphicsView.h"
 
 ImageViewManager::ImageViewManager(QWidget *parent)
@@ -103,9 +104,6 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
 	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
-
-	nextButton->setEnabled(false);
-	previousButton->setEnabled(false);
 }
 
 ImageViewManager::~ImageViewManager()
@@ -142,7 +140,8 @@ void ImageViewManager::enableRegionSelection(bool enable)
 
 		qDebug() << __PRETTY_FUNCTION__ << "RegionListSize:" << m_regionList.size();
 		for (int i = 0; i < m_regionList.size(); ++i) {
-			m_regionList.at(i)->show();
+			//m_regionList.at(i)->show();
+			m_regionList.at(i)->setZValue(1);
 		}
 
 		QList<QGraphicsItem *> li = m_scene->items();
@@ -159,12 +158,13 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setInteractive(false);
 
 		for (int i = 0; i < m_regionList.size(); ++i) {
-			m_regionList.at(i)->hide();
+			//m_regionList.at(i)->hide();
+			m_regionList.at(i)->setZValue(-1);
 		}
 	}
 }
 
-// [SLOT]
+// [SLOT private]
 void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 {
 	if (region.count() <= 0) {
@@ -182,7 +182,7 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 //	}
 }
 
-// public slots:
+// [SLOT public]
 void ImageViewManager::setFile(const QString &file)
 {
 	QPixmap pixmap;
@@ -195,6 +195,7 @@ void ImageViewManager::setFile(const QString &file)
 	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << file;
 }
 
+// [SLOT public]
 void ImageViewManager::setFiles(const QStringList &files)
 {
 	m_currentFile = 0;
@@ -206,6 +207,7 @@ void ImageViewManager::setFiles(const QStringList &files)
 	updateButtons();
 }
 
+// [SLOT public]
 void ImageViewManager::setImage(const QPixmap &pixmap)
 {
 	if (m_image) {
@@ -221,26 +223,27 @@ void ImageViewManager::setImage(const QPixmap &pixmap)
 	// QGraphicsScene's boundingRect will grow when items are added,
 	// but doesn't shrink when items are removed.
 	m_scene->setSceneRect(m_scene->itemsBoundingRect());
+
+	if (pixmap.isNull()) {
+		QGraphicsTextItem *ti = new QGraphicsTextItem("Not a Pixmap");
+		ti->setDefaultTextColor(Qt::white);
+		m_scene->addItem(ti);
+	}
 }
 
+// [SLOT public]
 void ImageViewManager::previous()
 {
-	if (m_currentFile > 0) {
-		m_currentFile--;
-		setFile(m_fileList.at(m_currentFile));
-	}
-	updateButtons();
+	emit requestPreviousFile();
 }
 
+// [SLOT public]
 void ImageViewManager::next()
 {
-	if (m_currentFile < m_fileList.count() - 1) {
-		m_currentFile++;
-		setFile(m_fileList.at(m_currentFile));
-	}
-	updateButtons();
+	emit requestNextFile();
 }
 
+// public
 QString ImageViewManager::currentFile() const
 {
 	if (m_fileList.count() > 0) {
@@ -263,6 +266,17 @@ QList<QRectF> ImageViewManager::rectRegions() const
 		rlist << m_regionList.at(i)->boundingRect();
 	}
 	return rlist;
+
+#if 0
+	QList<QRectF> rlist;
+	QList<QGraphicsItem *> li = m_scene->items();
+	for (int i = 0; i < li.size(); ++i) {
+		if (QGraphicsRectItem::type() == li.at(i)->type()) {
+			rlist << li.at(i)->boundingRect();
+		}
+	}
+	return rlist;
+#endif
 }
 
 // [SLOT public]
@@ -293,9 +307,15 @@ void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 void ImageViewManager::addRectRegion(const QRectF &region)
 {
 	//qDebug() << region << "Image:" << m_image->boundingRect();
+#if 0
 	QGraphicsRectItem *ir = m_scene->addRect(region);
 	ir->setVisible(m_view->isInteractive());
 	m_regionList.append(ir);
+#else
+	RegionGraphicsItem *ir = new RegionGraphicsItem(region);
+	m_scene->addItem(ir);
+
+//	ir->setVisible(m_view->isInteractive());
+	m_regionList.append(static_cast<QGraphicsRectItem *>(ir));
+#endif
 }
-
-

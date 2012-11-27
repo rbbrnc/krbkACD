@@ -28,14 +28,20 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionShowHidden, SIGNAL(toggled(bool)), m_fmPage, SLOT(showHidden(bool)));
 	connect(ui->actionShowInfo,   SIGNAL(toggled(bool)), m_fmPage, SLOT(showInfo(bool)));
 
+	// Connect filesystem actions.
 	connect(ui->actionCopyFiles, SIGNAL(triggered()), m_fmPage, SLOT(copyFiles()));
 	connect(ui->actionMoveFiles, SIGNAL(triggered()), m_fmPage, SLOT(moveFiles()));
 	connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fmPage, SLOT(deleteFiles()));
 	connect(ui->actionRenameFiles, SIGNAL(triggered()), m_fmPage, SLOT(renameFiles()));
 	connect(ui->actionMkDir, SIGNAL(triggered()), m_fmPage, SLOT(mkDir()));
 
+	// Connect next/prev actions.
 	connect(ui->actionPreviousFile, SIGNAL(triggered()), this, SLOT(prevFile()));
 	connect(ui->actionNextFile    , SIGNAL(triggered()), this, SLOT(nextFile()));
+
+	// Connect next/prev requests coming from ImageViewManager.
+	connect(m_ivPage, SIGNAL(requestPreviousFile()), this, SLOT(prevFile()));
+	connect(m_ivPage, SIGNAL(requestNextFile()), this, SLOT(nextFile()));
 
 	connect(ui->actionViewImage,  SIGNAL(triggered()), this, SLOT(showImage()));
 	connect(ui->actionViewMetadata,  SIGNAL(triggered()), this, SLOT(showMetadata()));
