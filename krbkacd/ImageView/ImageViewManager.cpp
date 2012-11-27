@@ -253,9 +253,12 @@ QString ImageViewManager::currentFile() const
 	return QString();
 }
 
-void ImageViewManager::showImageRegions(bool /*show*/)
+// [SLOT public]
+void ImageViewManager::showImageRegions(bool show)
 {
-
+	for (int i = 0; i < m_regionList.count(); ++i) {
+		m_regionList.at(i)->setZValue((show) ? 1 : -1);
+	}
 }
 
 // public
@@ -266,23 +269,13 @@ QList<QRectF> ImageViewManager::rectRegions() const
 		rlist << m_regionList.at(i)->boundingRect();
 	}
 	return rlist;
-
-#if 0
-	QList<QRectF> rlist;
-	QList<QGraphicsItem *> li = m_scene->items();
-	for (int i = 0; i < li.size(); ++i) {
-		if (QGraphicsRectItem::type() == li.at(i)->type()) {
-			rlist << li.at(i)->boundingRect();
-		}
-	}
-	return rlist;
-#endif
 }
 
 // [SLOT public]
 void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 {
 	for (int i = 0; i < regions.count(); ++i) {
+		// de-normalize rect
 		QRectF ir = m_image->boundingRect();
 		qreal x = regions.at(i).x() * ir.width();
 		qreal y = regions.at(i).y() * ir.height();
@@ -296,9 +289,6 @@ void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 		}
 
 		QRectF r(x, y, w, h);
-
-		//qDebug() << __PRETTY_FUNCTION__ << "ir:" << ir << "r:" << r;
-		//qDebug() << __PRETTY_FUNCTION__ << "Add:" << regions.at(i);
 		addRectRegion(r);
 	}
 }
@@ -307,15 +297,21 @@ void ImageViewManager::addRectRegions(const QList<QRectF> regions)
 void ImageViewManager::addRectRegion(const QRectF &region)
 {
 	//qDebug() << region << "Image:" << m_image->boundingRect();
-#if 0
-	QGraphicsRectItem *ir = m_scene->addRect(region);
-	ir->setVisible(m_view->isInteractive());
-	m_regionList.append(ir);
-#else
 	RegionGraphicsItem *ir = new RegionGraphicsItem(region);
 	m_scene->addItem(ir);
 
 //	ir->setVisible(m_view->isInteractive());
 	m_regionList.append(static_cast<QGraphicsRectItem *>(ir));
-#endif
+}
+
+// [SLOT public]
+void ImageViewManager::removeRectRegion(const QRectF &region)
+{
+	for (int i = 0; i < m_regionList.count(); ++i) {
+		if (region == m_regionList.at(i)->boundingRect()) {
+			qDebug() << __PRETTY_FUNCTION__ << "Delete item:" << i << m_regionList.at(i);
+			m_scene->removeItem(m_regionList.at(i));
+			m_regionList.removeAt(i);
+		}
+	}
 }

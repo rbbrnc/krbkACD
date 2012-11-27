@@ -30,6 +30,7 @@ class ImageViewManager : public QWidget
 		void next();
 
 		void addRectRegion(const QRectF &region);
+		void removeRectRegion(const QRectF &region);
 		void addRectRegions(const QList<QRectF> regions);
 		void showImageRegions(bool show);
 

@@ -43,10 +43,12 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(m_ivPage, SIGNAL(requestPreviousFile()), this, SLOT(prevFile()));
 	connect(m_ivPage, SIGNAL(requestNextFile()), this, SLOT(nextFile()));
 
-	connect(ui->actionViewImage,  SIGNAL(triggered()), this, SLOT(showImage()));
-	connect(ui->actionViewMetadata,  SIGNAL(triggered()), this, SLOT(showMetadata()));
+	connect(ui->actionViewImage,    SIGNAL(triggered()), this, SLOT(showImage()));
+	connect(ui->actionViewMetadata, SIGNAL(triggered()), this, SLOT(showMetadata()));
+	connect(ui->actionViewImageRegions, SIGNAL(triggered(bool)), this, SLOT(showImageRegions(bool)));
 
-	connect(ui->actionFullScreen,  SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
+	connect(ui->actionFullScreen, SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
+
 
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
@@ -58,6 +60,11 @@ MainWindow::~MainWindow()
 {
 	delete m_exiv2;
 	delete ui;
+}
+
+void MainWindow::showImageRegions(bool enable)
+{
+	m_ivPage->showImageRegions(enable);
 }
 
 void MainWindow::fullScreen(bool enable)

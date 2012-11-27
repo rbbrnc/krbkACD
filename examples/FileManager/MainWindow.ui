@@ -84,6 +84,7 @@
      <string>Metadata</string>
     </property>
     <addaction name="actionViewMetadata"/>
+    <addaction name="actionViewImageRegions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -217,6 +218,14 @@
    </property>
    <property name="shortcut">
     <string>F</string>
+   </property>
+  </action>
+  <action name="actionViewImageRegions">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>View Image Regions</string>
    </property>
   </action>
  </widget>

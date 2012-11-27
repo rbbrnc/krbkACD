@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
 		void prevFile();
 
 		void fullScreen(bool enable);
+		void showImageRegions(bool enable);
 
 	private:
 		void imageRegions(const QString &fileName);

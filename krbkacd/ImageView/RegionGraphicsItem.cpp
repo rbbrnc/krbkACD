@@ -53,7 +53,7 @@ void RegionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 void RegionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 {
 	qDebug() << __PRETTY_FUNCTION__ << zValue();
-	setZValue(1);
+	//setZValue(1);
 	QGraphicsItem::hoverEnterEvent(event);
 }
 
@@ -61,7 +61,7 @@ void RegionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 void RegionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
 	qDebug() << __PRETTY_FUNCTION__ << zValue();
-	setZValue(-1);
+	//setZValue(-1);
 	QGraphicsItem::hoverLeaveEvent(event);
 }
 
