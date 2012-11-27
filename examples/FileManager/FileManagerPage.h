@@ -21,6 +21,7 @@ class FileManagerPage : public QWidget
 		QString currentFilePath() const;
 		void previousFile();
 		void nextFile();
+		void updateInfo();
 
 	private slots:
 		void showSecondFs(bool checked);

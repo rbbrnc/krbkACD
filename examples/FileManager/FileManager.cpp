@@ -200,12 +200,16 @@ void FileManager::updateMoreInfo(const QModelIndex &index)
 	bool isImage = mimeType.contains("image");
 
 	if (isImage) {
+		// Using QImageReader for get image dimension.
 		QImageReader ir(file);
 		ui->dimensionLabel->setText(QString("%1 x %2").arg(ir.size().width()).arg(ir.size().height()));
-		 if (ir.supportsOption(QImageIOHandler::Description)) {
-			qDebug() << ir.textKeys();
-			qDebug() << ir.text("XML"/* const QString & key*/);
-			qDebug() << ir.text("Description"/* const QString & key*/);
+
+		// XXX: QImage reader supports basic metadata on some image format!
+		if (ir.supportsOption(QImageIOHandler::Description)) {
+			qDebug() << __PRETTY_FUNCTION__
+				 << "IR Text Keys:" << ir.textKeys()
+				 << "IR Text XML:" << ir.text("XML"/* const QString & key*/)
+				 << "IR Text Desc:" << ir.text("Description"/* const QString & key*/);
 			ui->commentLabel->setText(ir.text("Description"));
 		}
 	}
@@ -288,7 +292,8 @@ void FileManager::updateInfo()
 		break;
 	}
 
-	if (ui->previewLabel->isVisible()) {
+	if (ui->previewCheckBox->isChecked()) {
+//	if (ui->previewLabel->isVisible()) {
 		updatePreview(mi);
 	}
 }

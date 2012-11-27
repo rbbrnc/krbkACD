@@ -25,9 +25,9 @@ class FileManager : public QWidget
 		QString currentFile() const;
 		bool isActive() const;
 
-	private:
 		void updateInfo();
 
+	private:
 		void updateGeneralInfo(const QModelIndex &index);
 		void updateMoreInfo(const QModelIndex &index);
 		void updateMetadataInfo(const QModelIndex &index);

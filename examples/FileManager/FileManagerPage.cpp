@@ -85,6 +85,13 @@ void FileManagerPage::showInfo(bool show)
 	m_lastActive->showInfo(show);
 }
 
+// [public]
+void FileManagerPage::updateInfo()
+{
+	m_fs1->updateInfo();
+	m_fs2->updateInfo();
+}
+
 // [SLOT private]
 void FileManagerPage::setFileManager(const QString &)
 {

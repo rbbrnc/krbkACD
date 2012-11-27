@@ -75,6 +75,8 @@ void MainWindow::showImage()
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
+		// Update info panel
+		m_fmPage->updateInfo();
 	}
 }
 
