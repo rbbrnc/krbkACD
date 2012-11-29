@@ -5,6 +5,13 @@
 
 class ImageGraphicsView;
 class ImageGraphicsItem;
+class RegionGraphicsItem;
+
+#define USE_EXIV2
+
+#ifdef USE_EXIV2
+class QExiv2;
+#endif
 
 class ImageViewManager : public QWidget
 {
@@ -22,16 +29,15 @@ class ImageViewManager : public QWidget
 		void requestPreviousFile();
 
 	public slots:
-		void setFile(const QString &file);
+		void setFile(const QString &fileName);
 		void setFiles(const QStringList &files);
 		void setImage(const QPixmap &pixmap);
 
 		void previous();
 		void next();
 
-		void addRectRegion(const QRectF &region);
+		void addRectRegion(const QRectF &region, const QString &name = 0, const QString &text = 0, bool normalized = true);
 		void removeRectRegion(const QRectF &region);
-		void addRectRegions(const QList<QRectF> regions);
 		void showImageRegions(bool show);
 
 	private slots:
@@ -40,6 +46,7 @@ class ImageViewManager : public QWidget
 
 	private:
 		void updateButtons();
+		void setImageRegions(const QString &fileName);
 
 	private:
 		ImageGraphicsItem *m_image;
@@ -55,6 +62,10 @@ class ImageViewManager : public QWidget
 
 		QToolButton *previousButton;
 		QToolButton *nextButton;
+
+#ifdef USE_EXIV2
+		QExiv2 *m_exiv2;
+#endif
 };
 
 #endif

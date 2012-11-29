@@ -77,12 +77,22 @@ void RegionGraphicsItem::setName(const QString &name)
 
 QString RegionGraphicsItem::description() const
 {
-	return m_description;
+	return m_text;
 }
 
 void RegionGraphicsItem::setDescription(const QString &desc)
 {
-	m_description = desc;
+	m_text = desc;
+}
+
+bool RegionGraphicsItem::isNormalized() const
+{
+	return m_normalized;
+}
+
+void RegionGraphicsItem::setNormalized(bool normalized)
+{
+	m_normalized = normalized;
 }
 
 // [EVENT protected]
@@ -99,6 +109,9 @@ void RegionGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		qDebug() << __PRETTY_FUNCTION__ << "EDIT";
 	} else {
 		// Nothing to do
-		qDebug() << __PRETTY_FUNCTION__ << "NOP";
+		qDebug() << __PRETTY_FUNCTION__
+			 << "NOP"
+			 << m_name
+			 << m_text;
 	}
 }

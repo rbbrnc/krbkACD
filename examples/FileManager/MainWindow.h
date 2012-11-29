@@ -28,9 +28,6 @@ class MainWindow : public QMainWindow
 		void showImageRegions(bool enable);
 
 	private:
-		void imageRegions(const QString &fileName);
-
-	private:
 		Ui::MainWindow *ui;
 
 		FileManagerPage  *m_fmPage;

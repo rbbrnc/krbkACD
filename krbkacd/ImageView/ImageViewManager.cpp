@@ -7,9 +7,16 @@
 #include "RegionGraphicsItem.h"
 #include "ImageGraphicsView.h"
 
+#ifdef USE_EXIV2
+#include "QExiv2.h"
+#endif
+
 ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
 	  m_image(0)
+#ifdef USE_EXIV2
+	  , m_exiv2(0)
+#endif
 {
 	m_scene = new QGraphicsScene(this);
 	m_view  = new ImageGraphicsView(this);
@@ -112,6 +119,12 @@ ImageViewManager::~ImageViewManager()
 		delete m_image;
 	}
 
+#ifdef USE_EXIV2
+	if (m_exiv2) {
+		delete m_exiv2;
+	}
+#endif
+
 	delete m_scene;
 	delete m_view;
 }
@@ -183,16 +196,22 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 }
 
 // [SLOT public]
-void ImageViewManager::setFile(const QString &file)
+void ImageViewManager::setFile(const QString &fileName)
 {
 	QPixmap pixmap;
-	if (!pixmap.load(file)) {
+	if (!pixmap.load(fileName)) {
 		setImage(QPixmap());
 	} else {
 		setImage(pixmap);
+#ifdef USE_EXIV2
+		if (!m_exiv2) {
+			m_exiv2 = new QExiv2();
+		}
+		setImageRegions(fileName);
+#endif
 	}
 
-	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << file;
+	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << fileName;
 }
 
 // [SLOT public]
@@ -272,34 +291,42 @@ QList<QRectF> ImageViewManager::rectRegions() const
 }
 
 // [SLOT public]
-void ImageViewManager::addRectRegions(const QList<QRectF> regions)
+void ImageViewManager::addRectRegion(const QRectF &region, const QString &name, const QString &text, bool normalized)
 {
-	for (int i = 0; i < regions.count(); ++i) {
+	//qDebug() << region << "Image:" << m_image->boundingRect();
+
+	QRectF rect;
+	if (normalized) {
 		// de-normalize rect
 		QRectF ir = m_image->boundingRect();
-		qreal x = regions.at(i).x() * ir.width();
-		qreal y = regions.at(i).y() * ir.height();
-		qreal w = regions.at(i).width() * ir.width();
+		qreal x = region.x() * ir.width();
+		qreal y = region.y() * ir.height();
+		qreal w = region.width() * ir.width();
 		if (w < 2) {
 			w = 2;
 		}
-		qreal h = regions.at(i).height() * ir.height();
+		qreal h = region.height() * ir.height();
 		if (h < 2) {
 			h = 2;
 		}
 
-		QRectF r(x, y, w, h);
-		addRectRegion(r);
+		rect = QRectF(x, y, w, h);
+	} else {
+		rect = region;
 	}
-}
 
-// [SLOT public]
-void ImageViewManager::addRectRegion(const QRectF &region)
-{
-	//qDebug() << region << "Image:" << m_image->boundingRect();
-	RegionGraphicsItem *ir = new RegionGraphicsItem(region);
+	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
+
+	if (!name.isNull()) {
+		ir->setName(name);
+	}
+	if (!text.isNull()) {
+		ir->setDescription(text);
+	}
+
+	ir->setNormalized(normalized);
+
 	m_scene->addItem(ir);
-
 //	ir->setVisible(m_view->isInteractive());
 	m_regionList.append(static_cast<QGraphicsRectItem *>(ir));
 }
@@ -315,3 +342,28 @@ void ImageViewManager::removeRectRegion(const QRectF &region)
 		}
 	}
 }
+
+void ImageViewManager::setImageRegions(const QString &fileName)
+{
+#ifdef USE_EXIV2
+	QList<PTag> tagList;
+	if (m_exiv2->load(fileName)) {
+		//qDebug() << __PRETTY_FUNCTION__ << "Check MP regions";
+		tagList = m_exiv2->xmpPTags();
+		if (tagList.isEmpty()) {
+			// Check MWG regions
+			//qDebug() << __PRETTY_FUNCTION__ << "Check MWG regions";
+			tagList = m_exiv2->xmpMWG_RegionsTags();
+		}
+
+		if (!tagList.isEmpty()) {
+			//qDebug() << __PRETTY_FUNCTION__ << "Found regions";
+			for (int i = 0; i < tagList.size(); i++) {
+				addRectRegion(tagList.at(i).region(), tagList.at(i).name(), tagList.at(i).description(), true);
+				//qDebug() << __PRETTY_FUNCTION__ << "Region:" << i << regions.at(i);
+			}
+		}
+	}
+#endif
+}
+
