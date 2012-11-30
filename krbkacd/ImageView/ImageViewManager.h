@@ -24,29 +24,32 @@ class ImageViewManager : public QWidget
 		QString currentFile() const;
 		QList<QRectF> rectRegions() const;
 
+	private:
+		Q_DECL_DEPRECATED void updateButtons();
+		void setImageRegions(const QString &fileName);
+
 	signals:
 		void requestNextFile();
 		void requestPreviousFile();
 
 	public slots:
 		void setFile(const QString &fileName);
-		void setFiles(const QStringList &files);
+		Q_DECL_DEPRECATED void setFiles(const QStringList &files);
 		void setImage(const QPixmap &pixmap);
 
 		void previous();
 		void next();
 
-		void addRectRegion(const QRectF &region, const QString &name = 0, const QString &text = 0, bool normalized = true);
-		void removeRectRegion(const QRectF &region);
+		void addRectRegion(const QRectF &region, const QString &name = 0, const QString &text = 0, bool normalized = false);
 		void showImageRegions(bool show);
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
+		void sceneSelectionChanged();
 		void enableRegionSelection(bool enable);
 
-	private:
-		void updateButtons();
-		void setImageRegions(const QString &fileName);
+		void removeRectRegion();
+		void editRectRegion();
 
 	private:
 		ImageGraphicsItem *m_image;
@@ -54,7 +57,7 @@ class ImageViewManager : public QWidget
 
 		QGraphicsScene *m_scene;
 
-		qreal m_angle;
+		//qreal m_angle;
 
 		int m_currentFile;
 		QStringList m_fileList;

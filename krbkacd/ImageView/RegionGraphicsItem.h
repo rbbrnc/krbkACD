@@ -3,8 +3,10 @@
 
 #include <QGraphicsRectItem>
 
-class RegionGraphicsItem : public QGraphicsRectItem
+class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 {
+	Q_OBJECT
+
 	public:
 		RegionGraphicsItem(QGraphicsItem *parent = 0);
 		RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent = 0);
@@ -28,6 +30,13 @@ class RegionGraphicsItem : public QGraphicsRectItem
 		virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
 
 		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+	private:
+		void init();
+
+	signals:
+		void removeRequest();
+		void editRequest();
 
 	private:
 		unsigned int m_type;	// MP or MWG

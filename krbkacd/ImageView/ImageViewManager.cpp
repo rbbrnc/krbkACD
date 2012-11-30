@@ -111,6 +111,8 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
+	connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
+
 	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
 }
 
@@ -130,6 +132,7 @@ ImageViewManager::~ImageViewManager()
 	delete m_view;
 }
 
+#if 10	// DEPRECATED
 void ImageViewManager::updateButtons()
 {
 	int fcount = m_fileList.count();
@@ -141,6 +144,7 @@ void ImageViewManager::updateButtons()
 		previousButton->setEnabled(false);
 	}
 }
+#endif
 
 // [SLOT private]
 // checked = true -> Set image panning mode
@@ -151,15 +155,6 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setCursor(Qt::ArrowCursor);
 		m_view->setDragMode(QGraphicsView::RubberBandDrag);
 		m_view->setInteractive(true);
-
-		QList<QGraphicsItem *> li = m_scene->items();
-		for (int i = 0; i < li.size(); ++i) {
-			qDebug() << __PRETTY_FUNCTION__
-				 << "Type:" << li.at(i)->type()
-				 << "Obscured:" << li.at(i)->isObscured()
-				 << "Scene Pos:" << li.at(i)->scenePos()
-				 << "Bounding Rect:" << li.at(i)->boundingRect();
-		}
 		showImageRegions(true);
 	} else {
 		m_view->setCursor(Qt::OpenHandCursor);
@@ -167,7 +162,6 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setInteractive(false);
 		showImageRegions(false);
 	}
-
 }
 
 // [SLOT private]
@@ -207,6 +201,7 @@ void ImageViewManager::setFile(const QString &fileName)
 	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << fileName;
 }
 
+#if 10	// DEPRECATED
 // [SLOT public]
 void ImageViewManager::setFiles(const QStringList &files)
 {
@@ -218,6 +213,7 @@ void ImageViewManager::setFiles(const QStringList &files)
 	}
 	updateButtons();
 }
+#endif
 
 // [SLOT public]
 void ImageViewManager::setImage(const QPixmap &pixmap)
@@ -310,6 +306,8 @@ void ImageViewManager::addRectRegion(const QRectF &region, const QString &name, 
 	}
 
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
+	connect(ir, SIGNAL(removeRequest()), this, SLOT(removeRectRegion()));
+	connect(ir, SIGNAL(editRequest()), this, SLOT(editRectRegion()));
 
 	if (!name.isNull()) {
 		ir->setName(name);
@@ -321,21 +319,49 @@ void ImageViewManager::addRectRegion(const QRectF &region, const QString &name, 
 	ir->setNormalized(normalized);
 
 	m_scene->addItem(ir);
-//	ir->setVisible(m_view->isInteractive());
+
 	m_regionList.append(static_cast<QGraphicsRectItem *>(ir));
 }
 
-// [SLOT public]
-void ImageViewManager::removeRectRegion(const QRectF &region)
+// [SLOT private]
+void ImageViewManager::removeRectRegion()
 {
+	RegionGraphicsItem *ri = dynamic_cast<RegionGraphicsItem *>(sender());
+
+	QString msg = "Do you want to remove ";
+	if (ri->name().isNull()) {
+		msg += "this";
+	} else {
+		msg += ri->name();
+	}
+	msg += " region?";
+
+	int rc = QMessageBox::question(this, "Remove Region", msg,
+			 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+
+	if (QMessageBox::Cancel == rc) {
+		return;
+	}
+
+	m_scene->removeItem(dynamic_cast<QGraphicsItem *>(ri));
+
+	// XXX: we need to update m_regionList!
 	for (int i = 0; i < m_regionList.count(); ++i) {
-		if (region == m_regionList.at(i)->boundingRect()) {
-			qDebug() << __PRETTY_FUNCTION__ << "Delete item:" << i << m_regionList.at(i);
-			m_scene->removeItem(m_regionList.at(i));
+		if (ri->boundingRect() == m_regionList.at(i)->boundingRect()) {
+			qDebug() << __PRETTY_FUNCTION__ << "Delete item:" << i;
 			m_regionList.removeAt(i);
 		}
 	}
 }
+
+// [SLOT private]
+void ImageViewManager::editRectRegion()
+{
+	RegionGraphicsItem *ri = dynamic_cast<RegionGraphicsItem *>(sender());
+	qDebug() << __PRETTY_FUNCTION__ << "Edit item";
+	ri->setName("ABCD");
+}
+
 
 void ImageViewManager::setImageRegions(const QString &fileName)
 {
@@ -358,3 +384,10 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 #endif
 }
 
+void ImageViewManager::sceneSelectionChanged()
+{
+	QList<QGraphicsItem *> list = m_scene->selectedItems();
+	for (int i = 0; i < list.count(); ++i) {
+		qDebug() << __PRETTY_FUNCTION__ << list.at(i);
+	}
+}

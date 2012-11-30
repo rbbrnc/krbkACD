@@ -6,22 +6,26 @@
 RegionGraphicsItem::RegionGraphicsItem(QGraphicsItem *parent)
 	: QGraphicsRectItem(parent)
 {
-	setAcceptHoverEvents(true);
-	setZValue(-1);
+	init();
 }
 
 RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent)
 	: QGraphicsRectItem(rect, parent)
 {
-	setAcceptHoverEvents(true);
-	setZValue(-1);
+	init();
 }
 
 RegionGraphicsItem::RegionGraphicsItem(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent)
 	: QGraphicsRectItem(x, y, width, height, parent )
 {
-	setAcceptHoverEvents(true);
-	setZValue(-1);
+	init();
+}
+
+void RegionGraphicsItem::init()
+{
+//	setFlag(QGraphicsItem::ItemIsSelectable, true);
+//	setAcceptHoverEvents(true);
+//	setZValue(-1);
 }
 
 RegionGraphicsItem::~RegionGraphicsItem()
@@ -46,7 +50,7 @@ void RegionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 void RegionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
 	qDebug() << __PRETTY_FUNCTION__;
-	QGraphicsRectItem::mouseReleaseEvent(event);
+//	QGraphicsRectItem::mouseReleaseEvent(event);
 }
 
 // [EVENT protected]
@@ -104,9 +108,9 @@ void RegionGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 	QAction *selectedAction = menu.exec(event->screenPos());
 
 	if (selectedAction == removeAction) {
-		qDebug() << __PRETTY_FUNCTION__ << "REMOVE";
+		emit removeRequest();
 	} else if (selectedAction == editAction) {
-		qDebug() << __PRETTY_FUNCTION__ << "EDIT";
+		emit editRequest();
 	} else {
 		// Nothing to do
 		qDebug() << __PRETTY_FUNCTION__
