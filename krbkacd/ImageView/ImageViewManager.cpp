@@ -15,7 +15,8 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
 	  m_image(0)
 #ifdef USE_EXIV2
-	  , m_exiv2(0)
+	  , m_exiv2(0),
+	  m_showRegions(false)
 #endif
 {
 	m_scene = new QGraphicsScene(this);
@@ -151,12 +152,6 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setDragMode(QGraphicsView::RubberBandDrag);
 		m_view->setInteractive(true);
 
-		qDebug() << __PRETTY_FUNCTION__ << "RegionListSize:" << m_regionList.size();
-		for (int i = 0; i < m_regionList.size(); ++i) {
-			//m_regionList.at(i)->show();
-			m_regionList.at(i)->setZValue(1);
-		}
-
 		QList<QGraphicsItem *> li = m_scene->items();
 		for (int i = 0; i < li.size(); ++i) {
 			qDebug() << __PRETTY_FUNCTION__
@@ -165,16 +160,14 @@ void ImageViewManager::enableRegionSelection(bool enable)
 				 << "Scene Pos:" << li.at(i)->scenePos()
 				 << "Bounding Rect:" << li.at(i)->boundingRect();
 		}
+		showImageRegions(true);
 	} else {
 		m_view->setCursor(Qt::OpenHandCursor);
 		m_view->setDragMode(QGraphicsView::ScrollHandDrag);
 		m_view->setInteractive(false);
-
-		for (int i = 0; i < m_regionList.size(); ++i) {
-			//m_regionList.at(i)->hide();
-			m_regionList.at(i)->setZValue(-1);
-		}
+		showImageRegions(false);
 	}
+
 }
 
 // [SLOT private]
@@ -208,9 +201,9 @@ void ImageViewManager::setFile(const QString &fileName)
 			m_exiv2 = new QExiv2();
 		}
 		setImageRegions(fileName);
+		showImageRegions(m_showRegions);
 #endif
 	}
-
 	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << fileName;
 }
 
@@ -278,6 +271,7 @@ void ImageViewManager::showImageRegions(bool show)
 	for (int i = 0; i < m_regionList.count(); ++i) {
 		m_regionList.at(i)->setZValue((show) ? 1 : -1);
 	}
+	m_showRegions = show;
 }
 
 // public
@@ -348,19 +342,16 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 #ifdef USE_EXIV2
 	QList<PTag> tagList;
 	if (m_exiv2->load(fileName)) {
-		//qDebug() << __PRETTY_FUNCTION__ << "Check MP regions";
+		// Check MP regions
 		tagList = m_exiv2->xmpPTags();
 		if (tagList.isEmpty()) {
 			// Check MWG regions
-			//qDebug() << __PRETTY_FUNCTION__ << "Check MWG regions";
 			tagList = m_exiv2->xmpMWG_RegionsTags();
 		}
 
 		if (!tagList.isEmpty()) {
-			//qDebug() << __PRETTY_FUNCTION__ << "Found regions";
 			for (int i = 0; i < tagList.size(); i++) {
 				addRectRegion(tagList.at(i).region(), tagList.at(i).name(), tagList.at(i).description(), true);
-				//qDebug() << __PRETTY_FUNCTION__ << "Region:" << i << regions.at(i);
 			}
 		}
 	}

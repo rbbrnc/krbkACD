@@ -65,6 +65,7 @@ class ImageViewManager : public QWidget
 
 #ifdef USE_EXIV2
 		QExiv2 *m_exiv2;
+		bool m_showRegions;
 #endif
 };
 
