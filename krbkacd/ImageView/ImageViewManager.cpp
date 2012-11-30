@@ -362,7 +362,6 @@ void ImageViewManager::editRectRegion()
 	ri->setName("ABCD");
 }
 
-
 void ImageViewManager::setImageRegions(const QString &fileName)
 {
 #ifdef USE_EXIV2

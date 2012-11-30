@@ -57,8 +57,6 @@ class ImageViewManager : public QWidget
 
 		QGraphicsScene *m_scene;
 
-		//qreal m_angle;
-
 		int m_currentFile;
 		QStringList m_fileList;
 		QList<QGraphicsRectItem *> m_regionList;
