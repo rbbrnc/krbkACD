@@ -366,19 +366,27 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 {
 #ifdef USE_EXIV2
 	QList<PTag> tagList;
-	if (m_exiv2->load(fileName)) {
-		// Check MP regions
-		tagList = m_exiv2->xmpPTags();
-		if (tagList.isEmpty()) {
-			// Check MWG regions
-			tagList = m_exiv2->xmpMWG_RegionsTags();
-		}
+	if (!m_exiv2->load(fileName)) {
+		return;
+	}
 
-		if (!tagList.isEmpty()) {
-			for (int i = 0; i < tagList.size(); i++) {
-				addRectRegion(tagList.at(i).region(), tagList.at(i).name(), tagList.at(i).description(), true);
-			}
-		}
+	if (!m_exiv2->hasXmpRegionTag()) {
+		return;
+	}
+
+	// Check MP regions
+	tagList = m_exiv2->xmpPTags();
+	if (tagList.isEmpty()) {
+		// Check MWG regions
+		tagList = m_exiv2->xmpMWG_RegionsTags();
+	}
+
+	if (tagList.isEmpty()) {
+		return;
+	}
+
+	for (int i = 0; i < tagList.size(); i++) {
+		addRectRegion(tagList.at(i).region(), tagList.at(i).name(), tagList.at(i).description(), true);
 	}
 #endif
 }
