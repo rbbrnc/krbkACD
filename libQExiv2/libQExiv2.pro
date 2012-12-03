@@ -15,6 +15,7 @@ SOURCES += QExiv2.cpp \
 	   PTag.cpp \
 	   MwgRegion.cpp \
 	   MPRegion.cpp \
+	   XmpRegion.cpp
 
 HEADERS += QExiv2.h \
 	   QExiv2_p.h \
@@ -22,5 +23,6 @@ HEADERS += QExiv2.h \
 	   PTag_p.h \
 	   MwgRegion.h \
 	   MPRegion.h \
+	   XmpRegion.h
 
 CONFIG += staticlib

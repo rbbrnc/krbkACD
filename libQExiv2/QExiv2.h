@@ -10,6 +10,8 @@
 // For Tags
 #include "PTag.h"
 
+#include "XmpRegion.h"
+
 // Forward decl.
 class QExiv2DataPrivate;
 
@@ -59,6 +61,10 @@ class QExiv2
 		bool isXmpWritable() const;
 		bool hasXmp() const;
 		bool hasXmpRegionTag() const;
+
+		// New Region Methods
+		QList<XmpRegion> xmpRegionList() const;
+
 
 		bool removeXmpTag(const char *xmpTagName);
 		QByteArray xmpPacket() const;

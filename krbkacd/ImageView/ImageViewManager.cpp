@@ -284,7 +284,7 @@ QList<QRectF> ImageViewManager::rectRegions() const
 void ImageViewManager::addRectRegion(const QRectF &region, const QString &name, const QString &text, bool normalized)
 {
 	//qDebug() << region << "Image:" << m_image->boundingRect();
-
+#if 0
 	QRectF rect;
 	if (normalized) {
 		// de-normalize rect
@@ -306,6 +306,9 @@ void ImageViewManager::addRectRegion(const QRectF &region, const QString &name, 
 	}
 
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
+#else
+	RegionGraphicsItem *ir = new RegionGraphicsItem(region);
+#endif
 	connect(ir, SIGNAL(removeRequest()), this, SLOT(removeRectRegion()));
 	connect(ir, SIGNAL(editRequest()), this, SLOT(editRectRegion()));
 
@@ -365,7 +368,6 @@ void ImageViewManager::editRectRegion()
 void ImageViewManager::setImageRegions(const QString &fileName)
 {
 #ifdef USE_EXIV2
-	QList<PTag> tagList;
 	if (!m_exiv2->load(fileName)) {
 		return;
 	}
@@ -373,7 +375,21 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 	if (!m_exiv2->hasXmpRegionTag()) {
 		return;
 	}
+#if 10
+	// Check MWG regions
+	QList<XmpRegion> rList = m_exiv2->xmpRegionList();
+	for (int i = 0; i < rList.size(); i++) {
+		rList.at(i).debug();
+	}
+	if (rList.isEmpty()) {
+		return;
+	}
 
+	for (int i = 0; i < rList.size(); i++) {
+		addRectRegion(rList.at(i).boundingRect(), rList.at(i).name(), rList.at(i).description(), true);
+	}
+#else
+	QList<PTag> tagList;
 	// Check MP regions
 	tagList = m_exiv2->xmpPTags();
 	if (tagList.isEmpty()) {
@@ -388,6 +404,7 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 	for (int i = 0; i < tagList.size(); i++) {
 		addRectRegion(tagList.at(i).region(), tagList.at(i).name(), tagList.at(i).description(), true);
 	}
+#endif
 #endif
 }
 
