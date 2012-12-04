@@ -26,4 +26,5 @@ HEADERS += \
 
 #LIBS += -L../../libQExiv2 -lQExiv2
 LIBS += -L$$PWD -lQExiv2
+CONFIG += silent
 

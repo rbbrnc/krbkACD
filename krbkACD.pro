@@ -6,6 +6,6 @@ SUBDIRS  = libQExiv2 \
 	   examples
 
 
-
+CONFIG += silent
 
 

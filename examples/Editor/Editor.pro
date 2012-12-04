@@ -35,3 +35,4 @@ FORMS   += \
 LIBS += -L../../libQExiv2 -lQExiv2
 LIBS += -L../../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 
+CONFIG += silent

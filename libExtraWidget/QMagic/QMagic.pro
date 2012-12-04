@@ -13,4 +13,5 @@ HEADERS += QMagic.h
 #RESOURCES += $$PWD/QMagic.qrc
 
 CONFIG += static
+CONFIG += silent
 

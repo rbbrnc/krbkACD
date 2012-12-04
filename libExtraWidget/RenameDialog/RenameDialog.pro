@@ -24,4 +24,5 @@ FORMS += RenameDialog.ui \
 	CopyMoveDialog.ui
 
 CONFIG += static
+CONFIG += silent
 

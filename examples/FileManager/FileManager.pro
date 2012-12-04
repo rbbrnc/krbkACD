@@ -28,3 +28,6 @@ FORMS += FileManager.ui \
 LIBS += -L$$OUT_PWD/../../libQExiv2 -lQExiv2
 LIBS += -L$$OUT_PWD/../../libExtraWidget/RenameDialog -l$$RENAME_DIALOG_LIBNAME
 LIBS += -L$$OUT_PWD/../../libExtraWidget/QMagic $$LIB_QMAGIC
+
+CONFIG += silent
+

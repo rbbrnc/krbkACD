@@ -15,3 +15,4 @@ FORMS   += MainWindow.ui
 
 LIBS += -L$$OUT_PWD/../../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 
+CONFIG += silent

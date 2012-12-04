@@ -16,3 +16,4 @@ SOURCES += main.cpp
 
 LIBS += -L$$OUT_PWD/../../libExtraWidget/RenameDialog -l$$RENAME_DIALOG_LIBNAME
 
+CONFIG += silent

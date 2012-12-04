@@ -62,9 +62,7 @@ class QExiv2
 		bool hasXmp() const;
 		bool hasXmpRegionTag() const;
 
-		// New Region Methods
 		QList<XmpRegion> xmpRegionList() const;
-
 
 		bool removeXmpTag(const char *xmpTagName);
 		QByteArray xmpPacket() const;
@@ -90,13 +88,18 @@ class QExiv2
 
 		QImage previewImage() const;
 
-	public:
-		// XXX PRELIMINARY!!!
-		QList<PTag> xmpPTags() const;
-		QList<PTag> xmpMWG_RegionsTags() const;
 		QList<struct exifData> exifDataList() const;
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
+
+	private:
+		QList<XmpRegion> xmpMWGRegionList() const;
+		QList<XmpRegion> xmpMPRegionList() const;
+
+	public:
+		// XXX PRELIMINARY!!!
+		Q_DECL_DEPRECATED QList<PTag> xmpPTags() const;
+		Q_DECL_DEPRECATED QList<PTag> xmpMWG_RegionsTags() const;
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

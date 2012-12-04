@@ -3,14 +3,14 @@
 
 #include <QGraphicsRectItem>
 
+#include "XmpRegion.h"
+
 class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 {
 	Q_OBJECT
 
 	public:
-		RegionGraphicsItem(QGraphicsItem *parent = 0);
-		RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent = 0);
-		RegionGraphicsItem(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent = 0);
+		RegionGraphicsItem(const XmpRegion &region, QGraphicsItem *parent = 0);
 		~RegionGraphicsItem();
 
 		QString name() const;
@@ -19,32 +19,22 @@ class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 		QString description() const;
 		void setDescription(const QString &desc);
 
-		bool isNormalized() const;
-		void setNormalized(bool normalized);
-
 	protected:
+		virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
+
 		virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
 		virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 		virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
 		virtual void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
 		virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-
 		virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
-
-	private:
-		void init();
 
 	signals:
 		void removeRequest();
 		void editRequest();
 
 	private:
-		unsigned int m_type;	// MP or MWG
-
-		QString m_name;		// Region Name
-		QString m_text;		// Region Description
-		QRectF  m_region;	// Region rectangle
-		bool    m_normalized;   // Rectangle is normalized [0, 1]
+		XmpRegion m_region;
 };
 
 #endif

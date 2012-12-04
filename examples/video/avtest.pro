@@ -22,3 +22,5 @@ QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -O0 -g -ggdb
 
 INCLUDEPATH += /usr/local/include
 LIBS += -L/usr/local/lib -lavcodec -lavformat -lavutil -lswscale -lbz2
+CONFIG += silent
+

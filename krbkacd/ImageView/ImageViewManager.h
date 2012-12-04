@@ -6,12 +6,8 @@
 class ImageGraphicsView;
 class ImageGraphicsItem;
 class RegionGraphicsItem;
-
-#define USE_EXIV2
-
-#ifdef USE_EXIV2
 class QExiv2;
-#endif
+class XmpRegion;
 
 class ImageViewManager : public QWidget
 {
@@ -21,12 +17,9 @@ class ImageViewManager : public QWidget
 		explicit ImageViewManager(QWidget *parent = 0);
 		~ImageViewManager();
 
-		QString currentFile() const;
-		QList<QRectF> rectRegions() const;
-
 	private:
-		Q_DECL_DEPRECATED void updateButtons();
 		void setImageRegions(const QString &fileName);
+		void addRectRegion(XmpRegion &region);
 
 	signals:
 		void requestNextFile();
@@ -40,14 +33,14 @@ class ImageViewManager : public QWidget
 		void previous();
 		void next();
 
-		void addRectRegion(const QRectF &region, const QString &name = 0, const QString &text = 0, bool normalized = false);
 		void showImageRegions(bool show);
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
-		void sceneSelectionChanged();
+		//void sceneSelectionChanged();
 		void enableRegionSelection(bool enable);
 
+		void addRectRegion(const QRectF &rect);
 		void removeRectRegion();
 		void editRectRegion();
 
@@ -61,13 +54,12 @@ class ImageViewManager : public QWidget
 		QStringList m_fileList;
 		QList<QGraphicsRectItem *> m_regionList;
 
-		QToolButton *previousButton;
-		QToolButton *nextButton;
+		QList<XmpRegion> m_xmpRegionList;
 
-#ifdef USE_EXIV2
 		QExiv2 *m_exiv2;
 		bool m_showRegions;
-#endif
+
+		QHash<RegionGraphicsItem *, XmpRegion> m_regionHash;
 };
 
 #endif

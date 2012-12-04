@@ -14,4 +14,5 @@ RCC_DIR = resources
 SOURCES += main.cpp
 
 LIBS += -L../../libQExiv2 -lQExiv2
+CONFIG += silent
 

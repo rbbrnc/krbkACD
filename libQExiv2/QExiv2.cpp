@@ -318,17 +318,9 @@ bool QExiv2::hasXmpRegionTag() const
 	return false;
 }
 
-QList<XmpRegion> QExiv2::xmpRegionList() const
+QList<XmpRegion> QExiv2::xmpMWGRegionList() const
 {
 	QList<XmpRegion> regions;
-	if (d->xmpMetadata.empty()) {
-		return regions;
-	}
-
-	if (xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty()) {
-		return regions;
-	}
-
 	QString s;
 
 	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w", false);
@@ -336,12 +328,14 @@ QList<XmpRegion> QExiv2::xmpRegionList() const
 		qDebug() << "Invalid Xmp.mwg-rs.Regions -- stDim:w Missing";
 	}
 	qreal dimW = s.toDouble();
+	qDebug() << "stDim:w" << s << ":" << dimW;
 
 	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h", false);
 	if (s.isEmpty()) {
 		qDebug() << "Invalid Xmp.mwg-rs.Regions -- stDim:h Missing";
 	}
 	qreal dimH = s.toDouble();
+	qDebug() << "stDim:h" << s << ":" << dimH;
 
 //	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit", false);
 //	if (s.isEmpty()) {
@@ -352,12 +346,15 @@ QList<XmpRegion> QExiv2::xmpRegionList() const
 	QString desc = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Description";
 	QString type = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Type";
 
+//	QString focusUsage   = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:FocusUsage";
+//	QString barCodeValue = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:BarCodeValue";
+
 	QString stAreaX = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:x";
 	QString stAreaY = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:y";
 	QString stAreaW = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:w";
 	QString stAreaH = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:h";
 	QString stAreaD = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:d";
-	QString stAreaUnit = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:unit";
+	//QString stAreaUnit = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:unit";
 
 	int i = 1;
 	while (1) {
@@ -407,17 +404,12 @@ QList<XmpRegion> QExiv2::xmpRegionList() const
 		}
 
 		r.setSize(x, y, w, h, d, dimW, dimH);
-
+		r.setType(xmpTagString(type.arg(i).toLatin1(), false));
 		r.setName(xmpTagString(name.arg(i).toLatin1(), false));
 		r.setDescription(xmpTagString(desc.arg(i).toLatin1(), false));
 
 		//s = xmpTagString(stAreaUnit.arg(i).toLatin1(), false);
 		//qDebug() << "stArea:unit" << s;
-
-		s = xmpTagString(type.arg(i).toLatin1(), false);
-		qDebug() << "mwg-rs:Type" << s;
-
-		//QString::compare(Qt::CaseInsensitive);
 
 		// Add region to region list
 		regions.append(r);
@@ -428,11 +420,75 @@ QList<XmpRegion> QExiv2::xmpRegionList() const
 	return regions;
 }
 
-//
+QList<XmpRegion> QExiv2::xmpMPRegionList() const
+{
+	QList<XmpRegion> regions;
+
+	QString name = "Xmp.MP.RegionInfo/MPRI:Regions[%1]/MPReg:PersonDisplayName";
+	QString rect = "Xmp.MP.RegionInfo/MPRI:Regions[%1]/MPReg:Rectangle";
+	QString email = "Xmp.MP.RegionInfo/MPRI:Regions[%1]/MPReg:PersonEmailDigest";
+	QString liveCID = "Xmp.MP.RegionInfo/MPRI:Regions[%1]/MPReg:PersonLiveCID";
+
+	QString s;
+
+	int i = 1;
+	while (1) {
+		s = xmpTagString(rect.arg(i).toLatin1(), false);
+		if (s.isEmpty()) {
+			break;
+		}
+
+		QStringList sl = s.split(",");
+		if (sl.isEmpty() || sl.size() != 4) {
+			qDebug() << __PRETTY_FUNCTION__ << "wrong size";
+			continue;
+		}
+
+		qreal x = sl.at(0).toDouble();
+		qreal y = sl.at(1).toDouble();
+		qreal w = sl.at(2).toDouble();
+		qreal h	= sl.at(3).toDouble();
+
+		qreal dimW = d->image->pixelWidth();
+		qreal dimH = d->image->pixelHeight();
+
+		XmpRegion r;
+		r.setFormat(XmpRegion::MP);
+		r.setSize(x, y, w, h, 0, dimW, dimH);
+		r.setName(xmpTagString(name.arg(i).toLatin1(), false));
+		r.setPersonEmailDigest(xmpTagString(email.arg(i).toLatin1(), false));
+		r.setPersonLiveCID(xmpTagString(liveCID.arg(i).toLatin1(), false));
+
+		regions.append(r);
+		i++;
+	}
+
+	return regions;
+}
+
+QList<XmpRegion> QExiv2::xmpRegionList() const
+{
+	QList<XmpRegion> regions;
+	if (d->xmpMetadata.empty()) {
+		return regions;
+	}
+
+	if (!(xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty())) {
+		regions = xmpMWGRegionList();
+	}
+
+	if (!(xmpTagString("Xmp.MP.RegionInfo", false).isEmpty())) {
+		regions += xmpMPRegionList();
+	}
+
+	return regions;
+}
+
+// DEPRECATED
 QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 {
 	QList<PTag> tl;
-
+#if 0
 	if (d->xmpMetadata.empty()) {
 		return tl;
 	}
@@ -463,7 +519,6 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 			qDebug() << "stArea:x Missing";
 			break;
 		}
-		//qDebug() << "stArea:x" << s;
 		region = s + ",";
 
 		s = xmpTagString(mwgY.arg(i).toLatin1(), false);
@@ -471,50 +526,38 @@ QList<PTag> QExiv2::xmpMWG_RegionsTags() const
 			qDebug() << "stArea:y Missing";
 			break;
 		}
-		//qDebug() << "stArea:y" << s;
 		region += s + ",";
 
 		s = xmpTagString(mwgD.arg(i).toLatin1(), false);
 		if (s.isEmpty()) {
 			s = xmpTagString(mwgW.arg(i).toLatin1(), false);
-			//qDebug() << "stArea:w" << s;
 			region += s + ",";
-
 			s = xmpTagString(mwgH.arg(i).toLatin1(), false);
-			//qDebug() << "stArea:h" << s;
 			region += s;
 		} else {
-			//qDebug() << "stArea:d" << s;
 			region += s + "," + s;
 		}
 		ptag.setRegion(region);
 
-		//s = xmpTagString(stAU.arg(i).toLatin1(), false);
-		//qDebug() << "stArea:unit" << s;
-
-		//s = xmpTagString(mwgType.arg(i).toLatin1(), false);
-		//qDebug() << "mwg-rs:Type" << s;
-
 		s = xmpTagString(mwgDescription.arg(i).toLatin1(), false);
 		ptag.setDescription(s);
-		//qDebug() << "mwg-rs:Description" << s;
 
 		s = xmpTagString(mwgName.arg(i).toLatin1(), false);
-		//qDebug() << "mwg-rs:Name" << s;
 		ptag.setName(s);
 
 		tl.append(ptag);
 
 		i++;
 	}
-
+#endif
 	return tl;
 }
 
+// DEPRECATED
 QList<PTag> QExiv2::xmpPTags() const
 {
 	QList<PTag> tl;
-
+#if 0
 	if (d->xmpMetadata.empty()) {
 		return tl;
 	}
@@ -542,7 +585,7 @@ QList<PTag> QExiv2::xmpPTags() const
 		tl.append(ptag);
 		i++;
 	}
-
+#endif
 	return tl;
 }
 
@@ -835,7 +878,6 @@ bool QExiv2::setXmpTagStringLangAlt(const char *xmpTagName, const QString &value
 
 		const std::string &txt(txtLangAlt.toUtf8().constData());
 		Exiv2::Value::AutoPtr xmpTxtVal = Exiv2::Value::create(Exiv2::langAlt);
-
 #if 0
 		// Search if an Xmp tag already exist.
 		AltLangMap map = getXmpTagStringListLangAlt(xmpTagName, false);
@@ -849,7 +891,6 @@ bool QExiv2::setXmpTagStringLangAlt(const char *xmpTagName, const QString &value
 			}
 		}
 #endif
-
 		xmpTxtVal->read(txt);
 		removeXmpTag(xmpTagName);
 		d->xmpMetadata.add(Exiv2::XmpKey(xmpTagName), xmpTxtVal.get());
@@ -892,7 +933,6 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 		if (!d->exifMetadata.empty()) {
 			Exiv2::ExifData exifData(d->exifMetadata);
 			Exiv2::ExifKey key(exifTagName);
-
 #if 0
 			qDebug() << "TAG Name:" << QString(key.tagName().c_str());
 			qDebug() << "TAG Label:" << QString(key.tagLabel().c_str());
@@ -900,7 +940,6 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 			qDebug() << "TAG Family Name:" << QString(key.familyName());
 			qDebug() << "TAG Desc:" << QString(key.tagDesc().c_str());
 #endif
-
 
 			Exiv2::ExifData::iterator it = exifData.findKey(key);
 			if (it != exifData.end()) {
@@ -918,5 +957,3 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 
 	return QDateTime();
 }
-
-

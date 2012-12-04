@@ -7,50 +7,27 @@ XmpRegion::XmpRegion()
 {
 }
 
-#if 0
-XmpRegion::XmpRegion(enum XmpRegion::Format format, const QSize size)
-	: m_format(format),
-	  m_shape(Rectangle),
-	  m_type(Face),
-	  m_focusUsage(NotEvaluatedNotUsed),
-	  m_unit(Normalized),
-//	  m_name(0),
-//	  m_text(0),
-	  m_x(0),
-	  m_y(0),
-	  m_w(0),
-	  m_h(0),
-	  m_d(0),
-//	  m_emailDigest(0),
-//	  m_liveCID(0),
-//	  m_barcodeValue(0),
-	  m_appliedToDimensionsUnit(XmpRegion::Pixel)
-{
-	m_appliedToDimensionsWidth  = size.width();
-	m_appliedToDimensionsHeight = size.height();
-}
-#endif
-
 XmpRegion::XmpRegion(const XmpRegion& other)
 	: m_format(other.m_format),
 	  m_shape(other.m_shape),
-	  m_type(other.m_type),
 	  m_unit(other.m_unit),
 	  m_focusUsage(other.m_focusUsage),
+	  m_type(other.m_type),
 	  m_name(other.m_name),
 	  m_text(other.m_text),
 	  m_boundingRect(other.m_boundingRect),
-	  m_x(other.m_x),
-	  m_y(other.m_y),
-	  m_w(other.m_w),
-	  m_h(other.m_h),
-	  m_d(other.m_d),
-	  m_emailDigest(other.m_emailDigest),
-	  m_liveCID(other.m_liveCID),
+	  m_stAreaX(other.m_stAreaX),
+	  m_stAreaY(other.m_stAreaY),
+	  m_stAreaW(other.m_stAreaW),
+	  m_stAreaH(other.m_stAreaH),
+	  m_stAreaD(other.m_stAreaD),
+	  m_personEmailDigest(other.m_personEmailDigest),
+	  m_personLiveCID(other.m_personLiveCID),
 	  m_barcodeValue(other.m_barcodeValue),
 	  m_dimW(other.m_dimW),
 	  m_dimH(other.m_dimH),
-	  m_dimUnit(other.m_dimUnit)
+	  m_dimUnit(other.m_dimUnit),
+	  m_data(0)
 {
 }
 
@@ -69,14 +46,14 @@ XmpRegion& XmpRegion::operator=(const XmpRegion& other)
 
 	m_boundingRect = other.m_boundingRect;
 
-	m_x = other.m_x;
-	m_y = other.m_y;
-	m_w = other.m_w;
-	m_h = other.m_h;
-	m_d = other.m_d;
+	m_stAreaX = other.m_stAreaX;
+	m_stAreaY = other.m_stAreaY;
+	m_stAreaW = other.m_stAreaW;
+	m_stAreaH = other.m_stAreaH;
+	m_stAreaD = other.m_stAreaD;
 
-	m_emailDigest = other.m_emailDigest;
-	m_liveCID     = other.m_liveCID;
+	m_personEmailDigest = other.m_personEmailDigest;
+	m_personLiveCID     = other.m_personLiveCID;
 
 	m_barcodeValue = other.m_barcodeValue;
 	m_focusUsage   = other.m_focusUsage;
@@ -84,6 +61,8 @@ XmpRegion& XmpRegion::operator=(const XmpRegion& other)
 	m_dimW = other.m_dimW;
 	m_dimH = other.m_dimH;
 	m_dimUnit = other.m_dimUnit;
+
+	m_data = other.m_data;
 
 	return *this;
 }
@@ -93,22 +72,20 @@ void XmpRegion::setFormat(enum XmpRegion::Format format)
 	m_format = format;
 }
 
-
 void XmpRegion::setFocusUsage(XmpRegion::FocusUsage focus)
 {
 	m_focusUsage = focus;
 }
 
-void XmpRegion::setType(XmpRegion::Type type)
+void XmpRegion::setType(const QString &type)
 {
 	m_type = type;
 }
 
-enum XmpRegion::Type XmpRegion::type() const
+QString XmpRegion::type() const
 {
 	return m_type;
 }
-
 
 QString XmpRegion::description() const
 {
@@ -130,20 +107,38 @@ void XmpRegion::setName(const QString &name)
 	m_name = name;
 }
 
+QString XmpRegion::personEmailDigest() const
+{
+	return m_personEmailDigest;
+}
+
+QString XmpRegion::personLiveCID() const
+{
+	return m_personLiveCID;
+}
+
+void XmpRegion::setPersonEmailDigest(const QString &text)
+{
+	m_personEmailDigest = text;
+}
+
+void XmpRegion::setPersonLiveCID(const QString &text)
+{
+	m_personLiveCID = text;
+}
+
 QRectF XmpRegion::boundingRect() const
 {
-/*
-*/
 	return m_boundingRect;
 }
 
 void XmpRegion::setSize(qreal x, qreal y, qreal w, qreal h, qreal d, qreal dimW, qreal dimH)
 {
-	m_x = x;
-	m_y = y;
-	m_w = w;
-	m_h = h;
-	m_d = d;
+	m_stAreaX = x;
+	m_stAreaY = y;
+	m_stAreaW = w;
+	m_stAreaH = h;
+	m_stAreaD = d;
 
 	// Set Shape
 	if (d > 0) {
@@ -160,16 +155,22 @@ void XmpRegion::setSize(qreal x, qreal y, qreal w, qreal h, qreal d, qreal dimW,
 }
 
 // Rectangular regions only!
+// stArea:x = x / dimW
+// stArea:y = y / dimH
+//
+// x = stArea:x * dimW
+// y = stArea:y * dimH
+//
 bool XmpRegion::setRegion(const QRectF &regionRect, const QSize &imageSize)
 {
 	if (imageSize.isValid()) {
 		m_boundingRect = regionRect;
 
 		// Normalized Values
-		m_x = regionRect.x() / imageSize.width();
-		m_y = regionRect.y() / imageSize.height();
-		m_w = regionRect.width() / imageSize.width();
-		m_h = regionRect.height() / imageSize.height();
+		m_stAreaX = regionRect.x() / imageSize.width();
+		m_stAreaY = regionRect.y() / imageSize.height();
+		m_stAreaW = regionRect.width() / imageSize.width();
+		m_stAreaH = regionRect.height() / imageSize.height();
 		return true;
 	}
 
@@ -195,14 +196,26 @@ void XmpRegion::debug() const
 	}
 
 	qDebug() << __PRETTY_FUNCTION__
-	         << "P(x,y)" << QPointF(m_x, m_y)
-		 << "S(w,h)" << QSizeF(m_w, m_h)
-		 << "D:" << m_d
+	         << "P(x,y,w,h,d)"
+		 << m_stAreaX
+		 << m_stAreaY
+		 << m_stAreaW
+		 << m_stAreaH
+		 << m_stAreaD
 		 << "Bounding Rect:" << m_boundingRect
-		 << "Shape:" << shape << "[" << m_shape << "]"
+		 << "Shape:" << shape
 		 << "Name:" << m_name
-		 << "Description:" << m_text;
-
-//		 << "Region Type:" << m_type
+		 << "Description:" << m_text
+		 << "Type:" << m_type;
 //		 << "m_region:" << m_region;
+}
+
+void XmpRegion::setData(void *data)
+{
+	m_data = data;
+}
+
+void *XmpRegion::data() const
+{
+	return m_data;
 }

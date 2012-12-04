@@ -12,3 +12,4 @@ HEADERS   += SpotlightWidget.h
 RESOURCES += SpotlightWidget.qrc
 
 CONFIG += staticlib
+CONFIG += silent

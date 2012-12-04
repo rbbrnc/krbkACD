@@ -17,3 +17,5 @@ HEADERS += widget.h \
 	   PTagWidget.h \
 
 LIBS += -L../../libQExiv2 -lQExiv2
+CONFIG += silent
+

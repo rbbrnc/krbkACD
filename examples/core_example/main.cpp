@@ -5,7 +5,6 @@
 #include <QStringList>
 
 #include "QExiv2.h"
-#include "PTag.h"
 
 #define LOAD_FROM_FILE 1
 
@@ -26,11 +25,29 @@ int main(int argc, char *argv[])
 		delete e;
 		return -1;
 	}
+#else
+	qDebug() << "LOAD FROM DATA #######################################";
+	QFile file(argv[1]);
+	if (!file.open(QIODevice::ReadOnly)) {
+		return -1;
+	}
 
+	QByteArray ba = file.readAll();
+	if (ba.isEmpty()) {
+		return -1;
+	}
+
+	QExiv2 *e = new QExiv2();
+	if (!e->loadFromData(ba)) {
+		delete e;
+		return -1;
+	}
+#endif
+
+#if 0
 
 	QStringList sl;
 	sl << "A" << "B" << "C";
-
 
 	QMap<QString, QString> tagMap;
 	tagMap.insert("mwg-rs:Name", "n");
@@ -62,29 +79,10 @@ int main(int argc, char *argv[])
 	//e->setXmpTagStringBag("Xmp.mwg-rs.Regions/mwg-rs:RegionList/mwg-rs:RegionList[%1]", sl);
 	e->save();
 	return 0;
-
-
-#else
-	qDebug() << "LOAD FROM DATA #######################################";
-	QFile file(argv[1]);
-	if (!file.open(QIODevice::ReadOnly)) {
-		return -1;
-	}
-
-	QByteArray ba = file.readAll();
-	if (ba.isEmpty()) {
-		return -1;
-	}
-
-	QExiv2 *e = new QExiv2();
-	if (!e->loadFromData(ba)) {
-		delete e;
-		return -1;
-	}
 #endif
 
 	if (e->hasXmpRegionTag()) {
-		QList<PTag> tl = e->xmpPTags();
+		QList<XmpRegion> tl = e->xmpRegionList();
 		for (int i = 0; i < tl.size(); i++) {
 			tl.at(i).debug();
 		}
@@ -93,6 +91,5 @@ int main(int argc, char *argv[])
 	}
 
 	delete e;
-
 	return 0;
 }

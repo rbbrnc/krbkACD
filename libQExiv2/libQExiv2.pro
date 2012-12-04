@@ -26,3 +26,4 @@ HEADERS += QExiv2.h \
 	   XmpRegion.h
 
 CONFIG += staticlib
+CONFIG += silent

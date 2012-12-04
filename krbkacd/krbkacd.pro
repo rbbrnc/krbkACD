@@ -60,3 +60,5 @@ LIBS += -L../libQExiv2 -lQExiv2
 LIBS += -L../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 LIBS += -L../libExtraWidget/RenameDialog -l$$RENAME_DIALOG_LIBNAME
 LIBS += -L../libExtraWidget/QMagic $$LIB_QMAGIC
+
+CONFIG += silent

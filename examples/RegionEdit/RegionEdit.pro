@@ -19,3 +19,5 @@ HEADERS += \
     mwgRegionInfo.h
 
 LIBS += -L../../libQExiv2 -lQExiv2
+CONFIG += silent
+

@@ -3,25 +3,9 @@
 
 #include "RegionGraphicsItem.h"
 
-RegionGraphicsItem::RegionGraphicsItem(QGraphicsItem *parent)
-	: QGraphicsRectItem(parent)
-{
-	init();
-}
-
-RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent)
-	: QGraphicsRectItem(rect, parent)
-{
-	init();
-}
-
-RegionGraphicsItem::RegionGraphicsItem(qreal x, qreal y, qreal width, qreal height, QGraphicsItem *parent)
-	: QGraphicsRectItem(x, y, width, height, parent )
-{
-	init();
-}
-
-void RegionGraphicsItem::init()
+RegionGraphicsItem::RegionGraphicsItem(const XmpRegion &region, QGraphicsItem *parent)
+	: QGraphicsRectItem(region.boundingRect(), parent),
+	  m_region(region)
 {
 //	setFlag(QGraphicsItem::ItemIsSelectable, true);
 //	setAcceptHoverEvents(true);
@@ -32,15 +16,29 @@ RegionGraphicsItem::~RegionGraphicsItem()
 {
 }
 
+void RegionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+#if 0
+	QColor borderColor;
+	borderColor = Qt::red;
+	QPen pen;
+	pen.setColor(borderColor);
+	painter->setPen(pen);
+	painter->drawRect(m_region.boundingRect());
+#else
+	QGraphicsRectItem::paint(painter, option, widget);
+#endif
+}
+
 // [EVENT protected]
-void RegionGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+void RegionGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 	qDebug() << __PRETTY_FUNCTION__;
 	QGraphicsRectItem::mouseMoveEvent(event);
 }
 
 // [EVENT protected]
-void RegionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void RegionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	qDebug() << __PRETTY_FUNCTION__;
 	QGraphicsRectItem::mousePressEvent(event);
@@ -49,6 +47,7 @@ void RegionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
 // [EVENT protected]
 void RegionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 {
+	Q_UNUSED(event)
 	qDebug() << __PRETTY_FUNCTION__;
 //	QGraphicsRectItem::mouseReleaseEvent(event);
 }
@@ -71,32 +70,22 @@ void RegionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 
 QString RegionGraphicsItem::name() const
 {
-	return m_name;
+	return m_region.name();
 }
 
 void RegionGraphicsItem::setName(const QString &name)
 {
-	m_name = name;
+	m_region.setName(name);
 }
 
 QString RegionGraphicsItem::description() const
 {
-	return m_text;
+	return m_region.description();
 }
 
 void RegionGraphicsItem::setDescription(const QString &desc)
 {
-	m_text = desc;
-}
-
-bool RegionGraphicsItem::isNormalized() const
-{
-	return m_normalized;
-}
-
-void RegionGraphicsItem::setNormalized(bool normalized)
-{
-	m_normalized = normalized;
+	m_region.setDescription(desc);
 }
 
 // [EVENT protected]
@@ -115,7 +104,7 @@ void RegionGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 		// Nothing to do
 		qDebug() << __PRETTY_FUNCTION__
 			 << "NOP"
-			 << m_name
-			 << m_text;
+			 << m_region.name()
+			 << m_region.description();
 	}
 }
