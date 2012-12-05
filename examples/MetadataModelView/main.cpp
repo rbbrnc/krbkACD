@@ -1,9 +1,4 @@
 #include <QtGui>
-
-/*
-#include "QExiv2.h"
-#include "MetadataTreeModel.h"
-*/
 #include "MetadataTreeViewPage.h"
 
 int main(int argc, char *argv[])
