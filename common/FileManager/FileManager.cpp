@@ -202,18 +202,21 @@ void FileManager::updateGeneralInfo(const QModelIndex &index)
 	perm += (fp & QFile::WriteOther) ? 'w' : '-';
 	perm += (fp & QFile::ExeOther)   ? "x " : "- ";
 	ui->permissionsLabel->setText(perm);
+
+	if (QMagic::mimeTypeIsImage(file)) {
+		// Using QImageReader for get image dimension.
+		QImageReader ir(file);
+		ui->dimensionLabel->setText(QString("%1 x %2").arg(ir.size().width()).arg(ir.size().height()));
+	} else {
+		ui->dimensionLabel->setText("-");
+	}
 }
 
 void FileManager::updateMoreInfo(const QModelIndex &index)
 {
 	QString file = m_model->filePath(index);
-	bool isImage = QMagic::mimeTypeIsImage(file);
-
-	if (isImage) {
-		// Using QImageReader for get image dimension.
+	if (QMagic::mimeTypeIsImage(file)) {
 		QImageReader ir(file);
-		ui->dimensionLabel->setText(QString("%1 x %2").arg(ir.size().width()).arg(ir.size().height()));
-
 		// XXX: QImage reader supports basic metadata on some image format!
 		if (ir.supportsOption(QImageIOHandler::Description)) {
 #if 0
@@ -223,15 +226,11 @@ void FileManager::updateMoreInfo(const QModelIndex &index)
 				 << "IR Text Desc:" << ir.text("Description"/* const QString & key*/);
 #endif
 			ui->commentLabel->setText(ir.text("Description"));
+			ui->commentLabel->setVisible(true);
 		}
+	} else {
+		ui->commentLabel->setVisible(false);
 	}
-
-	ui->dimensionLabel->setVisible(isImage);
-	ui->commentLabel->setVisible(isImage);
-
-	//ui->exifLabel->setVisible(isImage);
-	//ui->iptcLabel->setVisible(isImage);
-	//ui->xmpLabel->setVisible(isImage);
 }
 
 void FileManager::updateMetadataInfo(const QModelIndex &index)

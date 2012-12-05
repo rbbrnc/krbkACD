@@ -1,24 +1,15 @@
 #include <QApplication>
 
-#include "MetadataDialog.h"
-#include "QExiv2.h"
+#include "MetadataEditForm.h"
 
 int main(int argc, char *argv[])
 {
 	QApplication app(argc, argv);
-	QString fileName;
+	QString fileName = argv[1];
 
-	if (argc >= 2)
-		fileName = argv[1];
-	else
-		fileName = ".";
+	MetadataEditForm frm;
 
-	QExiv2 *metadata = new QExiv2();
-	if (!metadata->load(fileName)) {
-		delete metadata;
-		metadata = 0;
-	}
-
-	MetadataDialog dlg(fileName, metadata);
-	return dlg.exec();
+	frm.setFile(fileName);
+	frm.show();
+	return app.exec();
 }

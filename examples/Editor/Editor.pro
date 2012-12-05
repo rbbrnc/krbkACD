@@ -1,7 +1,10 @@
 TEMPLATE = app
 
-include (../../libQExiv2/libQExiv2.pri)
-include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
+COMMON_PATH=../../common
+
+include ($$COMMON_PATH/libQExiv2/libQExiv2.pri)
+include ($$COMMON_PATH/SpotlightWidget/SpotlightWidget.pri)
+include ($$COMMON_PATH/MetadataEditor/MetadataEditForm.pri)
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -10,29 +13,9 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
-INCLUDEPATH += ../../krbkacd
+SOURCES += main.cpp
 
-SOURCES += main.cpp \
-	MetadataDialog.cpp \
-	../../krbkacd/FileGeneralInfo.cpp \
-	../../krbkacd/MetadataEdit.cpp \
-	../../krbkacd/MetadataRegionEdit.cpp \
-	../../krbkacd/MetadataLocation.cpp \
-
-HEADERS += MetadataDialog.h \
-	../../krbkacd/FileGeneralInfo.h \
-	../../krbkacd/MetadataEdit.h \
-	../../krbkacd/MetadataRegionEdit.h \
-	../../krbkacd/MetadataLocation.h \
-
-FORMS   += \
-	../../krbkacd/FileGeneralInfo.ui \
-	../../krbkacd/MetadataEdit.ui \
-	../../krbkacd/MetadataRegionEdit.ui \
-	../../krbkacd/MetadataLocation.ui \
-
-
-LIBS += -L../../libQExiv2 -lQExiv2
-LIBS += -L../../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
+LIBS += -L$$OUT_PWD/$$COMMON_PATH/libQExiv2 -lQExiv2
+LIBS += -L$$OUT_PWD/$$COMMON_PATH/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 
 CONFIG += silent

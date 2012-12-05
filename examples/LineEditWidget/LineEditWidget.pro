@@ -1,6 +1,7 @@
 TEMPLATE = app
 
-include (../../libExtraWidget/SpotlightWidget/SpotlightWidget.pri)
+COMMON_PATH=../../common
+include ($$COMMON_PATH/SpotlightWidget/SpotlightWidget.pri)
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -13,6 +14,6 @@ SOURCES += main.cpp MainWindow.cpp
 HEADERS += MainWindow.h
 FORMS   += MainWindow.ui
 
-LIBS += -L$$OUT_PWD/../../libExtraWidget/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
+LIBS += -L$$OUT_PWD/$$COMMON_PATH/SpotlightWidget -l$$SPOTLIGHT_WIDGET_LIBNAME
 
 CONFIG += silent

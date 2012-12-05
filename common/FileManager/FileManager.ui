@@ -84,15 +84,15 @@
            </font>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="GeneralInfo">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>278</width>
-             <height>497</height>
+             <width>267</width>
+             <height>475</height>
             </rect>
            </property>
            <attribute name="label">
@@ -102,9 +102,6 @@
             <item>
              <widget class="QWidget" name="infoWidget" native="true">
               <layout class="QFormLayout" name="formLayout">
-               <property name="fieldGrowthPolicy">
-                <enum>QFormLayout::ExpandingFieldsGrow</enum>
-               </property>
                <item row="0" column="0">
                 <widget class="QLabel" name="label">
                  <property name="sizePolicy">
@@ -140,7 +137,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
+               <item row="2" column="0">
                 <widget class="QLabel" name="label_4">
                  <property name="font">
                   <font>
@@ -156,7 +153,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="2" column="1">
                 <widget class="QLabel" name="sizeLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -169,7 +166,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
+               <item row="5" column="0">
                 <widget class="QLabel" name="label_3">
                  <property name="font">
                   <font>
@@ -185,7 +182,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="5" column="1">
                 <widget class="QLabel" name="fileLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -198,7 +195,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
+               <item row="7" column="0">
                 <widget class="QLabel" name="label_2">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -220,7 +217,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
+               <item row="7" column="1">
                 <widget class="QLabel" name="pathLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -233,7 +230,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="0">
+               <item row="9" column="0">
                 <widget class="QLabel" name="label_8">
                  <property name="font">
                   <font>
@@ -249,7 +246,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
+               <item row="9" column="1">
                 <widget class="QLabel" name="createdLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -262,7 +259,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="0">
+               <item row="11" column="0">
                 <widget class="QLabel" name="label_9">
                  <property name="font">
                   <font>
@@ -278,7 +275,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
+               <item row="11" column="1">
                 <widget class="QLabel" name="modifiedLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -291,7 +288,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="6" column="0">
+               <item row="13" column="0">
                 <widget class="QLabel" name="label_6">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -310,7 +307,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="6" column="1">
+               <item row="13" column="1">
                 <widget class="QLabel" name="ownerLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -323,7 +320,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="7" column="0">
+               <item row="15" column="0">
                 <widget class="QLabel" name="label_10">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -342,7 +339,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="7" column="1">
+               <item row="15" column="1">
                 <widget class="QLabel" name="groupLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -355,7 +352,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="8" column="0">
+               <item row="17" column="0">
                 <widget class="QLabel" name="label_12">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -374,7 +371,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="8" column="1">
+               <item row="17" column="1">
                 <widget class="QLabel" name="permissionsLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -387,29 +384,8 @@
                  </property>
                 </widget>
                </item>
-              </layout>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-          <widget class="QWidget" name="MoreInfo">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>278</width>
-             <height>497</height>
-            </rect>
-           </property>
-           <attribute name="label">
-            <string>More Info</string>
-           </attribute>
-           <layout class="QVBoxLayout" name="verticalLayout_5">
-            <item>
-             <widget class="QWidget" name="widget" native="true">
-              <layout class="QFormLayout" name="formLayout_2">
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_5">
+               <item row="4" column="0">
+                <widget class="QLabel" name="label_14">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -427,7 +403,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
+               <item row="4" column="1">
                 <widget class="QLabel" name="dimensionLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -436,11 +412,35 @@
                   </sizepolicy>
                  </property>
                  <property name="text">
-                  <string>TextLabel</string>
+                  <string>-</string>
                  </property>
                 </widget>
                </item>
-               <item row="1" column="0">
+              </layout>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="MoreInfo">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>267</width>
+             <height>475</height>
+            </rect>
+           </property>
+           <attribute name="label">
+            <string>More Info</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <item>
+             <widget class="QWidget" name="widget" native="true">
+              <layout class="QFormLayout" name="formLayout_2">
+               <property name="fieldGrowthPolicy">
+                <enum>QFormLayout::ExpandingFieldsGrow</enum>
+               </property>
+               <item row="0" column="0">
                 <widget class="QLabel" name="label_7">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -459,7 +459,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="1">
+               <item row="0" column="1">
                 <widget class="QLabel" name="exifLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -472,7 +472,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
+               <item row="1" column="0">
                 <widget class="QLabel" name="label_11">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -491,7 +491,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
+               <item row="1" column="1">
                 <widget class="QLabel" name="iptcLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -504,7 +504,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
+               <item row="2" column="0">
                 <widget class="QLabel" name="label_13">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -523,7 +523,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="1">
+               <item row="2" column="1">
                 <widget class="QLabel" name="xmpLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -536,7 +536,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="0">
+               <item row="3" column="0">
                 <widget class="QLabel" name="label_15">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -555,7 +555,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
+               <item row="3" column="1">
                 <widget class="QLabel" name="commentLabel">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -578,8 +578,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>278</width>
-             <height>497</height>
+             <width>267</width>
+             <height>475</height>
             </rect>
            </property>
            <attribute name="label">

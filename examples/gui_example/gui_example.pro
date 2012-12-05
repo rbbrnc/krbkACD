@@ -1,6 +1,9 @@
 TEMPLATE = app
 
-include (../../libQExiv2/libQExiv2.pri)
+COMMON_PATH=../../common
+include ($$COMMON_PATH/libQExiv2/libQExiv2.pri)
+
+PRE_TARGETDEPS += $$OUT_PWD/$$COMMON_PATH/libQExiv2/libQExiv2.a
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -16,6 +19,6 @@ SOURCES += main_gui.cpp \
 HEADERS += widget.h \
 	   PTagWidget.h \
 
-LIBS += -L../../libQExiv2 -lQExiv2
+LIBS += -L$$OUT_PWD/$$COMMON_PATH/libQExiv2 -lQExiv2
 CONFIG += silent
 
