@@ -107,7 +107,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
-	connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
+//	connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
 
 	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
 }

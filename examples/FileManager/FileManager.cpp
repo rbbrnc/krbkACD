@@ -1,7 +1,7 @@
 #include "FileManager.h"
 #include "ui_FileManager.h"
 
-#include <QDebug>
+//#include <QDebug>
 #include <QMessageBox>
 #include <QInputDialog>
 
@@ -213,10 +213,12 @@ void FileManager::updateMoreInfo(const QModelIndex &index)
 
 		// XXX: QImage reader supports basic metadata on some image format!
 		if (ir.supportsOption(QImageIOHandler::Description)) {
+#if 0
 			qDebug() << __PRETTY_FUNCTION__
 				 << "IR Text Keys:" << ir.textKeys()
 				 << "IR Text XML:" << ir.text("XML"/* const QString & key*/)
 				 << "IR Text Desc:" << ir.text("Description"/* const QString & key*/);
+#endif
 			ui->commentLabel->setText(ir.text("Description"));
 		}
 	}
@@ -270,7 +272,12 @@ void FileManager::updatePreview(const QModelIndex &index)
 		//QImage image = qvariant_cast<QImage>(md.imageData());
 		//image = image.scaled(128, 128, Qt::KeepAspectRatio, Qt::FastTransformation);
 		//ui->previewLabel->setPixmap(QPixmap::fromImage(image));
-		pix = QPixmap(file).scaled(128, 128, Qt::KeepAspectRatio, Qt::FastTransformation);
+
+		// Scale pixmap to fit into prevview widget
+		pix.load(file);
+		if ((pix.width() > ui->previewLabel->width()) || (pix.height() > ui->previewLabel->height())) {
+			pix = pix.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		}
 	}
 	ui->previewLabel->setPixmap(pix);
 }
@@ -301,7 +308,6 @@ void FileManager::updateInfo()
 	}
 
 	if (ui->previewCheckBox->isChecked()) {
-//	if (ui->previewLabel->isVisible()) {
 		updatePreview(mi);
 	}
 }
@@ -439,7 +445,7 @@ void FileManager::rename()
 		if (dlg.exec() == QDialog::Accepted) {
 			QStringList filesOut = dlg.newFileNames();
 			for (int i = 0; i < m_selection.count(); i++) {
-				qDebug() << m_model->fileName(m_selection.at(i)) << "--" << filesOut.at(i);
+				//qDebug() << m_model->fileName(m_selection.at(i)) << "--" << filesOut.at(i);
 				if (m_model->setData(m_selection.at(i), filesOut.at(i))) {
 					ui->listView->update(m_selection.at(i));
 				}
