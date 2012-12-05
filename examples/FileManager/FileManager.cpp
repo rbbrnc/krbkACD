@@ -41,6 +41,11 @@ FileManager::FileManager(QWidget *parent) :
 	connect(ui->listView, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
 
+	// Connect splitters moved signal for resize preview
+	connect(ui->infoSplitter, SIGNAL(splitterMoved(int, int)),
+		this, SLOT(zoomPreview(int, int)));
+	connect(ui->mainSplitter, SIGNAL(splitterMoved(int, int)),
+		this, SLOT(zoomPreview(int, int)));
 
 	connect(ui->infoToolBox, SIGNAL(currentChanged(int)),
 		this, SLOT(updateInfoToolBox(int)));
@@ -171,13 +176,12 @@ void FileManager::showHidden(bool show)
 void FileManager::updateGeneralInfo(const QModelIndex &index)
 {
 	QString file = m_model->filePath(index);
-	QString mimeType = QMagic::mimeType(file);
 
 	ui->pathLabel->setText(m_model->rootPath());
 	ui->fileLabel->setText(m_model->fileName(index));
 
 	//ui->kindLabel->setText(QMagic::mimeDescription(file));
-	ui->kindLabel->setText(mimeType);
+	ui->kindLabel->setText(QMagic::mimeType(file));
 	ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(index)));
 	ui->modifiedLabel->setText(m_model->lastModified(index).toString());
 
@@ -203,8 +207,7 @@ void FileManager::updateGeneralInfo(const QModelIndex &index)
 void FileManager::updateMoreInfo(const QModelIndex &index)
 {
 	QString file = m_model->filePath(index);
-	QString mimeType = QMagic::mimeType(file);
-	bool isImage = mimeType.contains("image");
+	bool isImage = QMagic::mimeTypeIsImage(file);
 
 	if (isImage) {
 		// Using QImageReader for get image dimension.
@@ -226,9 +229,9 @@ void FileManager::updateMoreInfo(const QModelIndex &index)
 	ui->dimensionLabel->setVisible(isImage);
 	ui->commentLabel->setVisible(isImage);
 
-	ui->exifLabel->setVisible(isImage);
-	ui->iptcLabel->setVisible(isImage);
-	ui->xmpLabel->setVisible(isImage);
+	//ui->exifLabel->setVisible(isImage);
+	//ui->iptcLabel->setVisible(isImage);
+	//ui->xmpLabel->setVisible(isImage);
 }
 
 void FileManager::updateMetadataInfo(const QModelIndex &index)
@@ -263,23 +266,29 @@ void FileManager::updateMetadataInfo(const QModelIndex &index)
 void FileManager::updatePreview(const QModelIndex &index)
 {
 	QString file = m_model->filePath(index);
-	QString mimeType = QMagic::mimeType(file);
-	bool isImage = mimeType.contains("image");
-	QPixmap pix;
-	if (isImage) {
-		//QMimeData md;
-		//QMagic::mimeData(md, file);
-		//QImage image = qvariant_cast<QImage>(md.imageData());
-		//image = image.scaled(128, 128, Qt::KeepAspectRatio, Qt::FastTransformation);
-		//ui->previewLabel->setPixmap(QPixmap::fromImage(image));
-
-		// Scale pixmap to fit into prevview widget
-		pix.load(file);
-		if ((pix.width() > ui->previewLabel->width()) || (pix.height() > ui->previewLabel->height())) {
-			pix = pix.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+	if (!QMagic::mimeTypeIsImage(file)) {
+		m_preview = QPixmap();
+		ui->previewLabel->setPixmap(m_preview);
+	} else {
+		m_preview.load(file);
+		if ((m_preview.width() > ui->previewLabel->width()) || (m_preview.height() > ui->previewLabel->height())) {
+			// Scale pixmap to fit into preview widget
+			QPixmap pix;
+			pix = m_preview.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+			ui->previewLabel->setPixmap(pix);
+		} else {
+			ui->previewLabel->setPixmap(m_preview);
 		}
 	}
-	ui->previewLabel->setPixmap(pix);
+}
+
+void FileManager::zoomPreview(int, int)
+{
+	if ((m_preview.width() > ui->previewLabel->width()) || (m_preview.height() > ui->previewLabel->height())) {
+		QPixmap pix;
+		pix = m_preview.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		ui->previewLabel->setPixmap(pix);
+	}
 }
 
 void FileManager::updateInfo()

@@ -53,6 +53,12 @@ QString QMagic::mimeType(const QString &file)
 	return getMagic(file, MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
 }
 
+bool QMagic::mimeTypeIsImage(const QString &file)
+{
+	QString mime = getMagic(file, MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
+	return mime.contains("image");
+}
+
 // Fill the QMimeData class
 void QMagic::mimeData(QMimeData &mimeData, const QString &file)
 {

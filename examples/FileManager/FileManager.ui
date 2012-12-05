@@ -18,7 +18,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QSplitter" name="splitter">
+    <widget class="QSplitter" name="mainSplitter">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -55,7 +55,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QSplitter" name="splitter_2">
+        <widget class="QSplitter" name="infoSplitter">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
@@ -84,7 +84,7 @@
            </font>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="GeneralInfo">
            <property name="geometry">

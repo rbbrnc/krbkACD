@@ -9,5 +9,6 @@ namespace QMagic {
 QString mimeType(const QString &file);
 QString mimeDescription(const QString &file);
 void mimeData(QMimeData &mimeData, const QString &file);
+bool mimeTypeIsImage(const QString &file);
 }
 #endif

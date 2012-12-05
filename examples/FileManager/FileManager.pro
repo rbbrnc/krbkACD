@@ -6,6 +6,7 @@ include (../../libExtraWidget/QMagic/QMagic.pri)
 include (../../libQExiv2/libQExiv2.pri)
 include (../../krbkacd/ImageView/ImageView.pri)
 include (../../krbkacd/MetadataTreeModel/MetadataTreeModel.pri)
+include (../../krbkacd/MetadataTreeModel/MetadataTreeViewPage.pri)
 
 PRE_TARGETDEPS += $$OUT_PWD/../../libExtraWidget/RenameDialog/lib$${RENAME_DIALOG_LIBNAME}.a
 PRE_TARGETDEPS += $$OUT_PWD/../../libExtraWidget/QMagic/lib$${QMAGIC_LIBNAME}.a

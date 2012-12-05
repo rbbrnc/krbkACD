@@ -10,6 +10,8 @@ namespace Ui {
 class QExiv2;
 class FileManagerPage;
 class ImageViewManager;
+class MetadataTreeViewPage;
+
 class MainWindow : public QMainWindow
 {
 	Q_OBJECT
@@ -34,10 +36,9 @@ class MainWindow : public QMainWindow
 		int m_currentFileManager;
 
 		ImageViewManager *m_ivPage;
-		QWidget *m_mvPage;
+		MetadataTreeViewPage *m_mvPage;
 
 		QExiv2 *m_exiv2;
-
 };
 
 #endif

@@ -6,6 +6,7 @@
 #include "FileManagerPage.h"
 #include "ImageViewManager.h"
 #include "MetadataTreeModel.h"
+#include "MetadataTreeViewPage.h"
 #include "QExiv2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -41,7 +42,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// Connect next/prev requests coming from ImageViewManager.
 	connect(m_ivPage, SIGNAL(requestPreviousFile()), this, SLOT(prevFile()));
-	connect(m_ivPage, SIGNAL(requestNextFile()), this, SLOT(nextFile()));
+	connect(m_ivPage, SIGNAL(requestNextFile()),     this, SLOT(nextFile()));
+
+	// Connect next/prev requests coming from MetadataTreeViewPage.
+	connect(m_mvPage, SIGNAL(requestPreviousFile()), this, SLOT(prevFile()));
+	connect(m_mvPage, SIGNAL(requestNextFile()),     this, SLOT(nextFile()));
 
 	connect(ui->actionViewImage,    SIGNAL(triggered()), this, SLOT(showImage()));
 	connect(ui->actionViewMetadata, SIGNAL(triggered()), this, SLOT(showMetadata()));
@@ -95,8 +100,7 @@ void MainWindow::showImage()
 void MainWindow::showMetadata()
 {
 	if (ui->stackedWidget->currentWidget() != m_mvPage) {
-//		m_mvPage->setFile(m_fmPage->currentFilePath());
-//		qDebug() << __PRETTY_FUNCTION__ << m_fmPage->currentFilePath();
+		m_mvPage->setFile(m_fmPage->currentFilePath());
 		ui->stackedWidget->setCurrentWidget(m_mvPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
@@ -109,6 +113,11 @@ void MainWindow::prevFile()
 		m_fmPage->previousFile();
 		m_ivPage->setFile(m_fmPage->currentFilePath());
 	}
+
+	if (ui->stackedWidget->currentWidget() == m_mvPage) {
+		m_fmPage->previousFile();
+		m_mvPage->setFile(m_fmPage->currentFilePath());
+	}
 }
 
 void MainWindow::nextFile()
@@ -116,5 +125,10 @@ void MainWindow::nextFile()
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->nextFile();
 		m_ivPage->setFile(m_fmPage->currentFilePath());
+	}
+
+	if (ui->stackedWidget->currentWidget() == m_mvPage) {
+		m_fmPage->nextFile();
+		m_mvPage->setFile(m_fmPage->currentFilePath());
 	}
 }

@@ -39,6 +39,7 @@ class FileManager : public QWidget
 		void handleItemActivation(QModelIndex index);
 
 		void updateInfoToolBox(int index);
+		void zoomPreview(int , int);
 
 	public slots:
 		void previous();
@@ -74,5 +75,7 @@ class FileManager : public QWidget
 		QItemSelectionModel *m_selectionModel;
 
 		MetadataTreeModel *m_metadataModel;
+
+		QPixmap m_preview;
 };
 #endif

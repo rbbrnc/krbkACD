@@ -21,20 +21,11 @@
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="FileManagerPage" name="fsManagerPage"/>
       <widget class="ImageViewManager" name="ivManagerPage"/>
-      <widget class="QWidget" name="metadataViewPage">
-       <layout class="QVBoxLayout" name="verticalLayout">
-        <property name="margin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QTreeView" name="treeView"/>
-        </item>
-       </layout>
-      </widget>
+      <widget class="MetadataTreeViewPage" name="metadataViewPage"/>
      </widget>
     </item>
    </layout>
@@ -240,6 +231,12 @@
    <class>ImageViewManager</class>
    <extends>QWidget</extends>
    <header location="global">ImageViewManager.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MetadataTreeViewPage</class>
+   <extends>QWidget</extends>
+   <header>MetadataTreeViewPage.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
