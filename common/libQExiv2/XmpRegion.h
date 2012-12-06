@@ -45,6 +45,12 @@ class XmpRegion
 		void setSize(qreal x, qreal y, qreal w, qreal h, qreal d, qreal dimW, qreal dimH);
 		bool setRegion(const QRectF &regionRect, const QSize &imageSize);
 
+		qreal stAreaX() const;
+		qreal stAreaY() const;
+		qreal stAreaW() const;
+		qreal stAreaH() const;
+		qreal stAreaD() const;
+
 		QString type() const;
 		void setType(const QString &type);
 
@@ -53,6 +59,12 @@ class XmpRegion
 
 		QString description() const;
 		void setDescription(const QString &desc);
+
+		QString areaUnit() const;
+		void setAreaUnit(const QString &unit);
+
+		QString dimensionUnit() const;
+		void setDimensionUnit(const QString &unit);
 
 		QString personEmailDigest() const;
 		void setPersonEmailDigest(const QString &text);
@@ -83,11 +95,12 @@ class XmpRegion
 		QRectF m_boundingRect; // Region rect
 
 		// Normalized [0, 1] values
-		qreal m_stAreaX;  // X coordinate of the center of the area (point, circle, rectangle)
-		qreal m_stAreaY;  // Y coordinate of the center of the area (point, circle, rectangle)
-		qreal m_stAreaW;  // Width of the area (rectangle)
-		qreal m_stAreaH;  // Height of the area (rectangle)
-		qreal m_stAreaD;  // Diameter of area (circle)
+		qreal m_stAreaX;      // X coordinate of the center of the area (point, circle, rectangle)
+		qreal m_stAreaY;      // Y coordinate of the center of the area (point, circle, rectangle)
+		qreal m_stAreaW;      // Width of the area (rectangle)
+		qreal m_stAreaH;      // Height of the area (rectangle)
+		qreal m_stAreaD;      // Diameter of area (circle)
+		QString m_stAreaUnit; // MWG Only "normalized"
 
 		// MP
 		// http://msdn.microsoft.com/en-us/library/ee719905%28VS.85%29.aspx
@@ -101,7 +114,7 @@ class XmpRegion
 		// Applied To Dimensions
 		int m_dimW; // mwg-rs:AppliedToDimensions/stDim:w
 		int m_dimH; // mwg-rs:AppliedToDimensions/stDim:h
-		enum XmpRegion::Unit m_dimUnit; // MWG Only "pixel"
+		QString m_dimUnit; // MWG Only "pixel"
 
 		// User's data
 		void *m_data;

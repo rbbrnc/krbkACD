@@ -13,7 +13,8 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
 	  m_image(0),
 	  m_exiv2(0),
-	  m_showRegions(false)
+	  m_showRegions(false),
+	  m_updateRegion(false)
 {
 	m_scene = new QGraphicsScene(this);
 	m_view  = new ImageGraphicsView(this);
@@ -107,21 +108,19 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
 
 	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
-//	connect(m_scene, SIGNAL(selectionChanged()), this, SLOT(sceneSelectionChanged()));
-
 	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRectRegion(const QRectF &)));
 }
 
 ImageViewManager::~ImageViewManager()
 {
-	if (m_image) {
-		delete m_image;
-	}
-
 	if (m_exiv2) {
+		saveImageRegions();
 		delete m_exiv2;
 	}
 
+	if (m_image) {
+		delete m_image;
+	}
 
 	delete m_scene;
 	delete m_view;
@@ -166,6 +165,8 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 // [SLOT public]
 void ImageViewManager::setFile(const QString &fileName)
 {
+	saveImageRegions();
+
 	QPixmap pixmap;
 	if (!pixmap.load(fileName)) {
 		setImage(QPixmap());
@@ -177,7 +178,6 @@ void ImageViewManager::setFile(const QString &fileName)
 		setImageRegions(fileName);
 		showImageRegions(m_showRegions);
 	}
-	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << fileName;
 }
 
 // [SLOT public]
@@ -187,8 +187,7 @@ void ImageViewManager::setImage(const QPixmap &pixmap)
 		delete m_image;
 		m_scene->clear();
 		m_view->reset();
-		m_regionList.clear();
-		m_xmpRegionList.clear();
+		m_regionHash.clear();
 	}
 
 	m_image = new ImageGraphicsItem(pixmap);
@@ -220,18 +219,41 @@ void ImageViewManager::next()
 // [SLOT public]
 void ImageViewManager::showImageRegions(bool show)
 {
-	QHash<RegionGraphicsItem *, XmpRegion>::const_iterator i = m_regionHash.constBegin();
-	while (i != m_regionHash.constEnd()) {
-		i.key()->setZValue((show) ? 1 : -1);
-		++i;
+	if (!m_regionHash.isEmpty()) {
+		QHashIterator<RegionGraphicsItem *, XmpRegion> i(m_regionHash);
+		while (i.hasNext()) {
+			i.next();
+			i.key()->setZValue((show) ? 1 : -1);
+		}
 	}
-/*
-	for (int i = 0; i < m_regionList.count(); ++i) {
-		m_regionList.at(i)->setZValue((show) ? 1 : -1);
-	}
-*/
 
 	m_showRegions = show;
+}
+
+bool ImageViewManager::saveImageRegions()
+{
+	qDebug() << __PRETTY_FUNCTION__ << "Update:" << m_updateRegion;
+	if ((!m_updateRegion) || (!m_exiv2)) {
+		// No update needed
+		return true;
+	}
+
+	QList<XmpRegion> rl;
+	if (!m_regionHash.isEmpty()) {
+		QHashIterator<RegionGraphicsItem *, XmpRegion> i(m_regionHash);
+		while (i.hasNext()) {
+			i.next();
+			rl.append(i.value());
+		}
+	}
+
+	if (m_exiv2->setXmpRegionList(rl)) {
+		qDebug() << __PRETTY_FUNCTION__ << "Call save";
+		m_updateRegion = false;
+		return m_exiv2->save();
+	}
+
+	return false;
 }
 
 // [private]
@@ -243,12 +265,7 @@ void ImageViewManager::addRectRegion(XmpRegion &region)
 	connect(ir, SIGNAL(editRequest()), this, SLOT(editRectRegion()));
 
 	m_scene->addItem(ir);
-
-//	region.setData((void *) ir);
-//	m_xmpRegionList.append(region);
-
 	m_regionHash.insert(ir, region);
-//	m_regionList.append(static_cast<QGraphicsRectItem *>(ir));
 }
 
 // [SLOT private]
@@ -256,6 +273,10 @@ void ImageViewManager::addRectRegion(XmpRegion &region)
 // rect = rubberband selection
 void ImageViewManager::addRectRegion(const QRectF &rect)
 {
+	if (!rect.isValid()) {
+		return;
+	}
+
 	XmpRegion r;
 	r.setFormat(XmpRegion::MWG);
 
@@ -265,6 +286,11 @@ void ImageViewManager::addRectRegion(const QRectF &rect)
 
 	r.setRegion(rect, imageSize);
 	addRectRegion(r);
+
+	qDebug() << __PRETTY_FUNCTION__;
+	r.debug();
+
+	m_updateRegion = true;
 }
 
 // [SLOT private]
@@ -287,26 +313,9 @@ void ImageViewManager::removeRectRegion()
 		return;
 	}
 
-
-#if 0
-	for (int i = 0; i < m_xmpRegionList.count(); ++i) {
-		if (ri == static_cast<RegionGraphicsItem *>(m_xmpRegionList.at(i).data())) {
-			qDebug() << __PRETTY_FUNCTION__ << "Delete item:" << i;
-			m_xmpRegionList.removeAt(i);
-		}
-	}
-
-	// XXX: we need to update m_regionList!
-	for (int i = 0; i < m_regionList.count(); ++i) {
-		if (ri->boundingRect() == m_regionList.at(i)->boundingRect()) {
-			qDebug() << __PRETTY_FUNCTION__ << "Delete item:" << i;
-			m_regionList.removeAt(i);
-		}
-	}
-#endif
-
 	m_regionHash.remove(ri);
 	m_scene->removeItem(dynamic_cast<QGraphicsItem *>(ri));
+	m_updateRegion = true;
 }
 
 // [SLOT private]
@@ -317,21 +326,14 @@ void ImageViewManager::editRectRegion()
 	if (m_regionHash.contains(ri)) {
 		RegionEditDialog dlg(m_regionHash.value(ri), this);
 		dlg.exec();
+		// TODO:
+		//m_updateRegion = true;
 	}
-#if 0
-	// XXX: we need to update m_regionList!
-	for (int i = 0; i < m_xmpRegionList.count(); ++i) {
-		if (ri == static_cast<RegionGraphicsItem *>(m_xmpRegionList.at(i).data())) {
-			qDebug() << __PRETTY_FUNCTION__ << "Edit item:" << i;
-			RegionEditDialog dlg(&m_xmpRegionList.at(i), this);
-			dlg.exec();
-		}
-	}
-#endif
 }
 
 void ImageViewManager::setImageRegions(const QString &fileName)
 {
+	m_updateRegion = false;
 	if (!m_exiv2->load(fileName)) {
 		return;
 	}
@@ -348,13 +350,3 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 		addRectRegion(r);
 	}
 }
-
-#if 0
-void ImageViewManager::sceneSelectionChanged()
-{
-	QList<QGraphicsItem *> list = m_scene->selectedItems();
-	for (int i = 0; i < list.count(); ++i) {
-		qDebug() << __PRETTY_FUNCTION__ << list.at(i);
-	}
-}
-#endif

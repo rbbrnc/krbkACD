@@ -5,6 +5,8 @@
 
 XmpRegion::XmpRegion()
 {
+	m_stAreaUnit = "normalized";
+	m_dimUnit    = "pixel";
 }
 
 XmpRegion::XmpRegion(const XmpRegion& other)
@@ -21,6 +23,7 @@ XmpRegion::XmpRegion(const XmpRegion& other)
 	  m_stAreaW(other.m_stAreaW),
 	  m_stAreaH(other.m_stAreaH),
 	  m_stAreaD(other.m_stAreaD),
+	  m_stAreaUnit(other.m_stAreaUnit),
 	  m_personEmailDigest(other.m_personEmailDigest),
 	  m_personLiveCID(other.m_personLiveCID),
 	  m_barcodeValue(other.m_barcodeValue),
@@ -46,11 +49,13 @@ XmpRegion& XmpRegion::operator=(const XmpRegion& other)
 
 	m_boundingRect = other.m_boundingRect;
 
-	m_stAreaX = other.m_stAreaX;
-	m_stAreaY = other.m_stAreaY;
-	m_stAreaW = other.m_stAreaW;
-	m_stAreaH = other.m_stAreaH;
-	m_stAreaD = other.m_stAreaD;
+	// set stArea
+	m_stAreaX    = other.m_stAreaX;
+	m_stAreaY    = other.m_stAreaY;
+	m_stAreaW    = other.m_stAreaW;
+	m_stAreaH    = other.m_stAreaH;
+	m_stAreaD    = other.m_stAreaD;
+	m_stAreaUnit = other.m_stAreaUnit;
 
 	m_personEmailDigest = other.m_personEmailDigest;
 	m_personLiveCID     = other.m_personLiveCID;
@@ -65,6 +70,33 @@ XmpRegion& XmpRegion::operator=(const XmpRegion& other)
 	m_data = other.m_data;
 
 	return *this;
+}
+
+enum XmpRegion::Shape XmpRegion::shape() const
+{
+	return m_shape;
+}
+
+qreal XmpRegion::stAreaX() const
+{
+	return m_stAreaX;
+}
+qreal XmpRegion::stAreaY() const
+{
+	return m_stAreaY;
+}
+qreal XmpRegion::stAreaW() const
+{
+	return m_stAreaW;
+}
+qreal XmpRegion::stAreaH() const
+{
+	return m_stAreaH;
+}
+
+qreal XmpRegion::stAreaD() const
+{
+	return m_stAreaD;
 }
 
 void XmpRegion::setFormat(enum XmpRegion::Format format)
@@ -105,6 +137,26 @@ QString XmpRegion::name() const
 void XmpRegion::setName(const QString &name)
 {
 	m_name = name;
+}
+
+QString XmpRegion::areaUnit() const
+{
+	return m_stAreaUnit;
+}
+
+void XmpRegion::setAreaUnit(const QString &unit)
+{
+	m_stAreaUnit = unit;
+}
+
+QString XmpRegion::dimensionUnit() const
+{
+	return m_dimUnit;
+}
+
+void XmpRegion::setDimensionUnit(const QString &unit)
+{
+	m_dimUnit = unit;
 }
 
 QString XmpRegion::personEmailDigest() const

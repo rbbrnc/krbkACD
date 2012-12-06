@@ -63,6 +63,7 @@ class QExiv2
 		bool hasXmpRegionTag() const;
 
 		QList<XmpRegion> xmpRegionList() const;
+		bool setXmpRegionList(const QList<XmpRegion> &regions);
 
 		bool removeXmpTag(const char *xmpTagName);
 		QByteArray xmpPacket() const;
@@ -72,6 +73,7 @@ class QExiv2
 
 		QStringList xmpTagStringBag(const char* xmpTagName, bool escapeCR) const;
 		bool setXmpTagStringBag(const char *xmpTagName, const QStringList &bag);
+		bool setXmpTagBag(const char *xmpTagName);
 
 		QStringList xmpTagStringSeq(const char *xmpTagName, bool escapeCR) const;
 		bool setXmpTagStringSeq(const char *xmpTagName, const QStringList &seq);
@@ -95,6 +97,7 @@ class QExiv2
 	private:
 		QList<XmpRegion> xmpMWGRegionList() const;
 		QList<XmpRegion> xmpMPRegionList() const;
+		void xmpEraseRegionList();
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

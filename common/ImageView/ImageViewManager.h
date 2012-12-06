@@ -33,10 +33,10 @@ class ImageViewManager : public QWidget
 		void next();
 
 		void showImageRegions(bool show);
+		bool saveImageRegions();
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
-		//void sceneSelectionChanged();
 		void enableRegionSelection(bool enable);
 
 		void addRectRegion(const QRectF &rect);
@@ -46,19 +46,13 @@ class ImageViewManager : public QWidget
 	private:
 		ImageGraphicsItem *m_image;
 		ImageGraphicsView *m_view;
-
-		QGraphicsScene *m_scene;
-
-		int m_currentFile;
-		QStringList m_fileList;
-		QList<QGraphicsRectItem *> m_regionList;
-
-		QList<XmpRegion> m_xmpRegionList;
+		QGraphicsScene    *m_scene;
 
 		QExiv2 *m_exiv2;
 		bool m_showRegions;
 
 		QHash<RegionGraphicsItem *, XmpRegion> m_regionHash;
+		bool m_updateRegion;
 };
 
 #endif
