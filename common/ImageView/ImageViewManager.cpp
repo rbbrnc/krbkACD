@@ -180,19 +180,6 @@ void ImageViewManager::setFile(const QString &fileName)
 	//qDebug() << m_currentFile << "/" << m_fileList.count() << ":" << fileName;
 }
 
-#if 10	// DEPRECATED
-// [SLOT public]
-void ImageViewManager::setFiles(const QStringList &files)
-{
-	m_currentFile = 0;
-	m_fileList = files;
-
-	if (m_fileList.count() > 0) {
-		setFile(m_fileList.at(m_currentFile));
-	}
-}
-#endif
-
 // [SLOT public]
 void ImageViewManager::setImage(const QPixmap &pixmap)
 {

@@ -8,7 +8,7 @@
 #include <QDateTime>
 
 // For Tags
-#include "PTag.h"
+//#include "PTag.h"
 
 #include "XmpRegion.h"
 
@@ -95,11 +95,6 @@ class QExiv2
 	private:
 		QList<XmpRegion> xmpMWGRegionList() const;
 		QList<XmpRegion> xmpMPRegionList() const;
-
-	public:
-		// XXX PRELIMINARY!!!
-		Q_DECL_DEPRECATED QList<PTag> xmpPTags() const;
-		Q_DECL_DEPRECATED QList<PTag> xmpMWG_RegionsTags() const;
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

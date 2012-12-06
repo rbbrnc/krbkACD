@@ -12,17 +12,10 @@ RCC_DIR = resources
 
 SOURCES += QExiv2.cpp \
 	   QExiv2_p.cpp \
-	   PTag.cpp \
-	   MwgRegion.cpp \
-	   MPRegion.cpp \
 	   XmpRegion.cpp
 
 HEADERS += QExiv2.h \
 	   QExiv2_p.h \
-	   PTag.h \
-	   PTag_p.h \
-	   MwgRegion.h \
-	   MPRegion.h \
 	   XmpRegion.h
 
 CONFIG += staticlib

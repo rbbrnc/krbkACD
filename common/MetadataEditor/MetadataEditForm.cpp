@@ -263,22 +263,19 @@ void MetadataEditForm::updateLocations()
 	ui->lcMapDatum->setText("");
 
 	// XMP:LocationCreatedWorldRegion
-	ui->lcWorldRegion->setText("");
-
 	// XMP:LocationCreatedCountryCode
-	ui->lcCountryCode->setText(m_d->xmpTagString("Xmp.iptcExt.CountryCode", false));
-
 	// XMP:LocationCreatedCountryName
-	ui->lcCountryName->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName", false));
-
 	// XMP:LocationCreatedProvinceState
-	ui->lcProvinceState->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:ProvinceState", false));
-
 	// XMP:LocationCreatedCity
-	ui->lcCity->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:City", false));
-
 	// XMP:LocationCreatedSublocation
-	ui->lcSublocation->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:Sublocation", false));
+	if (!m_d->xmpTagString("Xmp.iptcExt.LocationCreated", false).isNull()) {
+		ui->lcWorldRegion->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:WorldRegion", false));
+		ui->lcCountryCode->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryCode", false));
+		ui->lcCountryName->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName", false));
+		ui->lcProvinceState->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:ProvinceState", false));
+		ui->lcCity->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:City", false));
+		ui->lcSublocation->setText(m_d->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:Sublocation", false));
+	}
 
 	// Location Shown
 	// This information describes the location of the main subject being shown
@@ -293,12 +290,18 @@ void MetadataEditForm::updateLocations()
 	ui->lsMapDatum->setText("");
 
 	// XMP:LocationShownWorldRegion
-	ui->lsWorldRegion->setText("");
-	ui->lsCountryCode->setText("");
-
-	ui->lsCountryName->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryName", false));
-	ui->lsProvinceState->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:ProvinceState", false));
-	ui->lsCity->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:City", false));
-	ui->lsSublocation->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:Sublocation", false));
+	// XMP:LocationCreatedCountryCode
+	// XMP:LocationCreatedCountryName
+	// XMP:LocationCreatedProvinceState
+	// XMP:LocationCreatedCity
+	// XMP:LocationCreatedSublocation
+	if (!m_d->xmpTagString("Xmp.iptcExt.LocationShown", false).isNull()) {
+		ui->lsWorldRegion->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:WorldRegion", false));
+		ui->lsCountryCode->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryCode", false));
+		ui->lsCountryName->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryName", false));
+		ui->lsProvinceState->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:ProvinceState", false));
+		ui->lsCity->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:City", false));
+		ui->lsSublocation->setText(m_d->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:Sublocation", false));
+	}
 }
 

@@ -15,6 +15,8 @@ CopyMoveDialog::CopyMoveDialog(const QStringList &files, const QString &toPath, 
 	QDialog(parent),
 	ui(new Ui::CopyMoveDialog)
 {
+	Q_UNUSED(files)
+
 	ui->setupUi(this);
 	ui->srcLabel->setText("*");
 	ui->destLabel->setText(toPath);

@@ -27,7 +27,6 @@ class ImageViewManager : public QWidget
 
 	public slots:
 		void setFile(const QString &fileName);
-		Q_DECL_DEPRECATED void setFiles(const QStringList &files);
 		void setImage(const QPixmap &pixmap);
 
 		void previous();
