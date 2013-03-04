@@ -23,6 +23,7 @@ class MainWindow : public QMainWindow
 	private slots:
 		void startProcess();
 		void pausePlayer();
+		void stopPlayer();
 
 		void readStdout();
 		void readStderr();

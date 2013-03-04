@@ -13,6 +13,7 @@ MainWindow::MainWindow(const QString &file, QWidget *parent) :
 	m_process = new QProcess(this);
 	connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startProcess()));
 	connect(ui->pauseButton, SIGNAL(clicked()), this, SLOT(pausePlayer()));
+	connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlayer()));
 
 
 	connect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdout()));
@@ -32,7 +33,7 @@ void MainWindow::readStdout()
 	QStringList lines = QString::fromLocal8Bit(m_process->readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
 	for (int i = 0; i < lines.count(); i++) {
 		lines[i].remove("\r");
-		qDebug("out: \"%s\"", qPrintable(lines[i]));
+		//qDebug("out: \"%s\"", qPrintable(lines[i]));
 		parsePlayerOutputLine(lines[i]);
 		//emit readStandardOutput(lines[i]);
 	}
@@ -43,7 +44,7 @@ void MainWindow::readStderr()
 	QStringList lines = QString::fromLocal8Bit(m_process->readAllStandardError()).split("\n", QString::SkipEmptyParts);
 	for (int i = 0; i < lines.count(); i++) {
 		lines[i].remove("\r");
-		qDebug("err: \"%s\"", qPrintable(lines[i]));
+		//qDebug("err: \"%s\"", qPrintable(lines[i]));
 		parsePlayerOutputLine(lines[i]);
 		//emit readStandardError(lines[i]);
 	}
@@ -99,6 +100,11 @@ void MainWindow::pausePlayer()
 	m_process->write("stream_time_pos\n");
 //frame_step
 
+}
+
+void MainWindow::stopPlayer()
+{
+	m_process->write("stop\n");
 }
 
 void MainWindow::quitPlayer()
