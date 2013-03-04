@@ -6,4 +6,5 @@ SUBDIRS  = \
 	MetadataModelView \
 	core_example \
 	krbkacdApp \
-	krbkVideoApp
+	krbkVideoApp \
+	playerTest
