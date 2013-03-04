@@ -4,6 +4,7 @@ MOC_DIR = mocs
 UI_DIR = ui
 RCC_DIR = resources
 
+DESTDIR = ../..
 SOURCES += main.cpp \
         mainwindow.cpp
 
