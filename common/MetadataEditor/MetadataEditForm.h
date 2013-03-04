@@ -1,8 +1,6 @@
 #ifndef METADATAEDITFORM_H
 #define METADATAEDITFORM_H
 
-#include <QWidget>
-
 #include <QStringListModel>
 #include <QSortFilterProxyModel>
 

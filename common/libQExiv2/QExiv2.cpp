@@ -58,7 +58,7 @@ bool QExiv2::load(const QString& filePath)
 	// Check if file exists and is readable!!!!
 	QFileInfo info(filePath);
 	if (!info.isReadable()) {
-		qDebug() << "File '" << info.filePath().toAscii().constData() << "' is not readable.";
+		qDebug() << "File '" << info.filePath().toLatin1().constData() << "' is not readable.";
 		return false;
 	}
 

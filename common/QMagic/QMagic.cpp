@@ -27,7 +27,7 @@ static QString getMagic(const QString &file, int flags)
 		if (magic_load(cookie, NULL /*const char *filename*/) != 0) {
 			qDebug() << __PRETTY_FUNCTION__ << "Error loading magic data";
 		} else {
-			const char *s = magic_file(cookie, file.toAscii().constData());
+			const char *s = magic_file(cookie, file.toLatin1().constData());
 			if (s == NULL) {
 				qDebug() << __PRETTY_FUNCTION__
 					 << "FILE:" << qPrintable(file)

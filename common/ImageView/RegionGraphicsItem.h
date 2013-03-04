@@ -2,7 +2,7 @@
 #define REGION_GRAPHICS_ITEM_H
 
 #include <QGraphicsRectItem>
-
+#include <QGraphicsSceneContextMenuEvent>
 #include "XmpRegion.h"
 
 class RegionGraphicsItem : public QObject, public QGraphicsRectItem

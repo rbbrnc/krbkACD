@@ -1,5 +1,6 @@
 #include <QtGui>
 #include <QDebug>
+#include <QMenu>
 
 #include "RegionGraphicsItem.h"
 

@@ -164,7 +164,7 @@ void MetadataEditForm::xmpDcSubjectDoubleClicked(const QModelIndex &index)
 
 void MetadataEditForm::updateImageComment()
 {
-	if (m_d->setImgComment(ui->imageComment->toPlainText().toAscii())) {
+	if (m_d->setImgComment(ui->imageComment->toPlainText().toLatin1())) {
 		m_metadataChanged = true;
 	} else {
 		showErrorMessage(tr("Cannot set Image Comment"));
@@ -176,7 +176,7 @@ void MetadataEditForm::updateLangAltString(const QString &text)
 	// Get the tag to change (use object name to store the tag)
 	QString tag = sender()->objectName().replace('_', '.');
 
-	if (m_d->setXmpTagStringLangAlt(tag.toAscii(), text, QString())) {
+	if (m_d->setXmpTagStringLangAlt(tag.toLatin1(), text, QString())) {
 		m_metadataChanged = true;
 	} else {
 		showErrorMessage(tr("Cannot set %1").arg(tag));
@@ -190,7 +190,7 @@ void MetadataEditForm::updateLangAltText()
 	// Get the tag to change (use object name to store the tag)
 	QString tag = l->objectName().replace('_', '.');
 
-	if (m_d->setXmpTagStringLangAlt(tag.toAscii(), l->toPlainText(), QString())) {
+	if (m_d->setXmpTagStringLangAlt(tag.toLatin1(), l->toPlainText(), QString())) {
 		m_metadataChanged = true;
 	} else {
 		showErrorMessage(tr("Cannot set %1").arg(tag));
