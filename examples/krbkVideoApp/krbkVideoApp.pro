@@ -1,21 +1,11 @@
 TEMPLATE = app
-TARGET = videotest
-DEPENDPATH += .
+TARGET = krbkvideo
+DESTDIR = ../..
 
-SOURCES += \
-	main.cpp \
-	VideoDecode.cpp \
-	AvManager.cpp
+COMMON_PATH=../../common
+include ($$COMMON_PATH/Video/video.pri)
 
-HEADERS += \
-	VideoDecode.h \
-	AvManager.h
-
-FORMS += \
-	AvManager.ui
-
-QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -O0 -g -ggdb
-
+SOURCES += main.cpp
 CONFIG += silent
 
 unix:contains(QT_ARCH, powerpc): {

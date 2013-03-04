@@ -5,4 +5,5 @@ SUBDIRS  = \
 	LineEditWidget \
 	MetadataModelView \
 	core_example \
-	krbkacdApp
+	krbkacdApp \
+	krbkVideoApp
