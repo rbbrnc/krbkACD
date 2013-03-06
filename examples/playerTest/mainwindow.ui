@@ -49,12 +49,29 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QPushButton" name="stepButton">
+        <property name="text">
+         <string>Step</string>
+        </property>
+       </widget>
+      </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="lowerPositionLabel">
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QSlider" name="horizontalSlider">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="tickPosition">
+       <enum>QSlider::NoTicks</enum>
       </property>
      </widget>
     </item>

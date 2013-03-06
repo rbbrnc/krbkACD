@@ -14,6 +14,7 @@ MainWindow::MainWindow(const QString &file, QWidget *parent) :
 	connect(ui->startButton, SIGNAL(clicked()), this, SLOT(startProcess()));
 	connect(ui->pauseButton, SIGNAL(clicked()), this, SLOT(pausePlayer()));
 	connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlayer()));
+	connect(ui->stepButton, SIGNAL(clicked()), this, SLOT(stepPlayer()));
 
 
 	connect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdout()));
@@ -33,7 +34,7 @@ void MainWindow::readStdout()
 	QStringList lines = QString::fromLocal8Bit(m_process->readAllStandardOutput()).split("\n", QString::SkipEmptyParts);
 	for (int i = 0; i < lines.count(); i++) {
 		lines[i].remove("\r");
-		//qDebug("out: \"%s\"", qPrintable(lines[i]));
+		qDebug("out: \"%s\"", qPrintable(lines[i]));
 		parsePlayerOutputLine(lines[i]);
 		//emit readStandardOutput(lines[i]);
 	}
@@ -44,7 +45,7 @@ void MainWindow::readStderr()
 	QStringList lines = QString::fromLocal8Bit(m_process->readAllStandardError()).split("\n", QString::SkipEmptyParts);
 	for (int i = 0; i < lines.count(); i++) {
 		lines[i].remove("\r");
-		//qDebug("err: \"%s\"", qPrintable(lines[i]));
+		qDebug("err: \"%s\"", qPrintable(lines[i]));
 		parsePlayerOutputLine(lines[i]);
 		//emit readStandardError(lines[i]);
 	}
@@ -58,7 +59,8 @@ void MainWindow::parsePlayerOutputLine(const QString &line)
 	if (rx_av.indexIn(line) > -1) {
 		double sec = rx_av.cap(1).toDouble();
 		//qDebug("cap(1): '%s'", rx_av.cap(1).toUtf8().data() );
-		qDebug("sec: %f", sec);
+		//qDebug("sec: %f", sec);
+		ui->lowerPositionLabel->setText(QString::number(sec)); // , char format = 'g', int precision = 6 )sec);
 	}
 
 	// Check for frame
@@ -97,14 +99,17 @@ void MainWindow::parsePlayerOutputLine(const QString &line)
 void MainWindow::pausePlayer()
 {
 	m_process->write("pause\n");
-	m_process->write("stream_time_pos\n");
-//frame_step
-
+	//m_process->write("stream_time_pos\n");
 }
 
 void MainWindow::stopPlayer()
 {
 	m_process->write("stop\n");
+}
+
+void MainWindow::stepPlayer()
+{
+	m_process->write("frame_step\n");
 }
 
 void MainWindow::quitPlayer()
@@ -119,25 +124,29 @@ void MainWindow::quitPlayer()
 
 void MainWindow::startProcess()
 {
-	qDebug() << winId() << m_file;
-
 	if (m_process->state() == QProcess::Running) {
 		quitPlayer();
 	}
 
 	m_streamPosition = 0;
-
-	//QString winid = "-wid " + QString::number((int) winId());
-
 	QStringList arguments;
-	//arguments << "mplayer" << winid << m_file;
-	//arguments << "mplayer" << "-wid" << QString::number((int) winId()) << m_file;
-	arguments << "-nogui" << "-slave" << "-idle" << "-wid" << QString::number((int) ui->processWidget->winId()) << m_file;
+	arguments << "-slave"
+		  << "-idle"
+		  << "-wid" << QString::number((int) ui->processWidget->winId());
+		  //<< "-quiet";
+		  //<< m_file;
+
 	qDebug() << arguments;
 
+//	m_process->write("pausing_keep_force pause\n");
 //	m_process->start("mrxvt -into "+QString::number((int)ui->processWidget->winId()));
-//	m_process->start("mplayer -wid " + QString::number((int)ui->processWidget->winId()));
-
 	m_process->start("mplayer", arguments);
+
+	// loadfile <file|url> <append>
+	QString file = "pausing_keep_force loadfile " + m_file + " 1\n";
+	m_process->write(file.toLatin1());
+
+	m_process->write("pause\n");
+	m_process->write("get_time_length\n");
 
 }
