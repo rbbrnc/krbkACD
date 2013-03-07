@@ -1,7 +1,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QTime>
 #include <QDebug>
+#include <math.h>
 
 MainWindow::MainWindow(const QString &file, QWidget *parent) :
 	QMainWindow(parent),
@@ -56,11 +58,28 @@ void MainWindow::parsePlayerOutputLine(const QString &line)
 	static QRegExp rx_av("^[AV]: *([0-9,:.-]+)");
 	static QRegExp rx_frame("^[AV]:.* (\\d+)\\/.\\d+");// [0-9,.]+");
 
+	static QRegExp rx_length("^ANS_LENGTH=*([0-9,:.-]+)");
+	if (rx_length.indexIn(line) > -1) {
+		double sec = rx_length.cap(1).toDouble();
+		double msec = (sec - (long (sec))) * 1000;
+		QTime t(0, 0, 0);
+		t = t.addSecs(sec);
+		t = t.addMSecs(msec);
+		//ui->topPositionLabel->setText(QString::number(sec)); // , char format = 'g', int precision = 6 )sec);
+		ui->topPositionLabel->setText(t.toString("hh:mm:ss.zzz"));
+	}
+
 	if (rx_av.indexIn(line) > -1) {
 		double sec = rx_av.cap(1).toDouble();
+		double msec = (sec - (long (sec))) * 1000;
 		//qDebug("cap(1): '%s'", rx_av.cap(1).toUtf8().data() );
 		//qDebug("sec: %f", sec);
-		ui->lowerPositionLabel->setText(QString::number(sec)); // , char format = 'g', int precision = 6 )sec);
+		QTime t(0, 0, 0);
+		t = t.addSecs(sec);
+		t = t.addMSecs(msec);
+
+		ui->lowerPositionLabel->setText(t.toString("hh:mm:ss.zzz"));
+//		ui->lowerPositionLabel->setText(QString::number(sec)); // , char format = 'g', int precision = 6 )sec);
 	}
 
 	// Check for frame
