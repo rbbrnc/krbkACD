@@ -1,8 +1,6 @@
 #include <QCoreApplication>
 #include <QDebug>
 
-#include "detect.h"
-#include "mwgRegion.h"
 #include "mwgRegionList.h"
 
 int main(int argc, char *argv[])
@@ -14,29 +12,14 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	ObjectDetect *o = new ObjectDetect();
-	o->setSource(argv[1]);
+	MwgRegionList rl;
+	rl.detectFromFile(QString(argv[1]));
 
-	int count = o->detect();
-
-	if (count > 0) {
-		QList<QRect> regions = o->objects();
-
-		MwgRegionList rl;
-
-		int imgW = o->sourceWidth();
-		int imgH = o->sourceHeight();
-
-		for (int i = 0; i < regions.count(); i++) {
-			rl.append(MwgRegion(regions.at(i), QSize(imgW, imgH), MwgRegion::Face));
-		}
-
+	if (rl.count() > 0) {
 		qDebug() << "Objects Found:" << rl;
 	} else {
 		qDebug() << "No Objects Found";
 	}
-
-	delete o;
 
 	return 0;
 }

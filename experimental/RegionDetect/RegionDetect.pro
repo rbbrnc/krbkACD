@@ -12,14 +12,13 @@ RCC_DIR = resources
 
 SOURCES += main.cpp \
 	detect.cpp \
-	mwgRegion.cpp
+	mwgRegion.cpp \
+	mwgRegionList.cpp
 
 HEADERS += \
 	detect.h \
 	mwgRegion.h \
 	mwgRegionList.h
-
-#objectdetect.h \
 
 LIBS += -L$$OPENCV_PATH/lib -lopencv_core -lopencv_highgui -lopencv_objdetect
 CONFIG += silent
