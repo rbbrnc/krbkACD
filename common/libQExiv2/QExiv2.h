@@ -7,14 +7,10 @@
 #include <QImage>
 #include <QDateTime>
 
-// For Tags
-//#include "PTag.h"
-
 #include "XmpRegion.h"
 
 // Forward decl.
 class QExiv2DataPrivate;
-
 
 struct exifData {
 	QString family;
@@ -94,6 +90,9 @@ class QExiv2
 		QList<struct exifData> exifDataList() const;
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
+
+
+		QList<XmpRegion> xmpMWGRegionList_2() const;
 
 	private:
 		QList<XmpRegion> xmpMWGRegionList() const;

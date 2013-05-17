@@ -18,7 +18,8 @@ SOURCES += \
 	exif_preview.cpp \
 	img_comment.cpp \
 	iptc.cpp \
-	xmp.cpp
+	xmp.cpp \
+	xmp_regions.cpp
 
 HEADERS += \
 	QExiv2.h \
