@@ -26,7 +26,7 @@ bool QExiv2::hasXmpRegionTag() const
 	return false;
 }
 
-void QExiv2::xmpEraseRegionList()
+void QExiv2::xmpEraseRegions()
 {
 	try {
 		Exiv2::XmpData &md = d->xmpMetadata; // d->image->xmpData();
@@ -40,9 +40,28 @@ void QExiv2::xmpEraseRegionList()
 			}
 		}
 	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError(QString("Cannot Erase Xmp tag '%1'using Exiv2 ").arg("xmpTagName"), e);
+		d->printExiv2ExceptionError(QString("Cannot Erase Xmp tag '%1'using Exiv2 ").arg(__func__), e);
 	}
 }
+
+QList<XmpRegion> QExiv2::xmpRegionList() const
+{
+	QList<XmpRegion> regions;
+	if (d->xmpMetadata.empty()) {
+		return regions;
+	}
+
+	if (!(xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty())) {
+		regions = xmpMWGRegionList();
+	}
+
+	if (!(xmpTagString("Xmp.MP.RegionInfo", false).isEmpty())) {
+		regions += xmpMPRegionList();
+	}
+
+	return regions;
+}
+
 
 QList<XmpRegion> QExiv2::xmpMWGRegionList_2() const
 {
@@ -68,7 +87,6 @@ QList<XmpRegion> QExiv2::xmpMWGRegionList_2() const
 
 QList<XmpRegion> QExiv2::xmpMWGRegionList() const
 {
-	return xmpMWGRegionList_2();
 	QList<XmpRegion> regions;
 	QString s;
 
@@ -124,6 +142,7 @@ QList<XmpRegion> QExiv2::xmpMWGRegionList() const
 			break;
 		}
 
+		// stArea x,y,w,h,unit
 		s = xmpTagString(stAreaX.arg(i).toLatin1(), false);
 		if (s.isEmpty()) {
 			qDebug() << "Invalid region" << i << "-- stArea:x Missing";
@@ -214,28 +233,10 @@ QList<XmpRegion> QExiv2::xmpMPRegionList() const
 	return regions;
 }
 
-QList<XmpRegion> QExiv2::xmpRegionList() const
-{
-	QList<XmpRegion> regions;
-	if (d->xmpMetadata.empty()) {
-		return regions;
-	}
-
-	if (!(xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty())) {
-		regions = xmpMWGRegionList();
-	}
-
-	if (!(xmpTagString("Xmp.MP.RegionInfo", false).isEmpty())) {
-		regions += xmpMPRegionList();
-	}
-
-	return regions;
-}
-
 bool QExiv2::setXmpRegionList(const QList<XmpRegion> &regions)
 {
 	if (regions.isEmpty()) {
-		xmpEraseRegionList();
+		xmpEraseRegions();
 		return true;
 	}
 

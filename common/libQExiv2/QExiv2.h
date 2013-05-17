@@ -56,13 +56,6 @@ class QExiv2
 		// XMP Functions
 		bool isXmpWritable() const;
 		bool hasXmp() const;
-		bool hasXmpRegionTag() const;
-
-		QList<XmpRegion> xmpRegionList() const;
-		bool setXmpRegionList(const QList<XmpRegion> &regions);
-
-		bool removeXmpTag(const char *xmpTagName);
-		QByteArray xmpPacket() const;
 
 		QString xmpTagString(const char *xmpTagName, bool escapeCR) const;
 		bool setXmpTagString(const char *xmpTagName, const QString &value);
@@ -76,6 +69,17 @@ class QExiv2
 
 		QString xmpTagStringLangAlt(const char *xmpTagName, const QString &langAlt, bool escapeCR);
 		bool setXmpTagStringLangAlt(const char *xmpTagName, const QString &value, const QString &langAlt);
+
+		// XMP Regions
+		bool hasXmpRegionTag() const;
+
+		void xmpEraseRegions();
+		QList<XmpRegion> xmpRegionList() const;
+		bool setXmpRegionList(const QList<XmpRegion> &regions);
+
+		bool removeXmpTag(const char *xmpTagName);
+		QByteArray xmpPacket() const;
+
 
 		// Image Comment Functions
 		bool isImgCommentWritable() const;
@@ -97,7 +101,6 @@ class QExiv2
 	private:
 		QList<XmpRegion> xmpMWGRegionList() const;
 		QList<XmpRegion> xmpMPRegionList() const;
-		void xmpEraseRegionList();
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;
