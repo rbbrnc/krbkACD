@@ -25,6 +25,8 @@ class QExiv2DataPrivate : public QSharedData
 
 		bool readMetadata();
 
+		bool isMetadataWritable(Exiv2::MetadataId mid) const;
+
 	public:
 		bool	metadataValid;
 

@@ -120,14 +120,7 @@ bool QExiv2::hasXmp() const
 
 bool QExiv2::isXmpWritable() const
 {
-	try {
-	        Exiv2::AccessMode mode = d->image->checkMode(Exiv2::mdXmp);
-		return (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
-	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError(QString("Cannot check XMP access mode using Exiv2"), e);
-	}
-
-	return false;
+	return d->isMetadataWritable(Exiv2::mdXmp);
 }
 
 bool QExiv2::removeXmpTag(const char *xmpTagName)
@@ -640,15 +633,7 @@ bool QExiv2::clearImgComment()
 
 bool QExiv2::isImgCommentWritable() const
 {
-	try {
-		Exiv2::AccessMode mode = d->image->checkMode(Exiv2::mdComment);
-		return (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
-
-	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError(QString("Cannot check Comment access mode using Exiv2"), e);
-	}
-
-	return false;
+	return d->isMetadataWritable(Exiv2::mdComment);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -656,15 +641,7 @@ bool QExiv2::isImgCommentWritable() const
 //////////////////////////////////////////////////////////////////////////////////////////
 bool QExiv2::isIptcWritable() const
 {
-	try {
-		Exiv2::AccessMode mode = d->image->checkMode(Exiv2::mdIptc);
-		return (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
-
-	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError(QString("Cannot check IPTC access mode using Exiv2"), e);
-	}
-
-	return false;
+	return d->isMetadataWritable(Exiv2::mdIptc);
 }
 
 bool QExiv2::hasIptc() const
@@ -690,15 +667,7 @@ bool QExiv2::clearIptc()
 //////////////////////////////////////////////////////////////////////////////////////////
 bool QExiv2::isExifWritable() const
 {
-	try {
-		Exiv2::AccessMode mode = d->image->checkMode(Exiv2::mdExif);
-		return (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
-
-	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError(QString("Cannot check EXIF access mode using Exiv2"), e);
-	}
-
-	return false;
+	return d->isMetadataWritable(Exiv2::mdExif);
 }
 
 bool QExiv2::hasExif() const
