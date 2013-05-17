@@ -88,6 +88,7 @@ class QExiv2
 		QByteArray imgComment() const;
 		bool setImgComment(const QByteArray& data);
 
+		// Exif preview (thumbnail) image
 		QImage previewImage() const;
 
 		QList<struct exifData> exifDataList() const;
