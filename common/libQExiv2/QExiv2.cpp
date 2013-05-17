@@ -179,7 +179,7 @@ QString QExiv2::xmpTagString(const char *xmpTagName, bool escapeCR) const
 	try {
 		Exiv2::XmpData xmpData(d->xmpMetadata);
 		Exiv2::XmpKey key(xmpTagName);
-		Exiv2::XmpData::iterator it = xmpData.findKey(key);
+		Exiv2::XmpData::const_iterator it = xmpData.findKey(key);
 		if (it != xmpData.end()) {
 			std::ostringstream os;
 			os << *it;
@@ -217,7 +217,7 @@ QStringList QExiv2::xmpTagStringBag(const char *xmpTagName, bool escapeCR) const
 	try {
 		Exiv2::XmpData xmpData(d->xmpMetadata);
 		Exiv2::XmpKey key(xmpTagName);
-		Exiv2::XmpData::iterator it = xmpData.findKey(key);
+		Exiv2::XmpData::const_iterator it = xmpData.findKey(key);
 		if (it != xmpData.end()) {
 			//qDebug() << __func__ << "TypeID: 0x" << QString::number(it->typeId(), 16);
 			if (it->typeId() == Exiv2::xmpBag) {
@@ -281,7 +281,7 @@ QStringList QExiv2::xmpTagStringSeq(const char *xmpTagName, bool escapeCR) const
 	try {
 		Exiv2::XmpData xmpData(d->xmpMetadata);
 		Exiv2::XmpKey key(xmpTagName);
-		Exiv2::XmpData::iterator it = xmpData.findKey(key);
+		Exiv2::XmpData::const_iterator it = xmpData.findKey(key);
 		if (it != xmpData.end()) {
 			if (it->typeId() == Exiv2::xmpSeq) {
 				QStringList seq;
@@ -917,7 +917,7 @@ QString QExiv2::exifTagString(const char *exifTagName, bool escapeCR) const
 	try {
 		Exiv2::ExifKey exifKey(exifTagName);
 		Exiv2::ExifData exifData(d->exifMetadata);
-		Exiv2::ExifData::iterator it = exifData.findKey(exifKey);
+		Exiv2::ExifData::const_iterator it = exifData.findKey(exifKey);
 		if (it != exifData.end()) {
 			std::ostringstream os;
 			os << *it;
@@ -951,7 +951,7 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 			qDebug() << "TAG Desc:" << QString(key.tagDesc().c_str());
 #endif
 
-			Exiv2::ExifData::iterator it = exifData.findKey(key);
+			Exiv2::ExifData::const_iterator it = exifData.findKey(key);
 			if (it != exifData.end()) {
 				QDateTime dateTime = QDateTime::fromString(it->toString().c_str(), Qt::ISODate);
 				if (dateTime.isValid()) {
