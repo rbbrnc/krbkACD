@@ -1,7 +1,7 @@
 TEMPLATE = app
 
-OPENCV_PATH = "/opt/opencv"
-INCLUDEPATH += $$OPENCV_PATH/include
+OPENCV_CXXFLAGS = $$system(pkg-config opencv --cflags)
+OPENCV_LDFLAGS  = $$system(pkg-config opencv --libs)
 
 #-- Places for generated files
 #DESTDIR = ../..
@@ -20,6 +20,13 @@ HEADERS += \
 	mwgRegion.h \
 	mwgRegionList.h
 
-LIBS += -L$$OPENCV_PATH/lib -lopencv_core -lopencv_highgui -lopencv_objdetect
+#-- Only needed libraries
+#OPENCV_PATH = "/opt/opencv"
+#LIBS += -L$$OPENCV_PATH/lib -lopencv_core -lopencv_highgui -lopencv_objdetect
+#-- Full openCV libraries
+LIBS += $$OPENCV_LDFLAGS
+QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code
+QMAKE_CXXFLAGS += $$OPENCV_CXXFLAGS
+
 CONFIG += silent
 
