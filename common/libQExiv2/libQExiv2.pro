@@ -19,11 +19,17 @@ SOURCES += \
 	img_comment.cpp \
 	iptc.cpp \
 	xmp.cpp \
-	xmp_regions.cpp
+	mwg_region.cpp \
+	mp_region.cpp \
+	mwg_region_list.cpp \
+	xmp_regions.cpp \
+	xmp_regions_compat.cpp
 
 HEADERS += \
 	QExiv2.h \
 	QExiv2_p.h \
+	mwg_region.h \
+	mwg_region_list.h \
 	XmpRegion.h
 
 CONFIG += staticlib

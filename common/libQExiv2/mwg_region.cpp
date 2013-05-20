@@ -1,17 +1,15 @@
 #include <QString>
 #include <QRectF>
-
 #include <QDebug>
 
-#include "mwgRegion.h"
+#include "mwg_region.h"
 
 MwgRegion::MwgRegion(const QRect &area, const QSize &dim, MwgRegion::Type type)
+	: m_type(type),
+	  m_stDimUnit(MwgRegion::Pixel),
+	  m_stAreaUnit(MwgRegion::Normalized),
+	  m_focusUsage(MwgRegion::NotEvaluatedNotUsed)
 {
-	m_type = type;
-	m_stDimUnit  = MwgRegion::Pixel;
-	m_stAreaUnit = MwgRegion::Normalized;
-	m_focusUsage = MwgRegion::NotEvaluatedNotUsed;
-
 	// Normalize area
 	if ((dim.width() > 0) && (dim.height() > 0)) {
 		setRegion(area, dim);

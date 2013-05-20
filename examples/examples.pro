@@ -7,4 +7,5 @@ SUBDIRS  = \
 	core_example \
 	krbkacdApp \
 	krbkVideoApp \
-	playerTest
+	playerTest \
+	tests

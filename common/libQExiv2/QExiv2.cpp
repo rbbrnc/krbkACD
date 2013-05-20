@@ -5,8 +5,6 @@
 #include "QExiv2.h"
 #include "QExiv2_p.h"
 
-//
-
 QExiv2::QExiv2() : d(new QExiv2DataPrivate)
 {
 }
@@ -35,6 +33,26 @@ bool QExiv2::isValid() const
 	return d->metadataValid;
 }
 
+bool QExiv2::hasExif() const
+{
+	return !d->exifMetadata.empty();
+}
+
+bool QExiv2::hasIptc() const
+{
+	return !d->iptcMetadata.empty();
+}
+
+bool QExiv2::hasXmp() const
+{
+	return !d->xmpMetadata.empty();
+}
+
+bool QExiv2::hasComment() const
+{
+	return !d->imageComment.empty();
+}
+
 bool QExiv2::loadFromData(const QByteArray& data)
 {
 	if (data.isEmpty()) {
@@ -44,7 +62,7 @@ bool QExiv2::loadFromData(const QByteArray& data)
 	try {
 		d->image = Exiv2::ImageFactory::open((Exiv2::byte *) data.constData(), data.size());
 	} catch (Exiv2::Error &e) {
-		d->printExiv2ExceptionError("Cannot load metadata from Data using Exiv2", e);
+		d->error(__PRETTY_FUNCTION__, e);
 		return false;
 	}
 
@@ -67,7 +85,7 @@ bool QExiv2::load(const QString& filePath)
 	try {
 		d->image = Exiv2::ImageFactory::open((const char *)(QFile::encodeName(filePath)));
 	} catch (Exiv2::Error &e) {
-		d->printExiv2ExceptionError("Cannot load metadata from File using Exiv2", e);
+		d->error(__PRETTY_FUNCTION__, e);
 		return false;
 	}
 
@@ -106,7 +124,7 @@ bool QExiv2::save()
 	       return true;
 
 	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError("Cannot save metadata using Exiv2", e);
+		d->error(__PRETTY_FUNCTION__, e);
 	}
 
 	return false;

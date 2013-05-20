@@ -39,7 +39,7 @@ QImage QExiv2::previewImage() const
 		return image;
 
 	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError("Cannot get preview data using Exiv2", e);
+		d->error(__PRETTY_FUNCTION__, e);
 	}
 
 	return QImage();

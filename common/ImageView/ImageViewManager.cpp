@@ -338,7 +338,7 @@ void ImageViewManager::setImageRegions(const QString &fileName)
 		return;
 	}
 
-	if (!m_exiv2->hasXmpRegionTag()) {
+	if (!m_exiv2->xmpHasRegionTags()) {
 		return;
 	}
 

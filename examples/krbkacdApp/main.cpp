@@ -1,8 +1,9 @@
 #include <QApplication>
-#include "MainWindow.h"
 #include <QDir>
 
-int main(int argc, char *argv[])
+#include "MainWindow.h"
+
+int main(int argc, char **argv)
 {
 	Q_INIT_RESOURCE(RenameDialog);
 

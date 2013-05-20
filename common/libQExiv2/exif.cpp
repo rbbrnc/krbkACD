@@ -11,11 +11,6 @@ bool QExiv2::isExifWritable() const
 	return d->isMetadataWritable(Exiv2::mdExif);
 }
 
-bool QExiv2::hasExif() const
-{
-	return !d->exifMetadata.empty();
-}
-
 bool QExiv2::clearExif()
 {
 	try {
@@ -23,7 +18,7 @@ bool QExiv2::clearExif()
 		return true;
 
 	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError("Cannot clear Exif data using Exiv2", e);
+		d->error(__PRETTY_FUNCTION__, e);
 	}
 
 	return false;
@@ -59,10 +54,10 @@ QList<exifData> QExiv2::exifDataList() const
 }
 
 // [EXIF] Get a string tag
-QString QExiv2::exifTagString(const char *exifTagName, bool escapeCR) const
+QString QExiv2::exifTagString(const char *tag, bool escapeCR) const
 {
 	try {
-		Exiv2::ExifKey exifKey(exifTagName);
+		Exiv2::ExifKey exifKey(tag);
 		Exiv2::ExifData exifData(d->exifMetadata);
 		Exiv2::ExifData::const_iterator it = exifData.findKey(exifKey);
 		if (it != exifData.end()) {
@@ -76,20 +71,19 @@ QString QExiv2::exifTagString(const char *exifTagName, bool escapeCR) const
 			return tagValue;
 		}
 	} catch (Exiv2::Error &e) {
-		d->printExiv2ExceptionError(QString("Cannot find Exif key '%1' into image using Exiv2 ")
-                                  .arg(exifTagName), e);
+		d->error(QString("%1 Cannot find Exif key '%2'").arg(__PRETTY_FUNCTION__).arg(tag), e);
 	}
 
 	return QString();
 }
 
 // [EXIF] Get a DateTime Tag
-QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
+QDateTime QExiv2::exifTagDateTime(const char *tag) const
 {
 	try {
 		if (!d->exifMetadata.empty()) {
 			Exiv2::ExifData exifData(d->exifMetadata);
-			Exiv2::ExifKey key(exifTagName);
+			Exiv2::ExifKey key(tag);
 #if 0
 			qDebug() << "TAG Name:" << QString(key.tagName().c_str());
 			qDebug() << "TAG Label:" << QString(key.tagLabel().c_str());
@@ -108,8 +102,7 @@ QDateTime QExiv2::exifTagDateTime(const char *exifTagName) const
 			}
 		}
 	} catch (Exiv2::Error &e) {
-		d->printExiv2ExceptionError(QString("Cannot find Exif key '%1' into image using Exiv2 ")
-                                  .arg(exifTagName), e);
+		d->error(QString("%1 Cannot find Exif key '%2'").arg(__PRETTY_FUNCTION__).arg(tag), e);
 	}
 
 	return QDateTime();

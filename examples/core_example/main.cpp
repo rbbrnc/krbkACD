@@ -43,7 +43,7 @@ int main(int argc, char *argv[])
 	}
 #endif
 
-	if (e->hasXmpRegionTag()) {
+	if (e->xmpHasRegionTags()) {
 		QList<XmpRegion> tl = e->xmpRegionList();
 		for (int i = 0; i < tl.size(); i++) {
 			tl.at(i).debug();

@@ -21,7 +21,7 @@ class QExiv2DataPrivate : public QSharedData
 	public:
 		QExiv2DataPrivate();
 
-		void printExiv2ExceptionError(const QString &msg, Exiv2::Error &e) const;
+		void error(const QString &msg, Exiv2::Error &e) const;
 
 		bool readMetadata();
 

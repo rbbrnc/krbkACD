@@ -18,6 +18,7 @@ MainWindow::MainWindow(const QString &file, QWidget *parent) :
 	connect(ui->stopButton, SIGNAL(clicked()), this, SLOT(stopPlayer()));
 	connect(ui->stepButton, SIGNAL(clicked()), this, SLOT(stepPlayer()));
 
+	connect(ui->hSlider, SIGNAL(valueChanged(int)), this, SLOT(seekPlayer(int)));
 
 	connect(m_process, SIGNAL(readyReadStandardOutput()), this, SLOT(readStdout()));
 	connect(m_process, SIGNAL(readyReadStandardError()),  this, SLOT(readStderr()));
@@ -67,7 +68,18 @@ void MainWindow::parsePlayerOutputLine(const QString &line)
 		t = t.addMSecs(msec);
 		//ui->topPositionLabel->setText(QString::number(sec)); // , char format = 'g', int precision = 6 )sec);
 		ui->topPositionLabel->setText(t.toString("hh:mm:ss.zzz"));
+		ui->hSlider->setMaximum(sec);
 	}
+
+
+	static QRegExp rx_width("^ANS_width=*([0-9,:.-]+)");
+	static QRegExp rx_height("^ANS_height=*([0-9,:.-]+)");
+	if (rx_width.indexIn(line) > -1) {
+		int width = rx_width.cap(1).toInt();
+		ui->processWidget->resize(width, 200/*int h*/);
+		qDebug() << "Width:::::" << width;
+	}
+
 
 	if (rx_av.indexIn(line) > -1) {
 		double sec = rx_av.cap(1).toDouble();
@@ -131,6 +143,20 @@ void MainWindow::stepPlayer()
 	m_process->write("frame_step\n");
 }
 
+/*
+seek <value> [type]
+    Seek to some place in the movie.
+        0 is a relative seek of +/- <value> seconds (default).
+        1 is a seek to <value> % in the movie.
+        2 is a seek to an absolute position of <value> seconds.
+*/
+void MainWindow::seekPlayer(int sec)
+{
+	// check for valid process
+	m_process->write(QString("pausing_keep seek %1 2\n").arg(sec).toLatin1());
+}
+
+
 void MainWindow::quitPlayer()
 {
 	m_process->write("quit\n");
@@ -150,8 +176,8 @@ void MainWindow::startProcess()
 	m_streamPosition = 0;
 	QStringList arguments;
 	arguments << "-slave"
-		  << "-idle"
-		  << "-wid" << QString::number((int) ui->processWidget->winId());
+		  << "-idle";
+//		  << "-wid" << QString::number((int) ui->processWidget->winId());
 		  //<< "-quiet";
 		  //<< m_file;
 
@@ -160,12 +186,17 @@ void MainWindow::startProcess()
 //	m_process->write("pausing_keep_force pause\n");
 //	m_process->start("mrxvt -into "+QString::number((int)ui->processWidget->winId()));
 	m_process->start("mplayer", arguments);
+	m_process->write("pause\n");
 
 	// loadfile <file|url> <append>
 	QString file = "pausing_keep_force loadfile " + m_file + " 1\n";
 	m_process->write(file.toLatin1());
 
-	m_process->write("pause\n");
+	m_process->write(".\n");
 	m_process->write("get_time_length\n");
+	m_process->write("get_video_resolution\n");
+	m_process->write("get_property width\n");
+	m_process->write("get_property height\n");
+
 
 }

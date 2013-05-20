@@ -15,7 +15,7 @@ bool QExiv2DataPrivate::readMetadata()
 		try {
 			image->readMetadata();
 		} catch (Exiv2::Error &e) {
-			printExiv2ExceptionError("Cannot read metadata using Exiv2", e);
+			error(__PRETTY_FUNCTION__, e);
 			return false;
 		}
 
@@ -30,11 +30,13 @@ bool QExiv2DataPrivate::readMetadata()
 	return metadataValid;
 }
 
-void QExiv2DataPrivate::printExiv2ExceptionError(const QString &msg, Exiv2::Error &e) const
+// Print exiv2 errors
+void QExiv2DataPrivate::error(const QString &msg, Exiv2::Error &e) const
 {
 	std::string s(e.what());
-	qDebug() << msg.toLatin1().constData()
-		 << "(Error #" << e.code() << ":" << s.c_str() << ")";
+	qWarning() << msg.toLatin1().constData()
+		 << "(Error #" << e.code()
+		 << ":" << s.c_str() << ")";
 }
 
 
@@ -62,7 +64,7 @@ bool QExiv2DataPrivate::isMetadataWritable(Exiv2::MetadataId mid) const
 			msg += " unknown ";
 		}
 		msg += "access mode using Exiv2";
-		printExiv2ExceptionError(msg, e);
+		error(msg, e);
 	}
 	return false;
 }

@@ -25,6 +25,7 @@ class MainWindow : public QMainWindow
 		void pausePlayer();
 		void stopPlayer();
 		void stepPlayer();
+		void seekPlayer(int sec);
 
 		void readStdout();
 		void readStderr();

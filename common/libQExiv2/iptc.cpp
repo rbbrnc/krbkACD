@@ -11,11 +11,6 @@ bool QExiv2::isIptcWritable() const
 	return d->isMetadataWritable(Exiv2::mdIptc);
 }
 
-bool QExiv2::hasIptc() const
-{
-	return !d->iptcMetadata.empty();
-}
-
 bool QExiv2::clearIptc()
 {
 	try {
@@ -23,7 +18,7 @@ bool QExiv2::clearIptc()
 		return true;
 
 	} catch (Exiv2::Error& e) {
-		d->printExiv2ExceptionError("Cannot clear Iptc data using Exiv2", e);
+		d->error(__PRETTY_FUNCTION__, e);
 	}
 
 	return false;
