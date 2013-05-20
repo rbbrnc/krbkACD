@@ -1,4 +1,5 @@
 TEMPLATE = app
+TARGET = regionDetect
 
 OPENCV_CXXFLAGS = $$system(pkg-config opencv --cflags)
 OPENCV_LDFLAGS  = $$system(pkg-config opencv --libs)
@@ -9,7 +10,7 @@ include ($$COMMON_PATH/libQExiv2/libQExiv2.pri)
 PRE_TARGETDEPS += $$OUT_PWD/$$COMMON_PATH/libQExiv2/libQExiv2.a
 
 #-- Places for generated files
-#DESTDIR = ../..
+DESTDIR = ../..
 OBJECTS_DIR = objs
 MOC_DIR = mocs
 UI_DIR = ui

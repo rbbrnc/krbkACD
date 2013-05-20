@@ -113,10 +113,14 @@ void QExiv2::xmpSetMwgRegionList(const MwgRegionList &regions)
 
 	// TODO:
 	// Check region congruence to image dimensions and the applied dimensions
+	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w",
+			QString::number(d->image->pixelWidth()));
 
-	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w", "640");
-	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h", "400");
-	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit", "pixel");
+	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h",
+			QString::number(d->image->pixelHeight()));
+
+	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit",
+			"pixel");
 
 	setXmpTagBag("Xmp.mwg-rs.Regions/mwg-rs:RegionList");
 	for (int i = 0; i < regions.count(); i++) {

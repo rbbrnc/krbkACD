@@ -2,7 +2,7 @@
 #include <QDebug>
 
 #include "detect.h"
-#include "mwgRegionList.h"
+#include "QExiv2.h"
 
 void detectFromFile(MwgRegionList *regionList, const QString &filePath)
 {
@@ -36,11 +36,21 @@ int main(int argc, char *argv[])
 	MwgRegionList rl;
 	detectFromFile(&rl, QString(argv[1]));
 
+	QExiv2 *e = new QExiv2();
+	if (!e->load(QString(argv[1]))) {
+		delete e;
+		return -1;
+	}
+
 	if (rl.count() > 0) {
 		qDebug() << "Objects Found:" << rl;
+		e->xmpSetMwgRegionList(rl);
+		e->save();
 	} else {
 		qDebug() << "No Objects Found";
 	}
 
+
+	delete e;
 	return 0;
 }

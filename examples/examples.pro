@@ -8,4 +8,5 @@ SUBDIRS  = \
 	krbkacdApp \
 	krbkVideoApp \
 	playerTest \
+	RegionDetect \
 	tests
