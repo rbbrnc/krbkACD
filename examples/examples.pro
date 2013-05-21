@@ -9,4 +9,5 @@ SUBDIRS  = \
 	krbkVideoApp \
 	playerTest \
 	RegionDetect \
+	Viewer \
 	tests

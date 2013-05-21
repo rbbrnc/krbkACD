@@ -1,5 +1,5 @@
 TEMPLATE = app
-TARGET = view
+TARGET = metadata_treeview
 
 COMMON_PATH=../../common
 include ($$COMMON_PATH/libQExiv2/libQExiv2.pri)

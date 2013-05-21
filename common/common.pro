@@ -4,6 +4,7 @@ SUBDIRS  = \
 	libQExiv2 \
 	SpotlightWidget \
 	QMagic \
+	libImageView \
 	RenameDialog
 
 CONFIG += silent
