@@ -7,7 +7,7 @@ int main(int argc, char **argv)
 	QString fileName = argv[1];
 
 	MainWindow w;
-	w.setFile(fileName);
+	w.setFile(fileName, true);
 	w.show();
 
 	return app.exec();

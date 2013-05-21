@@ -4,8 +4,10 @@ TEMPLATE = app
 COMMON_PATH=../../common
 
 include ($$COMMON_PATH/libImageView/ImageView.pri)
+include ($$COMMON_PATH/libQExiv2/libQExiv2.pri)
 
 PRE_TARGETDEPS += $$OUT_PWD/$$COMMON_PATH/libImageView/libImageView.a
+PRE_TARGETDEPS += $$OUT_PWD/$$COMMON_PATH/libQExiv2/libQExiv2.a
 
 #-- Places for generated files
 DESTDIR = ../..
@@ -31,6 +33,7 @@ RESOURCES += $$PWD/icons.qrc
 #LIBS += $$OPENCV_LDFLAGS
 
 LIBS += -L$$OUT_PWD/$$COMMON_PATH/libImageView -lImageView
+LIBS += -L$$OUT_PWD/$$COMMON_PATH/libQExiv2 -lQExiv2
 
 QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code
 #QMAKE_CXXFLAGS += $$OPENCV_CXXFLAGS

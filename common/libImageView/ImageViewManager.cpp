@@ -166,34 +166,40 @@ void ImageViewManager::enableRegionSelection(bool enable)
 		m_view->setCursor(Qt::ArrowCursor);
 		m_view->setDragMode(QGraphicsView::RubberBandDrag);
 		m_view->setInteractive(true);
-#ifdef USE_QEXIV2
 		showRegions(true);
-#endif
 	} else {
 		m_view->setCursor(Qt::OpenHandCursor);
 		m_view->setDragMode(QGraphicsView::ScrollHandDrag);
 		m_view->setInteractive(false);
-#ifdef USE_QEXIV2
 		showRegions(false);
-#endif
 	}
 }
 
-// [SLOT public]
-// called for new created regions
-// rect = rubberband selection
-void ImageViewManager::addRegion(const QRectF &rect)
+void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, const QString &desc)
 {
 	if (!rect.isValid()) {
+		qWarning() << __PRETTY_FUNCTION__ << "Invalid Rect:" << rect;
 		return;
 	}
 
+	qDebug() << __PRETTY_FUNCTION__ << rect << name << desc;
+
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
+
+	if (!name.isNull()) {
+		ir->setName(name);
+	}
+
+	if (!desc.isNull()) {
+		ir->setDescription(desc);
+	}
+
 	connect(ir, SIGNAL(removeRequest()), this, SLOT(removeRegion()));
 	connect(ir, SIGNAL(editRequest()),   this, SLOT(editRegion()));
 
 	m_scene->addItem(ir);
 //	m_regionHash.insert(ir, region);
+	ir->setZValue(1);
 
 #if 0
 	QSize imageSize;
@@ -201,6 +207,15 @@ void ImageViewManager::addRegion(const QRectF &rect)
 	imageSize.setHeight(m_image->boundingRect().height());
 #endif
 	m_updateRegion = true;
+}
+
+// [SLOT private]
+// called for new created regions
+// rect = rubberband selection
+void ImageViewManager::addRegion(const QRectF &rect)
+{
+	qDebug() << __PRETTY_FUNCTION__ << rect;
+	insertRegion(rect, "", "");
 }
 
 // [SLOT private]

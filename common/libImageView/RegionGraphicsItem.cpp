@@ -11,6 +11,7 @@ RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent
 //	setFlag(QGraphicsItem::ItemIsSelectable, true);
 //	setAcceptHoverEvents(true);
 //	setZValue(-1);
+//	setZValue(1);
 }
 
 RegionGraphicsItem::~RegionGraphicsItem()

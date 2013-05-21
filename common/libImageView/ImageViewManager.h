@@ -34,10 +34,11 @@ class ImageViewManager : public QWidget
 		void resetView();
 
 		void enableRegionSelection(bool enable);
-		void addRegion(const QRectF &rect);
+		void insertRegion(const QRectF &rect, const QString &name, const QString &desc);
 		void showRegions(bool show);
 
 	private slots:
+		void addRegion(const QRectF &rect);
 		void sceneChanged(const QList<QRectF> &region);
 		void removeRegion();
 		void editRegion();

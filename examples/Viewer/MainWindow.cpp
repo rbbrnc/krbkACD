@@ -1,26 +1,36 @@
 #include <QtGui>
 #include "MainWindow.h"
 
-//#include "QExiv2.h"
+#include "QExiv2.h"
 
 void MainWindow::setFile(const QString &fileName, bool loadMetadata)
 {
-#if 0
 	if (loadMetadata) {
 		QExiv2 *e = new QExiv2();
-		if (m_exiv2->load(fileName)) {
-			if (m_exiv2->xmpHasRegionTags()) {
+		if (e->load(fileName)) {
+			if (e->xmpHasRegionTags()) {
 				// Get XMP Image Regions
-				//QList<XmpRegion> rl = m_exiv2->xmpRegionList();
-				for (int i = 0; i < rl.size(); i++) {
-					//rl.at(i).debug();
-					//XmpRegion r = rl.at(i);
-					//addRectRegion(r);
+				MwgRegionList rl = e->xmpMwgRegionList();
+				for (int i = 0; i < rl.count(); i++) {
+					QSize s = rl.at(i).stDimensions();
+					QRectF r = rl.at(i).stArea();
+					qreal x,y,w,h;
+					x = r.x() * s.width();
+					y = r.y() * s.height();
+					w = r.width() * s.width();
+					h = r.height() * s.height();
+
+					qDebug() << __PRETTY_FUNCTION__
+						 //<< rl.at(i)
+						 << s
+						 << r
+						 << rl.at(i).name() << rl.at(i).description();
+					ivm->insertRegion(QRectF(x,y,w,h), rl.at(i).name(), rl.at(i).description());
 				}
 			}
 		}
 	}
-#endif
+
 	ivm->setFile(fileName);
 }
 
