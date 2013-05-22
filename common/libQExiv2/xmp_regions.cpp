@@ -15,11 +15,11 @@ bool QExiv2::xmpHasRegionTags() const
 		return false;
 	}
 
-	if (!xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty()) {
+	if (!xmpTagString("Xmp.mwg-rs.Regions").isEmpty()) {
 		return true;
 	}
 
-	if (!xmpTagString("Xmp.MP.RegionInfo", false).isEmpty()) {
+	if (!xmpTagString("Xmp.MP.RegionInfo").isEmpty()) {
 		return true;
 	}
 
@@ -71,12 +71,12 @@ void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 	setXmpTagString(stAreaY.arg(n).toLatin1(), QString::number(stArea.y()));
 
 	switch (region.shape()) {
-	case MwgRegion::Point:
+	case MwgRs::Point:
 		break;
-	case MwgRegion::Circle:
+	case MwgRs::Circle:
 		setXmpTagString(stAreaD.arg(n).toLatin1(), QString::number(stArea.width()));
 		break;
-	case MwgRegion::Rectangle:
+	case MwgRs::Rectangle:
 	default:
 		setXmpTagString(stAreaW.arg(n).toLatin1(), QString::number(stArea.width()));
 		setXmpTagString(stAreaH.arg(n).toLatin1(), QString::number(stArea.height()));
@@ -88,16 +88,16 @@ void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 	setXmpTagString(desc.arg(n).toLatin1(), region.description());
 
 	switch (region.type()) {
-	case MwgRegion::Face:
+	case MwgRs::Face:
 		setXmpTagString(type.arg(n).toLatin1(), "Face");
 		break;
-	case MwgRegion::Pet:
+	case MwgRs::Pet:
 		setXmpTagString(type.arg(n).toLatin1(), "Pet");
 		break;
-	case MwgRegion::Barcode:
+	case MwgRs::Barcode:
 		setXmpTagString(type.arg(n).toLatin1(), "Barcode");
 		break;
-	case MwgRegion::Focus:
+	case MwgRs::Focus:
 	default:
 		setXmpTagString(type.arg(n).toLatin1(), "Focus");
 		break;
@@ -124,7 +124,7 @@ void QExiv2::xmpSetMwgRegionList(const MwgRegionList &regions)
 
 	setXmpTagBag("Xmp.mwg-rs.Regions/mwg-rs:RegionList");
 	for (int i = 0; i < regions.count(); i++) {
-		xmpSetMwgRegion(regions.at(i), i+1);
+		xmpSetMwgRegion(regions.at(i), i + 1);
 	}
 }
 
@@ -134,49 +134,34 @@ MwgRegionList QExiv2::xmpMwgRegionList() const
 		return MwgRegionList();
 	}
 
-	if (xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty()) {
+	if (xmpTagString("Xmp.mwg-rs.Regions").isEmpty()) {
 		return MwgRegionList();
 	}
 
 	QString s;
-	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w", false);
+	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w");
 	if (s.isEmpty()) {
 		qDebug() << __PRETTY_FUNCTION__
-			 << "Invalid Xmp.mwg-rs.Regions -- stDim:w Missing";
+			 << "Invalid Regions -- stDim:w Missing";
 		return MwgRegionList();
 	}
 
 	qreal dimW = s.toDouble();
 	//qDebug() << "stDim:w" << s << ":" << dimW;
 
-	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h", false);
+	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h");
 	if (s.isEmpty()) {
 		qDebug() << __PRETTY_FUNCTION__
-			 << "Invalid Xmp.mwg-rs.Regions -- stDim:h Missing";
+			 << "Invalid Regions -- stDim:h Missing";
 		return MwgRegionList();
 	}
 	qreal dimH = s.toDouble();
 	//qDebug() << "stDim:h" << s << ":" << dimH;
 
 // XXX:
-//	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit", false);
+//	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit");
 //	if (!s.isEmpty()) {
 //	}
-
-	QString item = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]";
-	QString name = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Name";
-	QString desc = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Description";
-	QString type = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Type";
-
-//	QString focusUsage   = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:FocusUsage";
-//	QString barCodeValue = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:BarCodeValue";
-
-	QString stAreaX = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:x";
-	QString stAreaY = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:y";
-	QString stAreaW = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:w";
-	QString stAreaH = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:h";
-	QString stAreaD = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:d";
-	QString stAreaUnit = "Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]/mwg-rs:Area/stArea:unit";
 
 	MwgRegionList rl;
 	int i = 1;
@@ -187,55 +172,70 @@ MwgRegionList QExiv2::xmpMwgRegionList() const
 		qreal h = 0.0;
 		qreal d = 0.0;
 
-		s = xmpTagString(item.arg(i).toLatin1(), false);
-		if (s.isEmpty()) {
+		// get mwg-rs:RegionList[%1]
+		if (xmpTagString(MwgRs::regionListTag("", i).toLatin1().constData()).isEmpty()) {
 			// End of region list
 			break;
 		}
 
 		// stArea x,y,w,h,unit
-		s = xmpTagString(stAreaX.arg(i).toLatin1(), false);
+		s = xmpTagString(MwgRs::regionListTag("Area/stArea:x", i).toLatin1().constData());
 		if (s.isEmpty()) {
 			qDebug() << "Invalid region" << i << "-- stArea:x Missing";
 			break;
 		}
 		x = s.toDouble();
 
-		s = xmpTagString(stAreaY.arg(i).toLatin1(), false);
+		s = xmpTagString(MwgRs::regionListTag("Area/stArea:y", i).toLatin1().constData());
 		if (s.isEmpty()) {
 			qDebug() << "Invalid region" << i << "-- stArea:y Missing";
 			break;
 		}
 		y = s.toDouble();
 
-		s = xmpTagString(stAreaD.arg(i).toLatin1(), false);
+		s = xmpTagString(MwgRs::regionListTag("Area/stArea:d", i));
 		if (!s.isEmpty()) {
 			d = s.toDouble();
 		}
 
-		s = xmpTagString(stAreaW.arg(i).toLatin1(), false);
+		s = xmpTagString(MwgRs::regionListTag("Area/stArea:w", i).toLatin1().constData());
 		if (!s.isEmpty()) {
 			w = s.toDouble();
 		}
 
-		s = xmpTagString(stAreaH.arg(i).toLatin1(), false);
+		s = xmpTagString(MwgRs::regionListTag("Area/stArea:h", i).toLatin1().constData());
 		if (!s.isEmpty()) {
 			h = s.toDouble();
 		}
 
-		MwgRegion r;
-
-		r.setStDimensions(dimW, dimH, MwgRegion::Pixel);
 		if (d > 0) {
-			r.setStArea(x, y, d, 0.0, MwgRegion::Normalized);
-		} else {
-			r.setStArea(x, y, w, h, MwgRegion::Normalized);
+			w = d; // use w for diameter
 		}
 
-//		r.setType(xmpTagString(type.arg(i).toLatin1(), false));
-		r.setName(xmpTagString(name.arg(i).toLatin1(), false));
-		r.setDescription(xmpTagString(desc.arg(i).toLatin1(), false));
-//		r.setAreaUnit(xmpTagString(stAreaUnit.arg(i).toLatin1(), false));
+		MwgRegion r(QRectF(x,y,w,h), QSizeF(dimW,dimH), true);
+
+		r.setName(xmpTagString(MwgRs::regionListTag("Name", i).toLatin1().constData()));
+		r.setDescription(xmpTagString(MwgRs::regionListTag("Description", i).toLatin1().constData()));
+
+		s = xmpTagString(MwgRs::regionListTag("Type", i).toLatin1().constData());
+		if (0 == QString::compare("Face", s, Qt::CaseInsensitive)) {
+			r.setType(MwgRs::Face);
+		} else if (0 == QString::compare("Focus", s, Qt::CaseInsensitive)) {
+			s = xmpTagString(MwgRs::regionListTag("FocusUsage", i).toLatin1().constData());
+			// TODO parse focus usage
+			r.setType(MwgRs::Focus);
+		} else if(0 == QString::compare("Pet", s, Qt::CaseInsensitive)) {
+			r.setType(MwgRs::Pet);
+		} else if(0 == QString::compare("Barcode", s, Qt::CaseInsensitive)) {
+			r.setType(MwgRs::Barcode);
+			s = xmpTagString(MwgRs::regionListTag("BarCodeValue", i).toLatin1().constData());
+		} else {
+		}
+
+//		s = xmpTagString(MwgRs::regionListTag("Area/stArea:unit", i).toLatin1().constData());
+//		if (!s.isEmpty()) {
+//		}
+
 
 		// Add region to region list
 		rl.append(r);

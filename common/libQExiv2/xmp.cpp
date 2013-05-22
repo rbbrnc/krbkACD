@@ -103,6 +103,11 @@ QString QExiv2::xmpTagString(const char *tag, bool escapeCR) const
 	return QString();
 }
 
+QString QExiv2::xmpTagString(const QString &tag, bool escapeCR) const
+{
+	return xmpTagString(tag.toLatin1().constData(), escapeCR);
+}
+
 bool QExiv2::setXmpTagString(const char *tag, const QString& value)
 {
 	try {

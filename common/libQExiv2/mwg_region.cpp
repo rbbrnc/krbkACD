@@ -4,15 +4,31 @@
 
 #include "mwg_region.h"
 
-MwgRegion::MwgRegion(const QRect &area, const QSize &dim, MwgRegion::Type type)
-	: m_type(type),
-	  m_stDimUnit(MwgRegion::Pixel),
-	  m_stAreaUnit(MwgRegion::Normalized),
-	  m_focusUsage(MwgRegion::NotEvaluatedNotUsed)
+// Returns a RegionList tag at 'index'
+const QString MwgRs::regionListTag(const QString &tagName, int index)
+{
+	if (index <= 0) {
+		return QString();
+	}
+
+	QString s = QString("Xmp.mwg-rs.Regions/mwg-rs:RegionList[%1]").arg(index);
+	if (!tagName.isEmpty()) {
+		s += "/mwg-rs:" + tagName;
+	}
+	return s;
+}
+
+MwgRegion::MwgRegion(const QRectF &area, const QSizeF &dim, bool normalized)
+	: m_type(MwgRs::Focus),
+	  m_stDimUnit(MwgRs::Pixel),
+	  m_stAreaUnit(MwgRs::Normalized),
+	  m_stAreaBoundingRect(QRectF()),
+	  m_focusUsage(MwgRs::NotEvaluatedNotUsed),
+	  m_shape(MwgRs::Point)
 {
 	// Normalize area
 	if ((dim.width() > 0) && (dim.height() > 0)) {
-		setRegion(area, dim);
+		setRegion(area, dim, normalized);
 	}
 }
 
@@ -21,36 +37,79 @@ MwgRegion::~MwgRegion()
 }
 
 // Set stArea(x,y,w,h), AppliedToDimension (dimW, dimH)
-// x,y,w,h will'be normalized with dimW, dimH values
-void MwgRegion::setRegion(int x, int y, int w, int h, int dimW, int dimH)
+void MwgRegion::setRegion(qreal x, qreal y, qreal w, qreal h, qreal dimW, qreal dimH, bool normalized)
 {
-	setStDimensions(dimW, dimH);
+	if ((dimW > 0) && (dimH > 0)) {
+		m_stDim = QSizeF(dimW, dimH);
 
-	QRectF r(x, y, w, h);
-	m_stArea.setRect(r.x()/dimW, r.y()/dimH, r.width()/dimW, r.height()/dimH);
-	qDebug() << __PRETTY_FUNCTION__ << m_stArea;
+		if (normalized) {
+			m_stArea.setRect(x, y, w, h);
+		} else {
+			// x,y,w,h will'be normalized with dimW, dimH values
+			m_stArea.setRect(x/dimW, y/dimH, w/dimW, h/dimH);
+		}
+
+		//qDebug() << __PRETTY_FUNCTION__ << m_stArea;
+	} else {
+		qWarning() << __PRETTY_FUNCTION__
+			   << "Invalid stDim:" << QSizeF(dimW, dimH)
+			   << "stArea:" << QRectF(x, y, w, h);
+		return;
+	}
+
+	if ((w > 0) && (h > 0)) {
+		m_shape = MwgRs::Rectangle;
+		if (normalized) {
+			m_stAreaBoundingRect = QRectF(x*dimW, y*dimH, w*dimW, h*dimH);
+		} else {
+			m_stAreaBoundingRect = QRectF(x, y, w, h);
+		}
+	} else if  ((w > 0) && (h <= 0)) {
+		// We use m_stArea.width() as diameter [stArea:d]
+		m_shape = MwgRs::Circle;
+		if (normalized) {
+			m_stAreaBoundingRect = QRectF(x*dimW, y*dimH/2, w*dimW, w*dimW/2);
+		} else {
+			m_stAreaBoundingRect = QRectF(x, y, w/2, w/2);
+		}
+
+	} else {
+		//if ((w <= 0) && (h <= 0)) {
+		m_shape = MwgRs::Point;
+		// bounding rect is 2 pixel wide
+		if (normalized) {
+			m_stAreaBoundingRect = QRectF(x*dimW, y*dimH, 2, 2);
+		} else {
+			m_stAreaBoundingRect = QRectF(x, y, 2, 2);
+		}
+	}
+
 }
-
-
-void MwgRegion::setRegion(const QRect &r, const QSize &dim)
+void MwgRegion::setRegion(const QRectF &area, const QSizeF &dim, bool normalized)
 {
-	setRegion(r.x(), r.y(), r.width(), r.height(), dim.width(), dim.height());
-}
-
-void MwgRegion::setRegion(const QRect &r, int dimW, int dimH)
-{
-	setRegion(r.x(), r.y(), r.width(), r.height(), dimW, dimH);
+	setRegion(area.x(), area.y(), area.width(), area.height(),
+		  dim.width(), dim.height(), normalized);
 }
 
 // Get/Set mwg-rs:Type
-MwgRegion::Type MwgRegion::type() const
+MwgRs::Type MwgRegion::type() const
 {
 	return m_type;
 }
 
-void MwgRegion::setType(MwgRegion::Type type)
+void MwgRegion::setType(MwgRs::Type type, MwgRs::FocusUsage focus)
 {
 	m_type = type;
+	if (type == MwgRs::Focus) {
+		m_focusUsage = focus;
+	} else {
+		m_focusUsage = MwgRs::NotEvaluatedNotUsed;
+	}
+}
+
+MwgRs::FocusUsage MwgRegion::focusUsage() const
+{
+	return m_focusUsage;
 }
 
 // Get/Set mwg-rs:Name
@@ -76,109 +135,64 @@ void MwgRegion::setDescription(const QString &desc)
 }
 
 // Only rectangular
-enum MwgRegion::Shape MwgRegion::shape() const
+MwgRs::Shape MwgRegion::shape() const
 {
-	if ((m_stArea.width() > 0) && (m_stArea.height() > 0)) {
-		return MwgRegion::Rectangle;
-	}
-
-	if ((m_stArea.width() > 0) && (m_stArea.height() == 0)) {
-		// We use m_stArea.width() as diameter [stArea:d]
-		return MwgRegion::Circle;
-	}
-
-	//if ((m_stArea.width() == 0) && (m_stArea.height() == 0)) {
-	// correct point
-	//} else {
-	//  this is an invalid shape!
-	//}
-
-	return MwgRegion::Point;
+	return m_shape;
 }
 
-// Get/Set [mwg-rs:Area]
+QRectF MwgRegion::stAreaBoundingRectF() const
+{
+	return m_stAreaBoundingRect;
+}
+
+// Get [mwg-rs:Area]
 QRectF MwgRegion::stArea() const
 {
 	return m_stArea;
 }
 
-void MwgRegion::setStArea(qreal stAreaX, qreal stAreaY,
-			  qreal stAreaW, qreal stAreaH,
-			  enum MwgRegion::Unit unit)
-{
-	setStArea(QRectF(stAreaX, stAreaY, stAreaW, stAreaH), unit);
-}
-
-void MwgRegion::setStArea(const QRectF &stArea, enum MwgRegion::Unit unit)
-{
-	m_stArea = stArea;
-	m_stAreaUnit = unit;
-}
-
-MwgRegion::Unit MwgRegion::stAreaUnit() const
+MwgRs::Unit MwgRegion::stAreaUnit() const
 {
 	return m_stAreaUnit;
 }
 
 // Get/Set [mwg-rs:AppliedToDimensions/stDim]
-QSize MwgRegion::stDimensions() const
+QSizeF MwgRegion::stDimensions() const
 {
 	return m_stDim;
 }
 
-void MwgRegion::setStDimensions(int stDimW, int stDimH, enum MwgRegion::Unit unit)
-{
-	setStDimensions(QSize(stDimW, stDimH), unit);
-}
-
-void MwgRegion::setStDimensions(const QSize &stDim, enum MwgRegion::Unit unit)
-{
-	m_stDim = stDim;
-	m_stDimUnit = unit;
-}
-
-MwgRegion::Unit MwgRegion::stDimensionsUnit() const
+MwgRs::Unit MwgRegion::stDimensionsUnit() const
 {
 	return m_stDimUnit;
-}
-
-MwgRegion::FocusUsage MwgRegion::focusUsage() const
-{
-	return m_focusUsage;
-}
-
-void MwgRegion::setFocusUsage(MwgRegion::FocusUsage focus)
-{
-	m_focusUsage = focus;
 }
 
 // Check compile with NO_DEBUG
 QDebug operator << (QDebug dbg, const MwgRegion &r)
 {
 	QRectF stArea = r.stArea();
-	QSize  stDim  = r.stDimensions();
 
 	QString s;
 	s = "Xmp.mwg-rs.Regions ";
 	s += "\n  mwg-rs:AppliedToDimensions ";
-	s += "\n   stDim:w " + stDim.width();
-	s += "\n   stDim:h " + stDim.height();
+	s += "\n   stDim:w " + QString::number(r.stDimensions().width());
+	s += "\n   stDim:h " + QString::number(r.stDimensions().height());
 	s += "\n   stDim:unit pixel";
 	s += "\n  mwg-rs:Name " + r.name();
 	s += "\n  mwg-rs:Description " + r.description();
 	s += "\n  mwg-rs:Type ";
 	switch (r.type()) {
-	case MwgRegion::Face:
+	case MwgRs::Face:
 		s += "Face";
 		break;
-	case MwgRegion::Pet:
+	case MwgRs::Pet:
 		s += "Pet";
 		break;
-	case MwgRegion::Focus:
+	case MwgRs::Focus:
 		s += "Focus";
 		s += "\n  mwg-rs:FocusUsage " + QString::number(r.focusUsage());
 		break;
-	case MwgRegion::Barcode:
+	case MwgRs::Barcode:
 		s += "Barcode";
 		s += "\n  mwg-rs:BarCodeValue Not implemented";
 		break;

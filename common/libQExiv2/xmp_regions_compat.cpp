@@ -16,11 +16,11 @@ QList<XmpRegion> QExiv2::xmpRegionList() const
 		return regions;
 	}
 
-	if (!(xmpTagString("Xmp.mwg-rs.Regions", false).isEmpty())) {
+	if (!(xmpTagString("Xmp.mwg-rs.Regions").isEmpty())) {
 		regions = xmpMWGRegionList();
 	}
 
-	if (!(xmpTagString("Xmp.MP.RegionInfo", false).isEmpty())) {
+	if (!(xmpTagString("Xmp.MP.RegionInfo").isEmpty())) {
 		regions += xmpMPRegionList();
 	}
 
@@ -33,14 +33,14 @@ QList<XmpRegion> QExiv2::xmpMWGRegionList() const
 	QList<XmpRegion> regions;
 	QString s;
 
-	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w", false);
+	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w");
 	if (s.isEmpty()) {
 		qDebug() << "Invalid Xmp.mwg-rs.Regions -- stDim:w Missing";
 	}
 	qreal dimW = s.toDouble();
 	qDebug() << "stDim:w" << s << ":" << dimW;
 
-	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h", false);
+	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h");
 	if (s.isEmpty()) {
 		qDebug() << "Invalid Xmp.mwg-rs.Regions -- stDim:h Missing";
 	}
@@ -79,47 +79,47 @@ QList<XmpRegion> QExiv2::xmpMWGRegionList() const
 		qreal h = 0.0;
 		qreal d = 0.0;
 
-		s = xmpTagString(item.arg(i).toLatin1(), false);
+		s = xmpTagString(item.arg(i));
 		if (s.isEmpty()) {
 			// End of region list
 			break;
 		}
 
 		// stArea x,y,w,h,unit
-		s = xmpTagString(stAreaX.arg(i).toLatin1(), false);
+		s = xmpTagString(stAreaX.arg(i));
 		if (s.isEmpty()) {
 			qDebug() << "Invalid region" << i << "-- stArea:x Missing";
 			break;
 		}
 		x = s.toDouble();
 
-		s = xmpTagString(stAreaY.arg(i).toLatin1(), false);
+		s = xmpTagString(stAreaY.arg(i));
 		if (s.isEmpty()) {
 			qDebug() << "Invalid region" << i << "-- stArea:y Missing";
 			break;
 		}
 		y = s.toDouble();
 
-		s = xmpTagString(stAreaD.arg(i).toLatin1(), false);
+		s = xmpTagString(stAreaD.arg(i));
 		if (!s.isEmpty()) {
 			d = s.toDouble();
 		}
 
-		s = xmpTagString(stAreaW.arg(i).toLatin1(), false);
+		s = xmpTagString(stAreaW.arg(i));
 		if (!s.isEmpty()) {
 			w = s.toDouble();
 		}
 
-		s = xmpTagString(stAreaH.arg(i).toLatin1(), false);
+		s = xmpTagString(stAreaH.arg(i));
 		if (!s.isEmpty()) {
 			h = s.toDouble();
 		}
 
 		r.setSize(x, y, w, h, d, dimW, dimH);
-		r.setType(xmpTagString(type.arg(i).toLatin1(), false));
-		r.setName(xmpTagString(name.arg(i).toLatin1(), false));
-		r.setDescription(xmpTagString(desc.arg(i).toLatin1(), false));
-		r.setAreaUnit(xmpTagString(stAreaUnit.arg(i).toLatin1(), false));
+		r.setType(xmpTagString(type.arg(i)));
+		r.setName(xmpTagString(name.arg(i)));
+		r.setDescription(xmpTagString(desc.arg(i)));
+		r.setAreaUnit(xmpTagString(stAreaUnit.arg(i)));
 
 		// Add region to region list
 		regions.append(r);

@@ -12,20 +12,12 @@ void MainWindow::setFile(const QString &fileName, bool loadMetadata)
 				// Get XMP Image Regions
 				MwgRegionList rl = e->xmpMwgRegionList();
 				for (int i = 0; i < rl.count(); i++) {
-					QSize s = rl.at(i).stDimensions();
-					QRectF r = rl.at(i).stArea();
-					qreal x,y,w,h;
-					x = r.x() * s.width();
-					y = r.y() * s.height();
-					w = r.width() * s.width();
-					h = r.height() * s.height();
-
+					ivm->insertRegion(rl.at(i).stAreaBoundingRectF(), rl.at(i).name(), rl.at(i).description());
 					qDebug() << __PRETTY_FUNCTION__
-						 //<< rl.at(i)
-						 << s
-						 << r
-						 << rl.at(i).name() << rl.at(i).description();
-					ivm->insertRegion(QRectF(x,y,w,h), rl.at(i).name(), rl.at(i).description());
+						 << rl.at(i).stAreaBoundingRectF()
+						 << rl.at(i).stArea()
+						 << rl.at(i).name()
+						 << rl.at(i).description();
 				}
 			}
 		}

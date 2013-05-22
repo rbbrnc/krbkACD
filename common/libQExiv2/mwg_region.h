@@ -7,34 +7,41 @@
 #include <QMetaType>
 #include <QDebug>
 
+// MWG Region Schema enums
+namespace MwgRs {
+	enum Type  { Face = 0, Pet, Focus, Barcode };
+	enum Shape { Rectangle = 0, Circle, Point };
+	enum Unit  { Normalized = 0, Pixel };
+
+	enum FocusUsage {
+		EvaluatedNotUsed = 0, // Evaluated, Not Used
+		EvaluatedUsed,        // Evaluated, Used
+		NotEvaluatedNotUsed   // Not Evaluated, Not Used
+	};
+
+	const QString regionListTag(const QString &tagName, int index);
+}
+
 class MwgRegion
 {
 	public:
-		enum Type  { Face = 0, Pet, Focus, Barcode };
-		enum Shape { Rectangle = 0, Circle, Point };
-		enum Unit  { Normalized = 0, Pixel };
-
-		enum FocusUsage {
-			EvaluatedNotUsed = 0, // Evaluated, Not Used
-			EvaluatedUsed,        // Evaluated, Used
-			NotEvaluatedNotUsed   // Not Evaluated, Not Used
-		};
-
-		MwgRegion(const QRect &area = QRect(0, 0, 0, 0),
-			  const QSize &dim = QSize(0, 0),
-			   MwgRegion::Type type = MwgRegion::Focus);
+		MwgRegion(const QRectF &area = QRectF(0, 0, 0, 0),
+			  const QSizeF &dim = QSizeF(0, 0),
+			  bool normalized = true);
 
 		~MwgRegion();
 
 		// Set stArea(x,y,w,h), AppliedToDimension (dimW, dimH)
 		// x,y,w,h will'be normalized with dimW, dimH values
-		void setRegion(int x, int y, int w, int h, int dimW, int dimH);
-		void setRegion(const QRect &r, int dimW, int dimH);
-		void setRegion(const QRect &r, const QSize &dim);
+		void setRegion(qreal x, qreal y, qreal w, qreal h, qreal dimW, qreal dimH, bool normalized);
+		void setRegion(const QRectF &area, const QSizeF &dim, bool normalized);
 
-		// Get/Set mwg-rs:Type
-		MwgRegion::Type type() const;
-		void setType(MwgRegion::Type type);
+		// Get/Set mwg-rs:Type ad focus usage
+		MwgRs::Type type() const;
+		MwgRs::FocusUsage focusUsage() const;
+
+		void setType(MwgRs::Type type,
+			     MwgRs::FocusUsage focus = MwgRs::NotEvaluatedNotUsed);
 
 		// Get/Set mwg-rs:Name
 		QString name() const;
@@ -45,28 +52,22 @@ class MwgRegion
 		void setDescription(const QString &desc);
 
 		// Region's shape
-		enum MwgRegion::Shape shape() const;
+		MwgRs::Shape shape() const;
 
 		// Get/Set [mwg-rs:Area]
 		QRectF stArea() const;
-		void setStArea(qreal stAreaX, qreal stAreaY,
-				qreal stAreaW, qreal stAreaH,
-				enum MwgRegion::Unit unit = MwgRegion::Normalized);
-		void setStArea(const QRectF &stArea, enum MwgRegion::Unit unit = MwgRegion::Normalized);
-		MwgRegion::Unit stAreaUnit() const;
+		MwgRs::Unit stAreaUnit() const;
 
-		// Get/Set [mwg-rs:AppliedToDimensions/stDim]
-		QSize stDimensions() const;
-		void setStDimensions(int stDimW, int stDimH, MwgRegion::Unit unit = MwgRegion::Pixel);
-		void setStDimensions(const QSize &stDim, MwgRegion::Unit unit = MwgRegion::Pixel);
-		MwgRegion::Unit stDimensionsUnit() const;
+		// Get [mwg-rs:AppliedToDimensions/stDim]
+		QSizeF stDimensions() const;
+		MwgRs::Unit stDimensionsUnit() const;
 
-		MwgRegion::FocusUsage focusUsage() const;
-		void setFocusUsage(MwgRegion::FocusUsage focus);
+		// return the stArea bounding box
+		QRectF stAreaBoundingRectF() const;
 
 	private:
-		// Region type: mwg-rs:Type = [Face | Pet | Focus | Barcode]
-		MwgRegion::Type m_type;
+		// Region type: mwg-rs:Type
+		MwgRs::Type m_type;
 
 		// Region's name: mwg-rs:Name
 		QString	m_name;
@@ -76,15 +77,21 @@ class MwgRegion
 
 		// Image dimensions [mwg-rs:AppliedToDimensions/]
 		// stDim:w, stDim:h, stDim:unit
-		QSize  m_stDim;
-		enum MwgRegion::Unit m_stDimUnit;
+		QSizeF m_stDim;
+		MwgRs::Unit m_stDimUnit;
 
 		// Normalized Region rectangle [mwg-rs:Area]
 		// stArea:x, stArea:y, stArea:w, stArea:h, stArea:unit
 		QRectF m_stArea;
-		enum MwgRegion::Unit m_stAreaUnit;
+		MwgRs::Unit m_stAreaUnit;
 
-		enum MwgRegion::FocusUsage m_focusUsage;
+		// Rectangular bounding box for stArea shape
+		// used for display
+		QRectF m_stAreaBoundingRect;
+
+		MwgRs::FocusUsage m_focusUsage;
+
+		MwgRs::Shape m_shape;
 };
 
 // Declare MwgRegion as a custom Meta Type

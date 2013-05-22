@@ -49,7 +49,7 @@ class QExiv2
 		// EXIF Functions
 		bool isExifWritable() const;
 		bool clearExif();
-		QString exifTagString(const char *tag, bool escapeCR) const;
+		QString exifTagString(const char *tag, bool escapeCR = false) const;
 		QDateTime exifTagDateTime(const char *tag) const;
 
 		// IPTC Functions
@@ -59,14 +59,15 @@ class QExiv2
 		// XMP Functions
 		bool isXmpWritable() const;
 
-		QString xmpTagString(const char *tag, bool escapeCR) const;
+		QString xmpTagString(const char *tag, bool escapeCR = false) const;
+		QString xmpTagString(const QString &tag, bool escapeCR = false) const;
 		bool setXmpTagString(const char *tag, const QString &value);
 
-		QStringList xmpTagStringBag(const char *tag, bool escapeCR) const;
+		QStringList xmpTagStringBag(const char *tag, bool escapeCR = false) const;
 		bool setXmpTagStringBag(const char *tag, const QStringList &bag);
 		bool setXmpTagBag(const char *tag);
 
-		QStringList xmpTagStringSeq(const char *tag, bool escapeCR) const;
+		QStringList xmpTagStringSeq(const char *tag, bool escapeCR = false) const;
 		bool setXmpTagStringSeq(const char *tag, const QStringList &seq);
 
 		QString xmpTagStringLangAlt(const char *tag, const QString &langAlt, bool escapeCR);

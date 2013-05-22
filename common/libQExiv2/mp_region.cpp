@@ -22,7 +22,7 @@ QList<XmpRegion> QExiv2::xmpMPRegionList() const
 
 	int i = 1;
 	while (1) {
-		s = xmpTagString(rect.arg(i).toLatin1(), false);
+		s = xmpTagString(rect.arg(i));
 		if (s.isEmpty()) {
 			break;
 		}
@@ -44,9 +44,9 @@ QList<XmpRegion> QExiv2::xmpMPRegionList() const
 		XmpRegion r;
 		r.setFormat(XmpRegion::MP);
 		r.setSize(x, y, w, h, 0, dimW, dimH);
-		r.setName(xmpTagString(name.arg(i).toLatin1(), false));
-		r.setPersonEmailDigest(xmpTagString(email.arg(i).toLatin1(), false));
-		r.setPersonLiveCID(xmpTagString(liveCID.arg(i).toLatin1(), false));
+		r.setName(xmpTagString(name.arg(i)));
+		r.setPersonEmailDigest(xmpTagString(email.arg(i)));
+		r.setPersonLiveCID(xmpTagString(liveCID.arg(i)));
 
 		regions.append(r);
 		i++;

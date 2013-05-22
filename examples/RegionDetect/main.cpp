@@ -18,7 +18,9 @@ void detectFromFile(MwgRegionList *regionList, const QString &filePath)
 		int imgH = o->sourceHeight();
 
 		for (int i = 0; i < regions.count(); i++) {
-			regionList->append(MwgRegion(regions.at(i), QSize(imgW, imgH), MwgRegion::Face));
+			MwgRegion r(regions.at(i), QSizeF(imgW, imgH), false);
+			r.setType(MwgRs::Face);
+			regionList->append(r);
 		}
 	}
 
