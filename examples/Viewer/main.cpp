@@ -1,12 +1,12 @@
 #include <QApplication>
-#include "MainWindow.h"
+#include "ViewerWidget.h"
 
 int main(int argc, char **argv)
 {
 	QApplication app(argc, argv);
 	QString fileName = argv[1];
 
-	MainWindow w;
+	ViewerWidget w;
 	w.setFile(fileName, true);
 	w.show();
 

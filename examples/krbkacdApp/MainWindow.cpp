@@ -69,7 +69,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::showImageRegions(bool enable)
 {
-	m_ivPage->showImageRegions(enable);
+	m_ivPage->showRegions(enable);
 }
 
 void MainWindow::fullScreen(bool enable)

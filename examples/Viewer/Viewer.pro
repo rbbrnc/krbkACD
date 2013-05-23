@@ -3,6 +3,7 @@ TEMPLATE = app
 
 COMMON_PATH=../../common
 
+include ($$COMMON_PATH/ViewerWidget/ViewerWidget.pri)
 include ($$COMMON_PATH/libImageView/ImageView.pri)
 include ($$COMMON_PATH/libQExiv2/libQExiv2.pri)
 
@@ -16,13 +17,7 @@ DESTDIR = ../..
 #UI_DIR = ui
 #RCC_DIR = resources
 
-SOURCES += main.cpp \
-	MainWindow.cpp
-
-HEADERS += \
-	MainWindow.h
-
-RESOURCES += $$PWD/icons.qrc
+SOURCES += main.cpp
 
 #OPENCV_CXXFLAGS = $$system(pkg-config opencv --cflags)
 #OPENCV_LDFLAGS  = $$system(pkg-config opencv --libs)

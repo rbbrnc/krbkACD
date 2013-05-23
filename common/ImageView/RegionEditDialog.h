@@ -7,18 +7,23 @@ namespace Ui {
 	class RegionEditDialog;
 }
 
-#include "XmpRegion.h"
+#include "RegionGraphicsItem.h"
 
 class RegionEditDialog : public QDialog
 {
 	Q_OBJECT
 
 	public:
-		RegionEditDialog(XmpRegion region, QWidget *parent = 0);
+		RegionEditDialog(RegionGraphicsItem *item, QWidget *parent = 0);
 		~RegionEditDialog();
+
+	public slots:
+		virtual void accept();
+		virtual void reject();
 
 	private:
 		Ui::RegionEditDialog *ui;
+		RegionGraphicsItem *m_item;
 };
 
 #endif

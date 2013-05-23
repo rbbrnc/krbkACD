@@ -3,14 +3,13 @@
 
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneContextMenuEvent>
-#include "XmpRegion.h"
 
 class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 {
 	Q_OBJECT
 
 	public:
-		RegionGraphicsItem(const XmpRegion &region, QGraphicsItem *parent = 0);
+		RegionGraphicsItem(const QRectF &rect = QRectF(), QGraphicsItem *parent = 0);
 		~RegionGraphicsItem();
 
 		QString name() const;
@@ -34,7 +33,8 @@ class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 		void editRequest();
 
 	private:
-		XmpRegion m_region;
+		QString m_name;
+		QString m_description;
 };
 
 #endif

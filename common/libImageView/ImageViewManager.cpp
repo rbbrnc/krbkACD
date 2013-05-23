@@ -18,10 +18,10 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	  m_showRegions(false),
 	  m_updateRegion(false)
 {
-	m_scene = new QGraphicsScene(this);
+	m_scene = new QGraphicsScene(/*this*/);
 //	m_scene->setForegroundBrush(QBrush(Qt::yellow, Qt::NoBrush));
 
-	m_view  = new ImageGraphicsView(this);
+	m_view  = new ImageGraphicsView(/*this*/);
 //	m_view->setForegroundBrush(QBrush(Qt::yellow, Qt::NoBrush));
 
 	m_view->setScene(m_scene);

@@ -19,7 +19,8 @@ class ImageViewManager : public QWidget
 
 	private:
 		void setImageRegions(const QString &fileName);
-		void addRectRegion(XmpRegion &region);
+		void insertRegion(const QRectF &rect,
+				  const QString &name, const QString &desc);
 
 	signals:
 		void requestNextFile();
@@ -32,16 +33,16 @@ class ImageViewManager : public QWidget
 		void previous();
 		void next();
 
-		void showImageRegions(bool show);
+		void showRegions(bool show);
 		bool saveImageRegions();
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
 		void enableRegionSelection(bool enable);
 
-		void addRectRegion(const QRectF &rect);
-		void removeRectRegion();
-		void editRectRegion();
+		void addRegion(const QRectF &rect);
+		void removeRegion();
+		void editRegion();
 
 	private:
 		ImageGraphicsItem *m_image;
