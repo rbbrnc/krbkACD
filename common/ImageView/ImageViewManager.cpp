@@ -219,18 +219,20 @@ void ImageViewManager::enableRegionSelection(bool enable)
 
 void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, const QString &desc)
 {
+	if (!m_image) {
+		return;
+	}
+
 	if (!rect.isValid()) {
 		qWarning() << __PRETTY_FUNCTION__ << "Invalid Rect:" << rect;
 		return;
 	}
 
-	// We need to check if the rect is totaaly internal to the pixmap
-	// Check if the x, y selection are >= 0 (on the image) or out
-	// note: the w,h values > 0 check is made by rect.isValid()
-	if (rect.x() < 0 || rect.y() < 0) {
+	// Check if the rect is totally internal to the pixmap
+	// to avoid select a region outside the pixmap
+	if (!m_image->boundingRect().contains(rect)) {
 		return;
 	}
-
 	qDebug() << __PRETTY_FUNCTION__ << rect << name << desc;
 
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
@@ -259,8 +261,7 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 }
 
 // [SLOT private]
-// called for new created regions
-// rect = rubberband selection
+// Called for new created regions with rubberband selection rect
 void ImageViewManager::addRegion(const QRectF &rect)
 {
 	qDebug() << __PRETTY_FUNCTION__ << rect;
