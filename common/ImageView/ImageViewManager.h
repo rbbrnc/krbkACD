@@ -49,10 +49,11 @@ class ImageViewManager : public QWidget
 		ImageGraphicsView *m_view;
 		QGraphicsScene    *m_scene;
 
-		QExiv2 *m_exiv2;
-		bool m_showRegions;
+		QSet<RegionGraphicsItem *> m_regions;
 
-		QHash<RegionGraphicsItem *, XmpRegion> m_regionHash;
+		QExiv2 *m_exiv2;
+
+		bool m_showRegions;
 		bool m_updateRegion;
 };
 

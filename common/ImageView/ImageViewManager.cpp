@@ -66,6 +66,11 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	modeButton->setIcon(QIcon(":/images/select.png"));
 	modeButton->setIconSize(iconSize);
 
+	// Detect Objects
+	QToolButton *detectButton = new QToolButton();
+	detectButton->setIcon(QIcon(":/images/user_silhouette.png"));
+	detectButton->setIconSize(iconSize);
+
 	// Previous Image
 	QToolButton *previousButton = new QToolButton();
 	previousButton->setIcon(QIcon(":/images/previous.png"));
@@ -85,6 +90,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	buttonLayout->addWidget(rotateCWButton);
 	buttonLayout->addWidget(resetViewButton);
 	buttonLayout->addWidget(modeButton);
+	buttonLayout->addWidget(detectButton);
 	buttonLayout->addWidget(previousButton);
 	buttonLayout->addWidget(nextButton);
 
@@ -104,6 +110,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
 
 	connect(modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
+//	connect(detectButton, SIGNAL(clicked()), this, SLOT(detectObjects()));
 
 	connect(previousButton, SIGNAL(clicked()), this, SLOT(previous()));
 	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
@@ -182,7 +189,7 @@ void ImageViewManager::setImage(const QPixmap &pixmap)
 		delete m_image;
 		m_scene->clear();
 		m_view->reset();
-		m_regionHash.clear();
+		m_regions.clear();
 	}
 
 	m_image = new ImageGraphicsItem(pixmap);
@@ -249,8 +256,7 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 	connect(ir, SIGNAL(editRequest()),   this, SLOT(editRegion()));
 
 	m_scene->addItem(ir);
-//	m_regionHash.insert(ir, region);
-	ir->setZValue(1);
+	m_regions.insert(ir);
 
 #if 0
 	QSize imageSize;
@@ -311,7 +317,7 @@ void ImageViewManager::removeRegion()
 		return;
 	}
 
-//	m_regionHash.remove(ri);
+	m_regions.remove(ri);
 	m_scene->removeItem(dynamic_cast<QGraphicsItem *>(ri));
 	m_updateRegion = true;
 }
@@ -334,15 +340,13 @@ void ImageViewManager::showRegions(bool show)
 	if (m_showRegions == show) {
 		return;
 	}
-#if 0
-	if (!m_regionHash.isEmpty()) {
-		QHashIterator<RegionGraphicsItem *, XmpRegion> i(m_regionHash);
-		while (i.hasNext()) {
-			i.next();
-			i.key()->setZValue((show) ? 1 : -1);
+
+	if (!m_regions.isEmpty()) {
+		foreach(RegionGraphicsItem *item, m_regions) {
+			item->setZValue((show) ? 1 : -1);
 		}
 	}
-#endif
+
 	m_showRegions = show;
 }
 
@@ -356,8 +360,8 @@ bool ImageViewManager::saveImageRegions()
 	}
 
 	QList<XmpRegion> rl;
-	if (!m_regionHash.isEmpty()) {
-		QHashIterator<RegionGraphicsItem *, XmpRegion> i(m_regionHash);
+	if (!m_regions.isEmpty()) {
+		QHashIterator<RegionGraphicsItem *, XmpRegion> i(m_regions);
 		while (i.hasNext()) {
 			i.next();
 			rl.append(i.value());
