@@ -6,6 +6,8 @@ COMMON_PATH=../../common
 include ($$COMMON_PATH/Video/video.pri)
 
 SOURCES += main.cpp
+RESOURCES += resources.qrc
+
 CONFIG += silent
 
 unix:contains(QT_ARCH, powerpc): {
