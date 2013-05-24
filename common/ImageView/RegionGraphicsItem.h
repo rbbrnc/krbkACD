@@ -3,6 +3,7 @@
 
 #include <QGraphicsRectItem>
 #include <QGraphicsSceneContextMenuEvent>
+#include <QMenu>
 
 class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 {
@@ -35,6 +36,11 @@ class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 	private:
 		QString m_name;
 		QString m_description;
+
+		// Context Menu
+		QMenu    m_menu;
+		QAction *m_removeAction;
+		QAction *m_editAction;
 };
 
 #endif

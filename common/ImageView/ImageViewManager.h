@@ -6,8 +6,6 @@
 class ImageGraphicsView;
 class ImageGraphicsItem;
 class RegionGraphicsItem;
-class QExiv2;
-class XmpRegion;
 
 class ImageViewManager : public QWidget
 {
@@ -17,8 +15,6 @@ class ImageViewManager : public QWidget
 		explicit ImageViewManager(QWidget *parent = 0);
 		~ImageViewManager();
 
-	private:
-		void setImageRegions(const QString &fileName);
 		void insertRegion(const QRectF &rect,
 				  const QString &name, const QString &desc);
 
@@ -27,11 +23,8 @@ class ImageViewManager : public QWidget
 		void requestPreviousFile();
 
 	public slots:
-		void setFile(const QString &fileName);
+		void setImage(const QString &fileName);
 		void setImage(const QPixmap &pixmap);
-
-		void previous();
-		void next();
 
 		void showRegions(bool show);
 		bool saveImageRegions();
@@ -44,14 +37,15 @@ class ImageViewManager : public QWidget
 		void removeRegion();
 		void editRegion();
 
+		void previous();
+		void next();
+
 	private:
 		ImageGraphicsItem *m_image;
 		ImageGraphicsView *m_view;
 		QGraphicsScene    *m_scene;
 
 		QSet<RegionGraphicsItem *> m_regions;
-
-		QExiv2 *m_exiv2;
 
 		bool m_showRegions;
 		bool m_updateRegion;

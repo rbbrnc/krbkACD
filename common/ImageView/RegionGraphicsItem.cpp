@@ -1,12 +1,14 @@
 #include <QtGui>
 #include <QDebug>
-#include <QMenu>
 
 #include "RegionGraphicsItem.h"
 
 RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent)
 	: QGraphicsRectItem(rect, parent)
 {
+	m_removeAction   = m_menu.addAction("Remove");
+	m_editAction     = m_menu.addAction("Edit");
+
 	setPen(QColor(Qt::yellow));
 //	setFlag(QGraphicsItem::ItemIsSelectable, true);
 //	setAcceptHoverEvents(true);
@@ -82,20 +84,12 @@ void RegionGraphicsItem::setDescription(const QString &desc)
 // [EVENT protected]
 void RegionGraphicsItem::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-	QMenu menu;
-	QAction *removeAction   = menu.addAction("Remove");
-	QAction *editAction     = menu.addAction("Edit");
-	QAction *selectedAction = menu.exec(event->screenPos());
-
-	if (selectedAction == removeAction) {
+	QAction *action = m_menu.exec(event->screenPos());
+	if (action == m_removeAction) {
 		emit removeRequest();
-	} else if (selectedAction == editAction) {
+	} else if (action == m_editAction) {
 		emit editRequest();
 	} else {
 		// Nothing to do
-		qDebug() << __PRETTY_FUNCTION__
-			 << "NOP"
-			 << m_name
-			 << m_description;
 	}
 }

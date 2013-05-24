@@ -7,12 +7,10 @@
 #include "RegionGraphicsItem.h"
 #include "RegionEditDialog.h"
 #include "ImageGraphicsView.h"
-#include "QExiv2.h"
 
 ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
 	  m_image(0),
-	  m_exiv2(0),
 	  m_showRegions(false),
 	  m_updateRegion(false)
 {
@@ -121,10 +119,12 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 
 ImageViewManager::~ImageViewManager()
 {
+#if 0
 	if (m_exiv2) {
 		saveImageRegions();
 		delete m_exiv2;
 	}
+#endif
 
 	if (m_image) {
 		delete m_image;
@@ -165,20 +165,20 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 }
 
 // [SLOT public]
-void ImageViewManager::setFile(const QString &fileName)
+void ImageViewManager::setImage(const QString &fileName)
 {
-	saveImageRegions();
+//	saveImageRegions();
 
 	QPixmap pixmap;
 	if (!pixmap.load(fileName)) {
 		setImage(QPixmap());
 	} else {
 		setImage(pixmap);
-		if (!m_exiv2) {
-			m_exiv2 = new QExiv2();
-		}
-		setImageRegions(fileName);
-		showRegions(m_showRegions);
+//		if (!m_exiv2) {
+//			m_exiv2 = new QExiv2();
+//		}
+//		setImageRegions(fileName);
+//		showRegions(m_showRegions);
 	}
 }
 
@@ -272,29 +272,6 @@ void ImageViewManager::addRegion(const QRectF &rect)
 {
 	qDebug() << __PRETTY_FUNCTION__ << rect;
 	insertRegion(rect, "", "");
-}
-
-void ImageViewManager::setImageRegions(const QString &fileName)
-{
-// XXX: TODO
-#if 0
-	m_updateRegion = false;
-	if (!m_exiv2->load(fileName)) {
-		return;
-	}
-
-	if (!m_exiv2->xmpHasRegionTags()) {
-		return;
-	}
-
-	// Get XMP Image Regions
-	QList<XmpRegion> rl = m_exiv2->xmpRegionList();
-	for (int i = 0; i < rl.size(); i++) {
-		//rl.at(i).debug();
-		XmpRegion r = rl.at(i);
-		addRectRegion(r);
-	}
-#endif
 }
 
 // [SLOT private]
