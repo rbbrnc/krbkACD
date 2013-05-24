@@ -7,7 +7,6 @@ namespace Ui {
 	class MainWindow;
 }
 
-class QExiv2;
 class FileManagerPage;
 class ImageViewManager;
 class MetadataTreeViewPage;
@@ -30,6 +29,9 @@ class MainWindow : public QMainWindow
 		void showImageRegions(bool enable);
 
 	private:
+		void loadImage(const QString &fileName, bool loadMetadata);
+
+	private:
 		Ui::MainWindow *ui;
 
 		FileManagerPage  *m_fmPage;
@@ -37,8 +39,6 @@ class MainWindow : public QMainWindow
 
 		ImageViewManager *m_ivPage;
 		MetadataTreeViewPage *m_mvPage;
-
-		QExiv2 *m_exiv2;
 };
 
 #endif

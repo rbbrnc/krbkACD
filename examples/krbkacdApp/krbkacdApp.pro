@@ -20,8 +20,9 @@ SOURCES += \
 	main.cpp\
         MainWindow.cpp
 
-HEADERS += MainWindow.h
-FORMS   += MainWindow.ui
+HEADERS   += MainWindow.h
+FORMS     += MainWindow.ui
+RESOURCES += $$PWD/styles/darkorange/darkorange.qrc
 
 LIBS += -L$$OUT_PWD/$$COMMON_PATH/libQExiv2 -lQExiv2
 LIBS += -L$$OUT_PWD/$$COMMON_PATH/RenameDialog -l$$RENAME_DIALOG_LIBNAME

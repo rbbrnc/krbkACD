@@ -54,16 +54,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionFullScreen, SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
 
-
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
-
-	m_exiv2 = new QExiv2();
 }
 
 MainWindow::~MainWindow()
 {
-	delete m_exiv2;
 	delete ui;
 }
 
@@ -88,7 +84,7 @@ void MainWindow::fullScreen(bool enable)
 void MainWindow::showImage()
 {
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
-		m_ivPage->setFile(m_fmPage->currentFilePath());
+		loadImage(m_fmPage->currentFilePath(), true);
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
@@ -111,7 +107,7 @@ void MainWindow::prevFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->previousFile();
-		m_ivPage->setFile(m_fmPage->currentFilePath());
+		loadImage(m_fmPage->currentFilePath(), true);
 	}
 
 	if (ui->stackedWidget->currentWidget() == m_mvPage) {
@@ -124,11 +120,38 @@ void MainWindow::nextFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->nextFile();
-		m_ivPage->setFile(m_fmPage->currentFilePath());
+		loadImage(m_fmPage->currentFilePath(), true);
 	}
 
 	if (ui->stackedWidget->currentWidget() == m_mvPage) {
 		m_fmPage->nextFile();
 		m_mvPage->setFile(m_fmPage->currentFilePath());
 	}
+}
+
+void MainWindow::loadImage(const QString &fileName, bool loadMetadata)
+{
+	m_ivPage->setImage(fileName);
+
+        if (loadMetadata) {
+                QExiv2 *e = new QExiv2();
+                if (e->load(fileName)) {
+                        if (e->xmpHasRegionTags()) {
+                                // Get XMP Image Regions
+                                MwgRegionList rl = e->xmpMwgRegionList();
+                                for (int i = 0; i < rl.count(); i++) {
+					m_ivPage->insertRegion(rl.at(i).stAreaBoundingRectF(),
+							       rl.at(i).name(),
+							       rl.at(i).description());
+
+                                        qDebug() << __PRETTY_FUNCTION__
+                                                 << rl.at(i).stAreaBoundingRectF()
+                                                 << rl.at(i).stArea()
+                                                 << rl.at(i).name()
+                                                 << rl.at(i).description();
+                                }
+                        }
+                }
+		delete e;
+        }
 }
