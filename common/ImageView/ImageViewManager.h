@@ -21,6 +21,7 @@ class ImageViewManager : public QWidget
 	signals:
 		void requestNextFile();
 		void requestPreviousFile();
+		void requestDetectObjects();
 
 	public slots:
 		void setImage(const QString &fileName);
@@ -39,6 +40,7 @@ class ImageViewManager : public QWidget
 
 		void previous();
 		void next();
+		void onDetectObjects();
 
 	private:
 		ImageGraphicsItem *m_image;

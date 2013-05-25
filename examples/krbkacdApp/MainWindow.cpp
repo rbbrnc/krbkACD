@@ -8,6 +8,7 @@
 #include "MetadataTreeModel.h"
 #include "MetadataTreeViewPage.h"
 #include "QExiv2.h"
+#include "detect.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -43,6 +44,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Connect next/prev requests coming from ImageViewManager.
 	connect(m_ivPage, SIGNAL(requestPreviousFile()), this, SLOT(prevFile()));
 	connect(m_ivPage, SIGNAL(requestNextFile()),     this, SLOT(nextFile()));
+	connect(m_ivPage, SIGNAL(requestDetectObjects()),this, SLOT(detectObjects()));
 
 	// Connect next/prev requests coming from MetadataTreeViewPage.
 	connect(m_mvPage, SIGNAL(requestPreviousFile()), this, SLOT(prevFile()));
@@ -154,4 +156,28 @@ void MainWindow::loadImage(const QString &fileName, bool loadMetadata)
                 }
 		delete e;
         }
+}
+
+// [SLOT] detect objects
+void MainWindow::detectObjects()
+{
+	ObjectDetect *o = new ObjectDetect();
+	o->setSource(m_fmPage->currentFilePath().toLatin1().data());
+
+	int count = o->detect();
+
+	if (count > 0) {
+		QList<QRectF> regions = o->objects();
+
+		//int imgW = o->sourceWidth();
+		//int imgH = o->sourceHeight();
+
+		for (int i = 0; i < regions.count(); i++) {
+			//regionList->append(MwgRegion(regions.at(i), QSize(imgW, imgH), MwgRegion::Face));
+			m_ivPage->insertRegion(regions.at(i), "", "");
+		}
+	}
+
+	delete o;
+	qDebug() << __PRETTY_FUNCTION__ << "end detection";
 }

@@ -108,7 +108,7 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
 
 	connect(modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
-//	connect(detectButton, SIGNAL(clicked()), this, SLOT(detectObjects()));
+	connect(detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
 
 	connect(previousButton, SIGNAL(clicked()), this, SLOT(previous()));
 	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
@@ -144,6 +144,11 @@ void ImageViewManager::previous()
 void ImageViewManager::next()
 {
 	emit requestNextFile();
+}
+
+void ImageViewManager::onDetectObjects()
+{
+	emit requestDetectObjects();
 }
 
 // [SLOT private]
