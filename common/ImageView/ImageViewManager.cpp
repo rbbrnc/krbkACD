@@ -18,7 +18,6 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	m_view  = new ImageGraphicsView(this);
 
 	m_view->setScene(m_scene);
-	//m_view->setBackgroundBrush(QBrush(Qt::black, Qt::SolidPattern));
 	m_view->setBackgroundBrush(QBrush(Qt::gray, Qt::SolidPattern));
 
 	QSize iconSize(32, 32);
@@ -119,13 +118,6 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 
 ImageViewManager::~ImageViewManager()
 {
-#if 0
-	if (m_exiv2) {
-		saveImageRegions();
-		delete m_exiv2;
-	}
-#endif
-
 	if (m_image) {
 		delete m_image;
 	}
@@ -172,18 +164,11 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 // [SLOT public]
 void ImageViewManager::setImage(const QString &fileName)
 {
-//	saveImageRegions();
-
 	QPixmap pixmap;
 	if (!pixmap.load(fileName)) {
 		setImage(QPixmap());
 	} else {
 		setImage(pixmap);
-//		if (!m_exiv2) {
-//			m_exiv2 = new QExiv2();
-//		}
-//		setImageRegions(fileName);
-//		showRegions(m_showRegions);
 	}
 }
 
@@ -219,14 +204,13 @@ void ImageViewManager::enableRegionSelection(bool enable)
 	if (enable) {
 		m_view->setCursor(Qt::ArrowCursor);
 		m_view->setDragMode(QGraphicsView::RubberBandDrag);
-		m_view->setInteractive(true);
-		showRegions(true);
 	} else {
 		m_view->setCursor(Qt::OpenHandCursor);
 		m_view->setDragMode(QGraphicsView::ScrollHandDrag);
-		m_view->setInteractive(false);
-		showRegions(false);
 	}
+
+	m_view->setInteractive(enable);
+	showRegions(enable);
 }
 
 void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, const QString &desc)
@@ -275,7 +259,6 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 // Called for new created regions with rubberband selection rect
 void ImageViewManager::addRegion(const QRectF &rect)
 {
-	qDebug() << __PRETTY_FUNCTION__ << rect;
 	insertRegion(rect, "", "");
 }
 
@@ -292,8 +275,10 @@ void ImageViewManager::removeRegion()
 	}
 	msg += " region?";
 
-	int rc = QMessageBox::question(this, "Remove Region", msg,
-			 QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
+	int rc = QMessageBox::question(this,
+			 "Remove Region", msg,
+			 QMessageBox::Ok | QMessageBox::Cancel,
+			 QMessageBox::Cancel);
 
 	if (QMessageBox::Cancel == rc) {
 		return;
@@ -311,7 +296,7 @@ void ImageViewManager::editRegion()
 	RegionGraphicsItem *ri = dynamic_cast<RegionGraphicsItem *>(sender());
 	RegionEditDialog dlg(ri, this);
 	if (QDialog::Accepted == dlg.exec()) {
-		qDebug() << "Name:" << ri->name() << "Desc:" << ri->description();
+		//qDebug() << "Name:" << ri->name() << "Desc:" << ri->description();
 		m_updateRegion = true;
 	}
 }
@@ -330,32 +315,5 @@ void ImageViewManager::showRegions(bool show)
 	}
 
 	m_showRegions = show;
-}
-
-bool ImageViewManager::saveImageRegions()
-{
-#if 0
-	qDebug() << __PRETTY_FUNCTION__ << "Update:" << m_updateRegion;
-	if ((!m_updateRegion) || (!m_exiv2)) {
-		// No update needed
-		return true;
-	}
-
-	QList<XmpRegion> rl;
-	if (!m_regions.isEmpty()) {
-		QHashIterator<RegionGraphicsItem *, XmpRegion> i(m_regions);
-		while (i.hasNext()) {
-			i.next();
-			rl.append(i.value());
-		}
-	}
-
-	if (m_exiv2->setXmpRegionList(rl)) {
-		qDebug() << __PRETTY_FUNCTION__ << "Call save";
-		m_updateRegion = false;
-		return m_exiv2->save();
-	}
-#endif
-	return false;
 }
 

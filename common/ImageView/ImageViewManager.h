@@ -28,7 +28,6 @@ class ImageViewManager : public QWidget
 		void setImage(const QPixmap &pixmap);
 
 		void showRegions(bool show);
-		bool saveImageRegions();
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
