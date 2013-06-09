@@ -42,6 +42,7 @@ void MetadataTreeViewPage::setFile(const QString &file)
 	ui->treeView->setUniformRowHeights(true);
 	ui->treeView->setModel(m_model);
 	ui->treeView->hideColumn(7); // hide key column
+        ui->treeView->expandAll();
 }
 
 void MetadataTreeViewPage::next()

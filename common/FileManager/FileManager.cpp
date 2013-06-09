@@ -215,22 +215,29 @@ void FileManager::updateGeneralInfo(const QModelIndex &index)
 void FileManager::updateMoreInfo(const QModelIndex &index)
 {
 	QString file = m_model->filePath(index);
-	if (QMagic::mimeTypeIsImage(file)) {
-		QImageReader ir(file);
-		// XXX: QImage reader supports basic metadata on some image format!
-		if (ir.supportsOption(QImageIOHandler::Description)) {
-#if 0
-			qDebug() << __PRETTY_FUNCTION__
-				 << "IR Text Keys:" << ir.textKeys()
-				 << "IR Text XML:" << ir.text("XML"/* const QString & key*/)
-				 << "IR Text Desc:" << ir.text("Description"/* const QString & key*/);
-#endif
-			ui->commentLabel->setText(ir.text("Description"));
-			ui->commentLabel->setVisible(true);
+	QString mimeType = QMagic::mimeType(file);
+	bool isImage = mimeType.contains("image");
+	bool isVideo = mimeType.contains("video");
+	bool hasExifData = false;
+	bool hasIptcData = false;
+	bool hasXmpData = false;
+	bool hasCommentData = false;
+
+	if (isImage || isVideo) {
+		QExiv2 metadata;
+		metadata.load(file);
+		if (metadata.isValid()) {
+			hasExifData = metadata.hasExif();
+			hasIptcData = metadata.hasIptc();
+			hasXmpData  = metadata.hasXmp();
+			hasCommentData = metadata.hasComment();
 		}
-	} else {
-		ui->commentLabel->setVisible(false);
 	}
+
+	ui->exifLabel->setText((hasExifData) ? "Yes" : "-");
+	ui->iptcLabel->setText((hasIptcData) ? "Yes" : "-");
+	ui->xmpLabel->setText((hasXmpData) ? "Yes" : "-");
+	ui->commentLabel->setText((hasCommentData) ? "Yes" : "-");
 }
 
 void FileManager::updateMetadataInfo(const QModelIndex &index)
@@ -241,6 +248,8 @@ void FileManager::updateMetadataInfo(const QModelIndex &index)
 	bool isVideo = mimeType.contains("video");
 
 	if (!isImage && !isVideo) {
+		ui->treeView->hide();
+		//ui->infoToolBox->setItemEnabled(2, false);
 		return;
 	}
 
@@ -248,6 +257,7 @@ void FileManager::updateMetadataInfo(const QModelIndex &index)
 
 	metadata.load(file);
 	if (!metadata.isValid()) {
+		ui->treeView->hide();
 		return;
 	}
 
@@ -259,7 +269,12 @@ void FileManager::updateMetadataInfo(const QModelIndex &index)
 
 	m_metadataModel = new MetadataTreeModel(&metadata);
 	ui->treeView->setModel(m_metadataModel);
+	ui->treeView->hideColumn(4); // hide id column
+	ui->treeView->hideColumn(5); // hide type column
+	ui->treeView->hideColumn(6); // hide count column
 	ui->treeView->hideColumn(7); // hide key column
+	ui->treeView->expandAll();
+	ui->treeView->show();
 }
 
 void FileManager::updatePreview(const QModelIndex &index)
