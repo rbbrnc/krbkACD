@@ -10,14 +10,11 @@
 #include "CopyMoveDialog.h"
 #include "QMagic.h"
 #include "QExiv2.h"
-#include "MetadataTreeModel.h"
 
 FileManager::FileManager(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::FileManager)
 {
-	m_metadataModel = 0;
-
 	ui->setupUi(this);
 
 	m_model = new QFileSystemModel();
@@ -42,30 +39,23 @@ FileManager::FileManager(QWidget *parent) :
 		this, SLOT(handleItemActivation(QModelIndex)));
 
 	// Connect splitters moved signal for resize preview
-	connect(ui->infoSplitter, SIGNAL(splitterMoved(int, int)),
-		this, SLOT(zoomPreview(int, int)));
 	connect(ui->mainSplitter, SIGNAL(splitterMoved(int, int)),
 		this, SLOT(zoomPreview(int, int)));
-
-	connect(ui->infoToolBox, SIGNAL(currentChanged(int)),
-		this, SLOT(updateInfoToolBox(int)));
 
 	ui->pathLabel->setText(m_model->rootPath());
 
 	// Defaut for info box
 	ui->previewCheckBox->setChecked(false);
 	ui->previewLabel->hide();
+	ui->infoCheckBox->setChecked(false);
+	ui->infoWidget->hide();
 
 	connect(ui->previewCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
+	connect(ui->infoCheckBox, SIGNAL(toggled(bool)), this, SLOT(showInfo(bool)));
 }
 
 FileManager::~FileManager()
 {
-	if (m_metadataModel) {
-		delete m_metadataModel;
-		m_metadataModel = 0;
-	}
-
 	delete m_model;
 	delete ui;
 }
@@ -140,11 +130,6 @@ void FileManager::next()
 	}
 }
 
-void FileManager::updateInfoToolBox(int /*index*/)
-{
-	updateInfo();
-}
-
 // [SLOT public]
 //
 // Switches view mode
@@ -163,118 +148,74 @@ void FileManager::iconMode(bool enable)
 	}
 }
 
-// [SLOT public]
-void FileManager::showHidden(bool show)
-{
-        if (show) {
-                m_model->setFilter(m_model->filter() | QDir::Hidden);
-        } else {
-                m_model->setFilter(m_model->filter() &~ QDir::Hidden);
-        }
-}
-
 void FileManager::updateGeneralInfo(const QModelIndex &index)
 {
 	QString file = m_model->filePath(index);
-
-	ui->pathLabel->setText(m_model->rootPath());
-	ui->fileLabel->setText(m_model->fileName(index));
-
-	//ui->kindLabel->setText(QMagic::mimeDescription(file));
-	ui->kindLabel->setText(QMagic::mimeType(file));
-	ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(index)));
-	ui->modifiedLabel->setText(m_model->lastModified(index).toString());
-
-	QFileInfo fi(file);
-	ui->createdLabel->setText(fi.created().toString());
-	ui->ownerLabel->setText(fi.owner());
-	ui->groupLabel->setText(fi.group());
-
-	QFile::Permissions fp = fi.permissions();
-	QString perm;
-	perm  = (fp & QFile::ReadOwner)  ? 'r' : '-';
-	perm += (fp & QFile::WriteOwner) ? 'w' : '-';
-	perm += (fp & QFile::ExeOwner)   ? "x " : "- ";
-	perm += (fp & QFile::ReadGroup)  ? 'r' : '-';
-	perm += (fp & QFile::WriteGroup) ? 'w' : '-';
-	perm += (fp & QFile::ExeGroup)   ? "x " : "- ";
-	perm += (fp & QFile::ReadOther)  ? 'r' : '-';
-	perm += (fp & QFile::WriteOther) ? 'w' : '-';
-	perm += (fp & QFile::ExeOther)   ? "x " : "- ";
-	ui->permissionsLabel->setText(perm);
-
-	if (QMagic::mimeTypeIsImage(file)) {
-		// Using QImageReader for get image dimension.
-		QImageReader ir(file);
-		ui->dimensionLabel->setText(QString("%1 x %2").arg(ir.size().width()).arg(ir.size().height()));
-	} else {
-		ui->dimensionLabel->setText("-");
-	}
-}
-
-void FileManager::updateMoreInfo(const QModelIndex &index)
-{
-	QString file = m_model->filePath(index);
 	QString mimeType = QMagic::mimeType(file);
 	bool isImage = mimeType.contains("image");
-	bool isVideo = mimeType.contains("video");
-	bool hasExifData = false;
-	bool hasIptcData = false;
-	bool hasXmpData = false;
-	bool hasCommentData = false;
 
-	if (isImage || isVideo) {
-		QExiv2 metadata;
-		metadata.load(file);
-		if (metadata.isValid()) {
-			hasExifData = metadata.hasExif();
-			hasIptcData = metadata.hasIptc();
-			hasXmpData  = metadata.hasXmp();
-			hasCommentData = metadata.hasComment();
+	if (ui->infoCheckBox->isChecked()) {
+		ui->pathLabel->setText(m_model->rootPath());
+		ui->fileLabel->setText(m_model->fileName(index));
+
+		//ui->kindLabel->setText(QMagic::mimeDescription(file));
+		ui->kindLabel->setText(QMagic::mimeType(file));
+		ui->sizeLabel->setText(QString("%1 bytes").arg(m_model->size(index)));
+		ui->modifiedLabel->setText(m_model->lastModified(index).toString());
+
+		QFileInfo fi(file);
+		ui->createdLabel->setText(fi.created().toString());
+		ui->ownerLabel->setText(fi.owner());
+		ui->groupLabel->setText(fi.group());
+
+		QFile::Permissions fp = fi.permissions();
+		QString perm;
+		perm  = (fp & QFile::ReadOwner)  ? 'r' : '-';
+		perm += (fp & QFile::WriteOwner) ? 'w' : '-';
+		perm += (fp & QFile::ExeOwner)   ? "x " : "- ";
+		perm += (fp & QFile::ReadGroup)  ? 'r' : '-';
+		perm += (fp & QFile::WriteGroup) ? 'w' : '-';
+		perm += (fp & QFile::ExeGroup)   ? "x " : "- ";
+		perm += (fp & QFile::ReadOther)  ? 'r' : '-';
+		perm += (fp & QFile::WriteOther) ? 'w' : '-';
+		perm += (fp & QFile::ExeOther)   ? "x " : "- ";
+		ui->permissionsLabel->setText(perm);
+
+		if (isImage) {
+			// Using QImageReader for get image dimension.
+			QImageReader ir(file);
+			ui->dimensionLabel->setText(QString("%1 x %2").arg(ir.size().width()).arg(ir.size().height()));
+		} else {
+			ui->dimensionLabel->setText("-");
 		}
+
+		// Update metadata labels
+		bool hasExifData = false;
+		bool hasIptcData = false;
+		bool hasXmpData = false;
+		bool hasCommentData = false;
+		bool isVideo = mimeType.contains("video");
+
+		if (isImage || isVideo) {
+			QExiv2 metadata;
+			metadata.load(file);
+			if (metadata.isValid()) {
+				hasExifData = metadata.hasExif();
+				hasIptcData = metadata.hasIptc();
+				hasXmpData  = metadata.hasXmp();
+				hasCommentData = metadata.hasComment();
+			}
+		}
+
+		ui->exifLabel->setText((hasExifData) ? "Yes" : "-");
+		ui->iptcLabel->setText((hasIptcData) ? "Yes" : "-");
+		ui->xmpLabel->setText((hasXmpData) ? "Yes" : "-");
+		ui->commentLabel->setText((hasCommentData) ? "Yes" : "-");
 	}
 
-	ui->exifLabel->setText((hasExifData) ? "Yes" : "-");
-	ui->iptcLabel->setText((hasIptcData) ? "Yes" : "-");
-	ui->xmpLabel->setText((hasXmpData) ? "Yes" : "-");
-	ui->commentLabel->setText((hasCommentData) ? "Yes" : "-");
-}
-
-void FileManager::updateMetadataInfo(const QModelIndex &index)
-{
-	QString file = m_model->filePath(index);
-	QString mimeType = QMagic::mimeType(file);
-	bool isImage = mimeType.contains("image");
-	bool isVideo = mimeType.contains("video");
-
-	if (!isImage && !isVideo) {
-		ui->treeView->hide();
-		//ui->infoToolBox->setItemEnabled(2, false);
-		return;
+	if (ui->previewCheckBox->isChecked()) {
+		updatePreview(index);
 	}
-
-	QExiv2 metadata;
-
-	metadata.load(file);
-	if (!metadata.isValid()) {
-		ui->treeView->hide();
-		return;
-	}
-
-	// Setup model data.
-	if (m_metadataModel) {
-		delete m_metadataModel;
-		m_metadataModel = 0;
-	}
-
-	m_metadataModel = new MetadataTreeModel(&metadata);
-	ui->treeView->setModel(m_metadataModel);
-	ui->treeView->hideColumn(4); // hide id column
-	ui->treeView->hideColumn(5); // hide type column
-	ui->treeView->hideColumn(6); // hide count column
-	ui->treeView->hideColumn(7); // hide key column
-	ui->treeView->expandAll();
-	ui->treeView->show();
 }
 
 void FileManager::updatePreview(const QModelIndex &index)
@@ -285,7 +226,8 @@ void FileManager::updatePreview(const QModelIndex &index)
 		ui->previewLabel->setPixmap(m_preview);
 	} else {
 		m_preview.load(file);
-		if ((m_preview.width() > ui->previewLabel->width()) || (m_preview.height() > ui->previewLabel->height())) {
+		if ((m_preview.width() > ui->previewLabel->width()) ||
+		    (m_preview.height() > ui->previewLabel->height())) {
 			// Scale pixmap to fit into preview widget
 			QPixmap pix;
 			pix = m_preview.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
@@ -293,15 +235,6 @@ void FileManager::updatePreview(const QModelIndex &index)
 		} else {
 			ui->previewLabel->setPixmap(m_preview);
 		}
-	}
-}
-
-void FileManager::zoomPreview(int, int)
-{
-	if ((m_preview.width() > ui->previewLabel->width()) || (m_preview.height() > ui->previewLabel->height())) {
-		QPixmap pix;
-		pix = m_preview.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
-		ui->previewLabel->setPixmap(pix);
 	}
 }
 
@@ -316,23 +249,7 @@ void FileManager::updateInfo()
 		return;
 	}
 
-	switch (ui->infoToolBox->currentIndex()) {
-	case 0:
-		updateGeneralInfo(mi);
-		break;
-	case 1:
-		updateMoreInfo(mi);
-		break;
-	case 2:
-		updateMetadataInfo(mi);
-		break;
-	default:
-		break;
-	}
-
-	if (ui->previewCheckBox->isChecked()) {
-		updatePreview(mi);
-	}
+	updateGeneralInfo(mi);
 }
 
 // [SLOT public]
@@ -343,17 +260,36 @@ void FileManager::showInfo(bool show)
 
 	if (cb == ui->previewCheckBox) {
 		container = static_cast<QWidget *>(ui->previewLabel);
-		QModelIndex mi = m_currentIndex.child(ui->listView->currentIndex().row(), 0);
-		if (mi.isValid() && show) {
-			updatePreview(mi);
-		}
-		container->setVisible(show);
+	} else if (cb == ui->infoCheckBox) {
+		container = ui->infoWidget;
 	} else {
 		container = ui->infoContainerWidget;
-		container->setVisible(show);
-		if (show) {
-			updateInfo();
-		}
+	}
+
+	container->setVisible(show);
+	if (show) {
+		updateInfo();
+	}
+
+}
+
+
+// [SLOT public]
+void FileManager::showHidden(bool show)
+{
+        if (show) {
+                m_model->setFilter(m_model->filter() | QDir::Hidden);
+        } else {
+                m_model->setFilter(m_model->filter() &~ QDir::Hidden);
+        }
+}
+
+void FileManager::zoomPreview(int, int)
+{
+	if ((m_preview.width() > ui->previewLabel->width()) || (m_preview.height() > ui->previewLabel->height())) {
+		QPixmap pix;
+		pix = m_preview.scaled(ui->previewLabel->width(), ui->previewLabel->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		ui->previewLabel->setPixmap(pix);
 	}
 }
 
