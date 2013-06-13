@@ -11,7 +11,6 @@ namespace Ui {
 	class FileManager;
 }
 
-class MetadataTreeModel;
 class FSManager;
 class FileManager : public QWidget
 {
@@ -29,8 +28,6 @@ class FileManager : public QWidget
 
 	private:
 		void updateGeneralInfo(const QModelIndex &index);
-		void updateMoreInfo(const QModelIndex &index);
-		void updateMetadataInfo(const QModelIndex &index);
 		void updatePreview(const QModelIndex &index);
 
 	private slots:
@@ -38,7 +35,6 @@ class FileManager : public QWidget
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
 		void handleItemActivation(QModelIndex index);
 
-		void updateInfoToolBox(int index);
 		void zoomPreview(int , int);
 
 	public slots:
@@ -73,8 +69,6 @@ class FileManager : public QWidget
 
 		QModelIndexList m_selection;
 		QItemSelectionModel *m_selectionModel;
-
-		MetadataTreeModel *m_metadataModel;
 
 		QPixmap m_preview;
 };
