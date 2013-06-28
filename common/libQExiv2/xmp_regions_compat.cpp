@@ -159,20 +159,20 @@ bool QExiv2::setXmpRegionList(const QList<XmpRegion> &regions)
 	for (int i = 0; i < regions.count(); i++) {
 		j = i + 1;
 		regions.at(i).debug();
-		setXmpTagString(stAreaX.arg(j).toLatin1(), QString::number(regions.at(i).stAreaX()));
-		setXmpTagString(stAreaY.arg(j).toLatin1(), QString::number(regions.at(i).stAreaY()));
+		setXmpTagString(stAreaX.arg(j), QString::number(regions.at(i).stAreaX()));
+		setXmpTagString(stAreaY.arg(j), QString::number(regions.at(i).stAreaY()));
 
 		if (regions.at(i).shape() == XmpRegion::Rectangle) {
-			setXmpTagString(stAreaW.arg(j).toLatin1(), QString::number(regions.at(i).stAreaW()));
-			setXmpTagString(stAreaH.arg(j).toLatin1(), QString::number(regions.at(i).stAreaH()));
+			setXmpTagString(stAreaW.arg(j), QString::number(regions.at(i).stAreaW()));
+			setXmpTagString(stAreaH.arg(j), QString::number(regions.at(i).stAreaH()));
 		} else if (regions.at(j).shape() == XmpRegion::Circle) {
-			setXmpTagString(stAreaD.arg(j).toLatin1(), QString::number(regions.at(i).stAreaD()));
+			setXmpTagString(stAreaD.arg(j), QString::number(regions.at(i).stAreaD()));
 		}
 
-		setXmpTagString(stAreaUnit.arg(j).toLatin1(), regions.at(i).areaUnit());
-		setXmpTagString(name.arg(j).toLatin1(), regions.at(i).name());
-		setXmpTagString(desc.arg(j).toLatin1(), regions.at(i).description());
-		setXmpTagString(type.arg(j).toLatin1(), regions.at(i).type());
+		setXmpTagString(stAreaUnit.arg(j), regions.at(i).areaUnit());
+		setXmpTagString(name.arg(j), regions.at(i).name());
+		setXmpTagString(desc.arg(j), regions.at(i).description());
+		setXmpTagString(type.arg(j), regions.at(i).type());
 	}
 
 	return true;

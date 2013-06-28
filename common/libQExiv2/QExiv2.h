@@ -62,6 +62,7 @@ class QExiv2
 		QString xmpTagString(const char *tag, bool escapeCR = false) const;
 		QString xmpTagString(const QString &tag, bool escapeCR = false) const;
 		bool setXmpTagString(const char *tag, const QString &value);
+		bool setXmpTagString(const QString &tag, const QString& value);
 
 		QStringList xmpTagStringBag(const char *tag, bool escapeCR = false) const;
 		bool setXmpTagStringBag(const char *tag, const QStringList &bag);

@@ -123,6 +123,11 @@ bool QExiv2::setXmpTagString(const char *tag, const QString& value)
 	return false;
 }
 
+bool QExiv2::setXmpTagString(const QString &tag, const QString& value)
+{
+	return setXmpTagString(tag.toLatin1().constData(), value);
+}
+
 //****************************************************************************
 // XMP Bag
 //****************************************************************************
