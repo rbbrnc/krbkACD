@@ -36,7 +36,7 @@
      <x>0</x>
      <y>0</y>
      <width>1025</width>
-     <height>23</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -75,7 +75,6 @@
      <string>Metadata</string>
     </property>
     <addaction name="actionViewMetadata"/>
-    <addaction name="actionViewImageRegions"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>

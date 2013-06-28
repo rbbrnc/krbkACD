@@ -52,7 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionViewImage,    SIGNAL(triggered()), this, SLOT(showImage()));
 	connect(ui->actionViewMetadata, SIGNAL(triggered()), this, SLOT(showMetadata()));
-	connect(ui->actionViewImageRegions, SIGNAL(triggered(bool)), this, SLOT(showImageRegions(bool)));
 
 	connect(ui->actionFullScreen, SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
 
@@ -63,11 +62,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete ui;
-}
-
-void MainWindow::showImageRegions(bool enable)
-{
-	m_ivPage->showRegions(enable);
 }
 
 void MainWindow::fullScreen(bool enable)
@@ -134,7 +128,6 @@ void MainWindow::nextFile()
 void MainWindow::loadImage(const QString &fileName, bool loadMetadata)
 {
 	m_ivPage->setImage(fileName);
-
         if (loadMetadata) {
                 QExiv2 *e = new QExiv2();
                 if (e->load(fileName)) {

@@ -25,9 +25,7 @@ class MainWindow : public QMainWindow
 		void nextFile();
 		void prevFile();
 		void detectObjects();
-
 		void fullScreen(bool enable);
-		void showImageRegions(bool enable);
 
 	private:
 		void loadImage(const QString &fileName, bool loadMetadata);
