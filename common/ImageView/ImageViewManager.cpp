@@ -134,15 +134,34 @@ ImageViewManager::~ImageViewManager()
 	delete m_view;
 }
 
+void ImageViewManager::saveMetadata()
+{
+	if (m_updateRegion && m_exiv2) {
+		int rc = QMessageBox::question(this,
+			 tr("Metadata Changed"), tr("Save Metadata ?"),
+			 QMessageBox::Ok | QMessageBox::Cancel,
+			 QMessageBox::Cancel);
+
+		if (QMessageBox::Ok == rc) {
+			qDebug() << __PRETTY_FUNCTION__ << "SAVE";
+//			m_exiv2->save();
+		} else {
+			qDebug() << __PRETTY_FUNCTION__ << "NO_SAVE";
+		}
+	}
+}
+
 // [SLOT public]
 void ImageViewManager::previous()
 {
+	saveMetadata();
 	emit requestPreviousFile();
 }
 
 // [SLOT public]
 void ImageViewManager::next()
 {
+	saveMetadata();
 	emit requestNextFile();
 }
 
@@ -263,6 +282,7 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 	// Check if the rect is totally internal to the pixmap
 	// to avoid select a region outside the pixmap
 	if (!m_image->boundingRect().contains(rect)) {
+		qWarning() << __PRETTY_FUNCTION__ << "Region not fully bounded on image";
 		return;
 	}
 	qDebug() << __PRETTY_FUNCTION__ << rect << name << desc;
