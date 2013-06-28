@@ -7,10 +7,12 @@
 #include "RegionGraphicsItem.h"
 #include "RegionEditDialog.h"
 #include "ImageGraphicsView.h"
+#include "QExiv2.h"
 
 ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
 	  m_image(0),
+	  m_exiv2(0),
 	  m_showRegions(false),
 	  m_updateRegion(false)
 {
@@ -120,6 +122,10 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 
 ImageViewManager::~ImageViewManager()
 {
+	if (m_exiv2) {
+		delete m_exiv2;
+	}
+
 	if (m_image) {
 		delete m_image;
 	}
@@ -164,14 +170,41 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 }
 
 // [SLOT public]
-void ImageViewManager::setImage(const QString &fileName)
+void ImageViewManager::setImage(const QString &fileName, bool loadMetadata)
 {
 	QPixmap pixmap;
 	if (!pixmap.load(fileName)) {
 		setImage(QPixmap());
+		return;
 	} else {
 		setImage(pixmap);
 	}
+
+        if (loadMetadata) {
+		if (m_exiv2) {
+			delete m_exiv2;
+			m_exiv2 = 0;
+		}
+
+                m_exiv2 = new QExiv2();
+                if (m_exiv2->load(fileName)) {
+                        if (m_exiv2->xmpHasRegionTags()) {
+                                // Get XMP Image Regions
+                                MwgRegionList rl = m_exiv2->xmpMwgRegionList();
+                                for (int i = 0; i < rl.count(); i++) {
+					insertRegion(rl.at(i).stAreaBoundingRectF(),
+						     rl.at(i).name(),
+						     rl.at(i).description());
+
+                                        qDebug() << __PRETTY_FUNCTION__
+                                                 << rl.at(i).stAreaBoundingRectF()
+                                                 << rl.at(i).stArea()
+                                                 << rl.at(i).name()
+                                                 << rl.at(i).description();
+                                }
+                        }
+                }
+        }
 }
 
 // [SLOT public]

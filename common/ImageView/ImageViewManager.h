@@ -3,6 +3,7 @@
 
 #include <QtGui>
 
+class QExiv2;
 class ImageGraphicsView;
 class ImageGraphicsItem;
 class RegionGraphicsItem;
@@ -24,7 +25,7 @@ class ImageViewManager : public QWidget
 		void requestDetectObjects();
 
 	public slots:
-		void setImage(const QString &fileName);
+		void setImage(const QString &fileName, bool loadMetadata);
 		void setImage(const QPixmap &pixmap);
 
 
@@ -46,6 +47,8 @@ class ImageViewManager : public QWidget
 		ImageGraphicsView *m_view;
 		QGraphicsScene    *m_scene;
 
+		QExiv2 *m_exiv2;
+
 		QSet<RegionGraphicsItem *> m_regions;
 
 		bool m_showRegions;
@@ -62,6 +65,7 @@ class ImageViewManager : public QWidget
 
 		QToolButton *m_detectButton;
 		QToolButton *m_modeButton;
+
 };
 
 #endif

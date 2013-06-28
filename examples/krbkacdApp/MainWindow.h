@@ -28,9 +28,6 @@ class MainWindow : public QMainWindow
 		void fullScreen(bool enable);
 
 	private:
-		void loadImage(const QString &fileName, bool loadMetadata);
-
-	private:
 		Ui::MainWindow *ui;
 
 		FileManagerPage  *m_fmPage;

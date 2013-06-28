@@ -7,7 +7,6 @@
 #include "ImageViewManager.h"
 #include "MetadataTreeModel.h"
 #include "MetadataTreeViewPage.h"
-#include "QExiv2.h"
 #include "detect.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -80,7 +79,7 @@ void MainWindow::fullScreen(bool enable)
 void MainWindow::showImage()
 {
 	if (ui->stackedWidget->currentWidget() != m_ivPage) {
-		loadImage(m_fmPage->currentFilePath(), true);
+		m_ivPage->setImage(m_fmPage->currentFilePath(), true);
 		ui->stackedWidget->setCurrentWidget(m_ivPage);
 	} else {
 		ui->stackedWidget->setCurrentWidget(m_fmPage);
@@ -103,7 +102,7 @@ void MainWindow::prevFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->previousFile();
-		loadImage(m_fmPage->currentFilePath(), true);
+		m_ivPage->setImage(m_fmPage->currentFilePath(), true);
 	}
 
 	if (ui->stackedWidget->currentWidget() == m_mvPage) {
@@ -116,39 +115,13 @@ void MainWindow::nextFile()
 {
 	if (ui->stackedWidget->currentWidget() == m_ivPage) {
 		m_fmPage->nextFile();
-		loadImage(m_fmPage->currentFilePath(), true);
+		m_ivPage->setImage(m_fmPage->currentFilePath(), true);
 	}
 
 	if (ui->stackedWidget->currentWidget() == m_mvPage) {
 		m_fmPage->nextFile();
 		m_mvPage->setFile(m_fmPage->currentFilePath());
 	}
-}
-
-void MainWindow::loadImage(const QString &fileName, bool loadMetadata)
-{
-	m_ivPage->setImage(fileName);
-        if (loadMetadata) {
-                QExiv2 *e = new QExiv2();
-                if (e->load(fileName)) {
-                        if (e->xmpHasRegionTags()) {
-                                // Get XMP Image Regions
-                                MwgRegionList rl = e->xmpMwgRegionList();
-                                for (int i = 0; i < rl.count(); i++) {
-					m_ivPage->insertRegion(rl.at(i).stAreaBoundingRectF(),
-							       rl.at(i).name(),
-							       rl.at(i).description());
-
-                                        qDebug() << __PRETTY_FUNCTION__
-                                                 << rl.at(i).stAreaBoundingRectF()
-                                                 << rl.at(i).stArea()
-                                                 << rl.at(i).name()
-                                                 << rl.at(i).description();
-                                }
-                        }
-                }
-		delete e;
-        }
 }
 
 // [SLOT] detect objects
