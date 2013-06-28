@@ -27,7 +27,6 @@ class ImageViewManager : public QWidget
 		void setImage(const QString &fileName);
 		void setImage(const QPixmap &pixmap);
 
-		void showRegions(bool show);
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
@@ -40,6 +39,7 @@ class ImageViewManager : public QWidget
 		void previous();
 		void next();
 		void onDetectObjects();
+		void showRegions(bool show);
 
 	private:
 		ImageGraphicsItem *m_image;
@@ -50,6 +50,18 @@ class ImageViewManager : public QWidget
 
 		bool m_showRegions;
 		bool m_updateRegion;
+
+		QToolButton *m_zoom11Button;
+		QToolButton *m_zoomInButton;
+		QToolButton *m_zoomOutButton;
+		QToolButton *m_zoomToFitButton;
+
+		QToolButton *m_rotateCCWButton;
+		QToolButton *m_rotateCWButton;
+		QToolButton *m_resetViewButton;
+
+		QToolButton *m_detectButton;
+		QToolButton *m_modeButton;
 };
 
 #endif

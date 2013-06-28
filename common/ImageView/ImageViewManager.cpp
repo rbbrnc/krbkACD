@@ -23,50 +23,52 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	QSize iconSize(32, 32);
 
 	// Zoom In
-	QToolButton *zoomInButton  = new QToolButton();
-	zoomInButton->setIcon(QIcon(":/images/zoom_in.png"));
-	zoomInButton->setIconSize(iconSize);
+	m_zoomInButton  = new QToolButton();
+	m_zoomInButton->setIcon(QIcon(":/images/zoom_in.png"));
+	m_zoomInButton->setIconSize(iconSize);
 
 	// Zoom Out
-	QToolButton *zoomOutButton = new QToolButton();
-	zoomOutButton->setIcon(QIcon(":/images/zoom_out.png"));
-	zoomOutButton->setIconSize(iconSize);
+	m_zoomOutButton = new QToolButton();
+	m_zoomOutButton->setIcon(QIcon(":/images/zoom_out.png"));
+	m_zoomOutButton->setIconSize(iconSize);
 
 	// Zoom to Fit
-	QToolButton *zoomToFitButton = new QToolButton();
-	zoomToFitButton->setIcon(QIcon(":/images/zoom_best_fit.png"));
-	zoomToFitButton->setIconSize(iconSize);
+	m_zoomToFitButton = new QToolButton();
+	m_zoomToFitButton->setIcon(QIcon(":/images/zoom_best_fit.png"));
+	m_zoomToFitButton->setIconSize(iconSize);
 
 	// Zoom 1:1
-	QToolButton *zoom11Button = new QToolButton();
-	zoom11Button->setIcon(QIcon(":/images/zoom_original.png"));
-	zoom11Button->setIconSize(iconSize);
+	m_zoom11Button = new QToolButton();
+	m_zoom11Button->setIcon(QIcon(":/images/zoom_original.png"));
+	m_zoom11Button->setIconSize(iconSize);
 
 	// Rotate CCW
-	QToolButton *rotateCCWButton = new QToolButton();
-	rotateCCWButton->setIcon(QIcon(":/images/rotate_ccw.png"));
-	rotateCCWButton->setIconSize(iconSize);
+	m_rotateCCWButton = new QToolButton();
+	m_rotateCCWButton->setIcon(QIcon(":/images/rotate_ccw.png"));
+	m_rotateCCWButton->setIconSize(iconSize);
 
 	// Rotate CW
-	QToolButton *rotateCWButton = new QToolButton();
-	rotateCWButton->setIcon(QIcon(":/images/rotate_cw.png"));
-	rotateCWButton->setIconSize(iconSize);
+	m_rotateCWButton = new QToolButton();
+	m_rotateCWButton->setIcon(QIcon(":/images/rotate_cw.png"));
+	m_rotateCWButton->setIconSize(iconSize);
 
 	// Reset View to original
-	QToolButton *resetViewButton = new QToolButton();
-	resetViewButton->setIcon(QIcon(":/images/original.png"));
-	resetViewButton->setIconSize(iconSize);
+	m_resetViewButton = new QToolButton();
+	m_resetViewButton->setIcon(QIcon(":/images/original.png"));
+	m_resetViewButton->setIconSize(iconSize);
 
 	// View Mode for Panning image or for region selection.
-	QToolButton *modeButton = new QToolButton();
-	modeButton->setCheckable(true);
-	modeButton->setIcon(QIcon(":/images/select.png"));
-	modeButton->setIconSize(iconSize);
+	m_modeButton = new QToolButton();
+	m_modeButton->setCheckable(true);
+	m_modeButton->setIcon(QIcon(":/images/select.png"));
+	m_modeButton->setIconSize(iconSize);
+	m_modeButton->setChecked(m_showRegions);
 
 	// Detect Objects
-	QToolButton *detectButton = new QToolButton();
-	detectButton->setIcon(QIcon(":/images/user_silhouette.png"));
-	detectButton->setIconSize(iconSize);
+	m_detectButton = new QToolButton();
+	m_detectButton->setIcon(QIcon(":/images/user_silhouette.png"));
+	m_detectButton->setIconSize(iconSize);
+	m_detectButton->setEnabled(m_showRegions);
 
 	// Previous Image
 	QToolButton *previousButton = new QToolButton();
@@ -79,15 +81,15 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	nextButton->setIconSize(iconSize);
 
 	QHBoxLayout *buttonLayout = new QHBoxLayout;
-	buttonLayout->addWidget(zoomInButton);
-	buttonLayout->addWidget(zoomOutButton);
-	buttonLayout->addWidget(zoom11Button);
-	buttonLayout->addWidget(zoomToFitButton);
-	buttonLayout->addWidget(rotateCCWButton);
-	buttonLayout->addWidget(rotateCWButton);
-	buttonLayout->addWidget(resetViewButton);
-	buttonLayout->addWidget(modeButton);
-	buttonLayout->addWidget(detectButton);
+	buttonLayout->addWidget(m_zoomInButton);
+	buttonLayout->addWidget(m_zoomOutButton);
+	buttonLayout->addWidget(m_zoom11Button);
+	buttonLayout->addWidget(m_zoomToFitButton);
+	buttonLayout->addWidget(m_rotateCCWButton);
+	buttonLayout->addWidget(m_rotateCWButton);
+	buttonLayout->addWidget(m_resetViewButton);
+	buttonLayout->addWidget(m_modeButton);
+	buttonLayout->addWidget(m_detectButton);
 	buttonLayout->addWidget(previousButton);
 	buttonLayout->addWidget(nextButton);
 
@@ -96,18 +98,18 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	layout->addLayout(buttonLayout);
 	setLayout(layout);
 
-	connect(zoomInButton,    SIGNAL(clicked()), m_view, SLOT(zoomIn()));
-	connect(zoomOutButton,   SIGNAL(clicked()), m_view, SLOT(zoomOut()));
-	connect(zoom11Button,    SIGNAL(clicked()), m_view, SLOT(zoom11()));
-	connect(zoomToFitButton, SIGNAL(clicked()), m_view, SLOT(zoomToFit()));
+	connect(m_zoomInButton,    SIGNAL(clicked()), m_view, SLOT(zoomIn()));
+	connect(m_zoomOutButton,   SIGNAL(clicked()), m_view, SLOT(zoomOut()));
+	connect(m_zoom11Button,    SIGNAL(clicked()), m_view, SLOT(zoom11()));
+	connect(m_zoomToFitButton, SIGNAL(clicked()), m_view, SLOT(zoomToFit()));
 
-	connect(rotateCCWButton, SIGNAL(clicked()), m_view, SLOT(rotateCCW()));
-	connect(rotateCWButton,  SIGNAL(clicked()), m_view, SLOT(rotateCW()));
+	connect(m_rotateCCWButton, SIGNAL(clicked()), m_view, SLOT(rotateCCW()));
+	connect(m_rotateCWButton,  SIGNAL(clicked()), m_view, SLOT(rotateCW()));
 
-	connect(resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
+	connect(m_resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
 
-	connect(modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
-	connect(detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
+	connect(m_modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
+	connect(m_detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
 
 	connect(previousButton, SIGNAL(clicked()), this, SLOT(previous()));
 	connect(nextButton,     SIGNAL(clicked()), this, SLOT(next()));
@@ -210,6 +212,7 @@ void ImageViewManager::enableRegionSelection(bool enable)
 	}
 
 	m_view->setInteractive(enable);
+	m_detectButton->setEnabled(enable);
 	showRegions(enable);
 }
 
@@ -247,6 +250,9 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 	m_scene->addItem(ir);
 	m_regions.insert(ir);
 
+	if (!m_showRegions) {
+		ir->setZValue(-1);
+	}
 #if 0
 	QSize imageSize;
 	imageSize.setWidth(m_image->boundingRect().width());
