@@ -149,10 +149,11 @@ void ImageGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 			m_selRect.setHeight(end.y() - origin.y());
 		}
 
-		qDebug() << __PRETTY_FUNCTION__ << m_selRect;
+		//qDebug() << __PRETTY_FUNCTION__ << m_selRect;
 		QGraphicsView::mouseReleaseEvent(event);
 		emit newRectRegion(m_selRect);
 	} else {
+		//qDebug() << __PRETTY_FUNCTION__ << "Not interactive!";
 		setCursor(Qt::OpenHandCursor);
 		LastPanPoint = QPoint();
 	}

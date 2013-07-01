@@ -16,11 +16,11 @@ class ImageViewManager : public QWidget
 		explicit ImageViewManager(QWidget *parent = 0);
 		~ImageViewManager();
 
-		void insertRegion(const QRectF &rect,
-				  const QString &name, const QString &desc);
 
 	private:
 		void saveMetadata();
+		void insertRegion(const QRectF &rect,
+				  const QString &name, const QString &desc);
 
 	signals:
 		void requestNextFile();
@@ -30,13 +30,12 @@ class ImageViewManager : public QWidget
 	public slots:
 		void setImage(const QString &fileName, bool loadMetadata);
 		void setImage(const QPixmap &pixmap);
-
+		void addRegion(const QRectF &rect);
 
 	private slots:
 		void sceneChanged(const QList<QRectF> &region);
 		void enableRegionSelection(bool enable);
 
-		void addRegion(const QRectF &rect);
 		void removeRegion();
 		void editRegion();
 

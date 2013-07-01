@@ -140,7 +140,8 @@ void MainWindow::detectObjects()
 
 		for (int i = 0; i < regions.count(); i++) {
 			//regionList->append(MwgRegion(regions.at(i), QSize(imgW, imgH), MwgRegion::Face));
-			m_ivPage->insertRegion(regions.at(i), "", "");
+			//m_ivPage->insertRegion(regions.at(i), "", "");
+			m_ivPage->addRegion(regions.at(i));
 		}
 	}
 

@@ -144,10 +144,24 @@ void ImageViewManager::saveMetadata()
 
 		if (QMessageBox::Ok == rc) {
 			qDebug() << __PRETTY_FUNCTION__ << "SAVE";
-//			m_exiv2->save();
+			if (!m_regions.isEmpty()) {
+				MwgRegionList regs;
+				foreach(RegionGraphicsItem *item, m_regions) {
+					MwgRegion r;
+					r.setRegion(item->boundingRect(), QSizeF(m_image->pixmap().size()), false);
+					r.setDescription(item->description());
+					r.setName(item->name());
+					//qDebug() << "Save:\n" << r;
+					regs.append(r);
+				}
+				m_exiv2->xmpSetMwgRegionList(regs);
+			}
+			m_exiv2->save();
 		} else {
-			qDebug() << __PRETTY_FUNCTION__ << "NO_SAVE";
+			qDebug() << __PRETTY_FUNCTION__ << "CANCEL_SAVE";
 		}
+	} else {
+		qDebug() << __PRETTY_FUNCTION__ << "NOTHING_SAVE";
 	}
 }
 
@@ -271,6 +285,7 @@ void ImageViewManager::enableRegionSelection(bool enable)
 void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, const QString &desc)
 {
 	if (!m_image) {
+		qWarning() << __PRETTY_FUNCTION__ << "Invalid Image" << rect;
 		return;
 	}
 
@@ -310,15 +325,16 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 	QSize imageSize;
 	imageSize.setWidth(m_image->boundingRect().width());
 	imageSize.setHeight(m_image->boundingRect().height());
-#endif
 	m_updateRegion = true;
+#endif
 }
 
-// [SLOT private]
+// [SLOT public]
 // Called for new created regions with rubberband selection rect
 void ImageViewManager::addRegion(const QRectF &rect)
 {
 	insertRegion(rect, "", "");
+	m_updateRegion = true;
 }
 
 // [SLOT private]

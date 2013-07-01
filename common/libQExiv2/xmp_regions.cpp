@@ -47,8 +47,9 @@ void QExiv2::xmpEraseRegions()
 
 void QExiv2::xmpSetMwgRegionList(const MwgRegionList &regions)
 {
+	xmpEraseRegions();
 	if (regions.isEmpty()) {
-		xmpEraseRegions();
+		//xmpEraseRegions();
 		return;
 	}
 
@@ -73,7 +74,7 @@ void QExiv2::xmpSetMwgRegionList(const MwgRegionList &regions)
 // Use write to save changes.
 void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 {
-	if (n <=0) {
+	if (n <= 0) {
 		qDebug() << __PRETTY_FUNCTION__ << "Cannot set index <= 0";
 		return;
 	}
@@ -113,10 +114,12 @@ void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 		setXmpTagString(MwgRs::regionListTag("Type", n), "Barcode");
 		break;
 	case MwgRs::Focus:
-	default:
 		setXmpTagString(MwgRs::regionListTag("Type", n), "Focus");
 		// XXX: todo set focus usage
 		//setXmpTagString(MwgRs::regionListTag("FocusUsage", n), "Focus");
+		break;
+	default:
+		setXmpTagString(MwgRs::regionListTag("Type", n), "Face");
 		break;
 	}
 }
