@@ -151,6 +151,7 @@ void ImageViewManager::saveMetadata()
 					r.setRegion(item->boundingRect(), QSizeF(m_image->pixmap().size()), false);
 					r.setDescription(item->description());
 					r.setName(item->name());
+					r.setType(static_cast<MwgRs::Type>(item->type()));
 					//qDebug() << "Save:\n" << r;
 					regs.append(r);
 				}
@@ -227,7 +228,8 @@ void ImageViewManager::setImage(const QString &fileName, bool loadMetadata)
                                 for (int i = 0; i < rl.count(); i++) {
 					insertRegion(rl.at(i).stAreaBoundingRectF(),
 						     rl.at(i).name(),
-						     rl.at(i).description());
+						     rl.at(i).description(),
+						     rl.at(i).type());
 
                                         qDebug() << __PRETTY_FUNCTION__
                                                  << rl.at(i).stAreaBoundingRectF()
@@ -282,7 +284,8 @@ void ImageViewManager::enableRegionSelection(bool enable)
 	showRegions(enable);
 }
 
-void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, const QString &desc)
+void ImageViewManager::insertRegion(const QRectF &rect, const QString &name,
+				    const QString &desc, int type)
 {
 	if (!m_image) {
 		qWarning() << __PRETTY_FUNCTION__ << "Invalid Image" << rect;
@@ -304,6 +307,7 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name, con
 
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
 
+	ir->setType(type);
 	if (!name.isNull()) {
 		ir->setName(name);
 	}

@@ -19,6 +19,9 @@ class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 		QString description() const;
 		void setDescription(const QString &desc);
 
+		int type() const;
+		void setType(int type);
+
 	protected:
 		virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
 
@@ -36,6 +39,7 @@ class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 	private:
 		QString m_name;
 		QString m_description;
+		int m_type;
 
 		// Context Menu
 		QMenu    m_menu;

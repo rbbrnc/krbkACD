@@ -6,6 +6,7 @@
 RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent)
 	: QGraphicsRectItem(rect, parent)
 {
+	m_type = 0;
 	m_removeAction   = m_menu.addAction("Remove");
 	m_editAction     = m_menu.addAction("Edit");
 
@@ -56,7 +57,7 @@ void RegionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
 // [EVENT protected]
 void RegionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
 {
-	qDebug() << __PRETTY_FUNCTION__ << zValue();
+	//qDebug() << __PRETTY_FUNCTION__ << zValue();
 	//setZValue(-1);
 	QGraphicsItem::hoverLeaveEvent(event);
 }
@@ -79,6 +80,16 @@ QString RegionGraphicsItem::description() const
 void RegionGraphicsItem::setDescription(const QString &desc)
 {
 	m_description = desc;
+}
+
+int RegionGraphicsItem::type() const
+{
+	return m_type;
+}
+
+void RegionGraphicsItem::setType(int type)
+{
+	m_type = type;
 }
 
 // [EVENT protected]

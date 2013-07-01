@@ -20,7 +20,9 @@ class ImageViewManager : public QWidget
 	private:
 		void saveMetadata();
 		void insertRegion(const QRectF &rect,
-				  const QString &name, const QString &desc);
+				  const QString &name,
+				  const QString &desc,
+				  int type = 0);
 
 	signals:
 		void requestNextFile();

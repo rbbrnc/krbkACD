@@ -17,16 +17,40 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <widget class="QLabel" name="rectLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <widget class="QLabel" name="label_2">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
        </property>
        <property name="text">
-        <string>-</string>
+        <string>Type:</string>
        </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="typeComboBox">
+       <item>
+        <property name="text">
+         <string>Face</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Pet</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Focus</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Barcode</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>

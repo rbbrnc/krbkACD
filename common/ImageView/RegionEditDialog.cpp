@@ -11,19 +11,9 @@ RegionEditDialog::RegionEditDialog(RegionGraphicsItem *item, QWidget *parent) :
 	ui->setupUi(this);
 
 	if (item) {
-		//QPointF p = item->mapToScene(QPointF(item->x(), item->y()));
-		QPointF p = item->scenePos();
-		qDebug() << p;
-
-		QString s = QString("x:%1, y:%2, w:%3, h:%4")
-				.arg(p.x())
-				.arg(p.y())
-				.arg(item->rect().width())
-				.arg(item->rect().height());
-
-		ui->rectLabel->setText(s);
 		ui->nameLineEdit->setText(item->name());
 		ui->descriptionTextEdit->setPlainText(item->description());
+		ui->typeComboBox->setCurrentIndex(item->type());
 	}
 }
 
@@ -37,6 +27,7 @@ void RegionEditDialog::accept()
 	if (m_item) {
 		m_item->setName(ui->nameLineEdit->text());
 		m_item->setDescription(ui->descriptionTextEdit->toPlainText());
+		m_item->setType(ui->typeComboBox->currentIndex());
 	} else {
 		reject();
 	}
