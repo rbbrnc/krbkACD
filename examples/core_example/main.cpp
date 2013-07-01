@@ -44,9 +44,12 @@ int main(int argc, char *argv[])
 #endif
 
 	if (e->xmpHasRegionTags()) {
-		QList<XmpRegion> tl = e->xmpRegionList();
-		for (int i = 0; i < tl.size(); i++) {
-			tl.at(i).debug();
+		MwgRegionList rl = e->xmpMwgRegionList();
+		for (int i = 0; i < rl.count(); i++) {
+			qDebug() << rl.at(i).stAreaBoundingRectF()
+				 << rl.at(i).stArea()
+				 << rl.at(i).name()
+				 << rl.at(i).description();
 		}
 	} else {
 		qDebug() << "No region tags found!";

@@ -2,6 +2,12 @@
  * file: mp_regions.cpp
  *
  * QExiv2 XMP MP Regions Tag methods
+ * http://msdn.microsoft.com/en-us/library/ee719905%28VS.85%29.aspx
+ *
+ * =======================================================
+ * if (!(xmpTagString("Xmp.MP.RegionInfo").isEmpty())) {
+ *		regions += xmpMPRegionList();
+ * }
  *
  */
 #include <QDebug>

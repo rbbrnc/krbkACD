@@ -7,7 +7,7 @@
 #include <QImage>
 #include <QDateTime>
 
-#include "XmpRegion.h"
+//#include "XmpRegion.h"
 #include "mwg_region.h"
 #include "mwg_region_list.h"
 
@@ -52,6 +52,9 @@ class QExiv2
 		QString exifTagString(const char *tag, bool escapeCR = false) const;
 		QDateTime exifTagDateTime(const char *tag) const;
 
+		// Exif preview (thumbnail) image
+		QImage previewImage() const;
+
 		// IPTC Functions
 		bool isIptcWritable() const;
 		bool clearIptc();
@@ -74,18 +77,12 @@ class QExiv2
 		QString xmpTagStringLangAlt(const char *tag, const QString &langAlt, bool escapeCR);
 		bool setXmpTagStringLangAlt(const char *tag, const QString &value, const QString &langAlt);
 
-		// XMP Regions
-		//bool hasXmpRegionTag() const;
-
-		void xmpEraseRegions();
-		QList<XmpRegion> xmpRegionList() const;
-		bool setXmpRegionList(const QList<XmpRegion> &regions);
-
 		bool removeXmpTag(const char *tag);
 		QByteArray xmpPacket() const;
 
-		// New Regions
+		// XMP Regions
 		bool xmpHasRegionTags() const;
+		void xmpEraseRegions();
 		MwgRegionList xmpMwgRegionList() const;
 		void xmpSetMwgRegionList(const MwgRegionList &regions);
 		void xmpSetMwgRegion(const MwgRegion &region, int n);
@@ -97,22 +94,15 @@ class QExiv2
 		QByteArray imgComment() const;
 		bool setImgComment(const QByteArray& data);
 
-		// Exif preview (thumbnail) image
-		QImage previewImage() const;
-
 		QList<struct exifData> exifDataList() const;
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
 
 	private:
-		QList<XmpRegion> xmpMWGRegionList() const;
-		QList<XmpRegion> xmpMPRegionList() const;
-
 		// Readed from file not metadata!!
 		int m_imageWidth;
 		int m_imageHeight;
 
-	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;
 };
 
