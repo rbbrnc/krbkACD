@@ -51,3 +51,26 @@ QList<exifData> QExiv2::iptcDataList() const
 
 	return lst;
 }
+
+QString QExiv2::iptcTagString(const char *tag, bool escapeCR) const
+{
+	try {
+		Exiv2::IptcKey iptcKey(tag);
+		Exiv2::IptcData iptcData(d->iptcMetadata);
+		Exiv2::IptcData::iterator it = iptcData.findKey(iptcKey);
+		if (it != iptcData.end()) {
+			std::ostringstream os;
+			os << *it;
+			QString tagValue(os.str().c_str());
+			if (escapeCR) {
+				tagValue.replace('\n', ' ');
+			}
+			return tagValue;
+		}
+	} catch (Exiv2::Error &e) {
+		d->error(QString("%1 Cannot find Iptc tag '%2'").arg(__PRETTY_FUNCTION__).arg(tag), e);
+	}
+
+	return QString();
+}
+

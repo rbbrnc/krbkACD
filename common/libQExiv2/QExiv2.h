@@ -58,6 +58,7 @@ class QExiv2
 		// IPTC Functions
 		bool isIptcWritable() const;
 		bool clearIptc();
+		QString iptcTagString(const char *tag, bool escapeCR = false) const;
 
 		// XMP Functions
 		bool isXmpWritable() const;

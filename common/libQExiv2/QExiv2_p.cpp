@@ -4,6 +4,8 @@
 
 QExiv2DataPrivate::QExiv2DataPrivate()
 {
+	// Register standard namespace for IptcExt
+	Exiv2::XmpProperties::registerNs("Iptc4xmpExt/", "Iptc4xmpExt");
 	metadataValid = false;
 }
 
