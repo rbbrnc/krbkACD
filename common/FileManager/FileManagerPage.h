@@ -16,6 +16,7 @@ class FileManagerPage : public QWidget
 		explicit FileManagerPage(QWidget *parent = 0);
 		~FileManagerPage();
 
+		QStringList fileSelection() const;
 		QString currentPath() const;
 		QString currentFile() const;
 		QString currentFilePath() const;

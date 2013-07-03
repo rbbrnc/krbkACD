@@ -79,6 +79,13 @@ void FileManagerPage::showHidden(bool show)
 	m_lastActive->showHidden(show);
 }
 
+QStringList FileManagerPage::fileSelection() const
+{
+	qDebug() << __PRETTY_FUNCTION__ << m_lastActive->fileSelection();
+	return m_lastActive->fileSelection();
+}
+
+
 // [SLOT private]
 void FileManagerPage::showInfo(bool show)
 {

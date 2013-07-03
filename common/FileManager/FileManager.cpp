@@ -78,6 +78,18 @@ bool FileManager::isActive() const
 	return ui->listView->hasFocus();
 }
 
+QStringList FileManager::fileSelection() const
+{
+	QStringList files;
+	QModelIndexList sel = m_selectionModel->selectedIndexes();
+	for (int i = 0; i < sel.count(); i++) {
+		if (!m_model->isDir(sel.at(i))) {
+			files << m_currentDir.absolutePath() + '/' + m_model->fileName(sel.at(i));
+		}
+	}
+	return files;
+}
+
 /*  SLOT [private] */
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
@@ -339,14 +351,14 @@ void FileManager::mkDir()
 // [SLOT public]
 void FileManager::remove()
 {
-	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
-	if (m_selection.isEmpty()) {
+	QModelIndexList sel = m_selectionModel->selectedIndexes();
+	if (sel.isEmpty()) {
 		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 		return;
 	}
 
 	QString msg;
-	int count = m_selection.count();
+	int count = sel.count();
 	if (count == 1) {
 		QModelIndex index = ui->listView->currentIndex();
 		if (m_model->isDir(index)) {
@@ -363,9 +375,9 @@ void FileManager::remove()
 	}
 
 	for (int i = 0; i < count; i++) {
-		if (!m_model->remove(m_selection.at(i))) {
+		if (!m_model->remove(sel.at(i))) {
 			QMessageBox::critical(this, QObject::tr("Error"),
-				tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
+				tr("Cannot Remove '%1'").arg(m_model->filePath(sel.at(i))),
 				QMessageBox::Abort);
 			return;
 		}
@@ -375,38 +387,38 @@ void FileManager::remove()
 // [SLOT public]
 void FileManager::rename()
 {
-	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
+	QModelIndexList sel = m_selectionModel->selectedIndexes();
 
-	if (m_selection.isEmpty()) {
+	if (sel.isEmpty()) {
 		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 		return;
 	}
 
 	m_model->setReadOnly(false);
 
-	if (m_selection.count() == 1) {
+	if (sel.count() == 1) {
 		// Single file
-		RenameDialog dlg(m_model->fileName(m_selection.first()));
+		RenameDialog dlg(m_model->fileName(sel.first()));
 		if (dlg.exec() == QDialog::Accepted) {
-			if (m_model->setData(m_selection.first(), dlg.newFileName())) {
-				ui->listView->update(m_selection.first());
+			if (m_model->setData(sel.first(), dlg.newFileName())) {
+				ui->listView->update(sel.first());
 			}
 		}
 	} else {
 		// Multi files
 		QStringList files;
-		for (int i = 0; i < m_selection.count(); i++) {
-			files << m_model->fileName(m_selection.at(i));
-			//qDebug() << m_model->filePath(m_selection.at(i));
+		for (int i = 0; i < sel.count(); i++) {
+			files << m_model->fileName(sel.at(i));
+			//qDebug() << m_model->filePath(sel.at(i));
 		}
 
 		BatchRenameDialog dlg(files);
 		if (dlg.exec() == QDialog::Accepted) {
 			QStringList filesOut = dlg.newFileNames();
-			for (int i = 0; i < m_selection.count(); i++) {
-				//qDebug() << m_model->fileName(m_selection.at(i)) << "--" << filesOut.at(i);
-				if (m_model->setData(m_selection.at(i), filesOut.at(i))) {
-					ui->listView->update(m_selection.at(i));
+			for (int i = 0; i < sel.count(); i++) {
+				//qDebug() << m_model->fileName(sel.at(i)) << "--" << filesOut.at(i);
+				if (m_model->setData(sel.at(i), filesOut.at(i))) {
+					ui->listView->update(sel.at(i));
 				}
 			}
 		}
@@ -418,8 +430,8 @@ void FileManager::rename()
 
 void FileManager::copy(const QString &destPath)
 {
-	m_selection = m_selectionModel->selectedIndexes();
-	if (m_selection.isEmpty()) {
+	QModelIndexList sel = m_selectionModel->selectedIndexes();
+	if (sel.isEmpty()) {
 		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 		return;
 	}
@@ -430,12 +442,12 @@ void FileManager::copy(const QString &destPath)
 	}
 
 	int dc;
-	if (m_selection.count() == 1) {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+	if (sel.count() == 1) {
+		CopyMoveDialog dlg(m_model->fileName(sel.first()), destPath);
 		dlg.setWindowTitle("Copy File");
 		dc = dlg.exec();
 	} else {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+		CopyMoveDialog dlg(m_model->fileName(sel.first()), destPath);
 		dlg.setWindowTitle("Copy File(s)");
 		dc = dlg.exec();
 	}
@@ -448,22 +460,22 @@ void FileManager::copy(const QString &destPath)
 
 	QString dest;
 	// Copy files until filelist is empty or error occured
-	while (!m_selection.isEmpty()) {
-		dest = destPath + "/" + m_model->fileName(m_selection.first());
+	while (!sel.isEmpty()) {
+		dest = destPath + "/" + m_model->fileName(sel.first());
 		if (QFile::exists(dest)) {
 			QMessageBox::critical(this, tr("Copy Error"), tr("File '%1' already exists").arg(dest), QMessageBox::Abort);
 			m_model->setReadOnly(true);
 			return;
 		}
-		if (!QFile::copy(m_model->filePath(m_selection.first()), dest)) {
+		if (!QFile::copy(m_model->filePath(sel.first()), dest)) {
 			QMessageBox::critical(this, tr("Copy Error"),
-				tr("Copying file '%1' failed").arg(m_model->fileName(m_selection.first())),
+				tr("Copying file '%1' failed").arg(m_model->fileName(sel.first())),
 				QMessageBox::Abort);
 
 			m_model->setReadOnly(true);
 			return;
 		}
-		m_selection.removeFirst();
+		sel.removeFirst();
 	}
 
 	m_model->setReadOnly(true);
@@ -473,8 +485,8 @@ void FileManager::copy(const QString &destPath)
 
 void FileManager::move(const QString &destPath)
 {
-	m_selection = m_selectionModel->selectedIndexes();
-	if (m_selection.isEmpty()) {
+	QModelIndexList sel = m_selectionModel->selectedIndexes();
+	if (sel.isEmpty()) {
 		QMessageBox::critical(this, tr("Error"), tr("No file(s) selected"), QMessageBox::Ok);
 		return;
 	}
@@ -486,12 +498,12 @@ void FileManager::move(const QString &destPath)
 
 	int dc;
 
-	if (m_selection.count() == 1) {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+	if (sel.count() == 1) {
+		CopyMoveDialog dlg(m_model->fileName(sel.first()), destPath);
 		dlg.setWindowTitle("Move File");
 		dc = dlg.exec();
 	} else {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
+		CopyMoveDialog dlg(m_model->fileName(sel.first()), destPath);
 		dlg.setWindowTitle("Move File(s)");
 		dc = dlg.exec();
 	}
@@ -504,22 +516,22 @@ void FileManager::move(const QString &destPath)
 
 	QString dest;
 	// Move files until filelist is empty or error occured
-	while (!m_selection.isEmpty()) {
-		dest = destPath + "/" + m_model->fileName(m_selection.first());
+	while (!sel.isEmpty()) {
+		dest = destPath + "/" + m_model->fileName(sel.first());
 		if (QFile::exists(dest)) {
 			QMessageBox::critical(this, tr("Move Error"), tr("File '%1' already exists").arg(dest), QMessageBox::Abort);
 			m_model->setReadOnly(true);
 			return;
 		}
-		if (!QFile::rename(m_model->filePath(m_selection.first()), dest)) {
+		if (!QFile::rename(m_model->filePath(sel.first()), dest)) {
 			QMessageBox::critical(this, tr("Move Error"),
-				tr("Moving file '%1' failed").arg(m_model->fileName(m_selection.first())),
+				tr("Moving file '%1' failed").arg(m_model->fileName(sel.first())),
 				QMessageBox::Abort);
 
 			m_model->setReadOnly(true);
 			return;
 		}
-		m_selection.removeFirst();
+		sel.removeFirst();
 	}
 	m_model->setReadOnly(true);
 	ui->listView->clearSelection();

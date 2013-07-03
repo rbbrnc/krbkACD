@@ -25,6 +25,7 @@ class FileManager : public QWidget
 		bool isActive() const;
 
 		void updateInfo();
+		QStringList fileSelection() const;
 
 	private:
 		void updateGeneralInfo(const QModelIndex &index);
@@ -67,7 +68,6 @@ class FileManager : public QWidget
 		QString m_currentFileName;
 		QDir    m_currentDir;
 
-		QModelIndexList m_selection;
 		QItemSelectionModel *m_selectionModel;
 
 		QPixmap m_preview;
