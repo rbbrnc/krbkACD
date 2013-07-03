@@ -26,6 +26,7 @@ class MainWindow : public QMainWindow
 		void prevFile();
 		void detectObjects();
 		void fullScreen(bool enable);
+		void editXmpLocation();
 
 	private:
 		Ui::MainWindow *ui;

@@ -75,6 +75,7 @@
      <string>Metadata</string>
     </property>
     <addaction name="actionViewMetadata"/>
+    <addaction name="actionEditXmpLocation"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -219,6 +220,11 @@
    </property>
    <property name="text">
     <string>View Image Regions</string>
+   </property>
+  </action>
+  <action name="actionEditXmpLocation">
+   <property name="text">
+    <string>Edit Xmp Location</string>
    </property>
   </action>
  </widget>

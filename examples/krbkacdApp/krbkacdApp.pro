@@ -34,8 +34,9 @@ include ($$COMMON_PATH/ImageView/ImageView.pri)
 include ($$COMMON_PATH/MetadataTreeModel/MetadataTreeModel.pri)
 include ($$COMMON_PATH/MetadataTreeModel/MetadataTreeViewPage.pri)
 include ($$COMMON_PATH/FileManager/FileManager.pri)
+include ($$COMMON_PATH/LocationDialog/LocationDialog.pri)
 
-QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code
+QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -g -ggdb
 
 CONFIG += silent
 

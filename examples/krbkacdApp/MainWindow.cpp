@@ -7,6 +7,7 @@
 #include "ImageViewManager.h"
 #include "MetadataTreeModel.h"
 #include "MetadataTreeViewPage.h"
+#include "LocationDialog.h"
 #include "detect.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -54,13 +55,22 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionFullScreen, SIGNAL(triggered(bool)), this, SLOT(fullScreen(bool)));
 
+	connect(ui->actionEditXmpLocation, SIGNAL(triggered()), this, SLOT(editXmpLocation()));
+
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
+
 }
 
 MainWindow::~MainWindow()
 {
 	delete ui;
+}
+
+void MainWindow::editXmpLocation()
+{
+	LocationDialog dlg(m_fmPage->fileSelection());
+	dlg.exec();
 }
 
 void MainWindow::fullScreen(bool enable)
