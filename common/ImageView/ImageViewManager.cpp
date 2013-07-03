@@ -1,6 +1,6 @@
 #include <QtGui>
 
-#include <QDebug>
+//#include <QDebug>
 
 #include "ImageViewManager.h"
 #include "ImageGraphicsItem.h"
@@ -143,7 +143,6 @@ void ImageViewManager::saveMetadata()
 			 QMessageBox::Cancel);
 
 		if (QMessageBox::Ok == rc) {
-			qDebug() << __PRETTY_FUNCTION__ << "SAVE";
 			if (!m_regions.isEmpty()) {
 				MwgRegionList regs;
 				foreach(RegionGraphicsItem *item, m_regions) {
@@ -152,17 +151,12 @@ void ImageViewManager::saveMetadata()
 					r.setDescription(item->description());
 					r.setName(item->name());
 					r.setType(static_cast<MwgRs::Type>(item->type()));
-					//qDebug() << "Save:\n" << r;
 					regs.append(r);
 				}
 				m_exiv2->xmpSetMwgRegionList(regs);
 			}
 			m_exiv2->save();
-		} else {
-			qDebug() << __PRETTY_FUNCTION__ << "CANCEL_SAVE";
 		}
-	} else {
-		qDebug() << __PRETTY_FUNCTION__ << "NOTHING_SAVE";
 	}
 }
 
@@ -171,6 +165,7 @@ void ImageViewManager::previous()
 {
 	saveMetadata();
 	emit requestPreviousFile();
+	m_updateRegion = false;
 }
 
 // [SLOT public]
@@ -178,6 +173,7 @@ void ImageViewManager::next()
 {
 	saveMetadata();
 	emit requestNextFile();
+	m_updateRegion = false;
 }
 
 void ImageViewManager::onDetectObjects()
@@ -192,7 +188,6 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 		return;
 	}
 
-	//qDebug() << __PRETTY_FUNCTION__;
 	// Don't resize the image if is totally contained in the scene rect.
 //	if (zoomToFitOption) {
 		QSize viewSize = m_view->viewport()->size();
@@ -230,11 +225,6 @@ void ImageViewManager::setImage(const QString &fileName, bool loadMetadata)
 						     rl.at(i).name(),
 						     rl.at(i).description(),
 						     rl.at(i).type());
-					/*qDebug() << __PRETTY_FUNCTION__
-                                                 << rl.at(i).stAreaBoundingRectF()
-                                                 << rl.at(i).stArea()
-                                                 << rl.at(i).name()
-                                                 << rl.at(i).description();*/
                                 }
                         }
                 }
