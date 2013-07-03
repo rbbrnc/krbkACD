@@ -79,6 +79,7 @@ class QExiv2
 		bool setXmpTagStringLangAlt(const char *tag, const QString &value, const QString &langAlt);
 
 		bool removeXmpTag(const char *tag);
+		void removeXmpBag(const char *tag, int tagNameSize);
 		QByteArray xmpPacket() const;
 
 		// XMP Regions

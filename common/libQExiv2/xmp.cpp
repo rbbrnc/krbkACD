@@ -42,7 +42,7 @@ bool QExiv2::removeXmpTag(const char *tag)
 		Exiv2::XmpKey xmpKey(tag);
 		Exiv2::XmpData::iterator it = d->xmpMetadata.findKey(xmpKey);
 		if (it != d->xmpMetadata.end()) {
-			qDebug() << __PRETTY_FUNCTION__ << "Erase key:" << tag;
+			//qDebug() << __PRETTY_FUNCTION__ << "Erase key:" << tag;
 			d->xmpMetadata.erase(it);
 		}
 		return true;
@@ -53,6 +53,24 @@ bool QExiv2::removeXmpTag(const char *tag)
 
 	return false;
 }
+
+void QExiv2::removeXmpBag(const char *tag, int tagNameSize)
+{
+	try {
+		Exiv2::XmpData &md = d->xmpMetadata;
+		Exiv2::XmpData::iterator it = md.begin();
+		while (it != md.end()) {
+			if (it->key().compare(0, tagNameSize, tag) == 0) {
+				it = md.erase(it);
+			} else {
+				++it;
+			}
+		}
+	} catch (Exiv2::Error& e) {
+		d->error(QString("Cannot Erase Xmp Bag '%1'using Exiv2 ").arg(__func__), e);
+	}
+}
+
 
 // Serialize the XMP data and output the XML XMP packet
 QByteArray QExiv2::xmpPacket() const
@@ -110,6 +128,10 @@ QString QExiv2::xmpTagString(const QString &tag, bool escapeCR) const
 
 bool QExiv2::setXmpTagString(const char *tag, const QString &value)
 {
+	if (value.isEmpty()) {
+		return removeXmpTag(tag);
+	}
+
 	try {
 		const std::string &txt(value.toUtf8().constData());
 		Exiv2::Value::AutoPtr val = Exiv2::Value::create(Exiv2::xmpText);
