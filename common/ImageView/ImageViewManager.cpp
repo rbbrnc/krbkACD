@@ -230,12 +230,11 @@ void ImageViewManager::setImage(const QString &fileName, bool loadMetadata)
 						     rl.at(i).name(),
 						     rl.at(i).description(),
 						     rl.at(i).type());
-
-                                        qDebug() << __PRETTY_FUNCTION__
+					/*qDebug() << __PRETTY_FUNCTION__
                                                  << rl.at(i).stAreaBoundingRectF()
                                                  << rl.at(i).stArea()
                                                  << rl.at(i).name()
-                                                 << rl.at(i).description();
+                                                 << rl.at(i).description();*/
                                 }
                         }
                 }
@@ -303,7 +302,7 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name,
 		qWarning() << __PRETTY_FUNCTION__ << "Region not fully bounded on image";
 		return;
 	}
-	qDebug() << __PRETTY_FUNCTION__ << rect << name << desc;
+//	qDebug() << __PRETTY_FUNCTION__ << rect << name << desc;
 
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
 
@@ -367,7 +366,6 @@ void ImageViewManager::removeRegion()
 	m_scene->removeItem(dynamic_cast<QGraphicsItem *>(ri));
 	m_updateRegion = true;
 }
-
 
 // [SLOT private]
 void ImageViewManager::editRegion()
