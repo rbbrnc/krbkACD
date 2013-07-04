@@ -96,6 +96,11 @@ bool LocationDialog::getLocations(const QString &file)
 	// ===================================================================
 	// Get Location Created tags
 	//
+	// This information describes the location where the image was created,
+	// the location of the camera during shot creation.
+	// The typical case is when a GPS receiver injects the current location
+	// into an image at shooting time (camera location).
+	//
 	// 1st try Xmp.iptcExt tags
 	//
 	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:WorldRegion
@@ -151,6 +156,12 @@ bool LocationDialog::getLocations(const QString &file)
 
 	// ===================================================================
 	// Get Location Shown tags
+	//
+	// This information describes the location of the main subject being
+	// shown in an image. For example, a picture of Mount Fuji would be
+	// tagged with the coordinates of where the mountain is located
+	// (subject location), although the picture may have been taken from
+	// downtown Tokyo.
 	//
 	// 1st try Xmp.iptcExt tags
 	//
