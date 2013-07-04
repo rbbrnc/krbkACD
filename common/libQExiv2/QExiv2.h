@@ -62,6 +62,7 @@ class QExiv2
 
 		// XMP Functions
 		bool isXmpWritable() const;
+		bool xmpRegisterNamespace(const QString& uri, const QString& prefix);
 
 		QString xmpTagString(const char *tag, bool escapeCR = false) const;
 		QString xmpTagString(const QString &tag, bool escapeCR = false) const;

@@ -5,7 +5,8 @@
 QExiv2DataPrivate::QExiv2DataPrivate()
 {
 	// Register standard namespace for IptcExt
-	Exiv2::XmpProperties::registerNs("Iptc4xmpExt/", "Iptc4xmpExt");
+	//Exiv2::XmpProperties::registerNs("Iptc4xmpExt/", "Iptc4xmpExt");
+	Exiv2::XmpProperties::registerNs("http://iptc.org/std/Iptc4xmpExt/2008-02-29/", "Iptc4xmpExt");
 	metadataValid = false;
 }
 

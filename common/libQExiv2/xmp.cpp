@@ -329,3 +329,18 @@ bool QExiv2::setXmpTagStringLangAlt(const char *tag, const QString &value, const
 	}
 	return false;
 }
+
+bool QExiv2::xmpRegisterNamespace(const QString& uri, const QString& prefix)
+{
+	try {
+		QString ns = uri;
+		if (!uri.endsWith('/')) {
+			ns.append('/');
+		}
+		Exiv2::XmpProperties::registerNs(ns.toAscii().constData(), prefix.toAscii().constData());
+		return true;
+	} catch (Exiv2::Error &e) {
+		d->error(QString("%1 Cannot register the new xmp namespace '%2'").arg(__PRETTY_FUNCTION__).arg(uri), e);
+	}
+	return false;
+}
