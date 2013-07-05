@@ -27,6 +27,13 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 		//"Empty selection!"
 	} else if (m_fileList.count() == 1) {
 		if (loadData(m_fileList.at(0))) {
+			ui->albumTitle->setText(m_data.albumTitle);
+			ui->albumDescription->setPlainText(m_data.albumDescription);
+			ui->publisherName->setText(m_data.publisherName);
+			ui->publisherUri->setText(m_data.publisherUri);
+			if (m_data.comments.count() > 0) {
+				qDebug() << cmn.date << ":" << cmn.author << ":" << cmn.authorUri << ":\n" << cmn.comment;
+			}
 		}
 	} else {
 		// Multiple Selection;
@@ -55,16 +62,16 @@ bool SocialMetadataDialog::loadData(const QString &file)
 	m_data.publisherName    = e->xmpTagString("Xmp.social.PublisherName", true);
 	m_data.publisherUri     = e->xmpTagString("Xmp.social.PublisherUri", true);
 
-	for (i = 1; ; i++) {
+	for (int i = 1; ; i++) {
 		if (e->xmpTagString(QString("Xmp.social.Comments[%1]").arg(i)).isEmpty()) {
 			break;
 		}
-		struct comment cmn;
+		struct SocialMetadata::comment cmn;
 		cmn.date = e->xmpTagString(QString("Xmp.social.Comments[%1]/social:CommentDate").arg(i));
 		cmn.author = e->xmpTagString(QString("Xmp.social.Comments[%1]/social:CommentAuthor").arg(i));
 		cmn.authorUri = e->xmpTagString(QString("Xmp.social.Comments[%1]/social:CommentAuthorUri").arg(i));
 		cmn.comment = e->xmpTagString(QString("Xmp.social.Comments[%1]/social:CommentText").arg(i));
-		m_data.comments.insert(cmn);
+		m_data.comments.append(cmn);
 	}
 
 	delete e;
