@@ -1,0 +1,14 @@
+Bahrain;BHR
+Iraq;IRQ
+Iran;IRN;
+Israel;ISR;
+Jordan;JOR;
+Kuwait;KWT;
+Lebanon;LBN;
+Oman;OMN;
+Palestine;PSE;
+Qatar;QAT;
+Saudi Arabia;SAU
+Syria;SYR
+United Arab Emirates;ARE
+Yemen;YEM

@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>iso3166Africa.txt</file>
+        <file>iso3166Asia.txt</file>
+        <file>iso3166CAmerica.txt</file>
+        <file>iso3166Caribbean.txt</file>
+        <file>iso3166Europe.txt</file>
+        <file>iso3166MiddleEast.txt</file>
+        <file>iso3166NAmerica.txt</file>
+        <file>iso3166Oceania.txt</file>
+        <file>iso3166SAmerica.txt</file>
+    </qresource>
+</RCC>

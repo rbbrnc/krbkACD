@@ -1,0 +1,25 @@
+Anguilla;AIA
+Antigua and Barbuda;ATG
+Aruba;ABW
+Bahamas;BHS
+Barbados;BRB
+Cayman Islands;CYM
+Cuba;CUB
+Dominica;DMA
+Dominican Republic;DOM
+Grenada;GRD
+Guadaloupe;GLP
+Haiti;HTI
+Jamaica;JAM
+Martinique;MTQ
+Montserrat;MSR
+Puerto Rico;PRI
+St. Kitts and Nevis;KNA
+St. Lucia;LCA
+Saint Martin;MAF
+St. Vincent and the Grenadines;VCT
+Sint Maarten;SXM
+Trinidad and Tobago;TTO
+Turks and Caicos Islands;TCA
+Virgin Islands (British);VGB
+Virgin Islands (US);VIR

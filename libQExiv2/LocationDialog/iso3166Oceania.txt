@@ -1,0 +1,15 @@
+Australia;AUS
+Fiji;FJI
+French Polynesia;PYF
+Guam;GUM
+Kiribati;KIR
+Marshall Islands;MHL
+Micronesia;FSM
+New Caledonia;NCL
+New Zealand;NZL
+Papua New Guinea;PNG
+Samoa;WSM
+Samoa, American;ASM
+Solomon Islands;SLB
+Tonga;TON
+Vanuatu;VUT

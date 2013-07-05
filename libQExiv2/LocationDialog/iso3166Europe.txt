@@ -1,0 +1,48 @@
+Albania;ALB
+Andorra;AND
+Austria;AUT
+Belarus;BLR
+Belgium;BEL
+Bosnia and Herzegovina;BIH
+Bulgaria;BGR
+Croatia;HRV
+Cyprus;CYP
+Czech Republic;CZE
+Denmark;DNK
+Estonia;EST
+Faroe Islands;FRO
+Finland;FIN
+France;FRA
+Germany;DEU
+Gibraltar;GIB
+Greece;GRC
+Hungary;HUN
+Iceland;ISL
+Ireland;IRL
+Italy;ITA
+Latvia;LVA
+Liechtenstein;LIE
+Lithuania;LTU
+Luxembourg;LUX
+Macedonia;MKD
+Malta;MLT
+Moldova;MDA
+Monaco;MCO
+Serbia and Montenegro;SCG
+Netherlands;NDL
+Norway;NOR
+Poland;POL
+Portugal;PRT
+Romania;ROU
+Russia;RUS
+San Marino;SMR
+Slovakia;SVK
+Slovenia;SVN
+Spain;ESP
+Svalbard and Jan Mayen Islands;SJM
+Sweden;SWE
+Switzerland;CHE
+Turkey;TUR
+Ukraine;UKR
+United Kingdom;GBR
+Vatican City State;VAT

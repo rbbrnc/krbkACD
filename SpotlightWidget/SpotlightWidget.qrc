@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>clear_button.png</file>
+        <file>magnify.png</file>
+    </qresource>
+</RCC>

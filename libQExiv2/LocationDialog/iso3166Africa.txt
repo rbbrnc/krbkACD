@@ -1,0 +1,57 @@
+Algeria;DZA
+Angola;AGO
+Benin;BEN
+Botswana;BWA
+Burkina Faso;BFA
+Burundi;BDI
+Cameroon;CMR
+Cape Verde;CPV
+Central African Republic;CAF
+Chad;TCD
+Comoros;COM
+Congo, Democratic Republic of;COD
+Congo, People's Republic of;COG
+Cote d'Ivoire;CIV
+Djibouti;DJI
+Egypt;EGY
+Equatorial Guinea;GNQ
+Eritrea;ERI
+Ethiopia;ETH
+Gabon;GAB
+Gambia;GMB
+Ghana;GHA
+Guinea;GIN
+Guinea-Bissau;GNB
+Kenya;KEN
+Lesotho;LSO
+Liberia;LBR
+Libyan Arab Jamahiriya;LBY
+Madagascar;MDG
+Malawi;MWI
+Mali;MLI
+Mauritania;MRT
+Mauritius;MUS
+Mayotte;MYT
+Morocco;MAR
+Mozambique;MOZ
+Namibia;NAM
+Niger;NER
+Nigeria;NGA
+Reunion;REU
+Rwanda;RWA
+St. Helena;SHN
+Sao Tome and Principe;STP
+Senegal;SEN
+Seychelles;SYC
+Sierra Leone;SLE
+Somalia;SOM
+South Africa;ZAF
+Sudan;SDN
+Swaziland;SWZ
+Tanzania;TZA
+Togo;TGO
+Tunisia;TUN
+Uganda;UGA
+Western Sahara;ESH
+Zambia;ZMB
+Zimbabwe;ZWE

@@ -1,0 +1,35 @@
+Afganistan;AFG
+Armenia;ARM
+Azerbaijan;AZE
+Bangladesh;BGD
+Bhutan;BTN"
+Brunei Darussalam;BRN
+Cambodia;KHM
+China;CHN
+Georgia;GEO
+Hong Kong;HKG
+India;IND
+Indonesia;IDN
+Japan;JPN
+Kazakhstan;KAZ
+Korea, North;PRK
+Korea, South;KOR
+Kyrgyzstan;KGZ
+Laos;LAO
+Macao;MAC
+Malaysia;MYS
+Maldives;MDV
+Mongolia;MNG
+Myanmar;MMR
+Nepal;NPL
+Pakistan;PAK
+Philippines;PHL
+Singapore;SGP
+Sri Lanka;LKA
+Taiwan;TWN
+Tajikistan;TJK
+Thailand;THA
+Timor Leste (West);TLS
+Turkmenistan;TKM
+Uzbekistan;UZB
+Vietnam;VNM

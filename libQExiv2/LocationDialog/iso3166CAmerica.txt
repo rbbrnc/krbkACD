@@ -1,0 +1,8 @@
+Belize;BLZ
+Costa Rica;CRI
+El Salvador;SLV
+Guatemala;GTM
+Honduras;HND
+Mexico;MEX
+Nicaragua;NIC
+Panama;PAN
