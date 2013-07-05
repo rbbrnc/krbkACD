@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>fancySlider.qss</file>
-    </qresource>
-</RCC>
