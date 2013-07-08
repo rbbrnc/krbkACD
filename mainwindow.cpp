@@ -9,6 +9,14 @@
 #include "SocialMetadataDialog.h"
 #include "metadatadialog.h"
 
+// Page Indexes
+#define PAGE_INFO           0
+#define PAGE_2ND_FM         1
+#define PAGE_METADATA_TREE  2
+#define PAGE_IMAGE_VIEW     3
+
+
+
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
 	ui(new Ui::MainWindow)
@@ -42,15 +50,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionEditMetadata, SIGNAL(triggered()), this, SLOT(onEditMetadata()));
 
 	m_pageGroup = new QActionGroup(this);
+	m_pageGroup->addAction(ui->actionInfo);
 	m_pageGroup->addAction(ui->action1);
 	m_pageGroup->addAction(ui->action2);
 	m_pageGroup->addAction(ui->action3);
 	m_pageGroup->setExclusive(true);
-	ui->action1->setChecked(true);
+	ui->actionInfo->setChecked(true);
 
-	ui->action1->setData(0);
-	ui->action2->setData(1);
-	ui->action3->setData(2);
+	ui->actionInfo->setData(PAGE_INFO);
+	ui->action1->setData(PAGE_2ND_FM);
+	ui->action2->setData(PAGE_METADATA_TREE);
+	ui->action3->setData(PAGE_IMAGE_VIEW);
 
 	connect(ui->action1, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action2, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
@@ -136,14 +146,13 @@ void MainWindow::updatePageData(int page, const QString &file)
 {
 	// Update Central Page Data
 	switch (page) {
-	case 0:
-		//ui->page0->saveChanges();
-		//ui->page0->setFile(file);
+	case PAGE_INFO:
+	case PAGE_2ND_FM:
 		break;
-	case 1:
+	case PAGE_METADATA_TREE:
 		ui->metadataTreePage->setFile(file);
 		break;
-	case 2:
+	case PAGE_IMAGE_VIEW:
 		ui->imageViewPage->saveMetadata();
 		ui->imageViewPage->setImage(file, true);
 		break;

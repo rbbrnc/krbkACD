@@ -25,10 +25,13 @@ QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -g -ggdb
 
 SOURCES += \
 	main.cpp\
-	mainwindow.cpp
+	mainwindow.cpp \
+    infowidget.cpp
 
-HEADERS += mainwindow.h
-FORMS   += mainwindow.ui
+HEADERS += mainwindow.h \
+    infowidget.h
+FORMS   += mainwindow.ui \
+    infowidget.ui
 
 
 RESOURCES += \
