@@ -31,5 +31,7 @@ HEADERS += mainwindow.h
 FORMS   += mainwindow.ui
 
 
-RESOURCES += $$PWD/styles/darkorange/darkorange.qrc
+RESOURCES += \
+	$$PWD/styles/darkorange/darkorange.qrc \
+	$$PWD/libQExiv2/QExiv2.qrc
 

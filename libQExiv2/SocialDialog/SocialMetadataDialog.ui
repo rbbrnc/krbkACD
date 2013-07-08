@@ -140,16 +140,36 @@
         </spacer>
        </item>
        <item>
-        <widget class="QPushButton" name="addCommentButton">
+        <widget class="QToolButton" name="addCommentButton">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QToolButton {border: none;}</string>
+         </property>
          <property name="text">
           <string>Add</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../QExiv2.qrc">
+           <normaloff>:/images/add.png</normaloff>:/images/add.png</iconset>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="removeCommentButton">
+        <widget class="QToolButton" name="removeCommentButton">
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QToolButton {border: none;}</string>
+         </property>
          <property name="text">
           <string>Del</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../QExiv2.qrc">
+           <normaloff>:/images/delete.png</normaloff>:/images/delete.png</iconset>
          </property>
         </widget>
        </item>
@@ -172,7 +192,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../QExiv2.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
