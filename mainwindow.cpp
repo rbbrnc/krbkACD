@@ -7,6 +7,7 @@
 #include "QMagic.h"
 #include "LocationDialog.h"
 #include "SocialMetadataDialog.h"
+#include "metadatadialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// Metadata Edit Actions
 	connect(ui->actionEditLocationsMetadata, SIGNAL(triggered()), this, SLOT(onEditLocationsMetadata()));
 	connect(ui->actionEditSocialMetadata, SIGNAL(triggered()), this, SLOT(onEditSocialMetadata()));
+	connect(ui->actionEditMetadata, SIGNAL(triggered()), this, SLOT(onEditMetadata()));
 
 	m_pageGroup = new QActionGroup(this);
 	m_pageGroup->addAction(ui->action1);
@@ -267,6 +269,23 @@ void MainWindow::onEditSocialMetadata()
 		QMessageBox::warning(this, "Edit Social Metadata", "Empty File Selection!");
 	} else {
 		SocialMetadataDialog dlg(files);
+		dlg.exec();
+	}
+}
+
+void MainWindow::onEditMetadata()
+{
+	QStringList files;
+	if (m_fm->isActive()) {
+		files = m_fm->fileSelection();
+	} else if (m_secondFm->isActive()) {
+		files = m_secondFm->fileSelection();
+	}
+
+	if (files.count() == 0) {
+		QMessageBox::warning(this, "Edit Metadata", "Empty File Selection!");
+	} else {
+		MetadataDialog dlg(files);
 		dlg.exec();
 	}
 }

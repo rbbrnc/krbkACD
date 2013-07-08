@@ -42,6 +42,7 @@ class MainWindow : public QMainWindow
 
 		void onEditLocationsMetadata();
 		void onEditSocialMetadata();
+		void onEditMetadata();
 
 	private:
 		Ui::MainWindow *ui;

@@ -106,7 +106,7 @@ bool QExiv2::save()
 				d->image->setComment(d->imageComment);
 				update = true;
 			} else {
-				qDebug() << __PRETTY_FUNCTION__ << "Same Image Comment";
+				//qDebug() << __PRETTY_FUNCTION__ << "Same Image Comment";
 			}
 		}
 

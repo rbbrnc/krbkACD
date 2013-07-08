@@ -9,12 +9,15 @@ MOC_DIR     = out/mocs
 UI_DIR      = out/ui
 RCC_DIR     = out/resources
 
+include ($$PWD/SpotlightWidget/SpotlightWidget.pri)
+
 include ($$PWD/FileManager/FileManager.pri)
 include ($$PWD/ImageView/ImageView.pri)
 include ($$PWD/QMagic/QMagic.pri)
 
 include ($$PWD/libQExiv2/libQExiv2.pri)
 include ($$PWD/libQExiv2/MetadataTree/MetadataTree.pri)
+include ($$PWD/libQExiv2/MetadataDialog/MetadataDialog.pri)
 include ($$PWD/libQExiv2/LocationDialog/LocationDialog.pri)
 include ($$PWD/libQExiv2/SocialDialog/SocialMetadataDialog.pri)
 

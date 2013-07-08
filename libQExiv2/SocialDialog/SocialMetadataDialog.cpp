@@ -15,7 +15,6 @@ bool SocialMetadata::isEmpty() const
 */
 }
 
-
 SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::SocialMetadataDialog),
@@ -32,7 +31,12 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 			ui->publisherName->setText(m_data.publisherName);
 			ui->publisherUri->setText(m_data.publisherUri);
 			if (m_data.comments.count() > 0) {
-				qDebug() << cmn.date << ":" << cmn.author << ":" << cmn.authorUri << ":\n" << cmn.comment;
+				for (int i = 0; i < m_data.comments.count(); i++) {
+					qDebug() << m_data.comments.at(i).date << ":"
+						 << m_data.comments.at(i).author << ":"
+						 << m_data.comments.at(i).authorUri << ":\n"
+						 << m_data.comments.at(i).comment;
+				}
 			}
 		}
 	} else {
