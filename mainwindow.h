@@ -44,6 +44,8 @@ class MainWindow : public QMainWindow
 		void onEditSocialMetadata();
 		void onEditMetadata();
 
+		void scalePreview(int, int);
+
 	private:
 		Ui::MainWindow *ui;
 

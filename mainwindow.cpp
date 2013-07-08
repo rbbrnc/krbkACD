@@ -56,6 +56,9 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->action2, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action3, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 
+	// Connect splitters moved signal for resize preview
+	connect(ui->previewSplitter, SIGNAL(splitterMoved(int, int)), this, SLOT(scalePreview(int, int)));
+
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
 }
@@ -146,6 +149,19 @@ void MainWindow::updatePageData(int page, const QString &file)
 		break;
 	default:
 		break;
+	}
+}
+
+void MainWindow::scalePreview(int, int)
+{
+	if (!ui->previewCheckBox->isChecked()) {
+		return;
+	}
+
+	if ((m_preview.width() > ui->preview->width()) || (m_preview.height() > ui->preview->height())) {
+		QPixmap pix;
+		pix = m_preview.scaled(ui->preview->width(), ui->preview->height(), Qt::KeepAspectRatio, Qt::FastTransformation);
+		ui->preview->setPixmap(pix);
 	}
 }
 
