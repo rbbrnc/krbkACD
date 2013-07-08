@@ -2,14 +2,13 @@
 #define SOCIAL_METADATA_DIALOG_H
 
 #include <QDialog>
+#include <QStandardItemModel>
 
 class SocialMetadata
 {
 	public:
 		SocialMetadata() {}
 		~SocialMetadata() {}
-
-		bool isEmpty() const;
 
 		struct comment {
 			QString date;
@@ -42,6 +41,12 @@ class SocialMetadataDialog : public QDialog
 		bool loadData(const QString &file);
 		bool saveData(const QString &file);
 
+		void fillCommentTable();
+
+	private slots:
+		void on_addCommentButton_clicked();
+		void on_removeCommentButton_clicked();
+
 	public slots:
 		virtual void accept();
 		virtual void reject();
@@ -51,6 +56,10 @@ class SocialMetadataDialog : public QDialog
 
 		QStringList m_fileList;
 		SocialMetadata m_data;
+
+		QStandardItemModel *m_model;
+
+		bool m_writeComments;
 };
 
 #endif

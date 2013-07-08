@@ -3,24 +3,15 @@
 
 #include "QExiv2.h"
 
-bool SocialMetadata::isEmpty() const
-{
-	return false;
-/*	return (worldRegion.isEmpty()
-		&& countryName.isEmpty()
-		&& countryCode.isEmpty()
-		&& provinceState.isEmpty()
-		&& city.isEmpty()
-	        && sublocation.isEmpty());
-*/
-}
-
 SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::SocialMetadataDialog),
-	m_fileList(files)
+	m_fileList(files),
+	m_model(0),
+	m_writeComments(false)
 {
 	ui->setupUi(this);
+	//ui->commentsTableView->setShowGrid(false);
 
 	if (m_fileList.count() == 0) {
 		//"Empty selection!"
@@ -30,14 +21,8 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 			ui->albumDescription->setPlainText(m_data.albumDescription);
 			ui->publisherName->setText(m_data.publisherName);
 			ui->publisherUri->setText(m_data.publisherUri);
-			if (m_data.comments.count() > 0) {
-				for (int i = 0; i < m_data.comments.count(); i++) {
-					qDebug() << m_data.comments.at(i).date << ":"
-						 << m_data.comments.at(i).author << ":"
-						 << m_data.comments.at(i).authorUri << ":\n"
-						 << m_data.comments.at(i).comment;
-				}
-			}
+			fillCommentTable();
+			m_writeComments = true;
 		}
 	} else {
 		// Multiple Selection;
@@ -47,6 +32,34 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 //	ui->label->setTextInteractionFlags(Qt::TextBrowserInteraction);
 //	ui->label->setOpenExternalLinks(true);
 //	ui->label->setText("<a href=\"http://www.google.com/\">Google</a>");
+}
+
+SocialMetadataDialog::~SocialMetadataDialog()
+{
+	if (m_model) {
+		delete m_model;
+	}
+	delete ui;
+}
+
+void SocialMetadataDialog::fillCommentTable()
+{
+	m_model = new QStandardItemModel(0, 4, this);
+
+	m_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Date"));
+	m_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Author"));
+	m_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Comment"));
+	m_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Author Uri"));
+
+	for (int i = 0; i < m_data.comments.count(); i++) {
+		m_model->insertRow(i);
+		m_model->setData(m_model->index(i, 0), m_data.comments.at(i).date);
+		m_model->setData(m_model->index(i, 1), m_data.comments.at(i).author);
+		m_model->setData(m_model->index(i, 2), m_data.comments.at(i).comment);
+		m_model->setData(m_model->index(i, 3), m_data.comments.at(i).authorUri);
+	}
+	ui->commentsTableView->setModel(m_model);
+	//ui->commentsTableView->verticalHeader()->hide();
 }
 
 bool SocialMetadataDialog::loadData(const QString &file)
@@ -95,12 +108,18 @@ bool SocialMetadataDialog::saveData(const QString &file)
 	e->setXmpTagString("Xmp.social.PublisherUri", m_data.publisherUri);
 	e->setXmpTagString("Xmp.social.AlbumTitle", m_data.albumTitle);
 	e->setXmpTagString("Xmp.social.AlbumDescription", m_data.albumDescription);
-	e->setXmpTagBag("Xmp.social.Comments");
-	for (int i = 0; i < m_data.comments.count(); i++) {
-		e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentDate").arg(i+1), m_data.comments.at(i).date);
-		e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentAuthor").arg(i+1),  m_data.comments.at(i).author);
-		e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentAuthorUri").arg(i+1), m_data.comments.at(i).authorUri);
-		e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentText").arg(i+1), m_data.comments.at(i).comment);
+
+	if (m_writeComments) {
+		e->removeXmpBag("Xmp.social.Comments", 19);
+		if (m_data.comments.count() > 0) {
+			e->setXmpTagBag("Xmp.social.Comments");
+			for (int i = 0; i < m_data.comments.count(); i++) {
+				e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentDate").arg(i+1), m_data.comments.at(i).date);
+				e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentAuthor").arg(i+1),  m_data.comments.at(i).author);
+				e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentAuthorUri").arg(i+1), m_data.comments.at(i).authorUri);
+				e->setXmpTagString(QString("Xmp.social.Comments[%1]/social:CommentText").arg(i+1), m_data.comments.at(i).comment);
+			}
+		}
 	}
 
 	if (e->save()) {
@@ -113,9 +132,31 @@ bool SocialMetadataDialog::saveData(const QString &file)
 	return false;
 }
 
-SocialMetadataDialog::~SocialMetadataDialog()
+void SocialMetadataDialog::on_addCommentButton_clicked()
 {
-	delete ui;
+	struct SocialMetadata::comment c;
+	c.date = "";
+	c.author = "";
+	c.authorUri = "";
+	c.comment = "";
+	m_data.comments.append(c);
+
+	int idx = m_model->rowCount();
+	m_model->insertRow(idx);
+	m_model->setData(m_model->index(idx, 0), c.date);
+	m_model->setData(m_model->index(idx, 1), c.author);
+	m_model->setData(m_model->index(idx, 2), c.authorUri);
+	m_model->setData(m_model->index(idx, 3), c.comment);
+}
+
+void SocialMetadataDialog::on_removeCommentButton_clicked()
+{
+	QModelIndexList sel = ui->commentsTableView->selectionModel()->selectedRows();
+	for (int i = 0; i < sel.count(); ++i) {
+		int row = sel.at(i).row();
+		m_model->removeRow(row);
+		m_data.comments.removeAt(row);
+	}
 }
 
 // [SLOT public]
@@ -131,6 +172,15 @@ void SocialMetadataDialog::accept()
 	m_data.albumDescription = ui->albumDescription->toPlainText();
 	m_data.publisherName    = ui->publisherName->text();
 	m_data.publisherUri     = ui->publisherUri->text();
+
+	if (m_writeComments) {
+		for (int i = 0; i < m_model->rowCount(); i++) {
+			m_data.comments[i].date      = m_model->item(i, 0)->text();
+			m_data.comments[i].author    = m_model->item(i, 1)->text();
+			m_data.comments[i].comment   = m_model->item(i, 2)->text();
+			m_data.comments[i].authorUri = m_model->item(i, 3)->text();
+		}
+	}
 
 	for (int i = 0; i < m_fileList.count(); i++) {
 		saveData(m_fileList.at(i));
