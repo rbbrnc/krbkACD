@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>463</width>
-    <height>284</height>
+    <height>472</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -60,7 +60,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>kind.value</string>
         </property>
        </widget>
       </item>
@@ -89,7 +89,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>size.value</string>
         </property>
        </widget>
       </item>
@@ -150,7 +150,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>name.value</string>
         </property>
        </widget>
       </item>
@@ -185,7 +185,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>where.value</string>
         </property>
        </widget>
       </item>
@@ -214,7 +214,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>created.value</string>
         </property>
        </widget>
       </item>
@@ -243,7 +243,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>modified.value</string>
         </property>
        </widget>
       </item>
@@ -275,7 +275,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>owner.value</string>
         </property>
        </widget>
       </item>
@@ -307,7 +307,7 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>TextLabel</string>
+         <string>group.value</string>
         </property>
        </widget>
       </item>

@@ -84,19 +84,10 @@ QDateTime QExiv2::exifTagDateTime(const char *tag) const
 		if (!d->exifMetadata.empty()) {
 			Exiv2::ExifData exifData(d->exifMetadata);
 			Exiv2::ExifKey key(tag);
-#if 0
-			qDebug() << "TAG Name:" << QString(key.tagName().c_str());
-			qDebug() << "TAG Label:" << QString(key.tagLabel().c_str());
-			qDebug() << "TAG GroupName:" << QString(key.groupName().c_str());
-			qDebug() << "TAG Family Name:" << QString(key.familyName());
-			qDebug() << "TAG Desc:" << QString(key.tagDesc().c_str());
-#endif
-
 			Exiv2::ExifData::const_iterator it = exifData.findKey(key);
 			if (it != exifData.end()) {
 				QDateTime dateTime = QDateTime::fromString(it->toString().c_str(), Qt::ISODate);
 				if (dateTime.isValid()) {
-					//qDebug() << __PRETTY_FUNCTION__ << "[EXIF]" << exifTagName << dateTime;
 					return dateTime;
 				}
 			}

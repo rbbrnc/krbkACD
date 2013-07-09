@@ -21,6 +21,7 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 			ui->albumDescription->setPlainText(m_data.albumDescription);
 			ui->publisherName->setText(m_data.publisherName);
 			ui->publisherUri->setText(m_data.publisherUri);
+			ui->publisherComment->setPlainText(m_data.publisherComment);
 			fillCommentTable();
 			m_writeComments = true;
 		}
@@ -78,6 +79,8 @@ bool SocialMetadataDialog::loadData(const QString &file)
 	m_data.albumDescription = e->xmpTagString("Xmp.social.AlbumDescription", true);
 	m_data.publisherName    = e->xmpTagString("Xmp.social.PublisherName", true);
 	m_data.publisherUri     = e->xmpTagString("Xmp.social.PublisherUri", true);
+
+	// Xmp.social.PublisherComment can be mapped on dc:description
 	m_data.publisherComment = e->xmpTagString("Xmp.social.PublisherComment");
 
 	for (int i = 1; ; i++) {

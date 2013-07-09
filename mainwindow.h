@@ -22,6 +22,8 @@ class MainWindow : public QMainWindow
 		void updatePreview(const QString &file);
 		void updatePageData(int page, const QString &file);
 
+		QStringList fileSelection() const;
+
 	private slots:
 		void onQuit();
 		void onCurrentPathChanged();
@@ -43,6 +45,7 @@ class MainWindow : public QMainWindow
 		void onEditLocationsMetadata();
 		void onEditSocialMetadata();
 		void onEditMetadata();
+		void onEditDateTimeMetadata();
 
 		void scalePreview(int, int);
 

@@ -8,6 +8,7 @@
 #include "LocationDialog.h"
 #include "SocialMetadataDialog.h"
 #include "metadatadialog.h"
+#include "datetimedialog.h"
 
 // Page Indexes
 #define PAGE_INFO           0
@@ -48,6 +49,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionEditLocationsMetadata, SIGNAL(triggered()), this, SLOT(onEditLocationsMetadata()));
 	connect(ui->actionEditSocialMetadata, SIGNAL(triggered()), this, SLOT(onEditSocialMetadata()));
 	connect(ui->actionEditMetadata, SIGNAL(triggered()), this, SLOT(onEditMetadata()));
+	connect(ui->actionEditDateTime, SIGNAL(triggered()), this, SLOT(onEditDateTimeMetadata()));
 
 	m_pageGroup = new QActionGroup(this);
 	m_pageGroup->addAction(ui->actionInfo);
@@ -268,15 +270,9 @@ void MainWindow::onMkDir()
 
 void MainWindow::onEditLocationsMetadata()
 {
-	QStringList files;
-	if (m_fm->isActive()) {
-		files = m_fm->fileSelection();
-	} else if (m_secondFm->isActive()) {
-		files = m_secondFm->fileSelection();
-	}
-
+	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit Locations", "Empty File Selection!");
+		QMessageBox::warning(this, "Edit Locations", "No File Selection!");
 	} else {
 		LocationDialog dlg(files);
 		dlg.exec();
@@ -285,15 +281,9 @@ void MainWindow::onEditLocationsMetadata()
 
 void MainWindow::onEditSocialMetadata()
 {
-	QStringList files;
-	if (m_fm->isActive()) {
-		files = m_fm->fileSelection();
-	} else if (m_secondFm->isActive()) {
-		files = m_secondFm->fileSelection();
-	}
-
+	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit Social Metadata", "Empty File Selection!");
+		QMessageBox::warning(this, "Edit Social Metadata", "No File Selection!");
 	} else {
 		SocialMetadataDialog dlg(files);
 		dlg.exec();
@@ -302,17 +292,33 @@ void MainWindow::onEditSocialMetadata()
 
 void MainWindow::onEditMetadata()
 {
-	QStringList files;
-	if (m_fm->isActive()) {
-		files = m_fm->fileSelection();
-	} else if (m_secondFm->isActive()) {
-		files = m_secondFm->fileSelection();
-	}
-
+	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit Metadata", "Empty File Selection!");
+		QMessageBox::warning(this, "Edit Metadata", "No File Selection!");
 	} else {
 		MetadataDialog dlg(files);
 		dlg.exec();
+	}
+}
+
+void MainWindow::onEditDateTimeMetadata()
+{
+	QStringList files = fileSelection();
+	if (files.count() == 0) {
+		QMessageBox::warning(this, "Edit DateTime Metadata", "No File Selection!");
+	} else {
+		MetadataDateTimeDialog dlg(files);
+		dlg.exec();
+	}
+}
+
+QStringList MainWindow::fileSelection() const
+{
+	if (m_fm->isActive()) {
+		return m_fm->fileSelection();
+	} else if (m_secondFm->isActive()) {
+		return m_secondFm->fileSelection();
+	} else {
+		return QStringList();
 	}
 }

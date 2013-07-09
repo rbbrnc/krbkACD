@@ -20,6 +20,7 @@ include ($$PWD/libQExiv2/MetadataTree/MetadataTree.pri)
 include ($$PWD/libQExiv2/MetadataDialog/MetadataDialog.pri)
 include ($$PWD/libQExiv2/LocationDialog/LocationDialog.pri)
 include ($$PWD/libQExiv2/SocialDialog/SocialMetadataDialog.pri)
+include ($$PWD/libQExiv2/DateTimeDialog/DateTimeDialog.pri)
 
 QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -g -ggdb
 
