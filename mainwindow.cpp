@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->action2->setData(PAGE_METADATA_TREE);
 	ui->action3->setData(PAGE_IMAGE_VIEW);
 
+	connect(ui->actionInfo, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action1, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action2, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action3, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
@@ -139,7 +140,6 @@ void MainWindow::onCurrentFileChanged()
 		updatePreview(file);
 	}
 	updatePageData(ui->stackedWidget->currentIndex(), file);
-
 }
 
 void MainWindow::updatePageData(int page, const QString &file)
@@ -147,6 +147,8 @@ void MainWindow::updatePageData(int page, const QString &file)
 	// Update Central Page Data
 	switch (page) {
 	case PAGE_INFO:
+		ui->infoPage->setFile(file);
+		break;
 	case PAGE_2ND_FM:
 		break;
 	case PAGE_METADATA_TREE:
