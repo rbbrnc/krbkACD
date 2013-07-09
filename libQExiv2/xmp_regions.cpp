@@ -79,7 +79,7 @@ void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 		return;
 	}
 
-	qDebug() << __PRETTY_FUNCTION__ << region << n;
+	//qDebug() << __PRETTY_FUNCTION__ << region << n;
 
 	QRectF stArea = region.stArea();
 

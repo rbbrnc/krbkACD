@@ -2,6 +2,8 @@
 
 #include "ImageGraphicsItem.h"
 
+#include <QDebug>
+
 ImageGraphicsItem::ImageGraphicsItem(QGraphicsItem *parent)
 	: QGraphicsPixmapItem(parent)
 {

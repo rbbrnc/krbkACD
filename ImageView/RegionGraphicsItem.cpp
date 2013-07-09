@@ -7,14 +7,12 @@ RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent
 	: QGraphicsRectItem(rect, parent)
 {
 	m_type = 0;
-	m_removeAction   = m_menu.addAction("Remove");
-	m_editAction     = m_menu.addAction("Edit");
+	m_removeAction = m_menu.addAction("Remove");
+	m_editAction   = m_menu.addAction("Edit");
 
 	setPen(QColor(Qt::yellow));
-//	setFlag(QGraphicsItem::ItemIsSelectable, true);
-//	setAcceptHoverEvents(true);
-//	setZValue(-1);
-//	setZValue(1);
+
+	setAcceptHoverEvents(true);
 }
 
 RegionGraphicsItem::~RegionGraphicsItem()
@@ -29,7 +27,6 @@ void RegionGraphicsItem::paint(QPainter *painter, const QStyleOptionGraphicsItem
 // [EVENT protected]
 void RegionGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-	qDebug() << __PRETTY_FUNCTION__;
 	QGraphicsRectItem::mouseMoveEvent(event);
 }
 
@@ -40,26 +37,30 @@ void RegionGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 }
 
 // [EVENT protected]
-void RegionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+void RegionGraphicsItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *)
 {
-	Q_UNUSED(event)
 //	QGraphicsRectItem::mouseReleaseEvent(event);
 }
 
 // [EVENT protected]
-void RegionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+void RegionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
-	qDebug() << __PRETTY_FUNCTION__ << zValue();
-	//setZValue(1);
-	QGraphicsItem::hoverEnterEvent(event);
+	QString tip = "<b>" + m_name + "</b>";
+	if (!m_description.isEmpty()) {
+		tip += "<p>" + m_description + "</p>";
+	}
+
+	QGraphicsView *v = scene()->views().first();
+	QPoint viewPos = v->mapFromScene(mapToScene(boundingRect().bottomLeft()));
+	QToolTip::showText(v->viewport()->mapToGlobal(viewPos), tip);
+//	QGraphicsItem::hoverEnterEvent(event);
 }
 
 // [EVENT protected]
-void RegionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+void RegionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
-	//qDebug() << __PRETTY_FUNCTION__ << zValue();
-	//setZValue(-1);
-	QGraphicsItem::hoverLeaveEvent(event);
+	QToolTip::hideText();
+//	QGraphicsItem::hoverLeaveEvent(event);
 }
 
 QString RegionGraphicsItem::name() const
