@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>494</width>
-    <height>628</height>
+    <width>524</width>
+    <height>548</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,14 +58,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPlainTextEdit" name="albumDescription">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
+      <widget class="QPlainTextEdit" name="albumDescription"/>
      </item>
      <item>
       <widget class="QLabel" name="label_4">
@@ -110,6 +103,22 @@
      </item>
      <item>
       <widget class="QLineEdit" name="publisherUri"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_6">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Publisher Comment</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="publisherComment"/>
      </item>
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout">

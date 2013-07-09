@@ -21,6 +21,7 @@ class SocialMetadata
 		QString albumDescription;
 		QString publisherName;
 		QString publisherUri;
+		QString publisherComment;
 		QList<struct comment> comments;
 };
 

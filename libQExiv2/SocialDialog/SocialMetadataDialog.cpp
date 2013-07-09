@@ -78,6 +78,7 @@ bool SocialMetadataDialog::loadData(const QString &file)
 	m_data.albumDescription = e->xmpTagString("Xmp.social.AlbumDescription", true);
 	m_data.publisherName    = e->xmpTagString("Xmp.social.PublisherName", true);
 	m_data.publisherUri     = e->xmpTagString("Xmp.social.PublisherUri", true);
+	m_data.publisherComment = e->xmpTagString("Xmp.social.PublisherComment");
 
 	for (int i = 1; ; i++) {
 		if (e->xmpTagString(QString("Xmp.social.Comments[%1]").arg(i)).isEmpty()) {
@@ -103,11 +104,11 @@ bool SocialMetadataDialog::saveData(const QString &file)
 		delete e;
 		return false;
 	}
-
-	e->setXmpTagString("Xmp.social.PublisherName", m_data.publisherName);
-	e->setXmpTagString("Xmp.social.PublisherUri", m_data.publisherUri);
 	e->setXmpTagString("Xmp.social.AlbumTitle", m_data.albumTitle);
 	e->setXmpTagString("Xmp.social.AlbumDescription", m_data.albumDescription);
+	e->setXmpTagString("Xmp.social.PublisherName", m_data.publisherName);
+	e->setXmpTagString("Xmp.social.PublisherUri", m_data.publisherUri);
+	e->setXmpTagString("Xmp.social.PublisherComment", m_data.publisherComment);
 
 	if (m_writeComments) {
 		e->removeXmpBag("Xmp.social.Comments", 19);
@@ -172,6 +173,7 @@ void SocialMetadataDialog::accept()
 	m_data.albumDescription = ui->albumDescription->toPlainText();
 	m_data.publisherName    = ui->publisherName->text();
 	m_data.publisherUri     = ui->publisherUri->text();
+	m_data.publisherComment = ui->publisherComment->toPlainText();
 
 	if (m_writeComments) {
 		for (int i = 0; i < m_model->rowCount(); i++) {
