@@ -199,7 +199,7 @@ void MainWindow::updatePreview(const QString &file)
 void MainWindow::onCopyFiles()
 {
 	// Copy only is 2nd File manager is visible
-	if (ui->stackedWidget->currentIndex() != 0) {
+	if (ui->stackedWidget->currentIndex() != PAGE_2ND_FM) {
 		return;
 	}
 	if (m_fm->isActive()) {
@@ -215,7 +215,7 @@ void MainWindow::onCopyFiles()
 void MainWindow::onMoveFiles()
 {
 	// Move only is 2nd file manager is visible
-	if (ui->stackedWidget->currentIndex() != 0) {
+	if (ui->stackedWidget->currentIndex() != PAGE_2ND_FM) {
 		return;
 	}
 	if (m_fm->isActive()) {
