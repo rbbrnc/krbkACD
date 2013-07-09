@@ -11,10 +11,6 @@ class MwgRegionList : public QList<MwgRegion>
 		inline explicit MwgRegionList(const MwgRegion &r) { append(r); }
 		inline MwgRegionList(const MwgRegionList &l) : QList<MwgRegion>(l) { }
 		inline MwgRegionList(const QList<MwgRegion> &l) : QList<MwgRegion>(l) { }
-
-		void detectFromFile(const QString &filePath);
-
-	private:
 };
 
 #endif

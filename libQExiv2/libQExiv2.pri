@@ -9,16 +9,17 @@ SOURCES += \
 	$$PWD/iptc.cpp \
 	$$PWD/xmp.cpp \
 	$$PWD/mwg_region.cpp \
-	$$PWD/mwg_region_list.cpp \
 	$$PWD/xmp_regions.cpp \
 
+#	$$PWD/mwg_region_list.cpp \
 #	$$PWD/mp_region.cpp \
 
 HEADERS += \
 	$$PWD/QExiv2.h \
 	$$PWD/QExiv2_p.h \
 	$$PWD/mwg_region.h \
-	$$PWD/mwg_region_list.h \
+
+#	$$PWD/mwg_region_list.h \
 
 EXIV2_CXXFLAGS = $$system(pkg-config exiv2 --cflags)
 EXIV2_LDFLAGS  = $$system(pkg-config exiv2 --libs)

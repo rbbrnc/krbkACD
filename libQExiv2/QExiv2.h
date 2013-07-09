@@ -7,9 +7,7 @@
 #include <QImage>
 #include <QDateTime>
 
-//#include "XmpRegion.h"
 #include "mwg_region.h"
-#include "mwg_region_list.h"
 
 // Forward decl.
 class QExiv2DataPrivate;

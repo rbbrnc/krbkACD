@@ -100,4 +100,14 @@ Q_DECLARE_METATYPE(MwgRegion);
 // MwgRegion streaming operator
 QDebug operator << (QDebug dbg, const MwgRegion &r);
 
+
+class MwgRegionList : public QList<MwgRegion>
+{
+	public:
+		inline MwgRegionList() { }
+		inline explicit MwgRegionList(const MwgRegion &r) { append(r); }
+		inline MwgRegionList(const MwgRegionList &l) : QList<MwgRegion>(l) { }
+		inline MwgRegionList(const QList<MwgRegion> &l) : QList<MwgRegion>(l) { }
+};
+
 #endif
