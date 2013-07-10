@@ -48,6 +48,8 @@ class MainWindow : public QMainWindow
 		void onEditDateTimeMetadata();
 
 		void scalePreview(int, int);
+		void showFmContextMenu(const QPoint &pos);
+		void onOpenFile();
 
 	private:
 		Ui::MainWindow *ui;

@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 
 #include <QDebug>
+#include <QDesktopServices>
+#include <QUrl>
 
 #include "FileManager.h"
 #include "QMagic.h"
@@ -37,6 +39,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionQuit,       SIGNAL(triggered()),     this, SLOT(onQuit()));
 	connect(ui->actionFullScreen, SIGNAL(triggered(bool)), this, SLOT(onFullScreen(bool)));
 
+	ui->fmListView->setContextMenuPolicy(Qt::CustomContextMenu);
+	connect(ui->fmListView, SIGNAL(customContextMenuRequested(const QPoint &)),
+		this, SLOT(showFmContextMenu(const QPoint &)));
+
+
 	connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), this, SLOT(onIconMode(bool)));
 	connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), this, SLOT(onShowHiddenFiles(bool)));
 	connect(ui->actionDeleteFiles, SIGNAL(triggered()), this, SLOT(onDeleteFiles()));
@@ -44,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionMkDir,       SIGNAL(triggered()), this, SLOT(onMkDir()));
 	connect(ui->actionCopyFiles,   SIGNAL(triggered()), this, SLOT(onCopyFiles()));
 	connect(ui->actionMoveFiles,   SIGNAL(triggered()), this, SLOT(onMoveFiles()));
+	connect(ui->actionOpenFile,    SIGNAL(triggered()), this, SLOT(onOpenFile()));
 
 	// Metadata Edit Actions
 	connect(ui->actionEditLocationsMetadata, SIGNAL(triggered()), this, SLOT(onEditLocationsMetadata()));
@@ -322,3 +330,27 @@ QStringList MainWindow::fileSelection() const
 		return QStringList();
 	}
 }
+
+// Context menu for file-object entries
+void MainWindow::showFmContextMenu(const QPoint &pos)
+{
+	QMenu contextMenu(tr("Context menu"), this);
+	contextMenu.addAction(ui->actionOpenFile);
+	contextMenu.addAction(ui->actionRenameFiles);
+	contextMenu.addAction(ui->actionCopyFiles);
+	contextMenu.addAction(ui->actionMoveFiles);
+	contextMenu.addAction(ui->actionDeleteFiles);
+	contextMenu.exec(mapToGlobal(pos));
+}
+
+void MainWindow::onOpenFile()
+{
+	QStringList files = fileSelection();
+
+	// USE DESKTOP SERVICES TO OPEN FILES (xdg-open)!
+	// The temporary files are deleted when the application is closed!
+	if (!QDesktopServices::openUrl(QUrl(files.at(0), QUrl::TolerantMode))) {
+		qDebug() << __PRETTY_FUNCTION__ << "Cannot open Url";
+	}
+}
+
