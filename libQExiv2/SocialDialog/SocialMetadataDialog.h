@@ -22,6 +22,7 @@ class SocialMetadata
 		QString publisherName;
 		QString publisherUri;
 		QString publisherComment;
+		QString datetimePublished;
 		QList<struct comment> comments;
 };
 

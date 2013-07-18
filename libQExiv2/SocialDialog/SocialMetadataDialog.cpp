@@ -22,17 +22,13 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 			ui->publisherName->setText(m_data.publisherName);
 			ui->publisherUri->setText(m_data.publisherUri);
 			ui->publisherComment->setPlainText(m_data.publisherComment);
+			ui->dateTimePublished->setText(m_data.datetimePublished);
 			fillCommentTable();
 			m_writeComments = true;
 		}
 	} else {
 		// Multiple Selection;
 	}
-
-//	ui->label->setTextFormat(Qt::RichText);
-//	ui->label->setTextInteractionFlags(Qt::TextBrowserInteraction);
-//	ui->label->setOpenExternalLinks(true);
-//	ui->label->setText("<a href=\"http://www.google.com/\">Google</a>");
 }
 
 SocialMetadataDialog::~SocialMetadataDialog()
@@ -79,6 +75,7 @@ bool SocialMetadataDialog::loadData(const QString &file)
 	m_data.albumDescription = e->xmpTagString("Xmp.social.AlbumDescription", true);
 	m_data.publisherName    = e->xmpTagString("Xmp.social.PublisherName", true);
 	m_data.publisherUri     = e->xmpTagString("Xmp.social.PublisherUri", true);
+	m_data.datetimePublished = e->xmpTagString("Xmp.social.DateTimePublished", true);
 
 	// Xmp.social.PublisherComment can be mapped on dc:description
 	m_data.publisherComment = e->xmpTagString("Xmp.social.PublisherComment");
@@ -112,6 +109,7 @@ bool SocialMetadataDialog::saveData(const QString &file)
 	e->setXmpTagString("Xmp.social.PublisherName", m_data.publisherName);
 	e->setXmpTagString("Xmp.social.PublisherUri", m_data.publisherUri);
 	e->setXmpTagString("Xmp.social.PublisherComment", m_data.publisherComment);
+	e->setXmpTagString("Xmp.social.DateTimePublished", m_data.datetimePublished);
 
 	if (m_writeComments) {
 		e->removeXmpBag("Xmp.social.Comments", 19);
@@ -131,7 +129,6 @@ bool SocialMetadataDialog::saveData(const QString &file)
 		return true;
 	}
 
-	qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Location on file:" << file;
 	delete e;
 	return false;
 }
@@ -177,6 +174,23 @@ void SocialMetadataDialog::accept()
 	m_data.publisherName    = ui->publisherName->text();
 	m_data.publisherUri     = ui->publisherUri->text();
 	m_data.publisherComment = ui->publisherComment->toPlainText();
+
+	m_data.datetimePublished = ui->dateTimePublished->text();
+	QStringList sl = m_data.datetimePublished.split(' ');
+	if (!sl.isEmpty()) {
+		QDate d = QDate::fromString(sl[0], "yyyy-MM-dd");
+		QTime t;
+		if (sl.count() > 1) {
+			t = QTime::fromString(sl[1], "HH:mm:ss");
+		}
+		if (d.isValid() && !t.isValid()) {
+			m_data.datetimePublished = sl[0];
+		} else if (!d.isValid() && t.isValid()) {
+			m_data.datetimePublished = "0000-00-00 " + sl[1];
+		} else if (!d.isValid() && !t.isValid()) {
+			m_data.datetimePublished.clear();
+		}
+	}
 
 	if (m_writeComments) {
 		for (int i = 0; i < m_model->rowCount(); i++) {
