@@ -76,10 +76,18 @@ QStringList BatchRenameDialog::newFilePaths()
 	}
 	return sl;
 }
+
 // [private]
 void BatchRenameDialog::updateNames()
 {
 	ui->newNamesListWidget->clear();
+
+	int nc = m_newName.count();
+	if (nc >= 10000) {
+		nc = 8;
+	} else {
+		nc = 4;
+	}
 
 	for (int i = 0; i < m_newName.count(); i++) {
 		if (m_patternList.size() > 0) {
@@ -88,7 +96,8 @@ void BatchRenameDialog::updateNames()
 				newName += m_patternMap[m_patternList.at(j)];
 			}
 			// Add count pattern!
-			newName += QString("_") + QString::number(i);
+			//newName += QString("_") + QString::number(i);
+			newName += QString("_%1").arg(i, nc, 10, QChar('0'));
 			m_newName.replace(i, newName);
 		} else {
 			m_newName.replace(i, m_originalName.at(i));
