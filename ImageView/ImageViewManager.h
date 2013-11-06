@@ -17,6 +17,7 @@ class ImageViewManager : public QWidget
 		~ImageViewManager();
 
 		void saveMetadata();
+		void loadMetadata();
 
 	private:
 		void setImage(const QPixmap &pixmap);
@@ -26,7 +27,7 @@ class ImageViewManager : public QWidget
 				  const QString &desc,
 				  int type = 0);
 	public slots:
-		void setImage(const QString &fileName, bool loadMetadata);
+		void setImage(const QString &fileName, bool withMetadata);
 		void addRegion(const QRectF &rect);
 
 	private slots:

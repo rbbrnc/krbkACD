@@ -102,8 +102,8 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(m_modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
 	connect(m_detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
 
-	connect(m_scene, SIGNAL(changed(const QList<QRectF> &)), this, SLOT(sceneChanged(const QList<QRectF> &)));
-	connect(m_view,  SIGNAL(newRectRegion(const QRectF &)), this, SLOT(addRegion(const QRectF &)));
+	connect(m_scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(sceneChanged(QList<QRectF>)));
+	connect(m_view,  SIGNAL(newRectRegion(QRectF)), this, SLOT(addRegion(QRectF)));
 }
 
 ImageViewManager::~ImageViewManager()
@@ -118,6 +118,28 @@ ImageViewManager::~ImageViewManager()
 
 	delete m_scene;
 	delete m_view;
+}
+
+void ImageViewManager::loadMetadata()
+{
+	if (m_exiv2) {
+		delete m_exiv2;
+		m_exiv2 = 0;
+	}
+
+	m_exiv2 = new QExiv2();
+	if (m_exiv2->load(m_file)) {
+		if (m_exiv2->xmpHasRegionTags()) {
+			// Get XMP Image Regions
+			MwgRegionList rl = m_exiv2->xmpMwgRegionList();
+			for (int i = 0; i < rl.count(); i++) {
+				insertRegion(rl.at(i).stAreaBoundingRectF(),
+					     rl.at(i).name(),
+					     rl.at(i).description(),
+					     rl.at(i).type());
+			}
+		}
+	}
 }
 
 void ImageViewManager::saveMetadata()
@@ -165,36 +187,19 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 }
 
 // [SLOT public]
-void ImageViewManager::setImage(const QString &fileName, bool loadMetadata)
+void ImageViewManager::setImage(const QString &fileName, bool withMetadata)
 {
 	m_file = fileName;;
 	QPixmap pixmap;
-	if (!pixmap.load(fileName)) {
+	if (!pixmap.load(m_file)) {
 		setImage(QPixmap());
 		return;
 	} else {
 		setImage(pixmap);
 	}
 
-        if (loadMetadata) {
-		if (m_exiv2) {
-			delete m_exiv2;
-			m_exiv2 = 0;
-		}
-
-                m_exiv2 = new QExiv2();
-                if (m_exiv2->load(fileName)) {
-                        if (m_exiv2->xmpHasRegionTags()) {
-                                // Get XMP Image Regions
-                                MwgRegionList rl = m_exiv2->xmpMwgRegionList();
-                                for (int i = 0; i < rl.count(); i++) {
-					insertRegion(rl.at(i).stAreaBoundingRectF(),
-						     rl.at(i).name(),
-						     rl.at(i).description(),
-						     rl.at(i).type());
-                                }
-                        }
-                }
+        if (withMetadata) {
+		loadMetadata();
         }
 }
 
