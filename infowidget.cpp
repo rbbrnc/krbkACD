@@ -31,7 +31,7 @@ void InfoWidget::setFile(const QString &file)
 	ui->fileLabel->setText(fi.fileName());
 
 	//ui->kindLabel->setText(QMagic::mimeDescription(file));
-	ui->kindLabel->setText(QMagic::mimeType(file));
+	ui->kindLabel->setText(mimeType);
 	ui->sizeLabel->setText(QString("%1 bytes").arg(fi.size()));
 	ui->modifiedLabel->setText(fi.lastModified().toString());
 
@@ -83,5 +83,4 @@ void InfoWidget::setFile(const QString &file)
 	ui->xmpLabel->setText((hasXmpData) ? "Yes" : "-");
 	ui->commentLabel->setText((hasCommentData) ? "Yes" : "-");
 }
-
 
