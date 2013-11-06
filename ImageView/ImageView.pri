@@ -22,11 +22,25 @@ FORMS += \
 RESOURCES += $$PWD/ImageViewManager.qrc
 
 #-- OpevCV lib for object detection
+
+OPENCV_PREFIX_PATH = $$system(pkg-config opencv --variable=prefix)
+OPENCV_HAARCASCADE = "$$OPENCV_PREFIX_PATH/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml"
+#OPENCV_HAARCASCADE = "$$OPENCV_PREFIX_PATH/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml"
+
+!exists($$OPENCV_HAARCASCADE) {
+	error(OpenCv Haar Cascade File Missing: $$OPENCV_HAARCASCADE)
+}
+
+message("Using OpenCV Haar Cascade: $$OPENCV_HAARCASCADE")
+DEFINES += OPENCV_HAARCASCADE=\'\"$$OPENCV_HAARCASCADE\"\'
+
 OPENCV_CXXFLAGS = $$system(pkg-config opencv --cflags)
 OPENCV_LDFLAGS  = $$system(pkg-config opencv --libs)
 QMAKE_CXXFLAGS += $$OPENCV_CXXFLAGS
-#-- Only needed libraries
-OPENCV_PATH = "/opt/opencv"
-LIBS += -L$$OPENCV_PATH/lib -lopencv_core -lopencv_highgui -lopencv_objdetect
-#-- Full openCV libraries
+
+#-- Link needed libraries only!!
+LIBS += -L$$OPENCV_PREFIX_PATH/lib -lopencv_core -lopencv_highgui -lopencv_objdetect
+
+#-- Link all OpenCV libraries
 #LIBS += $$OPENCV_LDFLAGS
+

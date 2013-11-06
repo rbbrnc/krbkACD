@@ -2,8 +2,10 @@
 
 #include "ObjectDetect.h"
 
-//#define HAAR_CASCADE_PATH "/opt/opencv/share/OpenCV/haarcascades/haarcascade_frontalface_default.xml"
-#define HAAR_CASCADE_PATH "/opt/opencv/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml"
+// Default (Fallback) Haar Cascade xml
+#ifndef OPENCV_HAARCASCADE
+#define HAARCASCADE "/usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml"
+#endif
 
 static CvMemStorage *storage;
 
@@ -14,7 +16,7 @@ ObjectDetect::ObjectDetect(const char *haarCascadePath)
 	storage = cvCreateMemStorage(0);
 
 	if (!haarCascadePath) {
-		m_haarCascade = (CvHaarClassifierCascade *) cvLoad(HAAR_CASCADE_PATH);
+		m_haarCascade = (CvHaarClassifierCascade *) cvLoad(HAARCASCADE);
 	} else {
 		m_haarCascade = (CvHaarClassifierCascade *) cvLoad(haarCascadePath);
 	}
