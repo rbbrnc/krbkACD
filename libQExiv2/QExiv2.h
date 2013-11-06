@@ -100,10 +100,6 @@ class QExiv2
 		QList<struct exifData> xmpDataList() const;
 
 	private:
-		// Readed from file not metadata!!
-		int m_imageWidth;
-		int m_imageHeight;
-
 		QSharedDataPointer<QExiv2DataPrivate> d;
 };
 

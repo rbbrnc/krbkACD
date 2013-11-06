@@ -87,7 +87,7 @@ QStringList IsoCountries::countryNames(IsoCountries::WorldRegion regionCode) con
 	}
 }
 
-QString IsoCountries::countryCode(const QString &countryName) const
+QString IsoCountries::countryCode(const QString &/*countryName*/) const
 {
 	return QString();
 }

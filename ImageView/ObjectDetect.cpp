@@ -9,6 +9,7 @@ static CvMemStorage *storage;
 
 ObjectDetect::ObjectDetect(const char *haarCascadePath)
 {
+	m_objects = NULL;
 	m_image = NULL;
 	storage = cvCreateMemStorage(0);
 
