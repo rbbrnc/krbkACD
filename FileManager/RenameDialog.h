@@ -18,7 +18,9 @@ class RenameDialog : public QDialog
 		~RenameDialog();
 
 		QString newFileName() const;
-		QString newFilePath() const;
+
+		// Unused
+		//QString newFilePath() const;
 
 	private:
 		void updateName();

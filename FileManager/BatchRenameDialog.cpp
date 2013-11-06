@@ -65,7 +65,7 @@ QStringList BatchRenameDialog::newFileNames()
 	}
 	return sl;
 }
-
+#if 0
 // [public]
 QStringList BatchRenameDialog::newFilePaths()
 {
@@ -76,6 +76,7 @@ QStringList BatchRenameDialog::newFilePaths()
 	}
 	return sl;
 }
+#endif
 
 // [private]
 void BatchRenameDialog::updateNames()

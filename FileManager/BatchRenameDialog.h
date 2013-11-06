@@ -18,7 +18,9 @@ class BatchRenameDialog : public QDialog
 		~BatchRenameDialog();
 
 		QStringList newFileNames();
-		QStringList newFilePaths();
+
+		// Unused
+		//QStringList newFilePaths();
 
 	private:
 		void updateNames();

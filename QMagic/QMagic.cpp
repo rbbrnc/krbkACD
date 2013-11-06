@@ -41,11 +41,13 @@ static QString getMagic(const QString &file, int flags)
 	return magicString;
 }
 
+#if 0
 // Get MIME description with libmagic
 QString QMagic::mimeDescription(const QString &file)
 {
 	return getMagic(file, MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
 }
+#endif
 
 // Get MIME type with libmagic
 QString QMagic::mimeType(const QString &file)
@@ -59,6 +61,7 @@ bool QMagic::mimeTypeIsImage(const QString &file)
 	return mime.contains("image");
 }
 
+#if 0
 // Fill the QMimeData class
 void QMagic::mimeData(QMimeData &mimeData, const QString &file)
 {
@@ -71,3 +74,4 @@ void QMagic::mimeData(QMimeData &mimeData, const QString &file)
 		mimeData.setImageData(QImage(file));
 	}
 }
+#endif

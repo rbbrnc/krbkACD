@@ -14,8 +14,10 @@ class ObjectDetect
 		~ObjectDetect();
 
 		void setSource(const char *src);
-		int  sourceWidth() const;
-		int  sourceHeight() const;
+
+		// Unused
+		//int  sourceWidth() const;
+		//int  sourceHeight() const;
 
 		int detect(double scale = 1.1, bool fast = true);
 		QList<QRectF> objects() const;

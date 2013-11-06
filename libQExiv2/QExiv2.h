@@ -9,6 +9,13 @@
 
 #include "mwg_region.h"
 
+//#define ENABLE_XMP_SEQ       1
+//#define ENABLE_XMP_SERIALIZE 1
+//#define ENABLE_EXIF_WRITE    1
+//#define ENABLE_EXIF_PREVIEW  1
+//#define ENABLE_EXIF_DATETIME 1
+//#define ENABLE_IPTC_WRITE    1
+
 // Forward decl.
 class QExiv2DataPrivate;
 
@@ -37,7 +44,10 @@ class QExiv2
 		// General metadata methods
 		bool isValid() const;
 		bool load(const QString& filePath);
-		bool loadFromData(const QByteArray& data);
+
+		// Unused
+		//bool loadFromData(const QByteArray& data);
+
 		bool save();
 
 		bool hasExif() const;
@@ -45,17 +55,26 @@ class QExiv2
 		bool hasXmp() const;
 
 		// EXIF Functions
+		QString exifTagString(const char *tag, bool escapeCR = false) const;
+
+#ifdef ENABLE_EXIF_WRITE
 		bool isExifWritable() const;
 		bool clearExif();
-		QString exifTagString(const char *tag, bool escapeCR = false) const;
+#endif
+#ifdef ENABLE_EXIF_DATETIME
 		QDateTime exifTagDateTime(const char *tag) const;
+#endif
 
+#ifdef ENABLE_EXIF_PREVIEW
 		// Exif preview (thumbnail) image
 		QImage previewImage() const;
+#endif
 
 		// IPTC Functions
+#ifdef ENABLE_IPTC_WRITE
 		bool isIptcWritable() const;
 		bool clearIptc();
+#endif
 		QString iptcTagString(const char *tag, bool escapeCR = false) const;
 
 		// XMP Functions
@@ -71,15 +90,20 @@ class QExiv2
 		bool setXmpTagStringBag(const char *tag, const QStringList &bag);
 		bool setXmpTagBag(const char *tag);
 
+#ifdef ENABLE_XMP_SEQ
 		QStringList xmpTagStringSeq(const char *tag, bool escapeCR = false) const;
 		bool setXmpTagStringSeq(const char *tag, const QStringList &seq);
+#endif
 
 		QString xmpTagStringLangAlt(const char *tag, const QString &langAlt, bool escapeCR);
 		bool setXmpTagStringLangAlt(const char *tag, const QString &value, const QString &langAlt);
 
 		bool removeXmpTag(const char *tag);
 		void removeXmpBag(const char *tag, int tagNameSize);
+
+#ifdef ENABLE_XMP_SERIALIZE
 		QByteArray xmpPacket() const;
+#endif
 
 		// XMP Regions
 		bool xmpHasRegionTags() const;
@@ -91,7 +115,7 @@ class QExiv2
 		// Image Comment Functions
 		bool isImgCommentWritable() const;
 		bool hasComment() const;
-		bool clearImgComment();
+		//bool clearImgComment();
 		QByteArray imgComment() const;
 		bool setImgComment(const QByteArray& data);
 

@@ -30,7 +30,7 @@ class IsoCountries
 
 		QStringList worldRegions() const;
 		QStringList countryNames(IsoCountries::WorldRegion regionCode) const;
-		QString countryCode(const QString &countryName) const;
+//		QString countryCode(const QString &countryName) const;
 		QStringList countryCodes(IsoCountries::WorldRegion regionCode) const;
 
 	private:

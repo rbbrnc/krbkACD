@@ -72,6 +72,7 @@ void QExiv2::removeXmpBag(const char *tag, int tagNameSize)
 }
 
 
+#ifdef ENABLE_XMP_SERIALIZE
 // Serialize the XMP data and output the XML XMP packet
 QByteArray QExiv2::xmpPacket() const
 {
@@ -97,6 +98,7 @@ QByteArray QExiv2::xmpPacket() const
 
 	return QByteArray();
 }
+#endif
 
 QString QExiv2::xmpTagString(const char *tag, bool escapeCR) const
 {
@@ -217,6 +219,7 @@ bool QExiv2::setXmpTagBag(const char *tag)
 	return false;
 }
 
+#ifdef ENABLE_XMP_SEQ
 //****************************************************************************
 // XMP Seq
 //****************************************************************************
@@ -273,6 +276,7 @@ bool QExiv2::setXmpTagStringSeq(const char *tag, const QStringList &seq)
 
 	return false;
 }
+#endif	// ENABLE_XMP_SEQ
 
 //****************************************************************************
 // XMP LangAlt Tag

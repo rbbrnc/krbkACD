@@ -53,6 +53,7 @@ bool QExiv2::hasComment() const
 	return !d->imageComment.empty();
 }
 
+#if 0
 bool QExiv2::loadFromData(const QByteArray& data)
 {
 	if (data.isEmpty()) {
@@ -68,6 +69,7 @@ bool QExiv2::loadFromData(const QByteArray& data)
 
 	return d->readMetadata();
 }
+#endif
 
 bool QExiv2::load(const QString& filePath)
 {

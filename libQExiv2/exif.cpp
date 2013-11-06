@@ -1,11 +1,11 @@
-#include <QDebug>
+//
+// EXIF Functions
+//
 
 #include "QExiv2.h"
 #include "QExiv2_p.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// EXIF Functions
-//////////////////////////////////////////////////////////////////////////////////////////
+#ifdef ENABLE_EXIF_WRITE
 bool QExiv2::isExifWritable() const
 {
 	return d->isMetadataWritable(Exiv2::mdExif);
@@ -23,6 +23,7 @@ bool QExiv2::clearExif()
 
 	return false;
 }
+#endif
 
 // return a list of all Exif tags present.
 QList<exifData> QExiv2::exifDataList() const
@@ -77,6 +78,7 @@ QString QExiv2::exifTagString(const char *tag, bool escapeCR) const
 	return QString();
 }
 
+#ifdef ENABLE_EXIF_DATETIME
 // [EXIF] Get a DateTime Tag
 QDateTime QExiv2::exifTagDateTime(const char *tag) const
 {
@@ -98,3 +100,4 @@ QDateTime QExiv2::exifTagDateTime(const char *tag) const
 
 	return QDateTime();
 }
+#endif

@@ -5,6 +5,8 @@
 // Default (Fallback) Haar Cascade xml
 #ifndef OPENCV_HAARCASCADE
 #define HAARCASCADE "/usr/local/share/OpenCV/haarcascades/haarcascade_frontalface_alt_tree.xml"
+#else
+#define HAARCASCADE OPENCV_HAARCASCADE
 #endif
 
 static CvMemStorage *storage;
@@ -41,6 +43,7 @@ void ObjectDetect::setSource(const char *src)
 	}
 }
 
+#if 0
 int ObjectDetect::sourceWidth() const
 {
 	if (m_image) {
@@ -56,6 +59,7 @@ int ObjectDetect::sourceHeight() const
 	}
 	return 0;
 }
+#endif
 
 // CvSeq* cvHaarDetectObjects(const CvArr* image,
 //		CvHaarClassifierCascade *cascade,

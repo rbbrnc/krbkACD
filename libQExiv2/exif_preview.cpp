@@ -1,4 +1,6 @@
-#include <QDebug>
+#ifdef ENABLE_EXIF_PREVIEW
+
+//#include <QDebug>
 
 #include "QExiv2.h"
 #include "QExiv2_p.h"
@@ -45,3 +47,4 @@ QImage QExiv2::previewImage() const
 	return QImage();
 }
 
+#endif

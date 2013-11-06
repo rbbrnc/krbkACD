@@ -87,10 +87,12 @@ QStringList IsoCountries::countryNames(IsoCountries::WorldRegion regionCode) con
 	}
 }
 
+#if 0
 QString IsoCountries::countryCode(const QString &/*countryName*/) const
 {
 	return QString();
 }
+#endif
 
 QStringList IsoCountries::countryCodes(IsoCountries::WorldRegion regionCode) const
 {

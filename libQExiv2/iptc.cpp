@@ -1,11 +1,11 @@
-#include <QDebug>
+//
+// IPTC Functions
+//
 
 #include "QExiv2.h"
 #include "QExiv2_p.h"
 
-//////////////////////////////////////////////////////////////////////////////////////////
-// IPTC Functions
-//////////////////////////////////////////////////////////////////////////////////////////
+#ifdef ENABLE_IPTC_WRITE
 bool QExiv2::isIptcWritable() const
 {
 	return d->isMetadataWritable(Exiv2::mdIptc);
@@ -23,6 +23,7 @@ bool QExiv2::clearIptc()
 
 	return false;
 }
+#endif
 
 QList<exifData> QExiv2::iptcDataList() const
 {

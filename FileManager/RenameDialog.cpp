@@ -64,10 +64,12 @@ QString RenameDialog::newFileName() const
 	return m_newName + m_newExt;
 }
 
+#if 0
 QString RenameDialog::newFilePath() const
 {
 	return m_originalPath + "/" + m_newName + m_newExt;
 }
+#endif
 
 // [private]
 void RenameDialog::updateName()
