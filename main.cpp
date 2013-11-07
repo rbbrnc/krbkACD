@@ -1,10 +1,9 @@
 #include <QApplication>
 #include <QDir>
 
-//#include "MainWindow.h"
 #include "mainwindow.h"
 
-
+#ifdef USE_CUSTOM_STYLE
 const QString style(const QString &qssFileName)
 {
 	if (qssFileName.isEmpty()) {
@@ -17,6 +16,7 @@ const QString style(const QString &qssFileName)
 	file.close();
 	return styleSheet;
 }
+#endif
 
 int main(int argc, char **argv)
 {
@@ -27,7 +27,10 @@ int main(int argc, char **argv)
 	}
 	MainWindow w;
 
-//	w.setStyleSheet(style(":/darkorange.qss"));
+#ifdef USE_CUSTOM_STYLE
+	w.setStyleSheet(style(":/darkorange.qss"));
+#endif
+
 	w.show();
 
 	return a.exec();

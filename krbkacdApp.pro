@@ -22,20 +22,41 @@ include ($$PWD/libQExiv2/LocationDialog/LocationDialog.pri)
 include ($$PWD/libQExiv2/SocialDialog/SocialMetadataDialog.pri)
 include ($$PWD/libQExiv2/DateTimeDialog/DateTimeDialog.pri)
 
-QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code -g -ggdb
+#-- Try clang
+#QMAKE_CC  = clang
+#QMAKE_CXX = clang++
 
-SOURCES += \
-	main.cpp\
-	mainwindow.cpp \
-    infowidget.cpp
+#-- common gcc flags
+QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code
+QMAKE_CXXFLAGS += -ffunction-sections -fdata-sections
+QMAKE_LFLAGS   += -Wl,--gc-sections,--as-needed
+
+#-- DEBUG Symbols
+QMAKE_CXXFLAGS += -g -ggdb
+#QMAKE_LFLAGS   += -Wl,--print-gc-sections
+
+#-- COVERAGE
+#QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
+#QMAKE_LDFLAGS  += -fprofile-arcs -ftest-coverage
+#LIBS += -lgcov
+
+#-- PROFILE
+#QMAKE_CXXFLAGS += -pg
+#QMAKE_LFLAGS   += -pg
+
+SOURCES += main.cpp\
+	   mainwindow.cpp \
+	   infowidget.cpp
 
 HEADERS += mainwindow.h \
-    infowidget.h
+	   infowidget.h
+
 FORMS   += mainwindow.ui \
-    infowidget.ui
+	   infowidget.ui
 
+RESOURCES += $$PWD/libQExiv2/QExiv2.qrc
 
-RESOURCES += \
-	$$PWD/styles/darkorange/darkorange.qrc \
-	$$PWD/libQExiv2/QExiv2.qrc
+#-- Custom style
+#DEFINES += USE_CUSTOM_STYLE
+#RESOURCES += $$PWD/styles/darkorange/darkorange.qrc
 
