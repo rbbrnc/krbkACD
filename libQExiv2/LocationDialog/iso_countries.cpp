@@ -5,7 +5,6 @@
 
 IsoCountries *IsoCountries::m_instance = 0;
 
-
 IsoCountries::IsoCountries()
 {
 	m_WorldRegions << "Africa"
@@ -76,12 +75,13 @@ QStringList IsoCountries::countryNames(IsoCountries::WorldRegion regionCode) con
 	case IsoCountries::Africa:         return m_AfricaCountriesMap.keys();
 	case IsoCountries::Asia:           return m_AsiaCountriesMap.keys();
 	case IsoCountries::CentralAmerica: return m_CentralAmericaCountriesMap.keys();
-	case IsoCountries::Europe:         return m_EuropeCountriesMap.keys();
 	case IsoCountries::MiddleEast:     return m_MiddleEastCountriesMap.keys();
 	case IsoCountries::NorthAmerica:   return m_NorthAmericaCountriesMap.keys();
 	case IsoCountries::Oceania:        return m_OceaniaCountriesMap.keys();
 	case IsoCountries::SouthAmerica:   return m_SouthAmericaCountriesMap.keys();
 	case IsoCountries::TheCaribbean:   return m_CaribbeanCountriesMap.keys();
+
+	case IsoCountries::Europe:
 	default:
 		return m_EuropeCountriesMap.keys();
 	}
@@ -100,12 +100,13 @@ QStringList IsoCountries::countryCodes(IsoCountries::WorldRegion regionCode) con
 	case IsoCountries::Africa:         return m_AfricaCountriesMap.values();
 	case IsoCountries::Asia:           return m_AsiaCountriesMap.values();
 	case IsoCountries::CentralAmerica: return m_CentralAmericaCountriesMap.values();
-	case IsoCountries::Europe:         return m_EuropeCountriesMap.values();
 	case IsoCountries::MiddleEast:     return m_MiddleEastCountriesMap.values();
 	case IsoCountries::NorthAmerica:   return m_NorthAmericaCountriesMap.values();
 	case IsoCountries::Oceania:        return m_OceaniaCountriesMap.values();
 	case IsoCountries::SouthAmerica:   return m_SouthAmericaCountriesMap.values();
 	case IsoCountries::TheCaribbean:   return m_CaribbeanCountriesMap.values();
+
+	case IsoCountries::Europe:
 	default:
 		return m_EuropeCountriesMap.values();
 	}

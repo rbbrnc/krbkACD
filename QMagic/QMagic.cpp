@@ -11,7 +11,6 @@ static QString getMagic(const QString &file, int flags)
 	magic_t cookie;
 	QString magicString;
 
-
 	if ((file.isNull()) || (file.isEmpty())) {
 		qDebug() << __PRETTY_FUNCTION__ << "NULL";
 		return magicString;

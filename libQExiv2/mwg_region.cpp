@@ -48,8 +48,6 @@ void MwgRegion::setRegion(qreal x, qreal y, qreal w, qreal h, qreal dimW, qreal 
 			// x,y,w,h will'be normalized with dimW, dimH values
 			m_stArea.setRect(x/dimW, y/dimH, w/dimW, h/dimH);
 		}
-
-		//qDebug() << __PRETTY_FUNCTION__ << m_stArea;
 	} else {
 		qWarning() << __PRETTY_FUNCTION__
 			   << "Invalid stDim:" << QSizeF(dimW, dimH)
@@ -167,7 +165,8 @@ MwgRs::Unit MwgRegion::stDimensionsUnit() const
 	return m_stDimUnit;
 }
 
-// Check compile with NO_DEBUG
+#ifndef QT_NO_DEBUG_OUTPUT
+
 QDebug operator << (QDebug dbg, const MwgRegion &r)
 {
 	QRectF stArea = r.stArea();
@@ -212,4 +211,4 @@ QDebug operator << (QDebug dbg, const MwgRegion &r)
         dbg.nospace() << "MwgRegion(" << s << ")";
         return dbg.maybeSpace();
 }
-
+#endif

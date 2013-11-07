@@ -18,7 +18,7 @@
 #define PAGE_METADATA_TREE  2
 #define PAGE_IMAGE_VIEW     3
 
-
+#define EMPTY_SELECTION_TEXT "No File Selected!"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -280,7 +280,7 @@ void MainWindow::onEditLocationsMetadata()
 {
 	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit Locations", "No File Selection!");
+		QMessageBox::warning(this, "Edit Locations", "No File Selected!");
 	} else {
 		LocationDialog dlg(files);
 		dlg.exec();
@@ -291,7 +291,7 @@ void MainWindow::onEditSocialMetadata()
 {
 	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit Social Metadata", "No File Selection!");
+		QMessageBox::warning(this, "Edit Social Metadata", "No File Selected!");
 	} else {
 		SocialMetadataDialog dlg(files);
 		dlg.exec();
@@ -302,7 +302,7 @@ void MainWindow::onEditMetadata()
 {
 	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit Metadata", "No File Selection!");
+		QMessageBox::warning(this, "Edit Metadata", "No File Selected!");
 	} else {
 		MetadataDialog dlg(files);
 		dlg.exec();
@@ -313,7 +313,7 @@ void MainWindow::onEditDateTimeMetadata()
 {
 	QStringList files = fileSelection();
 	if (files.count() == 0) {
-		QMessageBox::warning(this, "Edit DateTime Metadata", "No File Selection!");
+		QMessageBox::warning(this, "Edit DateTime Metadata", "No File Selected!");
 	} else {
 		MetadataDateTimeDialog dlg(files);
 		dlg.exec();

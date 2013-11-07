@@ -20,6 +20,9 @@ class FileManager : public QObject
 
 		bool isActive() const;
 
+//	private:
+//		void scrollToCurrent();
+
 	private slots:
 
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
@@ -41,7 +44,6 @@ class FileManager : public QObject
 	signals:
 		void currentChanged();
 		void currentPathChanged();
-		void currentFileChanged();
 
 	private:
 

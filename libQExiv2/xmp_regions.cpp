@@ -104,9 +104,6 @@ void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 	setXmpTagString(MwgRs::regionListTag("Description", n), region.description());
 
 	switch (region.type()) {
-	case MwgRs::Face:
-		setXmpTagString(MwgRs::regionListTag("Type", n), "Face");
-		break;
 	case MwgRs::Pet:
 		setXmpTagString(MwgRs::regionListTag("Type", n), "Pet");
 		break;
@@ -118,6 +115,7 @@ void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 		// XXX: todo set focus usage
 		//setXmpTagString(MwgRs::regionListTag("FocusUsage", n), "Focus");
 		break;
+	case MwgRs::Face:
 	default:
 		setXmpTagString(MwgRs::regionListTag("Type", n), "Face");
 		break;

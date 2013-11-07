@@ -11,7 +11,6 @@ SpotlightWidget::SpotlightWidget(QWidget *parent)
 	glass->setCursor(Qt::ArrowCursor);
 
 	clearButton = new QToolButton(this);
-	//QPixmap pixmap(":/clear_button.jpg");
 	QPixmap pixmap(":/clear_button.png");
 	clearButton->setIcon(QIcon(pixmap));
 	clearButton->setIconSize(pixmap.size());

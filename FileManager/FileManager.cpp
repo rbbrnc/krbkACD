@@ -1,7 +1,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-//#include <QDebug>
+#include <QDebug>
 
 #include "FileManager.h"
 #include "RenameDialog.h"
@@ -12,12 +12,14 @@ FileManager::FileManager(QListView *listView, QWidget *parent)
 	: m_view(listView),
 	  m_parent(parent)
 {
-	m_model  = new QFileSystemModel();
+	m_model = new QFileSystemModel();
 
 	m_currentIndex = m_model->setRootPath(QDir::current().absolutePath());
 
 	m_model->setFilter(QDir::Files | QDir::System | QDir::NoDot | QDir::Dirs);
 	m_model->setReadOnly(true);
+
+	m_view->setLayoutMode(QListView::Batched);
 
 	m_view->setModel(m_model);
 	m_view->setRootIndex(m_currentIndex);
@@ -71,11 +73,59 @@ bool FileManager::isActive() const
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
 	m_currentFileName = m_model->fileName(current);
-	emit currentChanged();
 
-	if (!m_model->isDir(current)) {
-		emit currentFileChanged();
+	qDebug() << __PRETTY_FUNCTION__ << m_currentFileName;
+
+	emit currentChanged();
+}
+
+// [SLOT public]
+void FileManager::deleteSelectedFiles()
+{
+	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
+	if (m_selection.isEmpty()) {
+		QMessageBox::critical(m_parent, tr("Error"),
+				tr("No file(s) selected"), QMessageBox::Ok);
+		return;
 	}
+
+	QString msg;
+	int count = m_selection.count();
+	if (count == 1) {
+		QModelIndex index = m_view->currentIndex();
+		if (m_model->isDir(index)) {
+			msg = tr("Delete Directory %1?").arg(m_model->fileName(index));
+		} else {
+			msg = tr("Delete File %1?").arg(m_model->fileName(index));
+		}
+	} else {
+		msg = tr("Delete %1 Files?").arg(count);
+	}
+
+	if (QMessageBox::No == QMessageBox::warning(m_parent, "Delete",
+			msg, QMessageBox::Yes, QMessageBox::No)) {
+		return;
+	}
+
+//QElapsedTimer timer;
+//timer.start();
+	// Block all selectionModel signals to avoid emission on every removed file.
+	bool oldState = m_selectionModel->blockSignals(true);
+
+	for (int i = 0; i < count; i++) {
+		if (!m_model->remove(m_selection.at(i))) {
+			QMessageBox::critical(m_parent, QObject::tr("Error"),
+				tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
+				QMessageBox::Abort);
+			m_selectionModel->blockSignals(oldState);
+			return;
+		}
+	}
+//	m_selectionModel->clearSelection();
+	m_selectionModel->blockSignals(oldState);
+
+//qDebug() << "DELETE operation took" << timer.elapsed() << "milliseconds";
+//	scrollToCurrent();
 }
 
 /*  SLOT [private] */
@@ -171,43 +221,33 @@ void FileManager::mkdir()
 	}
 }
 
-// [SLOT public]
-void FileManager::deleteSelectedFiles()
+#if 0 // To be tested
+void FileManager::scrollToCurrent()
 {
-	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
-	if (m_selection.isEmpty()) {
-		QMessageBox::critical(m_parent, tr("Error"),
-				tr("No file(s) selected"), QMessageBox::Ok);
-		return;
-	}
+	m_view->setUpdatesEnabled(false);
+	// Used to select/scroll view
+	int row = m_view->currentIndex().row();
+	QModelIndex mi = m_currentIndex.child(row + 1, 0);
 
-	QString msg;
-	int count = m_selection.count();
-	if (count == 1) {
-		QModelIndex index = m_view->currentIndex();
-		if (m_model->isDir(index)) {
-			msg = tr("Delete Directory %1?").arg(m_model->fileName(index));
-		} else {
-			msg = tr("Delete File %1?").arg(m_model->fileName(index));
-		}
+	if (mi.isValid()) {
+		m_view->setCurrentIndex(mi);
 	} else {
-		msg = tr("Delete %1 Files?").arg(count);
-	}
-
-	if (QMessageBox::No == QMessageBox::warning(m_parent, "Delete",
-			msg, QMessageBox::Yes, QMessageBox::No)) {
-		return;
-	}
-
-	for (int i = 0; i < count; i++) {
-		if (!m_model->remove(m_selection.at(i))) {
-			QMessageBox::critical(m_parent, QObject::tr("Error"),
-				tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
-				QMessageBox::Abort);
-			return;
+		mi = m_currentIndex.child(row - 1, 0);
+		if (mi.isValid()) {
+			m_view->setCurrentIndex(mi);
 		}
 	}
+	m_view->setUpdatesEnabled(true);
+
+//	next();
+
+	qDebug() << "Current Index Row:" << m_view->currentIndex().row()
+	<< m_model->fileName(m_view->currentIndex());
+
+	m_view->scrollTo(m_view->currentIndex(), QAbstractItemView::PositionAtTop);
 }
+#endif
+
 
 // [SLOT public]
 void FileManager::renameSelectedFiles()

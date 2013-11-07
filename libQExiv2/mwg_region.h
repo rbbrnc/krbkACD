@@ -97,8 +97,10 @@ class MwgRegion
 // Declare MwgRegion as a custom Meta Type
 Q_DECLARE_METATYPE(MwgRegion);
 
+#ifndef QT_NO_DEBUG_OUTPUT
 // MwgRegion streaming operator
 QDebug operator << (QDebug dbg, const MwgRegion &r);
+#endif
 
 
 class MwgRegionList : public QList<MwgRegion>
