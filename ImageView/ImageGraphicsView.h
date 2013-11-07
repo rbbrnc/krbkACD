@@ -3,7 +3,6 @@
 
 #include <QMouseEvent>
 #include <QWheelEvent>
-#include <QGraphicsRectItem>
 #include <QGraphicsView>
 
 class ImageGraphicsView : public QGraphicsView
@@ -31,35 +30,19 @@ class ImageGraphicsView : public QGraphicsView
 	protected:
 		// Holds the current centerpoint for the view,
 		// used for panning and zooming
-		QPointF CurrentCenterPoint;
+		QPointF m_currentCenterPoint;
 
 		// From panning the view
-		QPoint LastPanPoint;
+		QPoint m_lastPanPoint;
 
-		void SetCenter(const QPointF& centerPoint);
-		QPointF GetCenter();
+		void setCenter(const QPointF& centerPoint);
+		QPointF getCenter() const;
 
 		virtual void wheelEvent(QWheelEvent *event);
 		virtual void resizeEvent(QResizeEvent *event);
 		virtual void mousePressEvent(QMouseEvent *event);
 		virtual void mouseReleaseEvent(QMouseEvent *event);
 		virtual void mouseMoveEvent(QMouseEvent *event);
-
-	private:
-		enum ZoomType {
-			ZoomOriginal = 0,
-			ZoomIn,
-			ZoomOut,
-			ZoomToFit
-		};
-
-		enum RotationType {
-			Rotation90CW,
-			Rotation90CCW,
-		};
-
-		void zoom(const enum ZoomType type);
-		void rotate(const enum RotationType type);
 
 	private:
 		// Hold the curent rotation angle for restore

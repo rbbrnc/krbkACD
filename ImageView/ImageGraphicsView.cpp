@@ -1,9 +1,12 @@
 // cfr.
 // http://www.qtcentre.org/wiki/index.php?title=QGraphicsView:_Smooth_Panning_and_Zooming
 //
-#include <QDebug>
 
 #include "ImageGraphicsView.h"
+
+// Zoom scale factors (aka. How fast we zoom)
+#define Z_IN   1.15
+#define Z_OUT  (1.0 / Z_IN)
 
 ImageGraphicsView::ImageGraphicsView(QWidget *parent)
 	: QGraphicsView(parent),
@@ -25,19 +28,19 @@ ImageGraphicsView::~ImageGraphicsView()
 }
 
 // Return the current centerpoint for the view, used for zooming
-QPointF ImageGraphicsView::GetCenter()
+QPointF ImageGraphicsView::getCenter() const
 {
-	return CurrentCenterPoint;
+	return m_currentCenterPoint;
 }
 
 /**
  * Sets the current centerpoint.  Also updates the scene's center point.
  * Unlike centerOn, which has no way of getting the floating point center
- * back, SetCenter() stores the center point.  It also handles the special
+ * back, setCenter() stores the center point.  It also handles the special
  * sidebar case.  This function will claim the centerPoint to sceneRec ie.
  * the centerPoint must be within the sceneRec.
  */
-void ImageGraphicsView::SetCenter(const QPointF &centerPoint)
+void ImageGraphicsView::setCenter(const QPointF &centerPoint)
 {
 	// Get the rectangle of the visible area in scene coords
 	QRectF visibleArea = mapToScene(rect()).boundingRect();
@@ -55,32 +58,32 @@ void ImageGraphicsView::SetCenter(const QPointF &centerPoint)
 
 	if(bounds.contains(centerPoint)) {
 		// We are within the bounds
-		CurrentCenterPoint = centerPoint;
+		m_currentCenterPoint = centerPoint;
 	} else {
 		// We need to clamp or use the center of the screen
 		if(visibleArea.contains(sceneBounds)) {
 			// Use the center of scene ie. we can see the whole scene
-			CurrentCenterPoint = sceneBounds.center();
+			m_currentCenterPoint = sceneBounds.center();
 		} else {
-			CurrentCenterPoint = centerPoint;
+			m_currentCenterPoint = centerPoint;
 
 			// We need to clamp the center. The centerPoint is too large
 			if (centerPoint.x() > bounds.x() + bounds.width()) {
-				CurrentCenterPoint.setX(bounds.x() + bounds.width());
+				m_currentCenterPoint.setX(bounds.x() + bounds.width());
 			} else if(centerPoint.x() < bounds.x()) {
-				CurrentCenterPoint.setX(bounds.x());
+				m_currentCenterPoint.setX(bounds.x());
 			}
 
 			if(centerPoint.y() > bounds.y() + bounds.height()) {
-				CurrentCenterPoint.setY(bounds.y() + bounds.height());
+				m_currentCenterPoint.setY(bounds.y() + bounds.height());
 			} else if(centerPoint.y() < bounds.y()) {
-				CurrentCenterPoint.setY(bounds.y());
+				m_currentCenterPoint.setY(bounds.y());
 			}
 		}
 	}
 
 	// Update the scrollbars
-	centerOn(CurrentCenterPoint);
+	centerOn(m_currentCenterPoint);
 }
 
 // Zoom the view in and out.
@@ -90,16 +93,13 @@ void ImageGraphicsView::wheelEvent(QWheelEvent* event)
 	QPointF pointBeforeScale(mapToScene(event->pos()));
 
 	// Get the original screen centerpoint
-	QPointF screenCenter = GetCenter();
+	QPointF screenCenter = getCenter();
 
-	// Scale the view ie. do the zoom
-	double scaleFactor = 1.15; //How fast we zoom
+	// Scale the view (ie. do the zoom)
 	if (event->delta() > 0) {
-		// Zoom in
-		scale(scaleFactor, scaleFactor);
+		scale(Z_IN, Z_IN);	// Zoom in
 	} else {
-		// Zooming out
-		scale(1.0 / scaleFactor, 1.0 / scaleFactor);
+		scale(Z_OUT, Z_OUT);	// Zooming out
 	}
 
 	// Get the position after scaling, in scene coords
@@ -110,7 +110,7 @@ void ImageGraphicsView::wheelEvent(QWheelEvent* event)
 
 	// Adjust to the new center for correct zooming
 	QPointF newCenter = screenCenter + offset;
-	SetCenter(newCenter);
+	setCenter(newCenter);
 }
 
 // Handles when the mouse button is pressed
@@ -123,7 +123,7 @@ void ImageGraphicsView::mousePressEvent(QMouseEvent *event)
 		QGraphicsView::mousePressEvent(event);
 	} else {
 		// For panning the view
-		LastPanPoint = event->pos();
+		m_lastPanPoint = event->pos();
 		setCursor(Qt::ClosedHandCursor);
 	}
 }
@@ -149,13 +149,11 @@ void ImageGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 			m_selRect.setHeight(end.y() - origin.y());
 		}
 
-		//qDebug() << __PRETTY_FUNCTION__ << m_selRect;
 		QGraphicsView::mouseReleaseEvent(event);
 		emit newRectRegion(m_selRect);
 	} else {
-		//qDebug() << __PRETTY_FUNCTION__ << "Not interactive!";
 		setCursor(Qt::OpenHandCursor);
-		LastPanPoint = QPoint();
+		m_lastPanPoint = QPoint();
 	}
 }
 
@@ -165,13 +163,13 @@ void ImageGraphicsView::mouseMoveEvent(QMouseEvent *event)
 	if (isInteractive()) {
 		QGraphicsView::mouseMoveEvent(event);
 	} else {
-		if (!LastPanPoint.isNull()) {
+		if (!m_lastPanPoint.isNull()) {
 			// Get how much we panned
-			QPointF delta = mapToScene(LastPanPoint) - mapToScene(event->pos());
-			LastPanPoint = event->pos();
+			QPointF delta = mapToScene(m_lastPanPoint) - mapToScene(event->pos());
+			m_lastPanPoint = event->pos();
 
 			// Update the center ie. do the pan
-			SetCenter(GetCenter() + delta);
+			setCenter(getCenter() + delta);
 		}
 	}
 }
@@ -184,69 +182,10 @@ void ImageGraphicsView::resizeEvent(QResizeEvent* event)
 {
 	// Get the rectangle of the visible area in scene coords
 	QRectF visibleArea = mapToScene(rect()).boundingRect();
-	SetCenter(visibleArea.center());
+	setCenter(visibleArea.center());
 
 	//Call the subclass resize so the scrollbars are updated correctly
 	QGraphicsView::resizeEvent(event);
-}
-
-void ImageGraphicsView::zoom(const enum ZoomType type)
-{
-	QTransform t;
-
-	switch (type) {
-	case ZoomIn:
-		t = QTransform::fromScale(1.15, 1.15);
-		setTransform(t, true);
-		break;
-
-	case ZoomOut:
-		t = QTransform::fromScale(1.0/1.15, 1.0/1.15);
-		setTransform(t, true);
-		break;
-
-	case ZoomOriginal:
-		// Zoom 1:1
-		t = QTransform::fromScale(1.0, 1.0);
-		t.rotate(m_angle);
-		setTransform(t, false);
-		break;
-
-	case ZoomToFit:
-		fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
-		break;
-
-	default:
-		break;
-	}
-}
-
-void ImageGraphicsView::rotate(const enum RotationType type)
-{
-	QTransform t;
-
-	switch (type) {
-	case Rotation90CW:
-		t.rotate(+90);
-		m_angle += 90;
-		if (m_angle >= 360) {
-			m_angle = 0;
-		}
-		break;
-
-	case Rotation90CCW:
-		t.rotate(-90);
-		m_angle -= 90;
-		if (m_angle <= -360) {
-			m_angle = 0;
-		}
-		break;
-
-	default:
-		return;
-	}
-
-	setTransform(t, true);
 }
 
 // [SLOT public]
@@ -259,36 +198,47 @@ void ImageGraphicsView::reset()
 // [SLOT public]
 void ImageGraphicsView::zoomIn()
 {
-	zoom(ImageGraphicsView::ZoomIn);
+	setTransform(QTransform::fromScale(Z_IN, Z_IN), true);
 }
 
 // [SLOT public]
 void ImageGraphicsView::zoomOut()
 {
-	zoom(ImageGraphicsView::ZoomOut);
+	setTransform(QTransform::fromScale(Z_OUT, Z_OUT), true);
 }
 
-// [SLOT public]
+// Zoom 1:1 [SLOT public]
 void ImageGraphicsView::zoom11()
 {
-	zoom(ImageGraphicsView::ZoomOriginal);
+	setTransform(QTransform::fromScale(1.0, 1.0).rotate(m_angle), false);
 }
 
 // [SLOT public]
 void ImageGraphicsView::zoomToFit()
 {
-	zoom(ImageGraphicsView::ZoomToFit);
+	fitInView(scene()->sceneRect(), Qt::KeepAspectRatio);
 }
 
 // [SLOT public]
 void ImageGraphicsView::rotateCW()
 {
-	rotate(ImageGraphicsView::Rotation90CW);
+	m_angle += 90;
+
+	if (m_angle >= 360) {
+		m_angle = 0;
+	}
+
+	setTransform(QTransform::fromScale(1.0, 1.0).rotate(90), true);
 }
 
 // [SLOT public]
 void ImageGraphicsView::rotateCCW()
 {
-	rotate(ImageGraphicsView::Rotation90CCW);
+	m_angle -= 90;
+	if (m_angle <= -360) {
+		m_angle = 0;
+	}
+
+	setTransform(QTransform::fromScale(1.0, 1.0).rotate(-90), true);
 }
 
