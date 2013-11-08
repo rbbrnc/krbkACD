@@ -107,19 +107,16 @@ bool QExiv2::save()
 			if (d->image->comment() != d->imageComment) {
 				d->image->setComment(d->imageComment);
 				update = true;
-			} else {
-				//qDebug() << __PRETTY_FUNCTION__ << "Same Image Comment";
 			}
 		}
 
 		if (isXmpWritable()) {
-			//d->xmpMetadata.sortByKey();
 			d->image->setXmpData(d->xmpMetadata);
 			update = true;
 		}
 
 		if (update) {
-			qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
+			//qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
 			d->image->writeMetadata();
 		}
 
