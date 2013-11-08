@@ -98,20 +98,6 @@ void MainWindow::onQuit()
 	close();
 }
 
-void MainWindow::onChangePage(bool checked)
-{
-	QAction *action = static_cast<QAction *>(sender());
-	int idx = action->data().toInt();
-
-	if (false == checked) {
-		//qDebug() << "Hide page:" << idx;
-		//ui->stackedWidget->currentWidget->saveChanges();
-	} else {
-		updatePageData(idx, m_fm->currentPath() + "/" + m_fm->currentFile());
-		ui->stackedWidget->setCurrentIndex(idx);
-	}
-}
-
 void MainWindow::onFullScreen(bool enable)
 {
 	if (enable) {
@@ -136,24 +122,40 @@ void MainWindow::on_previewCheckBox_stateChanged(int state)
 	}
 }
 
-// SLOT
+// SLOT (called only for main FileManager)
 void MainWindow::onCurrentPathChanged()
 {
 	ui->currentPath->setText(m_fm->currentPath());
 }
 
-// SLOT
+// SLOT (called only for main FileManager)
 void MainWindow::onCurrentFileChanged()
 {
-	QString file = m_fm->currentPath() + "/" + m_fm->currentFile();
-	if (ui->previewCheckBox->isChecked()) {
-		updatePreview(file);
-	}
-	updatePageData(ui->stackedWidget->currentIndex(), file);
+	updatePageData(ui->stackedWidget->currentIndex());
 }
 
-void MainWindow::updatePageData(int page, const QString &file)
+void MainWindow::onChangePage(bool checked)
 {
+	QAction *action = static_cast<QAction *>(sender());
+	int idx = action->data().toInt();
+
+	if (checked) {
+		// Show page 'idx'
+		updatePageData(idx);
+		ui->stackedWidget->setCurrentIndex(idx);
+	} else {
+		// Hide page 'idx'
+		if (idx == PAGE_IMAGE_VIEW) {
+			// Save region metadata if changed
+			ui->imageViewPage->saveMetadata();
+		}
+	}
+}
+
+void MainWindow::updatePageData(int page)
+{
+	QString file = m_fm->currentPath() + "/" + m_fm->currentFile();
+
 	// Update Central Page Data
 	switch (page) {
 	case PAGE_INFO:
@@ -171,11 +173,17 @@ void MainWindow::updatePageData(int page, const QString &file)
 	default:
 		break;
 	}
+
+	if (ui->previewCheckBox->isChecked()) {
+		updatePreview(file);
+	}
 }
 
+// Slot called on previewSplitter moved signal
 void MainWindow::scalePreview(int, int)
 {
-	if (!ui->previewCheckBox->isChecked()) {
+	// Don't scale null pixmaps
+	if (!ui->previewCheckBox->isChecked() || m_preview.isNull()) {
 		return;
 	}
 

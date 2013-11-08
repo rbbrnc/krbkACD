@@ -1,6 +1,7 @@
 #include "MetadataTreeViewPage.h"
 #include "ui_MetadataTreeViewPage.h"
 
+#include <QFileInfo>
 #include "QExiv2.h"
 
 MetadataTreeViewPage::MetadataTreeViewPage(QWidget *parent) :
@@ -26,6 +27,12 @@ void MetadataTreeViewPage::setFile(const QString &file)
 	if (m_model) {
 		delete m_model;
 		m_model = 0;
+	}
+
+	// Load medatata only for regular files.
+	QFileInfo fi(file);
+	if (!fi.isFile()) {
+		return;
 	}
 
 	QExiv2 metadata;

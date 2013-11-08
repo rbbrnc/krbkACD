@@ -20,7 +20,7 @@ class MainWindow : public QMainWindow
 
 	private:
 		void updatePreview(const QString &file);
-		void updatePageData(int page, const QString &file);
+		void updatePageData(int page);
 
 		QStringList fileSelection() const;
 

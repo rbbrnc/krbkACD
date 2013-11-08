@@ -152,7 +152,7 @@ void ImageViewManager::saveMetadata()
 {
 	if (m_updateRegion && m_exiv2) {
 		int rc = QMessageBox::question(this,
-			 tr("Metadata Changed"), tr("Save Metadata ?"),
+			 tr("Metadata Changed"), tr("Save Metadata for file:\n%1").arg(m_file),
 			 QMessageBox::Ok | QMessageBox::Cancel,
 			 QMessageBox::Cancel);
 
