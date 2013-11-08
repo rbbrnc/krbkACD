@@ -37,7 +37,9 @@ class ImageViewManager : public QWidget
 		void removeRegion();
 		void editRegion();
 
+#ifdef ENABLE_OBJECT_DETECT_MODULE
 		void onDetectObjects();
+#endif
 		void showRegions(bool show);
 
 	private:
@@ -61,7 +63,9 @@ class ImageViewManager : public QWidget
 		QToolButton *m_rotateCWButton;
 		QToolButton *m_resetViewButton;
 
+#ifdef ENABLE_OBJECT_DETECT_MODULE
 		QToolButton *m_detectButton;
+#endif
 		QToolButton *m_modeButton;
 
 		QString m_file;

@@ -8,7 +8,10 @@
 #include "RegionEditDialog.h"
 #include "ImageGraphicsView.h"
 #include "QExiv2.h"
+
+#ifdef ENABLE_OBJECT_DETECT_MODULE
 #include "ObjectDetect.h"
+#endif
 
 ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
@@ -24,41 +27,49 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	m_view->setBackgroundBrush(QBrush(Qt::gray, Qt::SolidPattern));
 
 	QSize iconSize(32, 32);
+	QHBoxLayout *buttonLayout = new QHBoxLayout;
 
 	// Zoom In
 	m_zoomInButton  = new QToolButton();
 	m_zoomInButton->setIcon(QIcon(":/images/zoom_in.png"));
 	m_zoomInButton->setIconSize(iconSize);
+	buttonLayout->addWidget(m_zoomInButton);
 
 	// Zoom Out
 	m_zoomOutButton = new QToolButton();
 	m_zoomOutButton->setIcon(QIcon(":/images/zoom_out.png"));
 	m_zoomOutButton->setIconSize(iconSize);
+	buttonLayout->addWidget(m_zoomOutButton);
 
 	// Zoom to Fit
 	m_zoomToFitButton = new QToolButton();
 	m_zoomToFitButton->setIcon(QIcon(":/images/zoom_best_fit.png"));
 	m_zoomToFitButton->setIconSize(iconSize);
+	buttonLayout->addWidget(m_zoomToFitButton);
 
 	// Zoom 1:1
 	m_zoom11Button = new QToolButton();
 	m_zoom11Button->setIcon(QIcon(":/images/zoom_original.png"));
 	m_zoom11Button->setIconSize(iconSize);
+	buttonLayout->addWidget(m_zoom11Button);
 
 	// Rotate CCW
 	m_rotateCCWButton = new QToolButton();
 	m_rotateCCWButton->setIcon(QIcon(":/images/rotate_ccw.png"));
 	m_rotateCCWButton->setIconSize(iconSize);
+	buttonLayout->addWidget(m_rotateCCWButton);
 
 	// Rotate CW
 	m_rotateCWButton = new QToolButton();
 	m_rotateCWButton->setIcon(QIcon(":/images/rotate_cw.png"));
 	m_rotateCWButton->setIconSize(iconSize);
+	buttonLayout->addWidget(m_rotateCWButton);
 
 	// Reset View to original
 	m_resetViewButton = new QToolButton();
 	m_resetViewButton->setIcon(QIcon(":/images/original.png"));
 	m_resetViewButton->setIconSize(iconSize);
+	buttonLayout->addWidget(m_resetViewButton);
 
 	// View Mode for Panning image or for region selection.
 	m_modeButton = new QToolButton();
@@ -66,23 +77,16 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	m_modeButton->setIcon(QIcon(":/images/select.png"));
 	m_modeButton->setIconSize(iconSize);
 	m_modeButton->setChecked(m_showRegions);
+	buttonLayout->addWidget(m_modeButton);
 
+#ifdef ENABLE_OBJECT_DETECT_MODULE
 	// Detect Objects
 	m_detectButton = new QToolButton();
 	m_detectButton->setIcon(QIcon(":/images/user_silhouette.png"));
 	m_detectButton->setIconSize(iconSize);
 	m_detectButton->setEnabled(m_showRegions);
-
-	QHBoxLayout *buttonLayout = new QHBoxLayout;
-	buttonLayout->addWidget(m_zoomInButton);
-	buttonLayout->addWidget(m_zoomOutButton);
-	buttonLayout->addWidget(m_zoom11Button);
-	buttonLayout->addWidget(m_zoomToFitButton);
-	buttonLayout->addWidget(m_rotateCCWButton);
-	buttonLayout->addWidget(m_rotateCWButton);
-	buttonLayout->addWidget(m_resetViewButton);
-	buttonLayout->addWidget(m_modeButton);
 	buttonLayout->addWidget(m_detectButton);
+#endif
 
 	QVBoxLayout *layout = new QVBoxLayout;
 	layout->addWidget(m_view);
@@ -100,8 +104,10 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	connect(m_resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
 
 	connect(m_modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
-	connect(m_detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
 
+#ifdef ENABLE_OBJECT_DETECT_MODULE
+	connect(m_detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
+#endif
 	connect(m_scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(sceneChanged(QList<QRectF>)));
 	connect(m_view,  SIGNAL(newRectRegion(QRectF)), this, SLOT(addRegion(QRectF)));
 }
@@ -241,7 +247,11 @@ void ImageViewManager::enableRegionSelection(bool enable)
 	}
 
 	m_view->setInteractive(enable);
+
+#ifdef ENABLE_OBJECT_DETECT_MODULE
 	m_detectButton->setEnabled(enable);
+#endif
+
 	showRegions(enable);
 }
 
@@ -355,6 +365,7 @@ void ImageViewManager::showRegions(bool show)
 	m_showRegions = show;
 }
 
+#ifdef ENABLE_OBJECT_DETECT_MODULE
 void ImageViewManager::onDetectObjects()
 {
 	ObjectDetect *o = new ObjectDetect();
@@ -372,5 +383,5 @@ void ImageViewManager::onDetectObjects()
 
 	delete o;
 }
-
+#endif
 
