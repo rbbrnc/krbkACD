@@ -39,7 +39,7 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 		ui->lsOverwriteLocations->hide();
 
 		if (!getLocations(m_fileList.at(0))) {
-			ui->messageLabel->setText("Cannot Set loction on this file: " + m_fileList.at(0));
+			ui->messageLabel->setText("Cannot Set location on this file: " + m_fileList.at(0));
 
 			ui->lcSetButton->setEnabled(false);
 			ui->lcWorldRegion->setEnabled(false);
