@@ -43,7 +43,6 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->fmListView, SIGNAL(customContextMenuRequested(const QPoint &)),
 		this, SLOT(showFmContextMenu(const QPoint &)));
 
-
 	connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), this, SLOT(onIconMode(bool)));
 	connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), this, SLOT(onShowHiddenFiles(bool)));
 	connect(ui->actionDeleteFiles, SIGNAL(triggered()), this, SLOT(onDeleteFiles()));
@@ -82,6 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
+
+//	m_secondFm->blockModelSignals(true);
 }
 
 MainWindow::~MainWindow()
@@ -149,6 +150,10 @@ void MainWindow::onChangePage(bool checked)
 			// Save region metadata if changed
 			ui->imageViewPage->saveMetadata();
 		}
+
+		if (idx == PAGE_2ND_FM) {
+			//m_secondFm->blockModelSignals(true);
+		}
 	}
 }
 
@@ -162,6 +167,7 @@ void MainWindow::updatePageData(int page)
 		ui->infoPage->setFile(file);
 		break;
 	case PAGE_2ND_FM:
+		//m_secondFm->blockModelSignals(false);
 		break;
 	case PAGE_METADATA_TREE:
 		ui->metadataTreePage->setFile(file);

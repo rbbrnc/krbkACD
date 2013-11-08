@@ -32,6 +32,24 @@ FileManager::FileManager(QListView *listView, QWidget *parent)
 
 	connect(m_view, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
+
+	connect(m_model, SIGNAL(directoryLoaded(QString)),
+		 this,   SLOT(onDirectoryLoaded(QString)));
+
+
+}
+
+void FileManager::onDirectoryLoaded ( const QString & path )
+{
+	qDebug() << this << "Dir loaded";
+}
+
+
+void FileManager::blockModelSignals(bool block)
+{
+//	m_selectionModel->blockSignals(!enable);
+	m_model->blockSignals(block);
+//	m_view->blockSignals(!enable);
 }
 
 FileManager::~FileManager()
@@ -73,9 +91,7 @@ bool FileManager::isActive() const
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
 	m_currentFileName = m_model->fileName(current);
-
-	qDebug() << __PRETTY_FUNCTION__ << m_currentFileName;
-
+//	qDebug() << __PRETTY_FUNCTION__ << m_currentFileName;
 	emit currentChanged();
 }
 
@@ -112,7 +128,20 @@ void FileManager::deleteSelectedFiles()
 	// Block all selectionModel signals to avoid emission on every removed file.
 	bool oldState = m_selectionModel->blockSignals(true);
 
+    QProgressDialog progress(m_parent);
+    progress.setRange(0, count);
+    progress.setModal(true);
+
 	for (int i = 0; i < count; i++) {
+
+		progress.setLabelText(tr("Delete %1").arg(m_model->filePath(m_selection.at(i))));
+	        progress.setValue(i);
+	        qApp->processEvents();
+	        if (progress.wasCanceled()) {
+			m_selectionModel->blockSignals(oldState);
+			return;
+		}
+
 		if (!m_model->remove(m_selection.at(i))) {
 			QMessageBox::critical(m_parent, QObject::tr("Error"),
 				tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
@@ -121,12 +150,38 @@ void FileManager::deleteSelectedFiles()
 			return;
 		}
 	}
-//	m_selectionModel->clearSelection();
 	m_selectionModel->blockSignals(oldState);
 
 //qDebug() << "DELETE operation took" << timer.elapsed() << "milliseconds";
 //	scrollToCurrent();
 }
+
+#if 0
+bool Spreadsheet::writeFile(const QString &fileName)
+{
+    QFile file(fileName);
+    ...
+    QProgressDialog progress(this);
+    progress.setLabelText(tr("Saving %1").arg(fileName));
+    progress.setRange(0, RowCount);
+    progress.setModal(true);
+
+    for (int row = 0; row < RowCount; ++row) {
+        progress.setValue(row);
+        qApp->processEvents();
+        if (progress.wasCanceled()) {
+            file.remove();
+            return false;
+        }
+        for (int column = 0; column < ColumnCount; ++column) {
+            QString str = formula(row, column);
+            if (!str.isEmpty())
+                out << quint16(row) << quint16(column) << str;
+        }
+    }
+    return true;
+}
+#endif
 
 /*  SLOT [private] */
 void FileManager::handleItemActivation(QModelIndex index)
