@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
 
-//	m_secondFm->blockModelSignals(true);
+	m_secondFm->blockModelSignals(true);
 }
 
 MainWindow::~MainWindow()

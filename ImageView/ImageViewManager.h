@@ -1,7 +1,12 @@
 #ifndef IMAGE_VIEW_MANAGER_H
 #define IMAGE_VIEW_MANAGER_H
 
+#include "qglobal.h"
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#else
 #include <QtGui>
+#endif
 
 class QExiv2;
 class ImageGraphicsView;

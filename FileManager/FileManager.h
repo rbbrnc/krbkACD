@@ -29,7 +29,7 @@ class FileManager : public QObject
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
 		void handleItemActivation(QModelIndex index);
 
-		void onDirectoryLoaded ( const QString & path );
+//		void onDirectoryLoaded(const QString &path);
 
 	public slots:
 		void previous();

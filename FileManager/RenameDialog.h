@@ -1,7 +1,13 @@
 #ifndef RENAME_DIALOG_H
 #define RENAME_DIALOG_H
 
+#include "qglobal.h"
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#else
 #include <QtGui>
+#endif
+
 #include <QDialog>
 
 namespace Ui {

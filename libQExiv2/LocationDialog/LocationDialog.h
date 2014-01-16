@@ -1,7 +1,7 @@
 #ifndef LOCATION_DIALOG_H
 #define LOCATION_DIALOG_H
 
-#include <QtGui>
+#include <QComboBox>
 #include <QDialog>
 
 class Location
