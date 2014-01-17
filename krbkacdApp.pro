@@ -32,9 +32,9 @@ QMAKE_CXXFLAGS += -ffunction-sections -fdata-sections
 QMAKE_LFLAGS   += -Wl,--gc-sections,--as-needed
 
 #-- DEBUG Symbols
-QMAKE_CXXFLAGS += -g -ggdb
+#QMAKE_CXXFLAGS += -g -ggdb
 #QMAKE_LFLAGS   += -Wl,--print-gc-sections
-#DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
+DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
 
 #-- COVERAGE
 #QMAKE_CXXFLAGS += -fprofile-arcs -ftest-coverage
