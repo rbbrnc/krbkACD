@@ -1,5 +1,3 @@
-#include <QtGui>
-
 #include <QDebug>
 
 #include "ImageViewManager.h"

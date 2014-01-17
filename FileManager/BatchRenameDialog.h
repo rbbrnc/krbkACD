@@ -1,7 +1,13 @@
 #ifndef BATCH_RENAME_DIALOG_H
 #define BATCH_RENAME_DIALOG_H
 
+#include "qglobal.h"
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#else
 #include <QtGui>
+#endif
+
 #include <QDialog>
 
 namespace Ui {
@@ -9,6 +15,7 @@ namespace Ui {
 }
 
 class PatternWidget;
+
 class BatchRenameDialog : public QDialog
 {
 	Q_OBJECT

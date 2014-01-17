@@ -23,6 +23,9 @@ FORMS += \
 
 RESOURCES += $$PWD/ImageViewManager.qrc
 
+# OpenCV is not compatible with QT5 yet
+lessThan(QT_MAJOR_VERSION, 5) {
+
 #------------------------------------------------------------------------------
 #-- OpevCV lib for object detection
 #------------------------------------------------------------------------------
@@ -56,3 +59,4 @@ contains(PLUGINS, object_detect) {
 	DEFINES += ENABLE_OBJECT_DETECT_MODULE
 }
 
+}

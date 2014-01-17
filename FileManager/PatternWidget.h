@@ -1,7 +1,13 @@
 #ifndef PATTERN_WIDGET_H
 #define PATTERN_WIDGET_H
 
+#include "qglobal.h"
+#if QT_VERSION >= 0x050000
+#include <QtWidgets>
+#else
 #include <QtGui>
+#endif
+
 #include <QList>
 
 class PatternWidget : public QWidget

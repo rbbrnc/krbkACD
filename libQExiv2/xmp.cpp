@@ -341,7 +341,10 @@ bool QExiv2::xmpRegisterNamespace(const QString& uri, const QString& prefix)
 		if (!uri.endsWith('/')) {
 			ns.append('/');
 		}
-		Exiv2::XmpProperties::registerNs(ns.toAscii().constData(), prefix.toAscii().constData());
+// QT4
+//		Exiv2::XmpProperties::registerNs(ns.toAscii().constData(), prefix.toAscii().constData());
+// QT5
+		Exiv2::XmpProperties::registerNs(ns.toLatin1().constData(), prefix.toLatin1().constData());
 		return true;
 	} catch (Exiv2::Error &e) {
 		d->error(QString("%1 Cannot register the new xmp namespace '%2'").arg(__PRETTY_FUNCTION__).arg(uri), e);

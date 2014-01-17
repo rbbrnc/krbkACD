@@ -35,15 +35,14 @@ FileManager::FileManager(QListView *listView, QWidget *parent)
 
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 		 this,   SLOT(onDirectoryLoaded(QString)));
-
-
 }
 
-void FileManager::onDirectoryLoaded ( const QString & path )
+#if 0
+void FileManager::onDirectoryLoaded(const QString & path)
 {
 	qDebug() << this << "Dir loaded";
 }
-
+#endif
 
 void FileManager::blockModelSignals(bool block)
 {
