@@ -33,8 +33,10 @@ FileManager::FileManager(QListView *listView, QWidget *parent)
 	connect(m_view, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
 
+#if 0
 	connect(m_model, SIGNAL(directoryLoaded(QString)),
 		 this,   SLOT(onDirectoryLoaded(QString)));
+#endif
 }
 
 #if 0
