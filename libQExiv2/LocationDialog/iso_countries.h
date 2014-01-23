@@ -8,12 +8,15 @@ class IsoCountries
 {
 	private:
 		IsoCountries();
-		static IsoCountries *m_instance;
+        //static IsoCountries *m_instance;
 
-		void load(const QString &countryFileName, QMap<QString, QString> &countryMap);
+	        IsoCountries(IsoCountries const &);   // Don't Implement
+	        void operator=(IsoCountries const &); // Don't implement
+
+        void load(const QString &countryFileName, QMap<QString, QString> &countryMap);
 
 	public:
-		static IsoCountries *instance();
+		static IsoCountries &instance();
 		~IsoCountries();
 
 		enum WorldRegion {
@@ -45,7 +48,6 @@ class IsoCountries
 		QMap <QString, QString> m_SouthAmericaCountriesMap;
 		QMap <QString, QString> m_AsiaCountriesMap;
 		QMap <QString, QString> m_MiddleEastCountriesMap;
-
 };
 
 #endif

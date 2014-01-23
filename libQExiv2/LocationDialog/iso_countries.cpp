@@ -3,8 +3,6 @@
 
 #include "iso_countries.h"
 
-IsoCountries *IsoCountries::m_instance = 0;
-
 IsoCountries::IsoCountries()
 {
 	m_WorldRegions << "Africa"
@@ -30,7 +28,6 @@ IsoCountries::IsoCountries()
 
 IsoCountries::~IsoCountries()
 {
-	m_instance = 0;
 }
 
 void IsoCountries::load(const QString &countryFileName, QMap<QString, QString> &countryMap)
@@ -56,12 +53,15 @@ void IsoCountries::load(const QString &countryFileName, QMap<QString, QString> &
 	}
 }
 
-IsoCountries *IsoCountries::instance()
+
+// The magic function, which allows access to the class from anywhere
+// To get the value of the instance of the class, call:
+// IsoCountries::instance().someMethod();
+IsoCountries &IsoCountries::instance()
 {
-	if (m_instance == 0) {
-		m_instance = new IsoCountries();
-	}
-	return m_instance;
+	static IsoCountries instance; // Guaranteed to be destroyed.
+	                              // Instantiated on first use.
+	return instance;
 }
 
 QStringList IsoCountries::worldRegions() const

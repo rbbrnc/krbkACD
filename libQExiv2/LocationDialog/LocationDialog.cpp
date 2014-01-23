@@ -23,11 +23,9 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	IsoCountries *ic = IsoCountries::instance();
-
-	ui->lcWorldRegionComboBox->insertItems(0, ic->worldRegions());
+	ui->lcWorldRegionComboBox->insertItems(0, IsoCountries::instance().worldRegions());
 	ui->lcWorldRegionComboBox->setCurrentIndex(static_cast<int>(IsoCountries::Europe));
-	ui->lsWorldRegionComboBox->insertItems(0, ic->worldRegions());
+	ui->lsWorldRegionComboBox->insertItems(0, IsoCountries::instance().worldRegions());
 	ui->lsWorldRegionComboBox->setCurrentIndex(static_cast<int>(IsoCountries::Europe));
 
 	if (m_fileList.count() == 0) {
@@ -253,9 +251,8 @@ bool LocationDialog::setLocation(const QString &file)
 void LocationDialog::on_lcCountryNameComboBox_currentIndexChanged(QString sel)
 {
 	ui->lcCountryCodeComboBox->clear();
-	IsoCountries *ic = IsoCountries::instance();
 	IsoCountries::WorldRegion wr = static_cast<IsoCountries::WorldRegion>(ui->lcWorldRegionComboBox->currentIndex());
-	ui->lcCountryCodeComboBox->insertItems(0, ic->countryCodes(wr));
+	ui->lcCountryCodeComboBox->insertItems(0, IsoCountries::instance().countryCodes(wr));
 
 	int idx = ui->lcCountryNameComboBox->findText(sel);
 	ui->lcCountryCodeComboBox->setCurrentIndex(idx);
@@ -264,9 +261,8 @@ void LocationDialog::on_lcCountryNameComboBox_currentIndexChanged(QString sel)
 void LocationDialog::on_lsCountryNameComboBox_currentIndexChanged(QString sel)
 {
 	ui->lsCountryCodeComboBox->clear();
-	IsoCountries *ic = IsoCountries::instance();
 	IsoCountries::WorldRegion wr = static_cast<IsoCountries::WorldRegion>(ui->lsWorldRegionComboBox->currentIndex());
-	ui->lsCountryCodeComboBox->insertItems(0, ic->countryCodes(wr));
+	ui->lsCountryCodeComboBox->insertItems(0, IsoCountries::instance().countryCodes(wr));
 
 	int idx = ui->lsCountryNameComboBox->findText(sel);
 	ui->lsCountryCodeComboBox->setCurrentIndex(idx);
@@ -275,8 +271,7 @@ void LocationDialog::on_lsCountryNameComboBox_currentIndexChanged(QString sel)
 void LocationDialog::updateCountryNameComboBox(QComboBox *cb, int idx)
 {
 	cb->clear();
-	IsoCountries *ic = IsoCountries::instance();
-	cb->insertItems(0, ic->countryNames(static_cast<IsoCountries::WorldRegion>(idx)));
+	cb->insertItems(0, IsoCountries::instance().countryNames(static_cast<IsoCountries::WorldRegion>(idx)));
 }
 
 void LocationDialog::on_lcWorldRegionComboBox_currentIndexChanged(int index)

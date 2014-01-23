@@ -20,6 +20,7 @@ QExiv2::QExiv2(const QString& filePath) : d(new QExiv2DataPrivate)
 
 QExiv2::~QExiv2()
 {
+    Exiv2::XmpProperties::unregisterNs();
 }
 
 QExiv2& QExiv2::operator=(const QExiv2& other)
