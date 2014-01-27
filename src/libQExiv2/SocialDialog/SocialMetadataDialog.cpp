@@ -61,10 +61,8 @@ void SocialMetadataDialog::fillCommentTable()
 
 bool SocialMetadataDialog::loadData(const QString &file)
 {
-	qDebug() << __PRETTY_FUNCTION__;
 	QExiv2 *e = new QExiv2();
 	if (!e->load(file)) {
-		qDebug() << __PRETTY_FUNCTION__ << "cannot load metadata";
 		delete e;
 		return false;
 	}
