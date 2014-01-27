@@ -117,7 +117,7 @@ bool QExiv2::save()
 		}
 
 		if (update) {
-			//qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
+//			qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
 			d->image->writeMetadata();
 		}
 

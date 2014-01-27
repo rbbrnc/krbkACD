@@ -61,8 +61,10 @@ void SocialMetadataDialog::fillCommentTable()
 
 bool SocialMetadataDialog::loadData(const QString &file)
 {
+	qDebug() << __PRETTY_FUNCTION__;
 	QExiv2 *e = new QExiv2();
 	if (!e->load(file)) {
+		qDebug() << __PRETTY_FUNCTION__ << "cannot load metadata";
 		delete e;
 		return false;
 	}
@@ -104,6 +106,12 @@ bool SocialMetadataDialog::saveData(const QString &file)
 		delete e;
 		return false;
 	}
+
+	if (!e->xmpRegisterNamespace("social/", "social")) {
+		qWarning() << __PRETTY_FUNCTION__ << "Metadata *NOT* saved";
+		return false;
+	}
+
 	e->setXmpTagString("Xmp.social.AlbumTitle", m_data.albumTitle);
 	e->setXmpTagString("Xmp.social.AlbumDescription", m_data.albumDescription);
 	e->setXmpTagString("Xmp.social.PublisherName", m_data.publisherName);
