@@ -2,18 +2,18 @@ TARGET = krbkacd
 TEMPLATE = app
 CONFIG += silent
 
-#-- Check QT version
-message(Qt version: $$[QT_VERSION])
-greaterThan(QT_MAJOR_VERSION, 4) {
-	QT += widgets
-}
-
 #-- Places for generated files
 #DESTDIR = .
 OBJECTS_DIR = out/objs
 MOC_DIR     = out/mocs
 UI_DIR      = out/ui
 RCC_DIR     = out/resources
+
+#-- Check QT version
+message(Qt version: $$[QT_VERSION])
+greaterThan(QT_MAJOR_VERSION, 4) {
+	QT += widgets
+}
 
 include ($$PWD/SpotlightWidget/SpotlightWidget.pri)
 

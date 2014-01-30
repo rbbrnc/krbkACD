@@ -1,11 +1,17 @@
-// For libmagic
-#include <magic.h>
+#include "qglobal.h"
+#if QT_VERSION >= 0x050000
+#include <QMimeDatabase>
+#else
+#include <magic.h>	// For libmagic
+#define USE_LIBMAGIC
+#endif
 
 #include <QDebug>
 #include <QImage>
 
 #include "QMagic.h"
 
+#ifdef USE_LIBMAGIC
 static QString getMagic(const QString &file, int flags)
 {
 	magic_t cookie;
@@ -39,38 +45,35 @@ static QString getMagic(const QString &file, int flags)
 
 	return magicString;
 }
-
-#if 0
-// Get MIME description with libmagic
-QString QMagic::mimeDescription(const QString &file)
-{
-	return getMagic(file, MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
-}
 #endif
 
-// Get MIME type with libmagic
-QString QMagic::mimeType(const QString &file)
+namespace QMagic {
+
+QString mimeType(const QString &file)
 {
+#ifdef USE_LIBMAGIC
+	// Get MIME type with libmagic
 	return getMagic(file, MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
+#else
+	// Note: Due to a Qt 5.0.1 bug, mimeTypeForFile(QString, MatchMode) doesn't
+	// function properly for mode == MatchContent.
+	QMimeDatabase mimeDatabase;
+	return mimeDatabase.mimeTypeForFile(file, QMimeDatabase::MatchContent).name();
+#endif
 }
 
-bool QMagic::mimeTypeIsImage(const QString &file)
+bool mimeTypeIsImage(const QString &file)
 {
+#ifdef USE_LIBMAGIC
 	QString mime = getMagic(file, MAGIC_MIME | MAGIC_NO_CHECK_ASCII | MAGIC_NO_CHECK_ELF);
 	return mime.contains("image");
-}
-
-#if 0
-// Fill the QMimeData class
-void QMagic::mimeData(QMimeData &mimeData, const QString &file)
-{
-	QByteArray data;
-	QString mime = QMagic::mimeType(file);
-
-	mimeData.setData(mime, data);
-
-	if (mime.contains("image")) {
-		mimeData.setImageData(QImage(file));
-	}
-}
+#else
+	// Note: Due to a Qt 5.0.1 bug, mimeTypeForFile(QString, MatchMode) doesn't
+	// function properly for mode == MatchContent.
+	QMimeDatabase mimeDatabase;
+	return mimeDatabase.mimeTypeForFile(file,
+			QMimeDatabase::MatchContent).name().contains("image");
 #endif
+}
+
+} // end-namespace "QMagic"

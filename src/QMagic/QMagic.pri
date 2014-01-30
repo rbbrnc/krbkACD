@@ -1,7 +1,4 @@
 INCLUDEPATH += $$PWD
-SOURCES += $$PWD/QMagic.cpp
 HEADERS += $$PWD/QMagic.h
-#RESOURCES += $$PWD/QMagic.qrc
-
+SOURCES += $$PWD/QMagic.cpp
 LIBS += -lmagic
-

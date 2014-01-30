@@ -23,6 +23,7 @@ InfoWidget::~InfoWidget()
 void InfoWidget::setFile(const QString &file)
 {
 	QString mimeType = QMagic::mimeType(file);
+
 	bool isImage = mimeType.contains("image");
 
 	QFileInfo fi(file);

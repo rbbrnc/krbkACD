@@ -104,6 +104,12 @@ bool SocialMetadataDialog::saveData(const QString &file)
 		delete e;
 		return false;
 	}
+
+	if (!e->xmpRegisterNamespace("social/", "social")) {
+		qWarning() << __PRETTY_FUNCTION__ << "Metadata *NOT* saved";
+		return false;
+	}
+
 	e->setXmpTagString("Xmp.social.AlbumTitle", m_data.albumTitle);
 	e->setXmpTagString("Xmp.social.AlbumDescription", m_data.albumDescription);
 	e->setXmpTagString("Xmp.social.PublisherName", m_data.publisherName);
