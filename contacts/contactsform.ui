@@ -122,6 +122,25 @@
     <string>Edit Contact</string>
    </property>
   </action>
+  <action name="actionHideColumn">
+   <property name="text">
+    <string>Hide Column</string>
+   </property>
+  </action>
+  <action name="actionShowAllColumns">
+   <property name="text">
+    <string>Show All Columns</string>
+   </property>
+  </action>
+  <action name="actionAddContact">
+   <property name="icon">
+    <iconset resource="resources.qrc">
+     <normaloff>:/pixmaps/user_add.png</normaloff>:/pixmaps/user_add.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Contact</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="resources.qrc"/>

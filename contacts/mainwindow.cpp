@@ -22,5 +22,14 @@ void MainWindow::on_actionQuit_triggered()
 
 void MainWindow::on_actionContacts_triggered()
 {
-	ui->stackedWidget->setCurrentIndex(PAGE_CONTACTS);
+    ContactsForm *frm = qobject_cast<ContactsForm *>(ui->stackedWidget->widget(PAGE_CONTACTS));
+
+    ui->actionContacts->setEnabled(false);
+    ui->menuContacts->setEnabled(true);
+
+    frm->setMenu(ui->menuContacts);
+    //frm->setMenu(ui->menuFields_to_show);
+
+    ui->stackedWidget->setCurrentWidget(frm);
+    //ui->stackedWidget->setCurrentIndex(PAGE_CONTACTS);
 }

@@ -37,7 +37,20 @@
     </property>
     <addaction name="actionQuit"/>
    </widget>
+   <widget class="QMenu" name="menuContacts">
+    <property name="title">
+     <string>Contacts</string>
+    </property>
+    <widget class="QMenu" name="menuFields_to_show">
+     <property name="title">
+      <string>Fields to show</string>
+     </property>
+     <addaction name="actionTest"/>
+    </widget>
+    <addaction name="menuFields_to_show"/>
+   </widget>
    <addaction name="menuFlile"/>
+   <addaction name="menuContacts"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -69,6 +82,11 @@
    </property>
    <property name="text">
     <string>Contacts</string>
+   </property>
+  </action>
+  <action name="actionTest">
+   <property name="text">
+    <string>test</string>
    </property>
   </action>
  </widget>

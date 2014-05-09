@@ -29,7 +29,11 @@ ContactsForm::ContactsForm(QWidget *parent) :
 
 
     ui->contactView->setModel(m_dbm->model());
-    ui->contactView->hideColumn(0); // hide ID
+
+    // Default Hide
+    ui->contactView->hideColumn(ContactData::Id);
+    ui->contactView->hideColumn(ContactData::Category);
+    ui->contactView->hideColumn(ContactData::Portrait);
 
     m_categoryFilter = new QSortFilterProxyModel(this);
     m_categoryFilter->setSourceModel(m_dbm->model());
@@ -54,15 +58,33 @@ ContactsForm::ContactsForm(QWidget *parent) :
     ui->contactView->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->contactView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(onViewContextMenuRequested(QPoint)));
+
+    ui->contactView->horizontalHeader()->setContextMenuPolicy(Qt::CustomContextMenu);
+    connect(ui->contactView->horizontalHeader(), SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(onHeaderContextMenuRequested(QPoint)));
 /*
     connect(m_selectionModel, SIGNAL(currentChanged(QModelIndex, QModelIndex)),
             this, SLOT(onContactChanged(QModelIndex, QModelIndex)));
 */
+
+    // Connect Actions
+    connect(ui->actionAddContact, SIGNAL(triggered()), this, SLOT(addContact()));
+    connect(ui->addContactButton, SIGNAL(clicked()), this, SLOT(addContact()));
 }
 
 ContactsForm::~ContactsForm()
 {
     delete ui;
+}
+
+// [SLOT]
+void ContactsForm::addContact()
+{
+    ContactData data;
+    InsertDialog dlg(&data, this);
+    if (dlg.exec() == QDialog::Accepted) {
+        m_dbm->addRecord(dlg.data());
+    }
 }
 
 void ContactsForm::editRecord(int row)
@@ -89,15 +111,6 @@ void ContactsForm::onContactChanged(const QModelIndex &current, const QModelInde
     qDebug() << __func__;
 }
 */
-
-void ContactsForm::on_addContactButton_clicked()
-{
-    ContactData data;
-    InsertDialog dlg(&data, this);
-    if (dlg.exec() == QDialog::Accepted) {
-        m_dbm->addRecord(dlg.data());
-    }
-}
 
 void ContactsForm::on_delContactButton_clicked()
 {
@@ -149,10 +162,21 @@ void ContactsForm::onViewContextMenuRequested(QPoint pos)
     int row = ui->contactView->indexAt(pos).row();
     ui->actionEditContact->setData(QVariant(row));
 
-    QMenu *menu=new QMenu(this);
+    QMenu *menu = new QMenu(this);
     menu->addAction(ui->actionEditContact);
-    //menu->addAction(new QAction("Action 2", this));
+    menu->addAction(ui->actionShowAllColumns);
+
     menu->popup(ui->contactView->viewport()->mapToGlobal(pos));
+}
+
+void ContactsForm::onHeaderContextMenuRequested(QPoint pos)
+{
+    int column = ui->contactView->horizontalHeader()->logicalIndexAt(pos);
+    ui->actionHideColumn->setData(QVariant(column));
+
+    QMenu *menu = new QMenu(this);
+    menu->addAction(ui->actionHideColumn);
+    menu->popup(ui->contactView->horizontalHeader()->viewport()->mapToGlobal(pos));
 }
 
 
@@ -163,4 +187,33 @@ void ContactsForm::on_actionEditContact_triggered()
         return;
     }
     editRecord(row);
+}
+
+void ContactsForm::on_actionHideColumn_triggered()
+{
+    int col = ui->actionHideColumn->data().toInt();
+    ui->contactView->hideColumn(col); // hide ID
+}
+
+void ContactsForm::on_actionShowAllColumns_triggered()
+{
+    for (int i=0; i < ui->contactView->model()->columnCount(); i++) {
+        if (ui->contactView->isColumnHidden(i)) {
+            ui->contactView->showColumn(i);
+        }
+    }
+}
+
+void ContactsForm::setMenu(QMenu *parent)
+{
+    parent->addAction(ui->actionAddContact);
+    parent->addAction(ui->actionShowAllColumns);
+
+    for (int i=0; i < ui->contactView->model()->columnCount(); i++) {
+        QAction *act = new QAction(QString("Show Column %1").arg(i), this);
+        //m_fieldsMenu.append(menu);
+        parent->addAction(act);
+    }
+
+
 }
