@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>pixmaps/filter.png</file>
+        <file>pixmaps/user_edit.png</file>
+        <file>pixmaps/user_delete.png</file>
+        <file>pixmaps/user_add.png</file>
+        <file>pixmaps/user_unknown.png</file>
+    </qresource>
+</RCC>
