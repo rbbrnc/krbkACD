@@ -121,7 +121,9 @@ void DatabaseManager::addRecord(ContactData &data)
 	}
 
     // Commit to the DB
-    /**/ m_sqlModel->submitAll();
+    if (!m_sqlModel->submitAll()) {
+        qWarning() << __PRETTY_FUNCTION__ << "submitAll():" << m_sqlModel->lastError().text();
+	}
 
     // Update the model
     m_sqlModel->select();
@@ -139,8 +141,16 @@ void DatabaseManager::updateRecord(int row, ContactData &data)
     for (int i = 1; i < data.fieldCount(); i++) {
 		record.setValue(i, data.fieldData(i));
 	}
-    /**/ m_sqlModel->setRecord(row, record);
-    /**/ m_sqlModel->submitAll();
+
+	if (!m_sqlModel->setRecord(row, record)) {
+        qWarning() << __PRETTY_FUNCTION__ << "setRecord() Error:" << m_sqlModel->lastError().text();
+		return;
+	}
+
+    if (!m_sqlModel->submitAll()) {
+        qWarning() << __PRETTY_FUNCTION__ << "submitAll():" << m_sqlModel->lastError().text();
+	}
+
     m_sqlModel->select();
 }
 
@@ -153,7 +163,10 @@ void DatabaseManager::delRecord(int row)
     }
 
     m_sqlModel->removeRows(row, 1);
-    /**/ m_sqlModel->submitAll();
+    if (!m_sqlModel->submitAll()) {
+        qWarning() << __PRETTY_FUNCTION__ << "submitAll():" << m_sqlModel->lastError().text();
+	}
+
     m_sqlModel->select();
 }
 
