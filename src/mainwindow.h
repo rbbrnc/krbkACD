@@ -51,7 +51,9 @@ class MainWindow : public QMainWindow
 		void showFmContextMenu(const QPoint &pos);
 		void onOpenFile();
 
-	private:
+        void on_actionStart_Process_triggered();
+
+private:
 		Ui::MainWindow *ui;
 
 		FileManager *m_fm;

@@ -99,6 +99,13 @@ void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*pr
 // [SLOT public]
 void FileManager::deleteSelectedFiles()
 {
+    if (!m_view->hasFocus()) {
+        qDebug() << qPrintable(this->objectName()) << "NOT ACTIVE";
+        return;
+    }
+
+    qDebug() << qPrintable(this->objectName()) << "ACTIVE";
+
 	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
 	if (m_selection.isEmpty()) {
 		QMessageBox::critical(m_parent, tr("Error"),

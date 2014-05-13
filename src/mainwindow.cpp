@@ -27,9 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->setupUi(this);
 
 	m_fm  = new FileManager(ui->fmListView, this);
+    m_fm->setObjectName("__FileManager_1");
 	ui->currentPath->setText(m_fm->currentPath());
 
 	m_secondFm = new FileManager(ui->secondFmListView, this);
+    m_secondFm->setObjectName("__FileManager_2");
 
 	// FileManager class signals
 	connect(m_fm, SIGNAL(currentPathChanged()), this, SLOT(onCurrentPathChanged()));
@@ -45,7 +47,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), this, SLOT(onIconMode(bool)));
 	connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), this, SLOT(onShowHiddenFiles(bool)));
-	connect(ui->actionDeleteFiles, SIGNAL(triggered()), this, SLOT(onDeleteFiles()));
+    //connect(ui->actionDeleteFiles, SIGNAL(triggered()), this, SLOT(onDeleteFiles()));
+
+    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fm, SLOT(deleteSelectedFiles()));
+    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_secondFm, SLOT(deleteSelectedFiles()));
+
 	connect(ui->actionRenameFiles, SIGNAL(triggered()), this, SLOT(onRenameFiles()));
 	connect(ui->actionMkDir,       SIGNAL(triggered()), this, SLOT(onMkDir()));
 	connect(ui->actionCopyFiles,   SIGNAL(triggered()), this, SLOT(onCopyFiles()));
@@ -58,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	connect(ui->actionEditMetadata, SIGNAL(triggered()), this, SLOT(onEditMetadata()));
 	connect(ui->actionEditDateTime, SIGNAL(triggered()), this, SLOT(onEditDateTimeMetadata()));
 
-	m_pageGroup = new QActionGroup(this);
+    m_pageGroup = new QActionGroup(this);
 	m_pageGroup->addAction(ui->actionInfo);
 	m_pageGroup->addAction(ui->action1);
 	m_pageGroup->addAction(ui->action2);
@@ -369,3 +375,10 @@ void MainWindow::onOpenFile()
 	}
 }
 
+void MainWindow::on_actionStart_Process_triggered()
+{
+    QString cmd = QString("./test.sh %1").arg(m_fm->currentPath());
+    bool rc = QProcess::startDetached(cmd);
+
+    qDebug() << __func__ << "RC:" << rc;
+}
