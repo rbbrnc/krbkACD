@@ -37,9 +37,10 @@ ContactsForm::ContactsForm(QWidget *parent) :
 
     m_categoryFilter = new QSortFilterProxyModel(this);
     m_categoryFilter->setSourceModel(m_dbm->model());
-    // sort e filter su colonna n.1
-    m_categoryFilter->sort(1, Qt::AscendingOrder);
-    m_categoryFilter->setFilterKeyColumn(1);
+
+    // Set sort e filter su colonna
+    m_categoryFilter->sort(ContactData::Category, Qt::AscendingOrder);
+    m_categoryFilter->setFilterKeyColumn(ContactData::Category);
 
     ui->contactView->setModel(m_categoryFilter);
     ui->contactView->setSortingEnabled(true);
@@ -131,7 +132,16 @@ void ContactsForm::on_delContactButton_clicked()
 
 void ContactsForm::on_updateButton_clicked()
 {
-    editRecord(ui->contactView->currentIndex().row());
+	// Get correct row from model
+	QModelIndex proxyIndex = ui->contactView->currentIndex();
+	QModelIndex mi = m_categoryFilter->mapToSource(proxyIndex);
+
+    int row = mi.row();
+    if (row < 0) {
+        return;
+    }
+
+    editRecord(row);
 }
 
 void ContactsForm::on_categoryFilter_currentIndexChanged(int index)
@@ -182,7 +192,11 @@ void ContactsForm::onHeaderContextMenuRequested(QPoint pos)
 
 void ContactsForm::on_actionEditContact_triggered()
 {
-    int row = ui->actionEditContact->data().toInt();
+	// Get correct row from model
+	QModelIndex proxyIndex = m_categoryFilter->index(ui->actionEditContact->data().toInt(), ContactData::Category);
+	QModelIndex mi = m_categoryFilter->mapToSource(proxyIndex);
+
+    int row = mi.row();
     if (row < 0) {
         return;
     }
