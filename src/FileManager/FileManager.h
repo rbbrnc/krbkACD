@@ -21,8 +21,8 @@ class FileManager : public QObject
 		bool isActive() const;
 		void blockModelSignals(bool block);
 
-//	private:
-//		void scrollToCurrent();
+    private:
+        void scrollToCurrent();
 
 	private slots:
 

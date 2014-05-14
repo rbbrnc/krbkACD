@@ -42,10 +42,12 @@ BatchRenameDialog::BatchRenameDialog(const QStringList &files, QWidget *parent) 
 		<< "Upper Case"
 		<< "Text";
 	ui->fileExtensionComboBox->insertItems(0, fileExtensionOptions);
-	connect(ui->fileExtensionComboBox, SIGNAL(currentIndexChanged(int)),
-		this, SLOT(fileExtensionUpdate(int)));
-	connect(ui->fileExtensionEdit, SIGNAL(textChanged(const QString &)),
-		this, SLOT(fileExtensionChanged(const QString &)));
+
+    connect(ui->fileExtensionComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(fileExtensionUpdate(int)));
+
+    connect(ui->fileExtensionEdit, SIGNAL(textChanged(const QString &)),
+            this, SLOT(fileExtensionChanged(const QString &)));
 
 	connect(ui->addPatternButton, SIGNAL(clicked()), this, SLOT(addPattern()));
 }
@@ -97,8 +99,7 @@ void BatchRenameDialog::updateNames()
 				newName += m_patternMap[m_patternList.at(j)];
 			}
 			// Add count pattern!
-			//newName += QString("_") + QString::number(i);
-			newName += QString("_%1").arg(i, nc, 10, QChar('0'));
+            newName += QString("_%1").arg(i, nc, 10, QChar('0'));
 			m_newName.replace(i, newName);
 		} else {
 			m_newName.replace(i, m_originalName.at(i));
@@ -160,9 +161,10 @@ void BatchRenameDialog::addPattern()
 	PatternWidget *pw = new PatternWidget(type, QVariant(), this);
 	m_patternList.append(pw);
 	m_patternLayout->addWidget(pw);
+
 	connect(pw, SIGNAL(deleteMe()), this, SLOT(removePattern()));
 	connect(pw, SIGNAL(valueChanged(const QString &)),
-		this, SLOT(patternChanged(const QString &)));
+            this, SLOT(patternChanged(const QString &)));
 
 	m_patternMap.insert(pw, pw->value().toString());
 

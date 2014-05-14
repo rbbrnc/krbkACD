@@ -109,19 +109,21 @@ bool QExiv2::save()
 				d->image->setComment(d->imageComment);
 				update = true;
 			}
-		}
+        }
 
 		if (isXmpWritable()) {
 			d->image->setXmpData(d->xmpMetadata);
 			update = true;
-		}
+        } else {
+            qDebug() << __PRETTY_FUNCTION__ << "XMP Not writable";
+        }
 
 		if (update) {
 //			qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
 			d->image->writeMetadata();
 		}
 
-	       return true;
+        return true;
 
 	} catch (Exiv2::Error& e) {
 		d->error(__PRETTY_FUNCTION__, e);

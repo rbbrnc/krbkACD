@@ -5,6 +5,7 @@
 #include <QDesktopServices>
 #include <QUrl>
 
+#include "version.h"
 #include "FileManager.h"
 #include "QMagic.h"
 #include "LocationDialog.h"
@@ -26,16 +27,16 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-	m_fm  = new FileManager(ui->fmListView, this);
-    m_fm->setObjectName("__FileManager_1");
-	ui->currentPath->setText(m_fm->currentPath());
+    m_fm1  = new FileManager(ui->fmListView, this);
+    m_fm1->setObjectName("__FileManager_1");
+    ui->currentPath->setText(m_fm1->currentPath());
 
-	m_secondFm = new FileManager(ui->secondFmListView, this);
-    m_secondFm->setObjectName("__FileManager_2");
+    m_fm2 = new FileManager(ui->secondFmListView, this);
+    m_fm2->setObjectName("__FileManager_2");
 
 	// FileManager class signals
-	connect(m_fm, SIGNAL(currentPathChanged()), this, SLOT(onCurrentPathChanged()));
-	connect(m_fm, SIGNAL(currentChanged()),     this, SLOT(onCurrentFileChanged()));
+    connect(m_fm1, SIGNAL(currentPathChanged()), this, SLOT(onCurrentPathChanged()));
+    connect(m_fm1, SIGNAL(currentChanged()),     this, SLOT(onCurrentFileChanged()));
 
 	// App Actions
 	connect(ui->actionQuit,       SIGNAL(triggered()),     this, SLOT(onQuit()));
@@ -43,17 +44,28 @@ MainWindow::MainWindow(QWidget *parent) :
 
 	ui->fmListView->setContextMenuPolicy(Qt::CustomContextMenu);
 	connect(ui->fmListView, SIGNAL(customContextMenuRequested(const QPoint &)),
-		this, SLOT(showFmContextMenu(const QPoint &)));
+            this, SLOT(showFmContextMenu(const QPoint &)));
 
-	connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), this, SLOT(onIconMode(bool)));
-	connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), this, SLOT(onShowHiddenFiles(bool)));
-    //connect(ui->actionDeleteFiles, SIGNAL(triggered()), this, SLOT(onDeleteFiles()));
+    // Show Icons/List
+    connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), m_fm1, SLOT(iconMode(bool)));
+    connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), m_fm2, SLOT(iconMode(bool)));
 
-    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fm, SLOT(deleteSelectedFiles()));
-    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_secondFm, SLOT(deleteSelectedFiles()));
+    // Show/Hide Hidden Files
+    connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), m_fm1, SLOT(showHidden(bool)));
+    connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), m_fm2, SLOT(showHidden(bool)));
 
-	connect(ui->actionRenameFiles, SIGNAL(triggered()), this, SLOT(onRenameFiles()));
-	connect(ui->actionMkDir,       SIGNAL(triggered()), this, SLOT(onMkDir()));
+    // Delete Files
+    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fm1, SLOT(deleteSelectedFiles()));
+    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fm2, SLOT(deleteSelectedFiles()));
+
+    // Rename Files
+    connect(ui->actionRenameFiles, SIGNAL(triggered()), m_fm1, SLOT(renameSelectedFiles()));
+    connect(ui->actionRenameFiles, SIGNAL(triggered()), m_fm2, SLOT(renameSelectedFiles()));
+
+    // MkDir
+    connect(ui->actionMkDir,       SIGNAL(triggered()), m_fm1, SLOT(mkdir()));
+    connect(ui->actionMkDir,       SIGNAL(triggered()), m_fm2, SLOT(mkdir()));
+
 	connect(ui->actionCopyFiles,   SIGNAL(triggered()), this, SLOT(onCopyFiles()));
 	connect(ui->actionMoveFiles,   SIGNAL(triggered()), this, SLOT(onMoveFiles()));
 	connect(ui->actionOpenFile,    SIGNAL(triggered()), this, SLOT(onOpenFile()));
@@ -94,8 +106,8 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
 	delete m_pageGroup;
-	delete m_secondFm;
-	delete m_fm;
+    delete m_fm2;
+    delete m_fm1;
 	delete ui;
 }
 
@@ -122,7 +134,7 @@ void MainWindow::onFullScreen(bool enable)
 void MainWindow::on_previewCheckBox_stateChanged(int state)
 {
 	if (Qt::Checked == state) {
-		updatePreview(m_fm->currentPath() + "/" + m_fm->currentFile());
+        updatePreview(m_fm1->currentPath() + "/" + m_fm1->currentFile());
 		ui->preview->show();
 	} else {
 		ui->preview->hide();
@@ -132,7 +144,7 @@ void MainWindow::on_previewCheckBox_stateChanged(int state)
 // SLOT (called only for main FileManager)
 void MainWindow::onCurrentPathChanged()
 {
-	ui->currentPath->setText(m_fm->currentPath());
+    ui->currentPath->setText(m_fm1->currentPath());
 }
 
 // SLOT (called only for main FileManager)
@@ -165,7 +177,7 @@ void MainWindow::onChangePage(bool checked)
 
 void MainWindow::updatePageData(int page)
 {
-	QString file = m_fm->currentPath() + "/" + m_fm->currentFile();
+    QString file = m_fm1->currentPath() + "/" + m_fm1->currentFile();
 
 	// Update Central Page Data
 	switch (page) {
@@ -232,10 +244,10 @@ void MainWindow::onCopyFiles()
 	if (ui->stackedWidget->currentIndex() != PAGE_2ND_FM) {
 		return;
 	}
-	if (m_fm->isActive()) {
-		m_fm->copy(m_secondFm->currentPath());
-	} else if (m_secondFm->isActive()) {
-		m_secondFm->copy(m_fm->currentPath());
+    if (m_fm1->isActive()) {
+        m_fm1->copy(m_fm2->currentPath());
+    } else if (m_fm2->isActive()) {
+        m_fm2->copy(m_fm1->currentPath());
 	} else {
 		qDebug() << "CP Not Active";
 	}
@@ -248,51 +260,12 @@ void MainWindow::onMoveFiles()
 	if (ui->stackedWidget->currentIndex() != PAGE_2ND_FM) {
 		return;
 	}
-	if (m_fm->isActive()) {
-		m_fm->move(m_secondFm->currentPath());
-	} else if (m_secondFm->isActive()) {
-		m_secondFm->move(m_fm->currentPath());
+    if (m_fm1->isActive()) {
+        m_fm1->move(m_fm2->currentPath());
+    } else if (m_fm2->isActive()) {
+        m_fm2->move(m_fm1->currentPath());
 	} else {
 		qDebug() << "MV Not Active";
-	}
-}
-
-void MainWindow::onIconMode(bool enable)
-{
-	m_fm->iconMode(enable);
-	m_secondFm->iconMode(enable);
-}
-
-void MainWindow::onShowHiddenFiles(bool enable)
-{
-	m_fm->showHidden(enable);
-	m_secondFm->showHidden(enable);
-}
-
-void MainWindow::onDeleteFiles()
-{
-	if (m_fm->isActive()) {
-		m_fm->deleteSelectedFiles();
-	} else if (m_secondFm->isActive()) {
-		m_secondFm->deleteSelectedFiles();
-	}
-}
-
-void MainWindow::onRenameFiles()
-{
-	if (m_fm->isActive()) {
-		m_fm->renameSelectedFiles();
-	} else if (m_secondFm->isActive()) {
-		m_secondFm->renameSelectedFiles();
-	}
-}
-
-void MainWindow::onMkDir()
-{
-	if (m_fm->isActive()) {
-		m_fm->mkdir();
-	} else if (m_secondFm->isActive()) {
-		m_secondFm->mkdir();
 	}
 }
 
@@ -342,10 +315,10 @@ void MainWindow::onEditDateTimeMetadata()
 
 QStringList MainWindow::fileSelection() const
 {
-	if (m_fm->isActive()) {
-		return m_fm->fileSelection();
-	} else if (m_secondFm->isActive()) {
-		return m_secondFm->fileSelection();
+    if (m_fm1->isActive()) {
+        return m_fm1->fileSelection();
+    } else if (m_fm2->isActive()) {
+        return m_fm2->fileSelection();
 	} else {
 		return QStringList();
 	}
@@ -377,8 +350,23 @@ void MainWindow::onOpenFile()
 
 void MainWindow::on_actionStart_Process_triggered()
 {
-    QString cmd = QString("./test.sh %1").arg(m_fm->currentPath());
+    QString cmd = QString("./test.sh %1").arg(m_fm1->currentPath());
     bool rc = QProcess::startDetached(cmd);
 
     qDebug() << __func__ << "RC:" << rc;
+}
+
+void MainWindow::on_actionPreferences_triggered()
+{
+
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    QString txt = QString("KrbkACD v.%1\n\n").arg(KRBKACD_VERSION);
+    txt += QString("Qt Lib v.%1\n").arg(QT_VERSION_STR);
+    txt += QString("Exiv2  v.%1\n").arg(KrbkACDVersion::exiv2VerisionString());
+    txt += QString("OpenCv v.%1\n").arg(KrbkACDVersion::openCvVerisionString());
+
+    QMessageBox::about(this, "About", txt);
 }

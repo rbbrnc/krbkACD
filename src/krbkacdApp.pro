@@ -53,10 +53,12 @@ QMAKE_LFLAGS   += -Wl,--gc-sections,--as-needed
 
 SOURCES += main.cpp\
 	   mainwindow.cpp \
-	   infowidget.cpp
+	   infowidget.cpp \
+	   version.cpp
 
 HEADERS += mainwindow.h \
-	   infowidget.h
+	   infowidget.h \
+	   version.h \
 
 FORMS   += mainwindow.ui \
 	   infowidget.ui

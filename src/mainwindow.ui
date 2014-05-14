@@ -150,6 +150,9 @@
     <property name="title">
      <string>App</string>
     </property>
+    <addaction name="actionPreferences"/>
+    <addaction name="actionAbout"/>
+    <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuFile">
@@ -373,6 +376,16 @@
   <action name="actionStart_Process">
    <property name="text">
     <string>Start Process</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About</string>
    </property>
   </action>
  </widget>

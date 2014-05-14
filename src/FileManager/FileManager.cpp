@@ -96,74 +96,6 @@ void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*pr
 	emit currentChanged();
 }
 
-// [SLOT public]
-void FileManager::deleteSelectedFiles()
-{
-    if (!m_view->hasFocus()) {
-        qDebug() << qPrintable(this->objectName()) << "NOT ACTIVE";
-        return;
-    }
-
-    qDebug() << qPrintable(this->objectName()) << "ACTIVE";
-
-	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
-	if (m_selection.isEmpty()) {
-		QMessageBox::critical(m_parent, tr("Error"),
-				tr("No file(s) selected"), QMessageBox::Ok);
-		return;
-	}
-
-	QString msg;
-	int count = m_selection.count();
-	if (count == 1) {
-		QModelIndex index = m_view->currentIndex();
-		if (m_model->isDir(index)) {
-			msg = tr("Delete Directory %1?").arg(m_model->fileName(index));
-		} else {
-			msg = tr("Delete File %1?").arg(m_model->fileName(index));
-		}
-	} else {
-		msg = tr("Delete %1 Files?").arg(count);
-	}
-
-	if (QMessageBox::No == QMessageBox::warning(m_parent, "Delete",
-			msg, QMessageBox::Yes, QMessageBox::No)) {
-		return;
-	}
-
-//QElapsedTimer timer;
-//timer.start();
-	// Block all selectionModel signals to avoid emission on every removed file.
-	bool oldState = m_selectionModel->blockSignals(true);
-
-    QProgressDialog progress(m_parent);
-    progress.setRange(0, count);
-    progress.setModal(true);
-
-	for (int i = 0; i < count; i++) {
-
-		progress.setLabelText(tr("Delete %1").arg(m_model->filePath(m_selection.at(i))));
-	        progress.setValue(i);
-	        qApp->processEvents();
-	        if (progress.wasCanceled()) {
-			m_selectionModel->blockSignals(oldState);
-			return;
-		}
-
-		if (!m_model->remove(m_selection.at(i))) {
-			QMessageBox::critical(m_parent, QObject::tr("Error"),
-				tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
-				QMessageBox::Abort);
-			m_selectionModel->blockSignals(oldState);
-			return;
-		}
-	}
-	m_selectionModel->blockSignals(oldState);
-
-//qDebug() << "DELETE operation took" << timer.elapsed() << "milliseconds";
-//	scrollToCurrent();
-}
-
 #if 0
 bool Spreadsheet::writeFile(const QString &fileName)
 {
@@ -240,7 +172,7 @@ void FileManager::iconMode(bool enable)
 {
 	if (enable) {
 		m_view->setViewMode(QListView::IconMode);
-                m_view->setWordWrap(true);
+        m_view->setWordWrap(true);
 		m_view->setGridSize(QSize(80,80));
 	} else {
 		m_view->setViewMode(QListView::ListMode);
@@ -253,21 +185,24 @@ void FileManager::iconMode(bool enable)
 // @param enable    (true = show hidden files, false = listview)
 void FileManager::showHidden(bool enable)
 {
-        if (enable) {
-                m_model->setFilter(m_model->filter() | QDir::Hidden);
-        } else {
-                m_model->setFilter(m_model->filter() &~ QDir::Hidden);
-        }
+    if (enable) {
+        m_model->setFilter(m_model->filter() | QDir::Hidden);
+    } else {
+        m_model->setFilter(m_model->filter() &~ QDir::Hidden);
+    }
 }
 
 // [SLOT public]
 void FileManager::mkdir()
 {
-	QString dirName = QInputDialog::getText(m_parent,
-		QObject::tr("Create a new directory"),
-		QObject::tr("Enter directory name: "),
-		QLineEdit::Normal);
+    if (!m_view->hasFocus()) {
+        return;
+    }
 
+	QString dirName = QInputDialog::getText(m_parent,
+                                        QObject::tr("Create a new directory"),
+                                        QObject::tr("Enter directory name: "),
+                                        QLineEdit::Normal);
 	// Remove whitespaces
 	dirName = dirName.simplified();
 
@@ -284,12 +219,12 @@ void FileManager::mkdir()
 	}
 }
 
-#if 0 // To be tested
 void FileManager::scrollToCurrent()
 {
 	m_view->setUpdatesEnabled(false);
 	// Used to select/scroll view
 	int row = m_view->currentIndex().row();
+
 	QModelIndex mi = m_currentIndex.child(row + 1, 0);
 
 	if (mi.isValid()) {
@@ -300,21 +235,85 @@ void FileManager::scrollToCurrent()
 			m_view->setCurrentIndex(mi);
 		}
 	}
-	m_view->setUpdatesEnabled(true);
+//    qDebug() << "Current Index Row:" << m_view->currentIndex().row() << m_model->fileName(m_view->currentIndex());
 
-//	next();
-
-	qDebug() << "Current Index Row:" << m_view->currentIndex().row()
-	<< m_model->fileName(m_view->currentIndex());
-
-	m_view->scrollTo(m_view->currentIndex(), QAbstractItemView::PositionAtTop);
+    m_view->scrollTo(m_view->currentIndex(), QAbstractItemView::PositionAtCenter);
+    m_view->setUpdatesEnabled(true);
 }
-#endif
 
+// [SLOT public]
+void FileManager::deleteSelectedFiles()
+{
+    if (!m_view->hasFocus()) {
+        //qDebug() << qPrintable(this->objectName()) << "NOT ACTIVE";
+        return;
+    }
+
+    QModelIndexList m_selection = m_selectionModel->selectedIndexes();
+    if (m_selection.isEmpty()) {
+        QMessageBox::critical(m_parent, tr("Error"),
+                tr("No file(s) selected"), QMessageBox::Ok);
+        return;
+    }
+
+    QString msg;
+    int count = m_selection.count();
+    if (count == 1) {
+        QModelIndex index = m_view->currentIndex();
+        if (m_model->isDir(index)) {
+            msg = tr("Delete Directory %1?").arg(m_model->fileName(index));
+        } else {
+            msg = tr("Delete File %1?").arg(m_model->fileName(index));
+        }
+    } else {
+        msg = tr("Delete %1 Files?").arg(count);
+    }
+
+    if (QMessageBox::No == QMessageBox::warning(m_parent, "Delete",
+            msg, QMessageBox::Yes, QMessageBox::No)) {
+        return;
+    }
+
+    //QElapsedTimer timer;
+    //timer.start();
+
+    // Block all selectionModel signals to avoid emission on every removed file.
+    bool oldState = m_selectionModel->blockSignals(true);
+
+    QProgressDialog progress(m_parent);
+    progress.setRange(0, count);
+    progress.setModal(true);
+
+    for (int i = 0; i < count; i++) {
+        progress.setLabelText(tr("Delete %1").arg(m_model->filePath(m_selection.at(i))));
+        progress.setValue(i);
+        qApp->processEvents();
+        if (progress.wasCanceled()) {
+            m_selectionModel->blockSignals(oldState);
+            return;
+        }
+
+        if (!m_model->remove(m_selection.at(i))) {
+            QMessageBox::critical(m_parent, QObject::tr("Error"),
+                tr("Cannot Remove '%1'").arg(m_model->filePath(m_selection.at(i))),
+                QMessageBox::Abort);
+            m_selectionModel->blockSignals(oldState);
+            return;
+        }
+    }
+    m_selectionModel->blockSignals(oldState);
+
+    //qDebug() << "DELETE operation took" << timer.elapsed() << "milliseconds";
+    scrollToCurrent();
+}
 
 // [SLOT public]
 void FileManager::renameSelectedFiles()
 {
+    if (!m_view->hasFocus()) {
+        return;
+    }
+
 	QModelIndexList m_selection = m_selectionModel->selectedIndexes();
 
 	if (m_selection.isEmpty()) {
@@ -368,20 +367,11 @@ void FileManager::copy(const QString &destPath)
 		return;
 	}
 
-	int dc;
-	if (m_selection.count() == 1) {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
-		dlg.setWindowTitle("Copy File");
-		dc = dlg.exec();
-	} else {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
-		dlg.setWindowTitle("Copy File(s)");
-		dc = dlg.exec();
-	}
-
-	if (QDialog::Accepted != dc) {
-		return;
-	}
+    CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath, m_selection.count());
+    dlg.setWindowTitle("Copy File(s)");
+    if (QDialog::Accepted != dlg.exec()) {
+        return;
+    }
 
 	m_model->setReadOnly(false);
 
@@ -422,21 +412,11 @@ void FileManager::move(const QString &destPath)
 		return;
 	}
 
-	int dc;
-
-	if (m_selection.count() == 1) {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
-		dlg.setWindowTitle("Move File");
-		dc = dlg.exec();
-	} else {
-		CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath);
-		dlg.setWindowTitle("Move File(s)");
-		dc = dlg.exec();
-	}
-
-	if (QDialog::Accepted != dc) {
-		return;
-	}
+    CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath, m_selection.count());
+    dlg.setWindowTitle("Copy File(s)");
+    if (QDialog::Accepted != dlg.exec()) {
+        return;
+    }
 
 	m_model->setReadOnly(false);
 
@@ -462,4 +442,3 @@ void FileManager::move(const QString &destPath)
 	m_model->setReadOnly(true);
 	m_view->clearSelection();
 }
-

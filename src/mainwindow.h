@@ -34,13 +34,8 @@ class MainWindow : public QMainWindow
 
 		void onChangePage(bool checked);
 
-		void onIconMode(bool enable);
-		void onShowHiddenFiles(bool enable);
 		void onCopyFiles();
 		void onMoveFiles();
-		void onDeleteFiles();
-		void onRenameFiles();
-		void onMkDir();
 
 		void onEditLocationsMetadata();
 		void onEditSocialMetadata();
@@ -52,12 +47,14 @@ class MainWindow : public QMainWindow
 		void onOpenFile();
 
         void on_actionStart_Process_triggered();
+        void on_actionPreferences_triggered();
+        void on_actionAbout_triggered();
 
-private:
+    private:
 		Ui::MainWindow *ui;
 
-		FileManager *m_fm;
-		FileManager *m_secondFm;
+        FileManager *m_fm1;
+        FileManager *m_fm2;
 
 		QPixmap m_preview;
 
