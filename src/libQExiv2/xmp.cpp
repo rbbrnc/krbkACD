@@ -341,13 +341,25 @@ bool QExiv2::xmpRegisterNamespace(const QString& uri, const QString& prefix)
 		if (!uri.endsWith('/')) {
 			ns.append('/');
 		}
-// QT4
-//		Exiv2::XmpProperties::registerNs(ns.toAscii().constData(), prefix.toAscii().constData());
-// QT5
 		Exiv2::XmpProperties::registerNs(ns.toLatin1().constData(), prefix.toLatin1().constData());
 		return true;
 	} catch (Exiv2::Error &e) {
 		d->error(QString("%1 Cannot register the new xmp namespace '%2'").arg(__PRETTY_FUNCTION__).arg(uri), e);
 	}
 	return false;
+}
+
+QDateTime QExiv2::xmpDateTimeCreated() const
+{
+    return QDateTime::fromString(xmpTagString("Xmp.photoshop.DateCreated"), Qt::ISODate);
+}
+
+QDateTime QExiv2::xmpDateTimeDigitized() const
+{
+    return QDateTime::fromString(xmpTagString("Xmp.xmp.CreateDate"), Qt::ISODate);
+}
+
+QDateTime QExiv2::xmpDateTimeModified() const
+{
+    return QDateTime::fromString(xmpTagString("Xmp.xmp.ModifyDate"), Qt::ISODate);
 }

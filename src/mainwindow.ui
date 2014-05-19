@@ -130,6 +130,7 @@
          </sizepolicy>
         </property>
        </widget>
+       <widget class="MetadataEditPage" name="metadataEditPage"/>
       </widget>
      </widget>
     </item>
@@ -179,6 +180,7 @@
     <addaction name="action1"/>
     <addaction name="action2"/>
     <addaction name="action3"/>
+    <addaction name="action4"/>
    </widget>
    <widget class="QMenu" name="menuPages">
     <property name="title">
@@ -388,6 +390,14 @@
     <string>About</string>
    </property>
   </action>
+  <action name="action4">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Metadata Editor</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -406,6 +416,12 @@
    <class>InfoWidget</class>
    <extends>QWidget</extends>
    <header>infowidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MetadataEditPage</class>
+   <extends>QWidget</extends>
+   <header>metadataeditpage.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -78,26 +78,28 @@ QString QExiv2::exifTagString(const char *tag, bool escapeCR) const
 	return QString();
 }
 
-#ifdef ENABLE_EXIF_DATETIME
 // [EXIF] Get a DateTime Tag
-QDateTime QExiv2::exifTagDateTime(const char *tag) const
+// Creation date of the intellectual content (e.g. when a photo was taken)
+QDateTime QExiv2::exifDateTimeOriginal() const
 {
-	try {
-		if (!d->exifMetadata.empty()) {
-			Exiv2::ExifData exifData(d->exifMetadata);
-			Exiv2::ExifKey key(tag);
-			Exiv2::ExifData::const_iterator it = exifData.findKey(key);
-			if (it != exifData.end()) {
-				QDateTime dateTime = QDateTime::fromString(it->toString().c_str(), Qt::ISODate);
-				if (dateTime.isValid()) {
-					return dateTime;
-				}
-			}
-		}
-	} catch (Exiv2::Error &e) {
-		d->error(QString("%1 Cannot find Exif key '%2'").arg(__PRETTY_FUNCTION__).arg(tag), e);
-	}
-
-	return QDateTime();
+    QDateTime dt = QDateTime::fromString(exifTagString("Exif.Photo.DateTimeOriginal"), "yyyy:MM:dd HH:mm:ss");
+    if (!dt.isValid()) {
+        dt = QDateTime::fromString(exifTagString("Exif.Image.DateTimeOriginal"), "yyyy:MM:dd HH:mm:ss");
+    }
+    return dt;
 }
-#endif
+
+// [EXIF] Get a DateTime Tag
+// Creation date of the digital representation (e.g. when an image was digitized)
+QDateTime QExiv2::exifDateTimeDigitized() const
+{
+    return QDateTime::fromString(exifTagString("Exif.Photo.DateTimeDigitized"), "yyyy:MM:dd HH:mm:ss");
+}
+
+// [EXIF] Get a DateTime Tag
+// Modification date of the digital image file (e.g. when a file was modified by the user)
+QDateTime QExiv2::exifDateTime() const
+{
+    return QDateTime::fromString(exifTagString("Exif.Image.DateTime"), "yyyy:MM:dd HH:mm:ss");
+}
+

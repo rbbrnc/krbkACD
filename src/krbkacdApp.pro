@@ -27,6 +27,7 @@ include ($$PWD/libQExiv2/MetadataDialog/MetadataDialog.pri)
 include ($$PWD/libQExiv2/LocationDialog/LocationDialog.pri)
 include ($$PWD/libQExiv2/SocialDialog/SocialMetadataDialog.pri)
 include ($$PWD/libQExiv2/DateTimeDialog/DateTimeDialog.pri)
+include ($$PWD/libQExiv2/MetadataEdit/MetadataEdit.pri)
 
 #-- Try clang
 #QMAKE_CC  = clang

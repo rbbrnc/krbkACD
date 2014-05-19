@@ -14,10 +14,12 @@
 #include "datetimedialog.h"
 
 // Page Indexes
-#define PAGE_INFO           0
-#define PAGE_2ND_FM         1
-#define PAGE_METADATA_TREE  2
-#define PAGE_IMAGE_VIEW     3
+#define PAGE_INFO            0
+#define PAGE_2ND_FM          1
+#define PAGE_METADATA_TREE   2
+#define PAGE_IMAGE_VIEW      3
+#define PAGE_METADATA_EDITOR 4
+
 
 #define EMPTY_SELECTION_TEXT "No File Selected!"
 
@@ -81,6 +83,7 @@ MainWindow::MainWindow(QWidget *parent) :
 	m_pageGroup->addAction(ui->action1);
 	m_pageGroup->addAction(ui->action2);
 	m_pageGroup->addAction(ui->action3);
+    m_pageGroup->addAction(ui->action4);
 	m_pageGroup->setExclusive(true);
 	ui->actionInfo->setChecked(true);
 
@@ -88,11 +91,14 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->action1->setData(PAGE_2ND_FM);
 	ui->action2->setData(PAGE_METADATA_TREE);
 	ui->action3->setData(PAGE_IMAGE_VIEW);
+    ui->action4->setData(PAGE_METADATA_EDITOR);
 
 	connect(ui->actionInfo, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action1, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action2, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
 	connect(ui->action3, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
+    connect(ui->action4, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
+
 
 	// Connect splitters moved signal for resize preview
 	connect(ui->previewSplitter, SIGNAL(splitterMoved(int, int)), this, SLOT(scalePreview(int, int)));
@@ -164,14 +170,20 @@ void MainWindow::onChangePage(bool checked)
 		ui->stackedWidget->setCurrentIndex(idx);
 	} else {
 		// Hide page 'idx'
-		if (idx == PAGE_IMAGE_VIEW) {
-			// Save region metadata if changed
-			ui->imageViewPage->saveMetadata();
-		}
-
-		if (idx == PAGE_2ND_FM) {
-			//m_secondFm->blockModelSignals(true);
-		}
+        switch(idx) {
+        case PAGE_IMAGE_VIEW:
+            // Save region metadata if changed
+            ui->imageViewPage->saveMetadata();
+            break;
+        case PAGE_2ND_FM:
+            //m_secondFm->blockModelSignals(true);
+            break;
+        case PAGE_METADATA_EDITOR:
+            //ui->metadataEditPage->saveMetadata();
+            break;
+        default:
+            break;
+        }
 	}
 }
 
@@ -194,6 +206,10 @@ void MainWindow::updatePageData(int page)
 		ui->imageViewPage->saveMetadata();
 		ui->imageViewPage->setImage(file, true);
 		break;
+    case PAGE_METADATA_EDITOR:
+        qDebug() << "HERE";
+        ui->metadataEditPage->setFile(file);
+        break;
 	default:
 		break;
 	}

@@ -13,7 +13,6 @@
 //#define ENABLE_XMP_SERIALIZE 1
 //#define ENABLE_EXIF_WRITE    1
 //#define ENABLE_EXIF_PREVIEW  1
-//#define ENABLE_EXIF_DATETIME 1
 //#define ENABLE_IPTC_WRITE    1
 
 // Forward decl.
@@ -61,9 +60,10 @@ class QExiv2
 		bool isExifWritable() const;
 		bool clearExif();
 #endif
-#ifdef ENABLE_EXIF_DATETIME
-		QDateTime exifTagDateTime(const char *tag) const;
-#endif
+        // Date-Time Functions
+        QDateTime exifDateTimeOriginal() const;
+        QDateTime exifDateTimeDigitized() const;
+        QDateTime exifDateTime() const;
 
 #ifdef ENABLE_EXIF_PREVIEW
 		// Exif preview (thumbnail) image
@@ -76,6 +76,10 @@ class QExiv2
 		bool clearIptc();
 #endif
 		QString iptcTagString(const char *tag, bool escapeCR = false) const;
+
+        // Date-Time Functions
+        QDateTime iptcDateTimeCreated() const;
+        QDateTime iptcDateTimeDigitized() const;
 
 		// XMP Functions
 		bool isXmpWritable() const;
@@ -104,6 +108,11 @@ class QExiv2
 #ifdef ENABLE_XMP_SERIALIZE
 		QByteArray xmpPacket() const;
 #endif
+        // XMP Date-Time
+        QDateTime xmpDateTimeCreated() const;
+        QDateTime xmpDateTimeDigitized() const;
+        QDateTime xmpDateTimeModified() const;
+
 
 		// XMP Regions
 		bool xmpHasRegionTags() const;

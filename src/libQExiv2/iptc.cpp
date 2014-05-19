@@ -75,3 +75,25 @@ QString QExiv2::iptcTagString(const char *tag, bool escapeCR) const
 	return QString();
 }
 
+QDateTime QExiv2::iptcDateTimeCreated() const
+{
+    // Represented in the form CCYYMMDD (Follows ISO 8601 standard)
+    QDate date = QDate::fromString(iptcTagString("Iptc.Application2.DateCreated"), Qt::ISODate);
+
+    // Represented in the form HHMMSS:HHMM (Follows ISO 8601 standard)
+    QTime time = QTime::fromString(iptcTagString("Iptc.Application2.TimeCreated"), Qt::ISODate);
+
+    return QDateTime(date, time);
+}
+
+QDateTime QExiv2::iptcDateTimeDigitized() const
+{
+    // Represented in the form CCYYMMDD (Follows ISO 8601 standard)
+    QDate date = QDate::fromString(iptcTagString("Iptc.Application2.DigitizationDate"), Qt::ISODate);
+
+    // Represented in the form HHMMSS:HHMM (Follows ISO 8601 standard)
+    QTime time = QTime::fromString(iptcTagString("Iptc.Application2.DigitizationTime"), Qt::ISODate);
+
+    return QDateTime(date, time);
+}
+
