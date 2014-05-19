@@ -43,6 +43,7 @@ class SocialMetadataDialog : public QDialog
 		bool loadData(const QString &file);
 		bool saveData(const QString &file);
 
+        void enableWidgets(bool enable);
 		void fillCommentTable();
 
 	private slots:

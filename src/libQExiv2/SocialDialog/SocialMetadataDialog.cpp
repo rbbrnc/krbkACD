@@ -17,6 +17,9 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 		//"Empty selection!"
 	} else if (m_fileList.count() == 1) {
 		if (loadData(m_fileList.at(0))) {
+            // Enable widget!
+            enableWidgets(true);
+
 			ui->albumTitle->setText(m_data.albumTitle);
 			ui->albumDescription->setPlainText(m_data.albumDescription);
 			ui->publisherName->setText(m_data.publisherName);
@@ -28,6 +31,8 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 		}
 	} else {
 		// Multiple Selection;
+        // Disable widgets!
+        enableWidgets(false);
 	}
 }
 
@@ -37,6 +42,15 @@ SocialMetadataDialog::~SocialMetadataDialog()
 		delete m_model;
 	}
 	delete ui;
+}
+
+void SocialMetadataDialog::enableWidgets(bool enable)
+{
+    ui->publisherComment->setEnabled(enable);
+    ui->dateTimePublished->setEnabled(enable);
+    ui->addCommentButton->setEnabled(enable);
+    ui->removeCommentButton->setEnabled(enable);
+    ui->commentsTableView->setEnabled(enable);
 }
 
 void SocialMetadataDialog::fillCommentTable()
