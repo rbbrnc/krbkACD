@@ -42,7 +42,6 @@ MetadataDialog::~MetadataDialog()
 {
 	delete m_xmpDcSubjectModel;
 	delete m_xmpDcSubjectFilter;
-
 	delete ui;
 }
 

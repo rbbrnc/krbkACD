@@ -179,7 +179,7 @@ void MainWindow::onChangePage(bool checked)
             //m_secondFm->blockModelSignals(true);
             break;
         case PAGE_METADATA_EDITOR:
-            //ui->metadataEditPage->saveMetadata();
+            ui->metadataEditPage->saveMetadata();
             break;
         default:
             break;
@@ -187,6 +187,7 @@ void MainWindow::onChangePage(bool checked)
 	}
 }
 
+// [private]
 void MainWindow::updatePageData(int page)
 {
     QString file = m_fm1->currentPath() + "/" + m_fm1->currentFile();
@@ -207,6 +208,7 @@ void MainWindow::updatePageData(int page)
 		ui->imageViewPage->setImage(file, true);
 		break;
     case PAGE_METADATA_EDITOR:
+        ui->metadataEditPage->saveMetadata();
         ui->metadataEditPage->setFile(file);
         break;
 	default:

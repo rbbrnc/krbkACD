@@ -10,6 +10,7 @@
 #include "LocationDialog.h"
 #include "datetimedialog.h"
 #include "metadatalocation.h"
+#include "keywordsdialog.h"
 
 MetadataEditPage::MetadataEditPage(QWidget *parent) :
 	QWidget(parent),
@@ -45,6 +46,24 @@ void MetadataEditPage::setFile(const QString &file)
     getLocations();
 
     ui->ratingSpinBox->setValue(m_exiv2->xmpTagString("Xmp.xmp.Rating", true).toDouble());
+    ui->Xmp_dc_description->setPlainText(m_exiv2->xmpTagStringLangAlt("Xmp.dc.description", QString(), false));
+    ui->Xmp_dc_title->setText(m_exiv2->xmpTagStringLangAlt("Xmp.dc.title", QString(), false));
+    ui->Xmp_iptcExt_Event->setText(m_exiv2->xmpTagStringLangAlt("Xmp.iptcExt.Event", QString(), false));
+
+    // Image Comment
+    if (m_exiv2->hasComment()) {
+        ui->imageComment->setPlainText(m_exiv2->imgComment());
+    }
+    if (!m_exiv2->isImgCommentWritable()) {
+        ui->imageComment->setReadOnly(true);
+        ui->imageCommentLabel->setText("Comment (ReadOnly)");
+    }
+
+    ui->keywordssTextEdit->clear();
+    QStringList tags = m_exiv2->xmpTagStringBag("Xmp.dc.subject", true);
+    for (int i = 0; i < tags.count(); i++) {
+        ui->keywordssTextEdit->appendPlainText(tags.at(i));
+    }
 
     delete m_exiv2;
     m_exiv2 = 0;
@@ -136,11 +155,74 @@ void MetadataEditPage::on_locationEditButton_clicked()
     QStringList files;
     files << m_fileName;
     LocationDialog dlg(files);
-    dlg.exec();
+    if (QDialog::Accepted == dlg.exec()) {
+        // Reload Data
+        setFile(m_fileName);
+    }
 }
 
 void MetadataEditPage::on_datetimeEditButton_clicked()
 {
     MetadataDateTimeDialog dlg(m_fileName);
-    dlg.exec();
+    if (QDialog::Accepted == dlg.exec()) {
+        // Reload Data
+        setFile(m_fileName);
+    }
+}
+
+void MetadataEditPage::on_keywordsEditButton_clicked()
+{
+    KeywordsDialog dlg(m_fileName);
+    if (QDialog::Accepted == dlg.exec()) {
+        // Reload Data
+        setFile(m_fileName);
+    }
+}
+
+void MetadataEditPage::on_ratingSpinBox_valueChanged(double)
+{
+    m_updateRating = true;
+}
+
+bool MetadataEditPage::saveMetadata()
+{
+    QExiv2 *e = new QExiv2();
+    if (!e->load(m_fileName)) {
+        delete e;
+        return false;
+    }
+
+    e->setImgComment(ui->imageComment->toPlainText().toLatin1());
+
+    if (ui->Xmp_iptcExt_Event->text().isEmpty()) {
+        e->removeXmpTag("Xmp.iptcExt.Event");
+    } else {
+        e->setXmpTagStringLangAlt("Xmp.iptcExt.Event", ui->Xmp_iptcExt_Event->text(), QString());
+    }
+
+    if (ui->Xmp_dc_title->text().isEmpty()) {
+        e->removeXmpTag("Xmp.dc.title");
+    } else {
+        e->setXmpTagStringLangAlt("Xmp.dc.title", ui->Xmp_dc_title->text(), QString());
+    }
+
+    if (ui->Xmp_dc_description->toPlainText().isEmpty()) {
+        e->removeXmpTag("Xmp.dc.description");
+    } else {
+        e->setXmpTagStringLangAlt("Xmp.dc.description", ui->Xmp_dc_description->toPlainText(), QString());
+    }
+
+    if (m_updateRating) {
+        e->setXmpTagString("Xmp.xmp.Rating", QString::number(ui->ratingSpinBox->value(), 'f', 1));
+        m_updateRating = false;
+    }
+
+    if (e->save()) {
+        delete e;
+        return true;
+    }
+
+    qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Data on:" << m_fileName;
+    delete e;
+    return false;
 }

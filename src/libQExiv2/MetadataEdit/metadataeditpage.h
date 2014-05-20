@@ -18,6 +18,7 @@ class MetadataEditPage : public QWidget
 		~MetadataEditPage();
 
 		void setFile(const QString &file);
+        bool saveMetadata();
 
     private:
         void getDateTime();
@@ -26,10 +27,13 @@ class MetadataEditPage : public QWidget
     private slots:
         void on_locationEditButton_clicked();
         void on_datetimeEditButton_clicked();
+        void on_keywordsEditButton_clicked();
+        void on_ratingSpinBox_valueChanged(double);
 
-private:
+    private:
 		Ui::MetadataEditPage *ui;
         QExiv2 *m_exiv2;
         QString m_fileName;
+        bool m_updateRating;
 };
 #endif
