@@ -84,6 +84,10 @@ bool QExiv2::load(const QString& filePath)
 		qDebug() << "File '" << info.filePath().toLatin1().constData() << "' is not readable.";
 		return false;
 	}
+    // Don't read directories
+    if (info.isDir()) {
+        return false;
+    }
 
 	try {
 		d->image = Exiv2::ImageFactory::open((const char *)(QFile::encodeName(filePath)));
