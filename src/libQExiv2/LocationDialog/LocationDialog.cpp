@@ -6,16 +6,6 @@
 #include "iso_countries.h"
 #include "QExiv2.h"
 
-bool Location::isEmpty() const
-{
-	return (worldRegion.isEmpty()
-		&& countryName.isEmpty()
-		&& countryCode.isEmpty()
-		&& provinceState.isEmpty()
-		&& city.isEmpty()
-	        && sublocation.isEmpty());
-}
-
 LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::LocationDialog),
@@ -80,7 +70,6 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 		ui->lcOverwriteLocations->hide();
 		ui->lsOverwriteLocations->setChecked(true);
 		ui->lsOverwriteLocations->hide();
-
 	}
 }
 
@@ -92,113 +81,15 @@ LocationDialog::~LocationDialog()
 bool LocationDialog::getLocations(const QString &file)
 {
 	QExiv2 *e = new QExiv2();
-	if (!e->load(file)) {
-		delete e;
-		return false;
+    bool rc = e->load(file);
+
+    if (rc) {
+        e->locationCreated(m_locationCreated, 1);
+        e->locationShown(m_locationShown, 1);
 	}
 
-	// ===================================================================
-	// Get Location Created tags
-	//
-	// This information describes the location where the image was created,
-	// the location of the camera during shot creation.
-	// The typical case is when a GPS receiver injects the current location
-	// into an image at shooting time (camera location).
-	//
-	// 1st try Xmp.iptcExt tags
-	//
-	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:WorldRegion
-	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName
-	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryCode
-	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:City
-	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:ProvinceState
-	// Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:Sublocation
-	//
-	// 2nd Try Xmp.photoshop and Iptc.Application2 tags
-	//
-	// Xmp.photoshop.Country _or_  Iptc.Application2.CountryName
-	// ---                         Iptc.Application2.CountryCode
-	// Xmp.photoshop.State   _or_  Iptc.Application2.ProvinceState
-	// Xmp.photoshop.City    _or_  Iptc.Application2.City
-	// ---                         Iptc.Application2.SubLocation
-	//
-	// ===================================================================
-	m_locationCreated.worldRegion = e->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:WorldRegion", true);
-	m_locationCreated.countryName = e->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName", true);
-	if (m_locationCreated.countryName.isEmpty()) {
-		m_locationCreated.countryName = e->xmpTagString("Xmp.photoshop.Country", true);
-		if (m_locationCreated.countryName.isEmpty()) {
-			m_locationCreated.countryName = e->iptcTagString("Iptc.Application2.CountryName", true);
-		}
-	}
-
-	m_locationCreated.countryCode = e->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryCode", true);
-	if (m_locationCreated.countryCode.isEmpty()) {
-		m_locationCreated.countryCode = e->iptcTagString("Iptc.Application2.CountryCode", true);
-	}
-
-	m_locationCreated.provinceState = e->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:ProvinceState", true);
-	if (m_locationCreated.provinceState.isEmpty()) {
-		m_locationCreated.provinceState = e->xmpTagString("Xmp.photoshop.State", true);
-		if (m_locationCreated.provinceState.isEmpty()) {
-			m_locationCreated.provinceState = e->iptcTagString("Iptc.Application2.ProvinceState", true);
-		}
-	}
-
-	m_locationCreated.city = e->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:City", true);
-	if (m_locationCreated.city.isEmpty()) {
-		m_locationCreated.city = e->xmpTagString("Xmp.photoshop.City", true);
-		if (m_locationCreated.city.isEmpty()) {
-			m_locationCreated.city = e->iptcTagString("Iptc.Application2.City", true);
-		}
-	}
-
-	m_locationCreated.sublocation = e->xmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:Sublocation", true);
-	if (m_locationCreated.sublocation.isEmpty()) {
-		m_locationCreated.sublocation = e->iptcTagString("Iptc.Application2.SubLocation", true);
-	}
-
-	// ===================================================================
-	// Get Location Shown tags
-	//
-	// This information describes the location of the main subject being
-	// shown in an image. For example, a picture of Mount Fuji would be
-	// tagged with the coordinates of where the mountain is located
-	// (subject location), although the picture may have been taken from
-	// downtown Tokyo.
-	//
-	// 1st try Xmp.iptcExt tags
-	//
-	// Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:WorldRegion
-	// Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryName
-	// Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryCode
-	// Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:ProvinceState
-	// Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:City
-	// Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:Sublocation
-	//
-	// 2nd try legacy Iptc.Application2 tags
-	//
-	// Iptc.Application2.LocationName
-	// Iptc.Application2.LocationCode
-	//
-	// ====================================================================
-	m_locationShown.worldRegion = e->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:WorldRegion", true);
-	m_locationShown.countryName = e->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryName", true);
-	if (m_locationShown.countryName.isEmpty()) {
-		m_locationShown.countryName = e->iptcTagString("Iptc.Application2.LocationName", true);
-	}
-
-	m_locationShown.countryCode = e->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryCode", true);
-	if (m_locationShown.countryCode.isEmpty()) {
-		m_locationShown.countryCode = e->iptcTagString("Iptc.Application2.LocationCode", true);
-	}
-
-	m_locationShown.provinceState = e->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:ProvinceState", true);
-	m_locationShown.city          = e->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:City", true);
-	m_locationShown.sublocation   = e->xmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:Sublocation", true);
-
-	delete e;
-	return true;
+    delete e;
+    return rc;
 }
 
 bool LocationDialog::setLocation(const QString &file)
@@ -210,42 +101,16 @@ bool LocationDialog::setLocation(const QString &file)
 		return false;
 	}
 
-	if (m_locationCreated.isEmpty()) {
-		e->removeXmpBag("Xmp.iptcExt.LocationCreated", 27);
-	} else {
-		if (e->xmpTagString("Xmp.iptcExt.LocationCreated").isNull()) {
-			e->setXmpTagBag("Xmp.iptcExt.LocationCreated");
-		}
-		e->setXmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:WorldRegion", m_locationCreated.worldRegion);
-		e->setXmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName", m_locationCreated.countryName);
-		e->setXmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryCode", m_locationCreated.countryCode);
-		e->setXmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:ProvinceState", m_locationCreated.provinceState);
-		e->setXmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:City", m_locationCreated.city);
-		e->setXmpTagString("Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:Sublocation", m_locationCreated.sublocation);
+    e->setLocationCreated(m_locationCreated, 1);
+    e->setLocationShown(m_locationShown, 1);
+
+    bool rc = e->save();
+    if (!rc) {
+        qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Location on:" << file;
 	}
 
-	if (m_locationShown.isEmpty()) {
-		e->removeXmpBag("Xmp.iptcExt.LocationShown", 25);
-	} else {
-		if (e->xmpTagString("Xmp.iptcExt.LocationShown").isNull()) {
-			e->setXmpTagBag("Xmp.iptcExt.LocationShown");
-		}
-		e->setXmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:WorldRegion", m_locationShown.worldRegion);
-		e->setXmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryName", m_locationShown.countryName);
-		e->setXmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryCode", m_locationShown.countryCode);
-		e->setXmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:ProvinceState", m_locationShown.provinceState);
-		e->setXmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:City", m_locationShown.city);
-		e->setXmpTagString("Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:Sublocation", m_locationShown.sublocation);
-	}
-
-	if (e->save()) {
-		delete e;
-		return true;
-	}
-
-	qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Location on file:" << file;
 	delete e;
-	return false;
+    return rc;
 }
 
 void LocationDialog::on_lcCountryNameComboBox_currentIndexChanged(QString sel)

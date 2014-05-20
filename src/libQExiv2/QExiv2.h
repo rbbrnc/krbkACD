@@ -8,6 +8,7 @@
 #include <QDateTime>
 
 #include "mwg_region.h"
+#include "metadatalocation.h"
 
 //#define ENABLE_XMP_SEQ       1
 //#define ENABLE_XMP_SERIALIZE 1
@@ -83,7 +84,7 @@ class QExiv2
 
 		// XMP Functions
 		bool isXmpWritable() const;
-		bool xmpRegisterNamespace(const QString& uri, const QString& prefix);
+        bool xmpRegisterNamespace(const QString& uri, const QString &prefix);
 
 		QString xmpTagString(const char *tag, bool escapeCR = false) const;
 		QString xmpTagString(const QString &tag, bool escapeCR = false) const;
@@ -126,11 +127,19 @@ class QExiv2
 		bool hasComment() const;
 		//bool clearImgComment();
 		QByteArray imgComment() const;
-		bool setImgComment(const QByteArray& data);
+        bool setImgComment(const QByteArray &data);
 
 		QList<struct exifData> exifDataList() const;
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
+
+
+        // Utility Functions
+        void locationCreated(MetadataLocation &loc, int index = 1);
+        void setLocationCreated(MetadataLocation &loc, int index = 1);
+
+        void locationShown(MetadataLocation &loc, int index = 1);
+        void setLocationShown(MetadataLocation &loc, int index = 1);
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

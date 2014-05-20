@@ -13,6 +13,7 @@ class MetadataDateTimeDialog : public QDialog
 	Q_OBJECT
 
 	public:
+        explicit MetadataDateTimeDialog(const QString &file, QWidget *parent = 0);
 		explicit MetadataDateTimeDialog(const QStringList &files, QWidget *parent = 0);
 		~MetadataDateTimeDialog();
 

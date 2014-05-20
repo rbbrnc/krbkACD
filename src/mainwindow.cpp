@@ -207,7 +207,6 @@ void MainWindow::updatePageData(int page)
 		ui->imageViewPage->setImage(file, true);
 		break;
     case PAGE_METADATA_EDITOR:
-        qDebug() << "HERE";
         ui->metadataEditPage->setFile(file);
         break;
 	default:

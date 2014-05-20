@@ -10,6 +10,7 @@ SOURCES += \
 	$$PWD/xmp.cpp \
 	$$PWD/mwg_region.cpp \
 	$$PWD/xmp_regions.cpp \
+	$$PWD/metadatalocation.cpp
 
 #	$$PWD/mp_region.cpp \
 
@@ -17,6 +18,7 @@ HEADERS += \
 	$$PWD/QExiv2.h \
 	$$PWD/QExiv2_p.h \
 	$$PWD/mwg_region.h \
+	$$PWD/metadatalocation.h
 
 EXIV2_CXXFLAGS = $$system(pkg-config exiv2 --cflags)
 EXIV2_LDFLAGS  = $$system(pkg-config exiv2 --libs)

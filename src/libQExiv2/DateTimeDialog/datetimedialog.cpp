@@ -6,6 +6,16 @@
 
 #include "QExiv2.h"
 
+MetadataDateTimeDialog::MetadataDateTimeDialog(const QString &file, QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::MetadataDateTimeDialog)
+{
+    ui->setupUi(this);
+
+    m_fileList << file;
+    loadData(file);
+}
+
 MetadataDateTimeDialog::MetadataDateTimeDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::MetadataDateTimeDialog),
@@ -35,6 +45,24 @@ bool MetadataDateTimeDialog::loadData(const QString &file)
 		return false;
 	}
 
+#if 0
+    // Creation date of the intellectual content
+    // (e.g. when a photo was taken)
+    ui->exifDateTimeOriginal->setText(e->exifDateTimeOriginal().toString(Qt::ISODate));
+    ui->iptcDateCreated->setText(e->iptcDateTimeCreated().toString(Qt::ISODate));
+    ui->xmpPhotoshopDateCreated->setText(e->xmpDateTimeCreated().toString(Qt::ISODate));
+
+    ui->exifDateTimeDigitized->setText(e->exifDateTimeDigitized().toString(Qt::ISODate));
+    ui->iptcDigitalCreationDate->setText(e->iptcDateTimeDigitized().toString(Qt::ISODate));
+    ui->xmpCreateDate->setText(e->xmpDateTimeDigitized().toString(Qt::ISODate));
+
+    ui->exifDateTime->setText(e->exifDateTime().toString(Qt::ISODate));
+    ui->xmpModifyDate->setText(e->xmpDateTimeModified().toString(Qt::ISODate));
+
+    delete e;
+    return true;
+#endif
+
 	// Creation date of the intellectual content (e.g. when a photo was taken)
 	ui->exifDateTimeOriginal->setText(e->exifTagString("Exif.Photo.DateTimeOriginal"));
 //	ui->exifDateTimeOriginal->setText(e->exifTagString("Exif.Image.DateTimeOriginal"));
@@ -43,8 +71,7 @@ bool MetadataDateTimeDialog::loadData(const QString &file)
 			       e->iptcTagString("Iptc.Application2.TimeCreated");
 	ui->iptcDateCreated->setText(iptcDateTime);
 
-	m_dateTime = QDateTime::fromString(e->xmpTagString("Xmp.photoshop.DateCreated"), Qt::ISODate);
-	ui->xmpPhotoshopDateCreated->setText(m_dateTime.toString(Qt::ISODate));
+    ui->xmpPhotoshopDateCreated->setText(e->xmpDateTimeCreated().toString(Qt::ISODate));
 
 	// Creation date of the digital representation (e.g. when an image was digitized)
 	ui->exifDateTimeDigitized->setText(e->exifTagString("Exif.Photo.DateTimeDigitized"));

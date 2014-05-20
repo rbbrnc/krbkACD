@@ -4,21 +4,7 @@
 #include <QComboBox>
 #include <QDialog>
 
-class Location
-{
-	public:
-		Location() {}
-		~Location() {}
-
-		bool isEmpty() const;
-
-		QString worldRegion;
-		QString countryName;
-		QString countryCode;
-		QString provinceState;
-		QString city;
-		QString sublocation;
-};
+#include "metadatalocation.h"
 
 namespace Ui {
 	class LocationDialog;
@@ -57,8 +43,8 @@ class LocationDialog : public QDialog
 
 		QStringList m_fileList;
 
-		Location m_locationCreated;
-		Location m_locationShown;
+        MetadataLocation m_locationCreated;
+        MetadataLocation m_locationShown;
 };
 
 #endif
