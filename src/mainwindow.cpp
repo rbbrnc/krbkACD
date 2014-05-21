@@ -347,6 +347,7 @@ void MainWindow::showFmContextMenu(const QPoint &pos)
 {
 	QMenu contextMenu(tr("Context menu"), this);
     contextMenu.addAction(ui->actionEditSocialMetadata);
+    contextMenu.addAction(ui->actionEditKeywords);
 	contextMenu.addAction(ui->actionOpenFile);
 	contextMenu.addAction(ui->actionRenameFiles);
 	contextMenu.addAction(ui->actionCopyFiles);

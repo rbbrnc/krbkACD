@@ -142,12 +142,13 @@ void KeywordsDialog::accept()
         reject();
     } else if (m_files.count() == 1) {
         if (!saveData(m_files.first())) {
+            qWarning() << __PRETTY_FUNCTION__ << "Error Saving Metadata:" << m_files.first();
             reject();
         }
     } else {
         for (int i = 0; i < m_files.count(); i++) {
             if (!loadData(m_files.at(i))) {
-                qWarning() << "Error Loading Metadata:" << m_files.at(i);
+                qWarning() << __PRETTY_FUNCTION__ << "Error Loading Metadata:" << m_files.at(i);
             } else {
                 saveData(m_files.at(i));
             }

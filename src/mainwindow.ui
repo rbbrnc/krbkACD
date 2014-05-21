@@ -342,9 +342,6 @@
    <property name="text">
     <string>Edit Metadata</string>
    </property>
-   <property name="shortcut">
-    <string>F11</string>
-   </property>
   </action>
   <action name="actionInfo">
    <property name="checkable">
@@ -390,6 +387,9 @@
    <property name="text">
     <string>About</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
+   </property>
   </action>
   <action name="action4">
    <property name="checkable">
@@ -397,6 +397,9 @@
    </property>
    <property name="text">
     <string>Metadata Editor</string>
+   </property>
+   <property name="shortcut">
+    <string>F11</string>
    </property>
   </action>
   <action name="actionEditKeywords">

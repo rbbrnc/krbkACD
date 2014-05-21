@@ -23,9 +23,7 @@ include ($$PWD/QMagic/QMagic.pri)
 
 include ($$PWD/libQExiv2/libQExiv2.pri)
 include ($$PWD/libQExiv2/MetadataTree/MetadataTree.pri)
-include ($$PWD/libQExiv2/MetadataDialog/MetadataDialog.pri)
 include ($$PWD/libQExiv2/LocationDialog/LocationDialog.pri)
-include ($$PWD/libQExiv2/SocialDialog/SocialMetadataDialog.pri)
 include ($$PWD/libQExiv2/MetadataEdit/MetadataEdit.pri)
 
 #-- Try clang
