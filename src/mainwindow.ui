@@ -190,6 +190,7 @@
     <addaction name="actionEditSocialMetadata"/>
     <addaction name="actionEditMetadata"/>
     <addaction name="actionEditDateTime"/>
+    <addaction name="actionEditKeywords"/>
    </widget>
    <widget class="QMenu" name="menuProcess">
     <property name="title">
@@ -396,6 +397,11 @@
    </property>
    <property name="text">
     <string>Metadata Editor</string>
+   </property>
+  </action>
+  <action name="actionEditKeywords">
+   <property name="text">
+    <string>Edit Keywords</string>
    </property>
   </action>
  </widget>

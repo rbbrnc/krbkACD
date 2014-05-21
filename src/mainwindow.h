@@ -49,6 +49,7 @@ class MainWindow : public QMainWindow
         void on_actionStart_Process_triggered();
         void on_actionPreferences_triggered();
         void on_actionAbout_triggered();
+        void on_actionEditKeywords_triggered();
 
     private:
 		Ui::MainWindow *ui;

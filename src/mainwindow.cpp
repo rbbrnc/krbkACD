@@ -12,6 +12,7 @@
 #include "SocialMetadataDialog.h"
 #include "metadatadialog.h"
 #include "datetimedialog.h"
+#include "keywordsdialog.h"
 
 // Page Indexes
 #define PAGE_INFO            0
@@ -386,4 +387,15 @@ void MainWindow::on_actionAbout_triggered()
     txt += QString("OpenCv v.%1\n").arg(KrbkACDVersion::openCvVerisionString());
 
     QMessageBox::about(this, "About", txt);
+}
+
+void MainWindow::on_actionEditKeywords_triggered()
+{
+    QStringList files = fileSelection();
+    if (files.count() == 0) {
+        QMessageBox::warning(this, "Edit Metadata Keywords", "No File Selected!");
+    } else {
+        KeywordsDialog dlg(files);
+        dlg.exec();
+    }
 }
