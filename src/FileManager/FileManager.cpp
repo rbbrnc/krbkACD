@@ -413,7 +413,7 @@ void FileManager::move(const QString &destPath)
 	}
 
     CopyMoveDialog dlg(m_model->fileName(m_selection.first()), destPath, m_selection.count());
-    dlg.setWindowTitle("Copy File(s)");
+    dlg.setWindowTitle("Move File(s)");
     if (QDialog::Accepted != dlg.exec()) {
         return;
     }
