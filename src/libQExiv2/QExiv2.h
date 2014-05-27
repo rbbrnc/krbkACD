@@ -56,6 +56,8 @@ class QExiv2
 
 		// EXIF Functions
 		QString exifTagString(const char *tag, bool escapeCR = false) const;
+        QByteArray exifTagData(const char *tag) const;
+
 
 #ifdef ENABLE_EXIF_WRITE
 		bool isExifWritable() const;
@@ -133,13 +135,18 @@ class QExiv2
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
 
-
         // Utility Functions
         void locationCreated(MetadataLocation &loc, int index = 1);
         void setLocationCreated(MetadataLocation &loc, int index = 1);
 
         void locationShown(MetadataLocation &loc, int index = 1);
         void setLocationShown(MetadataLocation &loc, int index = 1);
+
+        //double gpsCoordinateFromString(const QString &str, bool *ok);
+        double gpsCoordinates(const double deg, const double min, const double sec, const QChar &dir);
+        double gpsCoordinatesFromString(const QString &str, bool *ok);
+
+
 
 	private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

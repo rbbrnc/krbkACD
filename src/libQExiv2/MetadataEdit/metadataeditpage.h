@@ -30,6 +30,8 @@ class MetadataEditPage : public QWidget
         void on_keywordsEditButton_clicked();
         void on_ratingSpinBox_valueChanged(double);
 
+        void on_tabWidget_currentChanged(int index);
+
     private:
 		Ui::MetadataEditPage *ui;
         QExiv2 *m_exiv2;

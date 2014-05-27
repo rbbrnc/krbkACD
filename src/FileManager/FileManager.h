@@ -36,10 +36,10 @@ class FileManager : public QObject
 		void next();
 
 		void mkdir();
-	        void deleteSelectedFiles();
-	        void renameSelectedFiles();
-	        void copy(const QString &destPath);
-	        void move(const QString &destPath);
+        void deleteSelectedFiles();
+        void renameSelectedFiles();
+        void copy(const QString &destPath);
+        void move(const QString &destPath);
 
 		void iconMode(bool enable);
 		void showHidden(bool enable);

@@ -78,6 +78,26 @@ QString QExiv2::exifTagString(const char *tag, bool escapeCR) const
 	return QString();
 }
 
+QByteArray QExiv2::exifTagData(const char *tag) const
+{
+    try {
+        Exiv2::ExifKey exifKey(tag);
+        Exiv2::ExifData exifData(d->exifMetadata);
+        Exiv2::ExifData::iterator it = exifData.findKey(exifKey);
+        if (it != exifData.end()) {
+            char* const s = new char[(*it).size()];
+            (*it).copy((Exiv2::byte*)s, Exiv2::bigEndian);
+            QByteArray data(s, (*it).size());
+            delete[] s;
+            return data;
+        }
+    }
+    catch (Exiv2::Error &e) {
+        d->error(QString("%1 Cannot find Exif key '%2'").arg(__PRETTY_FUNCTION__).arg(tag), e);
+    }
+    return QByteArray();
+}
+
 // [EXIF] Get a DateTime Tag
 // Creation date of the intellectual content (e.g. when a photo was taken)
 QDateTime QExiv2::exifDateTimeOriginal() const
