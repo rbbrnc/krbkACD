@@ -1,4 +1,5 @@
 INCLUDEPATH += $$PWD
+QT += positioning
 
 SOURCES += \
 	$$PWD/QExiv2.cpp \

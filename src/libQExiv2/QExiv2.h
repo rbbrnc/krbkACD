@@ -6,6 +6,8 @@
 #include <QString>
 #include <QImage>
 #include <QDateTime>
+#include <QGeoCoordinate>
+
 
 #include "mwg_region.h"
 #include "metadatalocation.h"
@@ -143,12 +145,11 @@ class QExiv2
         void setLocationShown(MetadataLocation &loc, int index = 1);
 
         //double gpsCoordinateFromString(const QString &str, bool *ok);
-        double gpsCoordinates(const double deg, const double min, const double sec, const QChar &dir);
-        double gpsCoordinatesFromString(const QString &str, bool *ok);
+        double gpsCoordinates(const double deg, const double min, const double sec, const QChar &dir) const;
+        double gpsCoordinatesFromString(const QString &str, bool *ok) const;
+        void geoCoordinate(QGeoCoordinate *gc) const;
 
-
-
-	private:
+    private:
 		QSharedDataPointer<QExiv2DataPrivate> d;
 };
 

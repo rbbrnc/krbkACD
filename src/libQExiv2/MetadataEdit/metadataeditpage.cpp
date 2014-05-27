@@ -45,29 +45,8 @@ void MetadataEditPage::setFile(const QString &file)
     getDateTime();
     getLocations();
 
-//    QByteArray ba = m_exiv2->exifTagData("Exif.GPSInfo.GPSLatitude");
-//    qDebug() << "BA:" << ba.toHex() << "___";
-
-    // GPS
-    QString s;
-    qDebug() << "eLat:" << m_exiv2->exifTagString("Exif.GPSInfo.GPSLatitude");
-    qDebug() << "eLon:" << m_exiv2->exifTagString("Exif.GPSInfo.GPSLongitude");
-
-    bool ok;
-    s = m_exiv2->xmpTagString("Xmp.exif.GPSLatitude");
-    double lat = m_exiv2->gpsCoordinatesFromString(s, &ok);
-    if (ok) {
-        qDebug() << "xLat:" << s << lat;
-    } else {
-        qDebug() << "xLat not ok";
-    }
-    s = m_exiv2->xmpTagString("Xmp.exif.GPSLongitude");
-    double lon = m_exiv2->gpsCoordinatesFromString(s, &ok);
-    if (ok) {
-        qDebug() << "xLon:" << s << lon;
-    } else {
-        qDebug() << "xLon not ok";
-    }
+    QGeoCoordinate gc;
+    m_exiv2->geoCoordinate(&gc);
 
     ui->ratingSpinBox->setValue(m_exiv2->xmpTagString("Xmp.xmp.Rating", true).toDouble());
     ui->Xmp_dc_description->setPlainText(m_exiv2->xmpTagStringLangAlt("Xmp.dc.description", QString(), false));
