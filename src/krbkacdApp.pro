@@ -21,10 +21,11 @@ include ($$PWD/FileManager/FileManager.pri)
 include ($$PWD/ImageView/ImageView.pri)
 include ($$PWD/QMagic/QMagic.pri)
 
-include ($$PWD/libQExiv2/libQExiv2.pri)
-include ($$PWD/libQExiv2/MetadataTree/MetadataTree.pri)
-include ($$PWD/libQExiv2/LocationDialog/LocationDialog.pri)
-include ($$PWD/libQExiv2/MetadataEdit/MetadataEdit.pri)
+include ($$PWD/QExiv2/QExiv2.pri)
+include ($$PWD/QExiv2/QExiv2Dialogs.pri)
+include ($$PWD/QExiv2/MetadataTree/MetadataTree.pri)
+include ($$PWD/QExiv2/LocationDialog/LocationDialog.pri)
+include ($$PWD/QExiv2/MetadataEdit/MetadataEdit.pri)
 
 #-- Try clang
 #QMAKE_CC  = clang
@@ -61,7 +62,7 @@ HEADERS += mainwindow.h \
 FORMS   += mainwindow.ui \
 	   infowidget.ui
 
-RESOURCES += $$PWD/libQExiv2/QExiv2.qrc
+RESOURCES += $$PWD/QExiv2/QExiv2.qrc
 
 #-- Custom style
 #DEFINES += USE_CUSTOM_STYLE

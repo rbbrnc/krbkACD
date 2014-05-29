@@ -3,7 +3,7 @@
 
 #include <QString>
 
-#define KRBKACD_VERSION "0.0.41"
+#define KRBKACD_VERSION "0.0.43"
 
 namespace KrbkACDVersion {
     const QString exiv2VerisionString();

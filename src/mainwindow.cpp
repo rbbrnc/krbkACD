@@ -8,11 +8,12 @@
 #include "version.h"
 #include "FileManager.h"
 #include "QMagic.h"
-#include "LocationDialog.h"
-#include "SocialMetadataDialog.h"
+#include "md_socialdialog.h"
+#include "md_keywordsdialog.h"
+#include "md_datetimedialog.h"
+#include "md_locationdialog.h"
+
 #include "metadatadialog.h"
-#include "datetimedialog.h"
-#include "keywordsdialog.h"
 
 // Page Indexes
 #define PAGE_INFO            0
