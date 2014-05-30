@@ -5,6 +5,7 @@
 
 #include "iso_countries.h"
 #include "QExiv2.h"
+#include "geocoding.h"
 
 LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
@@ -53,9 +54,9 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
             ui->lsCity->setText(m_shown.city());
             ui->lsSublocation->setText(m_shown.sublocation());
             if (m_gpsCreated.isValid()) {
-                ui->gpsLatitude->setText(QString::number(m_gpsCreated.latitude()));
-                ui->gpsLongitude->setText(QString::number(m_gpsCreated.longitude()));
-                ui->gpsAltitude->setText(QString::number(m_gpsCreated.altitude()));
+                ui->gpsGeoLocation->setText(m_gpsCreated.toString());
+            } else {
+                ui->geolocationButton->setEnabled(false);
             }
 		}
 	} else {
@@ -119,25 +120,6 @@ bool LocationDialog::setLocation(const QString &file)
         return m_exiv2->save();
     }
     return false;
-/*
-	QExiv2 *e = new QExiv2();
-	if (!e->load(file)) {
-		qDebug() << __PRETTY_FUNCTION__ << "Skip file:" << file;
-		delete e;
-		return false;
-	}
-
-    e->setLocationCreated(m_created, 1);
-    e->setLocationShown(m_shown, 1);
-
-    bool rc = e->save();
-    if (!rc) {
-        qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Location on:" << file;
-	}
-
-	delete e;
-    return rc;
-*/
 }
 
 void LocationDialog::on_lcCountryCombo_currentIndexChanged(QString sel)
@@ -219,8 +201,38 @@ void LocationDialog::accept()
 	}
 	QDialog::accept();
 }
+void LocationDialog::onReverseGeocodeFinished(const QString &data, bool error)
+{
+    ui->geoLocationOutputs->setPlainText(data);
+    qDebug() << data;
+
+    if (!error) {
+        qDebug() << m_geocoding->location().address().text();
+
+        QGeoAddress addr = m_geocoding->location().address();
+
+    //    ui->lcRegion->setText(m_created.worldRegion());
+        ui->lcCountry->setText(addr.country());
+        ui->lcCountryCode->setText(addr.countryCode());
+        ui->lcState->setText(addr.state());
+        ui->lcCity->setText(addr.city());
+        ui->lcSublocation->setText(addr.street());
+    }
+
+    enableWidgets(true);
+    ui->buttonBox->setEnabled(true);
+}
 
 void LocationDialog::on_geolocationButton_clicked()
 {
+    if (!m_geocoding) {
+        m_geocoding = new GeoCoding(this);
+        connect(m_geocoding, SIGNAL(reverseGeocodeFinished(QString, bool)),
+                this, SLOT(onReverseGeocodeFinished(QString, bool)));
+    }
 
+    enableWidgets(false);
+    ui->buttonBox->setEnabled(false);
+
+    m_geocoding->reverseGeoCode(m_gpsCreated);
 }

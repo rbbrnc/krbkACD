@@ -11,29 +11,30 @@
  * response:
  *
  * "{
- * 	"place_id":"3669480537",
- * 	"licence":"Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
- * 	"osm_type":"way",
- * 	"osm_id":"76190223",
- * 	"lat":"45.427344",
- * 	"lon":"9.2924392",
- * 	"display_name":"Viale 1\u00b0 Maggio, Peschiera Borromeo, Milan, Lombardy, 20068, Italy",
- * 	"address":{
- * 		"road":"Viale 1\u00b0 Maggio",
- * 		"town":"Peschiera Borromeo",
- * 		"county":"Milan",
+ *	"place_id":"3669480537",
+ *	"licence":"Data \u00a9 OpenStreetMap contributors, ODbL 1.0. http:\/\/www.openstreetmap.org\/copyright",
+ *	"osm_type":"way",
+ *	"osm_id":"76190223",
+ *	"lat":"45.427344",
+ *	"lon":"9.2924392",
+ *	"display_name":"Viale 1\u00b0 Maggio, Peschiera Borromeo, Milan, Lombardy, 20068, Italy",
+ *	"address":{
+ *		"road":"Viale 1\u00b0 Maggio",
+ *		"town":"Peschiera Borromeo",
+ *		"county":"Milan",
  *		"state":"Lombardy",
- * 		"postcode":"20068",
- * 		"country":"Italy",
- * 		"country_code":"it"
+ *		"postcode":"20068",
+ *		"country":"Italy",
+ *		"country_code":"it"
  *   }
  * }"
+ *
  */
 
 #define URL_REVERSE_GEOCODE "http://nominatim.openstreetmap.org/reverse"
 
 GeoCoding::GeoCoding(QObject *parent) : QObject(parent),
-  m_ready(true)
+	m_ready(true)
 {
 }
 
@@ -54,7 +55,6 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
     if (!m_ready) {
         return;
     }
-
     if (gc.isValid()) {
         m_location.setCoordinate(gc);
         m_location.setAddress(QGeoAddress());
@@ -73,15 +73,14 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
         request.setUrl(url);
 
         m_ready = false;
-        //qDebug() << url;
-        QNetworkReply *reply = m_netManager.get(request);
+        /*QNetworkReply *reply =*/ m_netManager.get(request);
         connect(&m_netManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(onReverseGeoCodeFinished(QNetworkReply *)));
-        connect(reply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(replyError(QNetworkReply::NetworkError)));
     }
 }
 
-bool GeoCoding::setLocationFormJson(const QByteArray &jsonData)
+bool GeoCoding::setLocationFormJson(const QJsonDocument &jsonDoc)
 {
+/*
     QJsonParseError error;
     QJsonDocument doc = QJsonDocument::fromJson(jsonData, &error);
     if (error.error) {
@@ -89,7 +88,9 @@ bool GeoCoding::setLocationFormJson(const QByteArray &jsonData)
         return false;
     }
 
-    QJsonObject obj = doc.object();
+    qDebug() << QString(doc.toJson());
+*/
+    QJsonObject obj = jsonDoc.object();
     if (obj.isEmpty()) {
         qWarning() << "No JSON object found!";
         return false;
@@ -102,11 +103,19 @@ bool GeoCoding::setLocationFormJson(const QByteArray &jsonData)
     if (obj.isEmpty()) {
         qWarning() << "No JSON 'address'' object found!";
     } else {
-        addr.setCity(addrObj.take("town").toString());
+        QString city = addrObj.take("city").toString();
+        if (city.isEmpty()) {
+            city = addrObj.take("town").toString();
+            if (city.isEmpty()) {
+                city = addrObj.take("village").toString();
+            }
+        }
+        addr.setCity(city);
+
         addr.setCountry(addrObj.take("country").toString());
-        addr.setCountryCode(addrObj.take("country_code").toString());
+        addr.setCountryCode(addrObj.take("country_code").toString().toUpper());
         addr.setCounty(addrObj.take("county").toString());
-        //addr.setDistrict(addrObj.take("").toString());
+        addr.setDistrict(addrObj.take("city_district").toString());
         addr.setPostalCode(addrObj.take("postcode").toString());
         addr.setState(addrObj.take("state").toString());
         addr.setStreet(addrObj.take("road").toString());
@@ -118,33 +127,30 @@ bool GeoCoding::setLocationFormJson(const QByteArray &jsonData)
 
 void GeoCoding::onReverseGeoCodeFinished(QNetworkReply *reply)
 {
-    QByteArray data;
+    QString data;
+    bool error = true;
 
     if (reply->error()) {
-        qWarning() << reply->errorString();
+        data = reply->errorString();
     } else {
-        data = reply->readAll();
-        if (data.isEmpty()) {
-            qDebug() << __func__ << "Empty DATA";
-        } else {
-            //qDebug() << data;
-            if (reply->error()) {
-                qWarning() << reply->errorString();
+        QByteArray ba = reply->readAll();
+        if (!data.isEmpty()) {
+            QJsonParseError jsonError;
+            QJsonDocument doc = QJsonDocument::fromJson(ba, &jsonError);
+            if (jsonError.error) {
+                data = jsonError.errorString();
             } else {
-                if (setLocationFormJson(data)) {
-                    emit reverseGeoCodeFinished();
-                }
+                data = QString(doc.toJson(QJsonDocument::Indented));
+                error = setLocationFormJson(doc);
             }
+        } else {
+            data = QString(ba);
         }
     }
+
+    emit reverseGeocodeFinished(data, error);
 
     reply->deleteLater();
     reply = 0;
     m_ready = true;
-}
-
-void GeoCoding::replyError(QNetworkReply::NetworkError err)
-{
-    Q_UNUSED(err)
-//	qDebug() << __func__ << "err=" << err;
 }

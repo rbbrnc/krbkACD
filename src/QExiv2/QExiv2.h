@@ -136,14 +136,6 @@ class QExiv2
 		QList<struct exifData> iptcDataList() const;
 		QList<struct exifData> xmpDataList() const;
 
-        // Utility Functions
-
-
-        //double gpsCoordinateFromString(const QString &str, bool *ok);
-        double gpsCoordinates(const double deg, const double min, const double sec, const QChar &dir) const;
-        double gpsCoordinatesFromString(const QString &str, bool *ok) const;
-        void geoCoordinate(QGeoCoordinate *gc) const;
-
 		// Social
 		SocialMetadata socialMetadata();
 		bool setSocialMetadata(const SocialMetadata &smd, bool writeComments);
@@ -154,9 +146,21 @@ class QExiv2
 		void locationCreated(MetadataLocation &loc, int index = 1);
 		void setLocationCreated(MetadataLocation &loc, int index = 1);
 
+        // GPS
+        void geoCoordinate(QGeoCoordinate *gc) const;
+        QDateTime gpsTimestamp() const;
+
 	private:
 		void setLocation(MetadataLocation &loc, const QString &locType, int index);
 		void location(MetadataLocation &loc, const QString &locType, int index);
+
+        double gpsCoordinates(const double deg, const double min, const double sec, const QChar &dir) const;
+
+        bool xmpGpsCoordinates(const QString &str, double *value) const;
+        bool exifGpsCoordinate(const QString &coordTag, const QString &refTag, double *value) const;
+
+        //bool xmpGpsAltitude(double *altitude) const;
+        //bool exifGpsAltitude(double *altitude) const;
 
     private:
 		QSharedDataPointer<QExiv2DataPrivate> d;

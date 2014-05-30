@@ -30,8 +30,6 @@ class QExiv2DataPrivate : public QSharedData
 
 		bool isMetadataWritable(Exiv2::MetadataId mid) const;
 
-		QString tagString(const char *tag, bool escapeCR, Exiv2::MetadataId id) const;
-
 	public:
 		bool metadataValid;
 

@@ -7,6 +7,7 @@
 
 #include "md_location.h"
 
+class GeoCoding;
 class QExiv2;
 
 namespace Ui {
@@ -44,6 +45,8 @@ class LocationDialog : public QDialog
 
         void on_geolocationButton_clicked();
 
+        void onReverseGeocodeFinished(const QString &data, bool error);
+
     private:
 		Ui::LocationDialog *ui;
 
@@ -53,6 +56,8 @@ class LocationDialog : public QDialog
         MetadataLocation m_created;
         MetadataLocation m_shown;
         QGeoCoordinate   m_gpsCreated;
+        GeoCoding        *m_geocoding;
+
 };
 
 #endif
