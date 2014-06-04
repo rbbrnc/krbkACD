@@ -63,7 +63,6 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
         QUrlQuery query;
         QUrl url;
         url.setUrl(URL_REVERSE_GEOCODE);
-        //url.addQueryItem("format", "xml");
         query.addQueryItem("format", "json");
         query.addQueryItem("lat", QString::number(gc.latitude()));
         query.addQueryItem("lon", QString::number(gc.longitude()));
@@ -73,23 +72,13 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
         request.setUrl(url);
 
         m_ready = false;
-        /*QNetworkReply *reply =*/ m_netManager.get(request);
+        m_netManager.get(request);
         connect(&m_netManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(onReverseGeoCodeFinished(QNetworkReply *)));
     }
 }
 
 bool GeoCoding::setLocationFormJson(const QJsonDocument &jsonDoc)
 {
-/*
-    QJsonParseError error;
-    QJsonDocument doc = QJsonDocument::fromJson(jsonData, &error);
-    if (error.error) {
-        qWarning() << error.errorString();
-        return false;
-    }
-
-    qDebug() << QString(doc.toJson());
-*/
     QJsonObject obj = jsonDoc.object();
     if (obj.isEmpty()) {
         qWarning() << "No JSON object found!";
