@@ -18,8 +18,6 @@ SOURCES += \
 	$$PWD/qexiv2_xmpsocial.cpp
 
 #	$$PWD/mp_region.cpp \
-#	$$PWD/metadatalocation.cpp \
-#	$$PWD/metadatalocation.h
 
 HEADERS += \
 	$$PWD/QExiv2.h \
