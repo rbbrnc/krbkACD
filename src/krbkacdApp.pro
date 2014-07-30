@@ -34,6 +34,7 @@ include ($$PWD/QExiv2/MetadataEdit/MetadataEdit.pri)
 #-- common gcc flags
 QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code
 QMAKE_CXXFLAGS += -ffunction-sections -fdata-sections
+QMAKE_CXXFLAGS += -std=c++11
 QMAKE_LFLAGS   += -Wl,--gc-sections,--as-needed
 
 #-- DEBUG Symbols

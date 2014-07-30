@@ -1,12 +1,12 @@
 #include <QInputDialog>
 #include <QMessageBox>
-
+#include <QProgressDialog>
+#include <QApplication>
 #include <QDebug>
 
 #include "FileManager.h"
-#include "RenameDialog.h"
-#include "BatchRenameDialog.h"
 #include "CopyMoveDialog.h"
+#include "renamedialog.h"
 
 FileManager::FileManager(QListView *listView, QWidget *parent)
 	: m_view(listView),
@@ -323,33 +323,21 @@ void FileManager::renameSelectedFiles()
 
 	m_model->setReadOnly(false);
 
-	if (m_selection.count() == 1) {
-		// Single file
-		RenameDialog dlg(m_model->fileName(m_selection.first()));
-		if (dlg.exec() == QDialog::Accepted) {
-			if (m_model->setData(m_selection.first(), dlg.newFileName())) {
-				m_view->update(m_selection.first());
-			}
-		}
-	} else {
-		// Multi files
-		QStringList files;
-		for (int i = 0; i < m_selection.count(); i++) {
-			files << m_model->fileName(m_selection.at(i));
-			//qDebug() << m_model->filePath(m_selection.at(i));
-		}
+    QStringList files;
+    for (int i = 0; i < m_selection.count(); i++) {
+        files << m_model->fileName(m_selection.at(i));
+    }
 
-		BatchRenameDialog dlg(files);
-		if (dlg.exec() == QDialog::Accepted) {
-			QStringList filesOut = dlg.newFileNames();
-			for (int i = 0; i < m_selection.count(); i++) {
-				//qDebug() << m_model->fileName(m_selection.at(i)) << "--" << filesOut.at(i);
-				if (m_model->setData(m_selection.at(i), filesOut.at(i))) {
-					m_view->update(m_selection.at(i));
-				}
-			}
-		}
-	}
+    RenameDialog dlg(files);
+
+    if (dlg.exec() == QDialog::Accepted) {
+        QStringList filesOut = dlg.newFileNames();
+        for (int i = 0; i < m_selection.count(); i++) {
+            if (m_model->setData(m_selection.at(i), filesOut.at(i))) {
+                m_view->update(m_selection.at(i));
+            }
+        }
+    }
 
 	m_model->setReadOnly(true);
 }
