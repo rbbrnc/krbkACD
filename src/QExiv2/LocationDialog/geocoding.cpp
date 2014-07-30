@@ -36,6 +36,7 @@
 GeoCoding::GeoCoding(QObject *parent) : QObject(parent),
 	m_ready(true)
 {
+    m_netManager = new QNetworkAccessManager(this);
 }
 
 QGeoLocation GeoCoding::location() const
@@ -55,9 +56,10 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
     if (!m_ready) {
         return;
     }
+
     if (gc.isValid()) {
-        m_location.setCoordinate(gc);
-        m_location.setAddress(QGeoAddress());
+        //m_location.setCoordinate(gc);
+        //m_location.setAddress(QGeoAddress());
 
         QNetworkRequest request;
         QUrlQuery query;
@@ -72,8 +74,8 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
         request.setUrl(url);
 
         m_ready = false;
-        m_netManager.get(request);
-        connect(&m_netManager, SIGNAL(finished(QNetworkReply *)), this, SLOT(onReverseGeoCodeFinished(QNetworkReply *)));
+        QNetworkReply *reply = m_netManager->get(request);
+        connect(reply, SIGNAL(finished()), this, SLOT(onReverseGeoCodeFinished()));
     }
 }
 
@@ -114,8 +116,9 @@ bool GeoCoding::setLocationFormJson(const QJsonDocument &jsonDoc)
     return true;
 }
 
-void GeoCoding::onReverseGeoCodeFinished(QNetworkReply *reply)
+void GeoCoding::onReverseGeoCodeFinished()
 {
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
     QString data;
     bool error = true;
 
@@ -137,7 +140,8 @@ void GeoCoding::onReverseGeoCodeFinished(QNetworkReply *reply)
         }
     }
 
-    emit reverseGeocodeFinished(data, error);
+    //emit reverseGeocodeFinished(data, error);
+    emit reverseGeocodeFinished();
 
     reply->deleteLater();
     reply = 0;

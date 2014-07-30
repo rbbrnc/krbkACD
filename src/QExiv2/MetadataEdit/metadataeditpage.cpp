@@ -11,16 +11,14 @@
 #include "md_datetimedialog.h"
 #include "md_locationdialog.h"
 
-#include "metadatalocation.h"
-#include "geocoding.h"
-
-
 MetadataEditPage::MetadataEditPage(QWidget *parent) :
 	QWidget(parent),
     ui(new Ui::MetadataEditPage),
     m_exiv2(0)
 {
 	ui->setupUi(this);
+
+    connect(&m_geoCoding, SIGNAL(reverseGeocodeFinished()), this, SLOT(onReverseGeocodeFinished()));
 }
 
 MetadataEditPage::~MetadataEditPage()
@@ -48,12 +46,17 @@ void MetadataEditPage::setFile(const QString &file)
     getDateTime();
     getLocations();
 
-    QGeoCoordinate gc;
-    m_exiv2->geoCoordinate(&gc);
-
-    if (gc.isValid()) {
-        ui->xmpCoordinates->setText(gc.toString());
-        //ui->exifCoordinates->setText(QString::number(gc.longitude()));
+    m_exifGps = m_exiv2->exifGeoCoordinate();
+    if (m_exifGps.isValid()) {
+        ui->exifCoordinates->setText(m_exifGps.toString());
+    } else {
+        ui->exifCoordinates->setText("");
+    }
+    m_xmpGps = m_exiv2->xmpGeoCoordinate();
+    if (m_xmpGps.isValid()) {
+        ui->xmpCoordinates->setText(m_xmpGps.toString());
+    } else {
+        ui->xmpCoordinates->setText("");
     }
 
     ui->ratingSpinBox->setValue(m_exiv2->xmpTagString("Xmp.xmp.Rating", true).toDouble());
@@ -98,6 +101,8 @@ void MetadataEditPage::getDateTime()
     QDateTime iptc_dt;
     QDateTime xmp_dt;
 
+    // Creation date of the intellectual content
+    // (e.g. when a photo was taken)
     exif_dt = m_exiv2->datetime(QExiv2::ExifOriginal);
     iptc_dt = m_exiv2->datetime(QExiv2::IptcOriginal);
     xmp_dt  = m_exiv2->datetime(QExiv2::XmpOriginal);
@@ -118,6 +123,8 @@ void MetadataEditPage::getDateTime()
              << "[XMP ]" << xmp_dt.toString(Qt::ISODate);
 */
 
+    // Creation date of the digital representation
+    // (e.g. when an image was digitized)
     exif_dt = m_exiv2->datetime(QExiv2::ExifDigitized);
     iptc_dt = m_exiv2->datetime(QExiv2::IptcDigitized);
     xmp_dt  = m_exiv2->datetime(QExiv2::XmpDigitized);
@@ -138,6 +145,8 @@ void MetadataEditPage::getDateTime()
              << "[XMP ]" << xmp_dt.toString(Qt::ISODate);
 */
 
+    // Modification date of the digital image file
+    // (e.g. when a file was modified by the user)
     exif_dt = m_exiv2->datetime(QExiv2::ExifModified);
     xmp_dt  = m_exiv2->datetime(QExiv2::XmpModified);
 
@@ -234,11 +243,27 @@ bool MetadataEditPage::saveMetadata()
 
 void MetadataEditPage::on_tabWidget_currentChanged(int index)
 {
+    // XXX To save unsaved data ont he previous tab!!!
     Q_UNUSED(index)
 }
 
-
-void MetadataEditPage::on_reverseGeocodingButton_clicked()
+void MetadataEditPage::on_reverseGeolocationButton_clicked()
 {
+    QGeoCoordinate gc;
+    if (ui->useXmpGPS->isChecked()) {
+        gc =m_xmpGps;
+    } else {
+        gc = m_exifGps;
+    }
 
+    if (gc.isValid()) {
+        m_geoCoding.reverseGeoCode(gc);
+    }
 }
+
+void MetadataEditPage::onReverseGeocodeFinished()
+{
+    //qDebug() << m_geoCoding.location().address().text();
+    ui->reverseGeolocationText->setText(m_geoCoding.location().address().text());
+}
+

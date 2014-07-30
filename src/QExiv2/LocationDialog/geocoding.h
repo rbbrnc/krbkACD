@@ -20,11 +20,12 @@ class GeoCoding : public QObject
         bool setLocationFormJson(const QJsonDocument &jsonDoc);
 
     private slots:
-        void onReverseGeoCodeFinished(QNetworkReply *reply);
+        void onReverseGeoCodeFinished();
 
     signals:
         void geoCodeFinished();
-        void reverseGeocodeFinished(const QString &data, bool error);
+        //void reverseGeocodeFinished(const QString &data, bool error);
+        void reverseGeocodeFinished();
         void reverseGeocodeError(const QString &error);
 
     public slots:
@@ -32,7 +33,7 @@ class GeoCoding : public QObject
         void reverseGeoCode(const QGeoCoordinate &gc);
 
     private:
-        QNetworkAccessManager m_netManager;
+        QNetworkAccessManager *m_netManager;
         QGeoLocation m_location;
         bool m_ready;
 };

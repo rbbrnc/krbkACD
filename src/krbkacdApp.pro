@@ -38,7 +38,7 @@ QMAKE_CXXFLAGS += -std=c++11
 QMAKE_LFLAGS   += -Wl,--gc-sections,--as-needed
 
 #-- DEBUG Symbols
-#QMAKE_CXXFLAGS += -g -ggdb
+QMAKE_CXXFLAGS += -g -ggdb
 #QMAKE_LFLAGS   += -Wl,--print-gc-sections
 #DEFINES += QT_NO_DEBUG_OUTPUT QT_NO_WARNING_OUTPUT
 

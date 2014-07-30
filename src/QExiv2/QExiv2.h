@@ -147,8 +147,11 @@ class QExiv2
 		void setLocationCreated(MetadataLocation &loc, int index = 1);
 
         // GPS
-        void geoCoordinate(QGeoCoordinate *gc) const;
         QDateTime gpsTimestamp() const;
+
+		QGeoCoordinate geoCoordinate() const;
+		QGeoCoordinate exifGeoCoordinate() const;
+		QGeoCoordinate xmpGeoCoordinate() const;
 
 	private:
 		void setLocation(MetadataLocation &loc, const QString &locType, int index);

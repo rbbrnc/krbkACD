@@ -106,7 +106,7 @@ bool LocationDialog::getLocations(const QString &file)
     if (m_exiv2->load(file)) {
         m_exiv2->locationCreated(m_created, 1);
         m_exiv2->locationShown(m_shown, 1);
-        m_exiv2->geoCoordinate(&m_gpsCreated);
+        m_gpsCreated = m_exiv2->geoCoordinate();
         return true;
 	}
     return false;

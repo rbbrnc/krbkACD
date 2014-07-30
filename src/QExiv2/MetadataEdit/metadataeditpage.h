@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "geocoding.h"
+
 namespace Ui {
 	class MetadataEditPage;
 }
@@ -32,13 +34,17 @@ class MetadataEditPage : public QWidget
 
         void on_tabWidget_currentChanged(int index);
 
+        void on_reverseGeolocationButton_clicked();
+        void onReverseGeocodeFinished();
 
-        void on_reverseGeocodingButton_clicked();
-
-private:
+	private:
 		Ui::MetadataEditPage *ui;
         QExiv2 *m_exiv2;
         QString m_fileName;
         bool m_updateRating;
+
+        GeoCoding m_geoCoding;
+        QGeoCoordinate m_exifGps;
+        QGeoCoordinate m_xmpGps;
 };
 #endif
