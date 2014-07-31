@@ -1,16 +1,10 @@
 INCLUDEPATH += $$PWD
 QT += network
 
-SOURCES += \
-	$$PWD/metadataeditpage.cpp \
-	$$PWD/metadatadialog.cpp \
-    $$PWD/metadata.cpp
+SOURCES += $$PWD/metadataeditpage.cpp
+HEADERS += $$PWD/metadataeditpage.h
+FORMS   += $$PWD/metadataeditpage.ui
 
-HEADERS += \
-	$$PWD/metadataeditpage.h \
-	$$PWD/metadatadialog.h \
-    $$PWD/metadata.h
-
-FORMS += \
-	$$PWD/metadataeditpage.ui \
-	$$PWD/metadatadialog.ui
+SOURCES += $$PWD/metadatadialog.cpp
+HEADERS += $$PWD/metadatadialog.h
+FORMS   += $$PWD/metadatadialog.ui
