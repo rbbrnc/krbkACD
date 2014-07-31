@@ -17,14 +17,13 @@ class GeoCoding : public QObject
         QGeoLocation location() const;
 
     private:
-        bool setLocationFormJson(const QJsonDocument &jsonDoc);
+		bool setLocationFormJson(const QByteArray &jsonData);
 
     private slots:
         void onReverseGeoCodeFinished();
 
     signals:
         void geoCodeFinished();
-        //void reverseGeocodeFinished(const QString &data, bool error);
         void reverseGeocodeFinished();
         void reverseGeocodeError(const QString &error);
 

@@ -79,9 +79,16 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
     }
 }
 
-bool GeoCoding::setLocationFormJson(const QJsonDocument &jsonDoc)
+bool GeoCoding::setLocationFormJson(const QByteArray &jsonData)
 {
-    QJsonObject obj = jsonDoc.object();
+    QJsonParseError error;
+    QJsonDocument doc = QJsonDocument::fromJson(jsonData, &error);
+    if (error.error) {
+        qWarning() << error.errorString();
+        return false;
+    }
+
+    QJsonObject obj = doc.object();
     if (obj.isEmpty()) {
         qWarning() << "No JSON object found!";
         return false;
@@ -119,29 +126,22 @@ bool GeoCoding::setLocationFormJson(const QJsonDocument &jsonDoc)
 void GeoCoding::onReverseGeoCodeFinished()
 {
     QNetworkReply *reply = qobject_cast<QNetworkReply *>(sender());
-    QString data;
-    bool error = true;
+
+    QByteArray data;
 
     if (reply->error()) {
-        data = reply->errorString();
+        qWarning() << reply->errorString();
     } else {
-        QByteArray ba = reply->readAll();
-        if (!data.isEmpty()) {
-            QJsonParseError jsonError;
-            QJsonDocument doc = QJsonDocument::fromJson(ba, &jsonError);
-            if (jsonError.error) {
-                data = jsonError.errorString();
-            } else {
-                data = QString(doc.toJson(QJsonDocument::Indented));
-                error = setLocationFormJson(doc);
-            }
+        data = reply->readAll();
+        if (data.isEmpty()) {
+            qDebug() << __PRETTY_FUNCTION__ << "Empty DATA";
         } else {
-            data = QString(ba);
-        }
-    }
-
-    //emit reverseGeocodeFinished(data, error);
-    emit reverseGeocodeFinished();
+            qDebug() << data;
+			if (setLocationFormJson(data)) {
+				emit reverseGeocodeFinished();
+			}
+		}
+	}
 
     reply->deleteLater();
     reply = 0;
