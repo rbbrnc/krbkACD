@@ -58,8 +58,8 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
     }
 
     if (gc.isValid()) {
-        //m_location.setCoordinate(gc);
-        //m_location.setAddress(QGeoAddress());
+        m_location.setCoordinate(gc);
+        m_location.setAddress(QGeoAddress());
 
         QNetworkRequest request;
         QUrlQuery query;
@@ -136,7 +136,7 @@ void GeoCoding::onReverseGeoCodeFinished()
         if (data.isEmpty()) {
             qDebug() << __PRETTY_FUNCTION__ << "Empty DATA";
         } else {
-            qDebug() << data;
+            //qDebug() << data;
 			if (setLocationFormJson(data)) {
 				emit reverseGeocodeFinished();
 			}

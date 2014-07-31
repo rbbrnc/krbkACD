@@ -69,6 +69,9 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
         ui->overwriteLs->setChecked(true);
         ui->overwriteLs->hide();
 	}
+
+    m_geocoding = new GeoCoding(this);
+    connect(m_geocoding, SIGNAL(reverseGeocodeFinished()), this, SLOT(onReverseGeocodeFinished()));
 }
 
 LocationDialog::~LocationDialog()
@@ -201,21 +204,17 @@ void LocationDialog::accept()
 	}
 	QDialog::accept();
 }
-void LocationDialog::onReverseGeocodeFinished(const QString &data, bool error)
+void LocationDialog::onReverseGeocodeFinished()
 {
-    ui->geoLocationOutputs->setPlainText(data);
-    if (!error) {
-        qDebug() << m_geocoding->location().address().text();
+    QGeoAddress addr = m_geocoding->location().address();
 
-        QGeoAddress addr = m_geocoding->location().address();
-
-    //    ui->lcRegion->setText(m_created.worldRegion());
-        ui->lcCountry->setText(addr.country());
-        ui->lcCountryCode->setText(addr.countryCode());
-        ui->lcState->setText(addr.state());
-        ui->lcCity->setText(addr.city());
-        ui->lcSublocation->setText(addr.street());
-    }
+    ui->geoLocationOutputs->setPlainText(addr.text());
+    //ui->lcRegion->setText(m_created.worldRegion());
+    ui->lcCountry->setText(addr.country());
+    ui->lcCountryCode->setText(addr.countryCode());
+    ui->lcState->setText(addr.state());
+    ui->lcCity->setText(addr.city());
+    ui->lcSublocation->setText(addr.street());
 
     enableWidgets(true);
     ui->buttonBox->setEnabled(true);
@@ -223,14 +222,7 @@ void LocationDialog::onReverseGeocodeFinished(const QString &data, bool error)
 
 void LocationDialog::on_geolocationButton_clicked()
 {
-    if (!m_geocoding) {
-        m_geocoding = new GeoCoding(this);
-        connect(m_geocoding, SIGNAL(reverseGeocodeFinished(QString, bool)),
-                this, SLOT(onReverseGeocodeFinished(QString, bool)));
-    }
-
     enableWidgets(false);
     ui->buttonBox->setEnabled(false);
-
     m_geocoding->reverseGeoCode(m_gpsCreated);
 }

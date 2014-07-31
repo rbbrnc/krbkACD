@@ -45,7 +45,7 @@ class LocationDialog : public QDialog
 
         void on_geolocationButton_clicked();
 
-        void onReverseGeocodeFinished(const QString &data, bool error);
+        void onReverseGeocodeFinished();
 
     private:
 		Ui::LocationDialog *ui;
