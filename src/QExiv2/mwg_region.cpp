@@ -212,3 +212,28 @@ QDebug operator << (QDebug dbg, const MwgRegion &r)
         return dbg.maybeSpace();
 }
 #endif
+
+QJsonObject MwgRegion::toJson() const
+{
+    QJsonObject obj;
+    obj.insert("x", QJsonValue(m_stArea.x()));
+    obj.insert("y", QJsonValue(m_stArea.y()));
+    obj.insert("w", QJsonValue(m_stArea.width()));
+    obj.insert("h", QJsonValue(m_stArea.height()));
+    if (!m_name.isEmpty()) {
+        obj.insert("name", QJsonValue(m_name));
+    }
+    if (!m_text.isEmpty()) {
+        obj.insert("description", QJsonValue(m_text));
+    }
+    return obj;
+}
+
+QJsonArray MwgRegionList::toJson() const
+{
+    QJsonArray arr;
+    for (int i = 0; i < count(); i++) {
+        arr.append(QJsonValue(at(i).toJson()));
+    }
+    return arr;
+}

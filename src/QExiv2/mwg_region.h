@@ -7,6 +7,9 @@
 #include <QMetaType>
 #include <QDebug>
 
+#include <QJsonArray>
+#include <QJsonObject>
+
 // MWG Region Schema enums
 namespace MwgRs {
 	enum Type  { Face = 0, Pet, Focus, Barcode };
@@ -65,6 +68,8 @@ class MwgRegion
 		// return the stArea bounding box
 		QRectF stAreaBoundingRectF() const;
 
+        QJsonObject toJson() const;
+
 	private:
 		// Region type: mwg-rs:Type
 		MwgRs::Type m_type;
@@ -110,6 +115,8 @@ class MwgRegionList : public QList<MwgRegion>
 		inline explicit MwgRegionList(const MwgRegion &r) { append(r); }
 		inline MwgRegionList(const MwgRegionList &l) : QList<MwgRegion>(l) { }
 		inline MwgRegionList(const QList<MwgRegion> &l) : QList<MwgRegion>(l) { }
+
+        QJsonArray toJson() const;
 };
 
 #endif

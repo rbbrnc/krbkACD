@@ -10,8 +10,8 @@ class IsoCountries
 		IsoCountries();
         //static IsoCountries *m_instance;
 
-	        IsoCountries(IsoCountries const &);   // Don't Implement
-	        void operator=(IsoCountries const &); // Don't implement
+        IsoCountries(IsoCountries const &);   // Don't Implement
+        void operator=(IsoCountries const &); // Don't implement
 
         void load(const QString &countryFileName, QMap<QString, QString> &countryMap);
 
