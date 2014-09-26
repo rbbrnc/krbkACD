@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <QList>
+#include <QJsonObject>
 
 class SocialMetadata
 {
@@ -38,6 +39,8 @@ class SocialMetadata
 		QList<struct SocialMetadata::Comment> comments() const;
 		void setComments(QList<struct SocialMetadata::Comment> comments);
 		void addComment(const struct SocialMetadata::Comment &comment);
+
+        QJsonObject toJson() const;
 
 	private:
 		QString m_albumTitle;
