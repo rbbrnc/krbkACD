@@ -383,10 +383,10 @@ void MainWindow::on_actionPreferences_triggered()
 
 void MainWindow::on_actionAbout_triggered()
 {
-    QString txt = QString("KrbkACD v.%1\n\n").arg(KRBKACD_VERSION);
+    QString txt = QString("KrbkACD v.%1\n\n").arg(KrbkACDVersion::krbkAcdVersionString());
     txt += QString("Qt Lib v.%1\n").arg(QT_VERSION_STR);
-    txt += QString("Exiv2  v.%1\n").arg(KrbkACDVersion::exiv2VerisionString());
-    txt += QString("OpenCv v.%1\n").arg(KrbkACDVersion::openCvVerisionString());
+    txt += QString("Exiv2  v.%1\n").arg(KrbkACDVersion::exiv2VersionString());
+    txt += QString("OpenCv v.%1\n").arg(KrbkACDVersion::openCvVersionString());
 
     QMessageBox::about(this, "About", txt);
 }

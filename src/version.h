@@ -6,8 +6,9 @@
 #define KRBKACD_VERSION "0.0.44"
 
 namespace KrbkACDVersion {
-    const QString exiv2VerisionString();
-    const QString openCvVerisionString();
+    const QString exiv2VersionString();
+    const QString openCvVersionString();
+    const QString krbkAcdVersionString();
 }
 
 #endif

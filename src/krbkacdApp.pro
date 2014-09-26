@@ -51,19 +51,34 @@ QMAKE_CXXFLAGS += -g -ggdb
 #QMAKE_CXXFLAGS += -pg
 #QMAKE_LFLAGS   += -pg
 
-SOURCES += main.cpp\
-	   mainwindow.cpp \
-	   infowidget.cpp \
-	   version.cpp
+SOURCES += \
+	main.cpp\
+	mainwindow.cpp \
+	infowidget.cpp \
+	version.cpp
 
-HEADERS += mainwindow.h \
-	   infowidget.h \
-	   version.h \
+HEADERS += \
+	mainwindow.h \
+	infowidget.h \
+	version.h \
+	$$OUT_PWD/build_date.h
 
-FORMS   += mainwindow.ui \
-	   infowidget.ui
+FORMS += \
+	mainwindow.ui \
+	infowidget.ui
 
 RESOURCES += $$PWD/QExiv2/QExiv2.qrc
+
+#--
+#-- To create build_date.h
+#--
+build_date.target = build_date
+build_date.commands = bash $${_PRO_FILE_PWD_}/build_date.sh
+##build_date.depends = <files with the target depends on...>
+
+QMAKE_EXTRA_TARGETS += build_date
+PRE_TARGETDEPS += build_date
+#-------------------------------------------------------------
 
 #-- Custom style
 #DEFINES += USE_CUSTOM_STYLE

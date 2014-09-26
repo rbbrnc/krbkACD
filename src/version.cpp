@@ -1,4 +1,5 @@
 #include "version.h"
+#include "build_date.h"
 
 #ifdef ENABLE_OBJECT_DETECT_MODULE
 #include <opencv/cv.h>
@@ -21,14 +22,20 @@
 
 namespace KrbkACDVersion {
 
-const QString exiv2VerisionString()
+const QString exiv2VersionString()
 {
     return QString(Exiv2::version());
 }
 
-const QString openCvVerisionString()
+const QString openCvVersionString()
 {
     return QString(CV_VERSION);
+}
+
+const QString krbkAcdVersionString()
+{
+	const QString version = QString("%1 [%2]").arg(KRBKACD_VERSION).arg(BUILD_DATE);
+    return QString(version);
 }
 
 } // end-namespace
