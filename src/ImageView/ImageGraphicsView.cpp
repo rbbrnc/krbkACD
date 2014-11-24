@@ -27,12 +27,6 @@ ImageGraphicsView::~ImageGraphicsView()
 {
 }
 
-// Return the current centerpoint for the view, used for zooming
-QPointF ImageGraphicsView::getCenter() const
-{
-	return m_currentCenterPoint;
-}
-
 /**
  * Sets the current centerpoint.  Also updates the scene's center point.
  * Unlike centerOn, which has no way of getting the floating point center
@@ -93,13 +87,13 @@ void ImageGraphicsView::wheelEvent(QWheelEvent* event)
 	QPointF pointBeforeScale(mapToScene(event->pos()));
 
 	// Get the original screen centerpoint
-	QPointF screenCenter = getCenter();
+    QPointF screenCenter = m_currentCenterPoint;
 
 	// Scale the view (ie. do the zoom)
 	if (event->delta() > 0) {
 		scale(Z_IN, Z_IN);	// Zoom in
 	} else {
-		scale(Z_OUT, Z_OUT);	// Zooming out
+        scale(Z_OUT, Z_OUT); // Zooming out
 	}
 
 	// Get the position after scaling, in scene coords
@@ -118,8 +112,7 @@ void ImageGraphicsView::mousePressEvent(QMouseEvent *event)
 {
 	if (isInteractive()) {
 		// For region selection
-		QPointF origin = mapToScene(event->pos());
-		m_selRect.setTopLeft(origin);
+        m_selRect.setTopLeft(mapToScene(event->pos()));
 		QGraphicsView::mousePressEvent(event);
 	} else {
 		// For panning the view
@@ -169,7 +162,7 @@ void ImageGraphicsView::mouseMoveEvent(QMouseEvent *event)
 			m_lastPanPoint = event->pos();
 
 			// Update the center ie. do the pan
-			setCenter(getCenter() + delta);
+            setCenter(m_currentCenterPoint + delta);
 		}
 	}
 }

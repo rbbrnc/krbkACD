@@ -22,8 +22,7 @@
 #define PAGE_IMAGE_VIEW      3
 #define PAGE_METADATA_EDITOR 4
 
-
-#define EMPTY_SELECTION_TEXT "No File Selected!"
+//#define EMPTY_SELECTION_TEXT "No File Selected!"
 
 MainWindow::MainWindow(QWidget *parent) :
 	QMainWindow(parent),
@@ -31,54 +30,55 @@ MainWindow::MainWindow(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-    m_fm1  = new FileManager(ui->fmListView, this);
-    m_fm1->setObjectName("__FileManager_1");
+	ui->fmListView->setLayoutMode(QListView::Batched);
+
+    m_fm1 = new FileManager(ui->fmListView, this);
+    m_fm2 = new FileManager(ui->secondFmListView, this);
+
     ui->currentPath->setText(m_fm1->currentPath());
 
-    m_fm2 = new FileManager(ui->secondFmListView, this);
-    m_fm2->setObjectName("__FileManager_2");
 
 	// FileManager class signals
-    connect(m_fm1, SIGNAL(currentPathChanged()), this, SLOT(onCurrentPathChanged()));
-    connect(m_fm1, SIGNAL(currentChanged()),     this, SLOT(onCurrentFileChanged()));
+    // using [=] to capture variables used in the body by value
+    connect(m_fm1, &FileManager::currentPathChanged, [=] { ui->currentPath->setText(m_fm1->currentPath()); });
+    connect(m_fm1, &FileManager::currentChanged, [=] { updatePageData(ui->stackedWidget->currentIndex()); });
 
 	// App Actions
-	connect(ui->actionQuit,       SIGNAL(triggered()),     this, SLOT(onQuit()));
-	connect(ui->actionFullScreen, SIGNAL(triggered(bool)), this, SLOT(onFullScreen(bool)));
+    connect(ui->actionQuit,       &QAction::triggered, this, &MainWindow::onQuit);
+    connect(ui->actionFullScreen, &QAction::triggered, this, &MainWindow::onFullScreen);
 
 	ui->fmListView->setContextMenuPolicy(Qt::CustomContextMenu);
-	connect(ui->fmListView, SIGNAL(customContextMenuRequested(const QPoint &)),
-            this, SLOT(showFmContextMenu(const QPoint &)));
+    connect(ui->fmListView, &QListView::customContextMenuRequested, this, &MainWindow::showFmContextMenu);
 
     // Show Icons/List
-    connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), m_fm1, SLOT(iconMode(bool)));
-    connect(ui->actionShowIcons,   SIGNAL(toggled(bool)), m_fm2, SLOT(iconMode(bool)));
+    connect(ui->actionShowIcons, &QAction::toggled, m_fm1, &FileManager::iconMode);
+    connect(ui->actionShowIcons, &QAction::toggled, m_fm2, &FileManager::iconMode);
 
     // Show/Hide Hidden Files
-    connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), m_fm1, SLOT(showHidden(bool)));
-    connect(ui->actionShowHidden,  SIGNAL(toggled(bool)), m_fm2, SLOT(showHidden(bool)));
+    connect(ui->actionShowHidden, &QAction::toggled, m_fm1, &FileManager::showHidden);
+    connect(ui->actionShowHidden, &QAction::toggled, m_fm2, &FileManager::showHidden);
 
     // Delete Files
-    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fm1, SLOT(deleteSelectedFiles()));
-    connect(ui->actionDeleteFiles, SIGNAL(triggered()), m_fm2, SLOT(deleteSelectedFiles()));
+    connect(ui->actionDeleteFiles, &QAction::triggered, m_fm1, &FileManager::deleteSelectedFiles);
+    connect(ui->actionDeleteFiles, &QAction::triggered, m_fm2, &FileManager::deleteSelectedFiles);
 
     // Rename Files
-    connect(ui->actionRenameFiles, SIGNAL(triggered()), m_fm1, SLOT(renameSelectedFiles()));
-    connect(ui->actionRenameFiles, SIGNAL(triggered()), m_fm2, SLOT(renameSelectedFiles()));
+    connect(ui->actionRenameFiles, &QAction::triggered, m_fm1, &FileManager::renameSelectedFiles);
+    connect(ui->actionRenameFiles, &QAction::triggered, m_fm2, &FileManager::renameSelectedFiles);
 
     // MkDir
-    connect(ui->actionMkDir,       SIGNAL(triggered()), m_fm1, SLOT(mkdir()));
-    connect(ui->actionMkDir,       SIGNAL(triggered()), m_fm2, SLOT(mkdir()));
+    connect(ui->actionMkDir, &QAction::triggered, m_fm1, &FileManager::mkdir);
+    connect(ui->actionMkDir, &QAction::triggered, m_fm2, &FileManager::mkdir);
 
-	connect(ui->actionCopyFiles,   SIGNAL(triggered()), this, SLOT(onCopyFiles()));
-	connect(ui->actionMoveFiles,   SIGNAL(triggered()), this, SLOT(onMoveFiles()));
-	connect(ui->actionOpenFile,    SIGNAL(triggered()), this, SLOT(onOpenFile()));
+    connect(ui->actionCopyFiles, &QAction::triggered, this, &MainWindow::onCopyFiles);
+    connect(ui->actionMoveFiles, &QAction::triggered, this, &MainWindow::onMoveFiles);
+    connect(ui->actionOpenFile,  &QAction::triggered, this, &MainWindow::onOpenFile);
 
 	// Metadata Edit Actions
-	connect(ui->actionEditLocationsMetadata, SIGNAL(triggered()), this, SLOT(onEditLocationsMetadata()));
-	connect(ui->actionEditSocialMetadata, SIGNAL(triggered()), this, SLOT(onEditSocialMetadata()));
-	connect(ui->actionEditMetadata, SIGNAL(triggered()), this, SLOT(onEditMetadata()));
-	connect(ui->actionEditDateTime, SIGNAL(triggered()), this, SLOT(onEditDateTimeMetadata()));
+    connect(ui->actionEditLocationsMetadata, &QAction::triggered, this, &MainWindow::onEditLocationsMetadata);
+    connect(ui->actionEditSocialMetadata, &QAction::triggered, this, &MainWindow::onEditSocialMetadata);
+    connect(ui->actionEditMetadata, &QAction::triggered, this, &MainWindow::onEditMetadata);
+    connect(ui->actionEditDateTime, &QAction::triggered, this, &MainWindow::onEditDateTimeMetadata);
 
     m_pageGroup = new QActionGroup(this);
 	m_pageGroup->addAction(ui->actionInfo);
@@ -95,20 +95,17 @@ MainWindow::MainWindow(QWidget *parent) :
 	ui->action3->setData(PAGE_IMAGE_VIEW);
     ui->action4->setData(PAGE_METADATA_EDITOR);
 
-	connect(ui->actionInfo, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
-	connect(ui->action1, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
-	connect(ui->action2, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
-	connect(ui->action3, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
-    connect(ui->action4, SIGNAL(toggled(bool)), this, SLOT(onChangePage(bool)));
+    connect(ui->actionInfo, &QAction::toggled, this, &MainWindow::onChangePage);
+    connect(ui->action1, &QAction::toggled, this, &MainWindow::onChangePage);
+    connect(ui->action2, &QAction::toggled, this, &MainWindow::onChangePage);
+    connect(ui->action3, &QAction::toggled, this, &MainWindow::onChangePage);
+    connect(ui->action4, &QAction::toggled, this, &MainWindow::onChangePage);
 
-
-	// Connect splitters moved signal for resize preview
-	connect(ui->previewSplitter, SIGNAL(splitterMoved(int, int)), this, SLOT(scalePreview(int, int)));
+    // Connect splitters moved signal for resize preview
+    connect(ui->previewSplitter, &QSplitter::splitterMoved, this, &MainWindow::scalePreview);
 
 	// So the shortcut works without the menu
 	this->addAction(ui->actionFullScreen);
-
-//	m_secondFm->blockModelSignals(true);
 }
 
 MainWindow::~MainWindow()
@@ -134,8 +131,6 @@ void MainWindow::onFullScreen(bool enable)
 	}
 
 	ui->menubar->setVisible(!enable);
-//	ui->statusbar->setVisible(!enable);
-//	ui->toolbar->setVisible(!enable);
 }
 
 // SLOT
@@ -147,18 +142,6 @@ void MainWindow::on_previewCheckBox_stateChanged(int state)
 	} else {
 		ui->preview->hide();
 	}
-}
-
-// SLOT (called only for main FileManager)
-void MainWindow::onCurrentPathChanged()
-{
-    ui->currentPath->setText(m_fm1->currentPath());
-}
-
-// SLOT (called only for main FileManager)
-void MainWindow::onCurrentFileChanged()
-{
-	updatePageData(ui->stackedWidget->currentIndex());
 }
 
 void MainWindow::onChangePage(bool checked)
@@ -360,6 +343,9 @@ void MainWindow::showFmContextMenu(const QPoint &pos)
 void MainWindow::onOpenFile()
 {
 	QStringList files = fileSelection();
+    if (files.isEmpty()) {
+        return;
+    }
 
 	// USE DESKTOP SERVICES TO OPEN FILES (xdg-open)!
 	// The temporary files are deleted when the application is closed!
@@ -378,7 +364,6 @@ void MainWindow::on_actionStart_Process_triggered()
 
 void MainWindow::on_actionPreferences_triggered()
 {
-
 }
 
 void MainWindow::on_actionAbout_triggered()

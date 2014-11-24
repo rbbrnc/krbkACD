@@ -21,15 +21,9 @@ MetadataTreeModel::MetadataTreeModel(QExiv2 *data, QObject *parent)
 	: QAbstractItemModel(parent),
 	  m_metadata(data)
 {
-	QList<QVariant> rootData;
-	rootData << "Family"
-		 << "Group"
-		 << "Tag"
-		 << "Value"
-		 << "Id"
-		 << "Type"
-		 << "Count"
-		 << "key";
+    QVariantList rootData = {
+        "Family", "Group", "Tag", "Value", "Id", "Type", "Count", "key"
+    };
 
 	m_rootItem = new MetadataTreeItem(rootData);
 	setupModelData(m_rootItem);
@@ -152,8 +146,7 @@ void MetadataTreeModel::addNode(QHash<QString, MetadataTreeItem *> &map,
 	MetadataTreeItem *familyNode;
 	if (fNodes.isEmpty()) {
 		// Add a new family node
-		QList<QVariant> familyData;
-		familyData << columnData[0] << "" << "" << "" << "" << "" << "" << "";
+        QVariantList familyData = { columnData[0], "", "", "", "", "", "", "" };
 		familyNode = new MetadataTreeItem(familyData, parent);
 		parent->appendChild(familyNode);
 	} else {
@@ -165,10 +158,10 @@ void MetadataTreeModel::addNode(QHash<QString, MetadataTreeItem *> &map,
 
 	if (!map.contains(group)) {
 		// Add a new group node to the model and to the map of groups.
-		QList<QVariant> groupData;
-		groupData << "" << group << "" << "" << "" << "" << "" << "";
-		groupNode = new MetadataTreeItem(groupData, familyNode);
-		familyNode->appendChild(groupNode);
+        QVariantList groupData = { "", group, "", "", "", "", "", "" };
+        groupNode = new MetadataTreeItem(groupData, familyNode);
+
+        familyNode->appendChild(groupNode);
 		map[group] = groupNode;
 	} else {
 		groupNode = map.value(group);
@@ -199,15 +192,14 @@ void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 	}
 
 	if (data.size() > 0) {
-		QList<QVariant> columnData;
-		columnData << "" << "" << "" << "" << "" << "" << "" << "";
-		QHash<QString, MetadataTreeItem *> groupMap;
+        QVariantList columnData = { "", "", "", "", "", "", "", "" };
+        QHash<QString, MetadataTreeItem *> groupMap;
 		for (int i = 0; i < data.size(); i++) {
 			columnData[0] = data.at(i).family;
 			columnData[1] = data.at(i).group;
 			columnData[2] = data.at(i).tagName;
 			columnData[3] = data.at(i).value;
-			columnData[4] = "0x" + QString::number(data.at(i).tag, 16);
+            columnData[4] = QVariant("0x" + QString::number(data.at(i).tag, 16));
 			columnData[5] = data.at(i).typeName;
 			columnData[6] = QString::number(data.at(i).count, 10);
 			columnData[7] = data.at(i).key;
@@ -218,8 +210,8 @@ void MetadataTreeModel::setupModelData(MetadataTreeItem *parent)
 
 	// Image comment
 	if (m_metadata->hasComment()) {
-		QList<QVariant> columnData;
-		columnData << "Comment" << "" << "" << m_metadata->imgComment() << "" << "" << "" << "";
+
+        QVariantList columnData = { "Comment", "", "", m_metadata->imgComment(), "", "", "", "" };
 		parent->appendChild(new MetadataTreeItem(columnData, parent));
 	}
 

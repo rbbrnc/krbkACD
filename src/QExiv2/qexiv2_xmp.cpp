@@ -66,7 +66,7 @@ void QExiv2::removeXmpBag(const char *tag, int tagNameSize)
 				++it;
 			}
 		}
-	} catch (Exiv2::Error& e) {
+    } catch (Exiv2::Error &e) {
 		d->error(QString("Cannot Erase Xmp Bag '%1'using Exiv2 ").arg(__func__), e);
 	}
 }
@@ -102,6 +102,7 @@ QByteArray QExiv2::xmpPacket() const
 
 QString QExiv2::xmpTagString(const char *tag, bool escapeCR) const
 {
+    qDebug() << "CHAR*";
 	try {
 		Exiv2::XmpData data(d->xmpMetadata);
 		Exiv2::XmpKey  key(tag);
@@ -125,6 +126,7 @@ QString QExiv2::xmpTagString(const char *tag, bool escapeCR) const
 
 QString QExiv2::xmpTagString(const QString &tag, bool escapeCR) const
 {
+    qDebug() << "QSTRING" << tag;
 	return xmpTagString(tag.toLatin1().constData(), escapeCR);
 }
 

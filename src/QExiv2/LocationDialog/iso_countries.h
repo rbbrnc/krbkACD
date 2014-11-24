@@ -8,8 +8,6 @@ class IsoCountries
 {
 	private:
 		IsoCountries();
-        //static IsoCountries *m_instance;
-
         IsoCountries(IsoCountries const &);   // Don't Implement
         void operator=(IsoCountries const &); // Don't implement
 

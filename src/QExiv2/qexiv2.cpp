@@ -56,7 +56,7 @@ bool QExiv2::loadFromData(const QByteArray& data)
 }
 #endif
 
-bool QExiv2::load(const QString& filePath)
+bool QExiv2::load(const QString &filePath)
 {
 	if (filePath.isEmpty()) {
 		return false;
@@ -106,7 +106,7 @@ bool QExiv2::save()
 
         return true;
 
-	} catch (Exiv2::Error& e) {
+    } catch (Exiv2::Error &e) {
 		d->error(__PRETTY_FUNCTION__, e);
 	}
 

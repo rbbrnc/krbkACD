@@ -4,17 +4,10 @@
 #include "iso_countries.h"
 
 IsoCountries::IsoCountries()
+    : m_WorldRegions {"Africa", "Asia", "Central America", "Europe",
+                      "Middle East", "North America", "Oceania",
+                      "South America", "The Caribbean"}
 {
-	m_WorldRegions << "Africa"
-		       << "Asia"
-		       << "Central America"
-		       << "Europe"
-		       << "Middle East"
-		       << "North America"
-		       << "Oceania"
-		       << "South America"
-		       << "The Caribbean";
-
 	load(":/iso3166Africa.txt",     m_AfricaCountriesMap);
 	load(":/iso3166Asia.txt",       m_AsiaCountriesMap);
 	load(":/iso3166CAmerica.txt",   m_CentralAmericaCountriesMap);

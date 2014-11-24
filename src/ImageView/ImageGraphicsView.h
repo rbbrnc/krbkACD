@@ -28,15 +28,13 @@ class ImageGraphicsView : public QGraphicsView
 		void rotateCCW();
 
 	protected:
-		// Holds the current centerpoint for the view,
-		// used for panning and zooming
+        // Holds the current centerpoint for the view, used for panning and zooming
 		QPointF m_currentCenterPoint;
 
 		// From panning the view
 		QPoint m_lastPanPoint;
 
 		void setCenter(const QPointF& centerPoint);
-		QPointF getCenter() const;
 
 		virtual void wheelEvent(QWheelEvent *event);
 		virtual void resizeEvent(QResizeEvent *event);
@@ -45,8 +43,8 @@ class ImageGraphicsView : public QGraphicsView
 		virtual void mouseMoveEvent(QMouseEvent *event);
 
 	private:
-		// Hold the curent rotation angle for restore
-		// the current rotation after a Zoom 1:1.
+        // Hold the curent rotation angle for restore the current rotation
+        // after a Zoom 1:1.
 		qreal m_angle;
 
 		// Selection rectangle (interactive mode)

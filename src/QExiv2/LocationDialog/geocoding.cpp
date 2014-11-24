@@ -64,7 +64,7 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
         QNetworkRequest request;
         QUrlQuery query;
         QUrl url;
-        url.setUrl(URL_REVERSE_GEOCODE);
+        url.setUrl(QStringLiteral(URL_REVERSE_GEOCODE));
         query.addQueryItem("format", "json");
         query.addQueryItem("lat", QString::number(gc.latitude()));
         query.addQueryItem("lon", QString::number(gc.longitude()));
@@ -75,7 +75,7 @@ void GeoCoding::reverseGeoCode(const QGeoCoordinate &gc)
 
         m_ready = false;
         QNetworkReply *reply = m_netManager->get(request);
-        connect(reply, SIGNAL(finished()), this, SLOT(onReverseGeoCodeFinished()));
+        connect(reply, &QNetworkReply::finished, this, &GeoCoding::onReverseGeoCodeFinished);
     }
 }
 
@@ -144,6 +144,6 @@ void GeoCoding::onReverseGeoCodeFinished()
 	}
 
     reply->deleteLater();
-    reply = 0;
+    reply = Q_NULLPTR;
     m_ready = true;
 }

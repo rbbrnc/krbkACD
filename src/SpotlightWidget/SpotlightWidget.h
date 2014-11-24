@@ -15,8 +15,10 @@ class SpotlightWidget : public QLineEdit
 	protected:
 		void resizeEvent(QResizeEvent *);
 
+#if 0
 	private slots:
 		void updateCloseButton(const QString &text);
+#endif
 
 	private:
 		QToolButton *clearButton;

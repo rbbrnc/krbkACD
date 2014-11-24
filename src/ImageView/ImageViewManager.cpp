@@ -13,8 +13,8 @@
 
 ImageViewManager::ImageViewManager(QWidget *parent)
 	: QWidget(parent),
-	  m_image(0),
-	  m_exiv2(0),
+      m_image(Q_NULLPTR),
+      m_exiv2(Q_NULLPTR),
 	  m_showRegions(false),
 	  m_updateRegion(false)
 {
@@ -91,23 +91,20 @@ ImageViewManager::ImageViewManager(QWidget *parent)
 	layout->addLayout(buttonLayout);
 	setLayout(layout);
 
-	connect(m_zoomInButton,    SIGNAL(clicked()), m_view, SLOT(zoomIn()));
-	connect(m_zoomOutButton,   SIGNAL(clicked()), m_view, SLOT(zoomOut()));
-	connect(m_zoom11Button,    SIGNAL(clicked()), m_view, SLOT(zoom11()));
-	connect(m_zoomToFitButton, SIGNAL(clicked()), m_view, SLOT(zoomToFit()));
-
-	connect(m_rotateCCWButton, SIGNAL(clicked()), m_view, SLOT(rotateCCW()));
-	connect(m_rotateCWButton,  SIGNAL(clicked()), m_view, SLOT(rotateCW()));
-
-	connect(m_resetViewButton, SIGNAL(clicked()), m_view, SLOT(reset()));
-
-	connect(m_modeButton, SIGNAL(toggled(bool)), this, SLOT(enableRegionSelection(bool)));
+    connect(m_zoomInButton,    &QToolButton::clicked, m_view, &ImageGraphicsView::zoomIn);
+    connect(m_zoomOutButton,   &QToolButton::clicked, m_view, &ImageGraphicsView::zoomOut);
+    connect(m_zoom11Button,    &QToolButton::clicked, m_view, &ImageGraphicsView::zoom11);
+    connect(m_zoomToFitButton, &QToolButton::clicked, m_view, &ImageGraphicsView::zoomToFit);
+    connect(m_rotateCCWButton, &QToolButton::clicked, m_view, &ImageGraphicsView::rotateCCW);
+    connect(m_rotateCWButton,  &QToolButton::clicked, m_view, &ImageGraphicsView::rotateCW);
+    connect(m_resetViewButton, &QToolButton::clicked, m_view, &ImageGraphicsView::reset);
+    connect(m_modeButton,      &QToolButton::toggled, this,   &ImageViewManager::enableRegionSelection);
 
 #ifdef ENABLE_OBJECT_DETECT_MODULE
-	connect(m_detectButton, SIGNAL(clicked()), this, SLOT(onDetectObjects()));
+    connect(m_detectButton, &QToolButton::clicked, this, &ImageViewManager::onDetectObjects);
 #endif
-	connect(m_scene, SIGNAL(changed(QList<QRectF>)), this, SLOT(sceneChanged(QList<QRectF>)));
-	connect(m_view,  SIGNAL(newRectRegion(QRectF)), this, SLOT(addRegion(QRectF)));
+    connect(m_scene, &QGraphicsScene::changed, this, &ImageViewManager::sceneChanged);
+    connect(m_view, &ImageGraphicsView::newRectRegion, this, &ImageViewManager::addRegion);
 }
 
 ImageViewManager::~ImageViewManager()
@@ -128,7 +125,7 @@ void ImageViewManager::loadMetadata()
 {
 	if (m_exiv2) {
 		delete m_exiv2;
-		m_exiv2 = 0;
+        m_exiv2 = Q_NULLPTR;
 	}
 
 	m_exiv2 = new QExiv2();
@@ -202,9 +199,9 @@ void ImageViewManager::setImage(const QString &fileName, bool withMetadata)
 		setImage(pixmap);
 	}
 
-        if (withMetadata) {
-		loadMetadata();
-        }
+    if (withMetadata) {
+        loadMetadata();
+    }
 }
 
 // [private]
@@ -272,7 +269,6 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name,
 		qWarning() << __PRETTY_FUNCTION__ << "Region not fully bounded on image";
 		return;
 	}
-//	qDebug() << __PRETTY_FUNCTION__ << rect << name << desc;
 
 	RegionGraphicsItem *ir = new RegionGraphicsItem(rect);
 
@@ -285,8 +281,8 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name,
 		ir->setDescription(desc);
 	}
 
-	connect(ir, SIGNAL(removeRequest()), this, SLOT(removeRegion()));
-	connect(ir, SIGNAL(editRequest()),   this, SLOT(editRegion()));
+    connect(ir, &RegionGraphicsItem::removeRequest, this, &ImageViewManager::removeRegion);
+    connect(ir, &RegionGraphicsItem::editRequest,   this, &ImageViewManager::editRegion);
 
 	m_scene->addItem(ir);
 	m_regions.insert(ir);
@@ -294,12 +290,6 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name,
 	if (!m_showRegions) {
 		ir->setZValue(-1);
 	}
-#if 0
-	QSize imageSize;
-	imageSize.setWidth(m_image->boundingRect().width());
-	imageSize.setHeight(m_image->boundingRect().height());
-	m_updateRegion = true;
-#endif
 }
 
 // [SLOT public]
@@ -343,7 +333,6 @@ void ImageViewManager::editRegion()
 	RegionGraphicsItem *ri = dynamic_cast<RegionGraphicsItem *>(sender());
 	RegionEditDialog dlg(ri, this);
 	if (QDialog::Accepted == dlg.exec()) {
-		//qDebug() << "Name:" << ri->name() << "Desc:" << ri->description();
 		m_updateRegion = true;
 	}
 }

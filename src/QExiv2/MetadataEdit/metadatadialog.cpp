@@ -8,6 +8,8 @@
 MetadataDialog::MetadataDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::MetadataDialog),
+    m_xmpDcSubjectModel(new QStringListModel(QStringList(), this)),
+    m_xmpDcSubjectFilter(new QSortFilterProxyModel(this)),
 	m_fileList(files)
 {
 	// Init resources on static libraries
@@ -15,11 +17,6 @@ MetadataDialog::MetadataDialog(const QStringList &files, QWidget *parent) :
 
 	ui->setupUi(this);
 
-	// Xmp.dc.subject Init
-	m_xmpDcSubjectModel  = new QStringListModel(this);
-	m_xmpDcSubjectFilter = new QSortFilterProxyModel(this);
-
-	m_xmpDcSubjectModel->setStringList(QStringList());
 	m_xmpDcSubjectFilter->setSourceModel(m_xmpDcSubjectModel);
 
 	if (m_fileList.count() == 0) {
@@ -29,8 +26,8 @@ MetadataDialog::MetadataDialog(const QStringList &files, QWidget *parent) :
 	} else {
 	}
 
-	connect(ui->xmpDcSubjectKeyword, SIGNAL(textChanged(QString)),
-		m_xmpDcSubjectFilter, SLOT(setFilterFixedString(QString)));
+    connect(ui->xmpDcSubjectKeyword, &SpotlightWidget::textChanged,
+            m_xmpDcSubjectFilter, &QSortFilterProxyModel::setFilterFixedString);
 
 	m_xmpDcSubjectFilter->setFilterCaseSensitivity(Qt::CaseInsensitive);
 	ui->xmpDcSubjectListView->setModel(m_xmpDcSubjectFilter);
@@ -40,8 +37,6 @@ MetadataDialog::MetadataDialog(const QStringList &files, QWidget *parent) :
 
 MetadataDialog::~MetadataDialog()
 {
-	delete m_xmpDcSubjectModel;
-	delete m_xmpDcSubjectFilter;
 	delete ui;
 }
 
@@ -50,13 +45,12 @@ MetadataDialog::~MetadataDialog()
 void MetadataDialog::on_addXmpDcSubjectButton_clicked()
 {
 	QString str = ui->xmpDcSubjectKeyword->text();
-	if (str.isEmpty())
+    if (str.isEmpty()) {
 		return;
-
-	str = str.simplified();
+    }
 
 	m_xmpDcSubjectModel->insertRows(m_xmpDcSubjectModel->rowCount(), 1);
-	m_xmpDcSubjectModel->setData(m_xmpDcSubjectModel->index(m_xmpDcSubjectModel->rowCount() - 1), str);
+    m_xmpDcSubjectModel->setData(m_xmpDcSubjectModel->index(m_xmpDcSubjectModel->rowCount() - 1), str.simplified());
 	ui->xmpDcSubjectKeyword->clear();
 }
 

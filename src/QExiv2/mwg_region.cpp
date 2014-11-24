@@ -81,8 +81,8 @@ void MwgRegion::setRegion(qreal x, qreal y, qreal w, qreal h, qreal dimW, qreal 
 			m_stAreaBoundingRect = QRectF(x, y, 2, 2);
 		}
 	}
-
 }
+
 void MwgRegion::setRegion(const QRectF &area, const QSizeF &dim, bool normalized)
 {
 	setRegion(area.x(), area.y(), area.width(), area.height(),

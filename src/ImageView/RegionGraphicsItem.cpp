@@ -59,14 +59,12 @@ void RegionGraphicsItem::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 	QGraphicsView *v = scene()->views().first();
 	QPoint viewPos = v->mapFromScene(mapToScene(boundingRect().bottomLeft()));
 	QToolTip::showText(v->viewport()->mapToGlobal(viewPos), tip);
-//	QGraphicsItem::hoverEnterEvent(event);
 }
 
 // [EVENT protected]
 void RegionGraphicsItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
 {
 	QToolTip::hideText();
-//	QGraphicsItem::hoverLeaveEvent(event);
 }
 
 QString RegionGraphicsItem::name() const

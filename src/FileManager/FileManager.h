@@ -19,13 +19,12 @@ class FileManager : public QObject
 		QStringList fileSelection() const;
 
 		bool isActive() const;
-		void blockModelSignals(bool block);
+//      void blockModelSignals(bool block);
 
     private:
         void scrollToCurrent();
 
 	private slots:
-
 		void fileSelect(const QModelIndex &current, const QModelIndex &previous);
 		void handleItemActivation(QModelIndex index);
 

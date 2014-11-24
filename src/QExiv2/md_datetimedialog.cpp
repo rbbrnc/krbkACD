@@ -10,7 +10,7 @@ MetadataDateTimeDialog::MetadataDateTimeDialog(const QStringList &files, QWidget
 	QDialog(parent),
 	ui(new Ui::MetadataDateTimeDialog),
     m_fileList(files),
-    m_exiv2(0)
+    m_exiv2(Q_NULLPTR)
 {
 	ui->setupUi(this);
 

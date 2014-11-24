@@ -16,12 +16,12 @@ ImageGraphicsItem::~ImageGraphicsItem()
 {
 }
 
-void ImageGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
+void ImageGraphicsItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
 	QGraphicsPixmapItem::mouseMoveEvent(event);
 }
 
-void ImageGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent * event)
+void ImageGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 	QGraphicsPixmapItem::mousePressEvent(event);
 }

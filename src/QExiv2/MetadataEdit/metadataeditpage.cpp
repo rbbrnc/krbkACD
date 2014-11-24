@@ -14,11 +14,12 @@
 MetadataEditPage::MetadataEditPage(QWidget *parent) :
 	QWidget(parent),
     ui(new Ui::MetadataEditPage),
-    m_exiv2(0)
+    m_exiv2(Q_NULLPTR)
 {
 	ui->setupUi(this);
 
-    connect(&m_geoCoding, SIGNAL(reverseGeocodeFinished()), this, SLOT(onReverseGeocodeFinished()));
+    //connect(&m_geoCoding, SIGNAL(reverseGeocodeFinished()), this, SLOT(onReverseGeocodeFinished()));
+    connect(&m_geoCoding, &GeoCoding::reverseGeocodeFinished, this, &MetadataEditPage::onReverseGeocodeFinished);
 }
 
 MetadataEditPage::~MetadataEditPage()
@@ -32,13 +33,13 @@ void MetadataEditPage::setFile(const QString &file)
 
     if (m_exiv2) {
         delete m_exiv2;
-        m_exiv2 = 0;
+        m_exiv2 = Q_NULLPTR;
     }
 
     m_exiv2 = new QExiv2();
     if (!m_exiv2->load(m_fileName)) {
         delete m_exiv2;
-        m_exiv2 = 0;
+        m_exiv2 = Q_NULLPTR;
         // Disable all widgets!!!
         return;
     }
@@ -80,7 +81,7 @@ void MetadataEditPage::setFile(const QString &file)
     }
 
     delete m_exiv2;
-    m_exiv2 = 0;
+    m_exiv2 = Q_NULLPTR;
 }
 
 void MetadataEditPage::getLocations()
@@ -166,9 +167,7 @@ void MetadataEditPage::getDateTime()
 
 void MetadataEditPage::on_locationEditButton_clicked()
 {
-    QStringList files;
-    files << m_fileName;
-    LocationDialog dlg(files);
+    LocationDialog dlg(QStringList(m_fileName), this);
     if (QDialog::Accepted == dlg.exec()) {
         // Reload Data
         setFile(m_fileName);
@@ -243,7 +242,7 @@ bool MetadataEditPage::saveMetadata()
 
 void MetadataEditPage::on_tabWidget_currentChanged(int index)
 {
-    // XXX To save unsaved data ont he previous tab!!!
+    // XXX To save unsaved data on the previous tab!!!
     Q_UNUSED(index)
 }
 

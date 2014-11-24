@@ -7,10 +7,10 @@
 #include <QDebug>
 
 static const QStringList g_patternTypes = {
-    QString("Text"),
-    QString("UUID"),
-    QString("FileName"),
-    QString("Counter")
+    "Text",
+    "UUID",
+    "FileName",
+    "Counter"
 };
 
 enum RenamePatternType {
@@ -21,10 +21,10 @@ enum RenamePatternType {
 };
 
 static const QStringList g_extensionTypes = {
-    QString("Original"),
-    QString("Lower Case"),
-    QString("Upper Case"),
-    QString("Text")
+    "Original",
+    "Lower Case",
+    "Upper Case",
+    "Text"
 };
 
 enum ExtPatternType {
@@ -94,13 +94,16 @@ RenameDialog::RenameDialog(const QStringList &files, QWidget *parent) :
     ui->fileExtensionComboBox->insertItems(0, g_extensionTypes);
 
     // Connect the signals here to avoid triggering on insertItems.
-    connect(ui->patternTypeComboBox,   SIGNAL(currentIndexChanged(int)), this, SLOT(onPatternTypeChanged(int)));
-    connect(ui->fileExtensionComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onExtensionTypeChanged(int)));
+    connect(ui->patternTypeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &RenameDialog::onPatternTypeChanged);
+
+    connect(ui->fileExtensionComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &RenameDialog::onExtensionTypeChanged);
 
     // Context Menu for remove patterns
     ui->patternList->setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(ui->patternList, SIGNAL(customContextMenuRequested(const QPoint &)), SLOT(showContextMenu(const QPoint &)));
-    connect(ui->actionRemovePattern, SIGNAL(triggered()), this, SLOT(onRemovePattern()));
+    connect(ui->patternList, &QListWidget::customContextMenuRequested, this, &RenameDialog::showContextMenu);
+    connect(ui->actionRemovePattern, &QAction::triggered, this, &RenameDialog::onRemovePattern);
 }
 
 RenameDialog::~RenameDialog()
@@ -153,9 +156,9 @@ void RenameDialog::onRemovePattern()
     }
 
     // Delete selected pattern item
-    QListWidgetItem *item = ui->patternList->takeItem(ui->patternList->currentRow());
-    delete item;
+    delete ui->patternList->takeItem(ui->patternList->currentRow());
 
+    // With remaining patterns (if any) ...
     if (ui->patternList->count() > 0) {
         // Remove pattern from new names is a two step action:
         // 1. Reset new names

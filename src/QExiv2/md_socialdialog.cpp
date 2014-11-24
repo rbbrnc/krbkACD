@@ -7,8 +7,8 @@ SocialMetadataDialog::SocialMetadataDialog(const QStringList &files, QWidget *pa
 	QDialog(parent),
 	ui(new Ui::SocialMetadataDialog),
 	m_fileList(files),
-	m_model(0),
-    m_exiv2(0),
+    m_model(Q_NULLPTR),
+    m_exiv2(Q_NULLPTR),
 	m_writeComments(false)
 {
 	ui->setupUi(this);

@@ -18,8 +18,13 @@ SpotlightWidget::SpotlightWidget(QWidget *parent)
 	clearButton->setStyleSheet("QToolButton {border: none; padding: 0px;}");
 	clearButton->hide();
 
+#if 0
 	connect(clearButton, SIGNAL(clicked()), this, SLOT(clear()));
 	connect(this, SIGNAL(textChanged(const QString&)), this, SLOT(updateCloseButton(const QString&)));
+#else
+    connect(clearButton, &QToolButton::clicked, this, &SpotlightWidget::clear);
+    connect(this, &SpotlightWidget::textChanged, [=] (const QString &text) { clearButton->setVisible(!text.isEmpty()); });
+#endif
 
 	int frameWidth = style()->pixelMetric(QStyle::PM_DefaultFrameWidth);
 
@@ -39,8 +44,10 @@ void SpotlightWidget::resizeEvent(QResizeEvent *)
 	clearButton->move(rect().right() - frameWidth - sz.width(), (rect().bottom() + 1 - sz.height())/2);
 }
 
+#if 0
 void SpotlightWidget::updateCloseButton(const QString& text)
 {
 	clearButton->setVisible(!text.isEmpty());
 }
+#endif
 

@@ -12,7 +12,7 @@ FileManager::FileManager(QListView *listView, QWidget *parent)
 	: m_view(listView),
 	  m_parent(parent)
 {
-	m_model = new QFileSystemModel();
+    m_model = new QFileSystemModel(this);
 
 	m_currentIndex = m_model->setRootPath(QDir::current().absolutePath());
 
@@ -27,15 +27,18 @@ FileManager::FileManager(QListView *listView, QWidget *parent)
 
 	m_selectionModel = m_view->selectionModel();
 
+    connect(m_selectionModel, &QItemSelectionModel::currentChanged, this, &FileManager::fileSelect);
+    connect(m_view, &QListView::activated, this, &FileManager::handleItemActivation);
+
+/*
 	connect(m_selectionModel, SIGNAL(currentChanged(const QModelIndex &, const QModelIndex &)),
 		this, SLOT(fileSelect(const QModelIndex &, const QModelIndex &)));
 
 	connect(m_view, SIGNAL(activated(QModelIndex)),
 		this, SLOT(handleItemActivation(QModelIndex)));
-
+*/
 #if 0
-	connect(m_model, SIGNAL(directoryLoaded(QString)),
-		 this,   SLOT(onDirectoryLoaded(QString)));
+    connect(m_model, SIGNAL(directoryLoaded(QString)), this, SLOT(onDirectoryLoaded(QString)));
 #endif
 }
 
@@ -44,7 +47,6 @@ void FileManager::onDirectoryLoaded(const QString & path)
 {
 	qDebug() << this << "Dir loaded";
 }
-#endif
 
 void FileManager::blockModelSignals(bool block)
 {
@@ -52,10 +54,11 @@ void FileManager::blockModelSignals(bool block)
 	m_model->blockSignals(block);
 //	m_view->blockSignals(!enable);
 }
+#endif
 
 FileManager::~FileManager()
 {
-	delete m_model;
+//	delete m_model;
 }
 
 /* @return Current directory shown  */
@@ -133,12 +136,12 @@ void FileManager::handleItemActivation(QModelIndex index)
 
 	if (m_model->isDir(index)) {
 		// Change Path
-	        m_currentDir.cd(m_model->filePath(index));
+        m_currentDir.cd(m_model->filePath(index));
 		m_currentIndex = m_model->setRootPath(m_currentDir.absolutePath());
 
 		m_view->clearSelection();
 		m_view->setRootIndex(m_currentIndex);
-	        // Set view on firstRow
+        // Set view on firstRow
 		m_view->setCurrentIndex(m_currentIndex.child(0, 0));
 		emit currentPathChanged();
 	}

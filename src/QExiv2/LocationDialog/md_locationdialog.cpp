@@ -11,7 +11,7 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::LocationDialog),
     m_fileList(files),
-    m_exiv2(0)
+    m_exiv2(Q_NULLPTR)
 {
 	ui->setupUi(this);
 
@@ -71,7 +71,7 @@ LocationDialog::LocationDialog(const QStringList &files, QWidget *parent) :
 	}
 
     m_geocoding = new GeoCoding(this);
-    connect(m_geocoding, SIGNAL(reverseGeocodeFinished()), this, SLOT(onReverseGeocodeFinished()));
+    connect(m_geocoding, &GeoCoding::reverseGeocodeFinished, this, &LocationDialog::onReverseGeocodeFinished);
 }
 
 LocationDialog::~LocationDialog()
@@ -102,7 +102,6 @@ void LocationDialog::enableWidgets(bool enable)
 
     ui->geolocationButton->setEnabled(enable);
 }
-
 
 bool LocationDialog::getLocations(const QString &file)
 {

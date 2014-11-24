@@ -9,7 +9,7 @@
 KeywordsDialog::KeywordsDialog(const QStringList &files, QWidget *parent) :
     QDialog(parent),
     ui(new Ui::KeywordsDialog),
-    m_exiv2(0),
+    m_exiv2(Q_NULLPTR),
     m_files(files)
 {
     ui->setupUi(this);
@@ -39,8 +39,7 @@ KeywordsDialog::KeywordsDialog(const QStringList &files, QWidget *parent) :
 
     m_proxy->setSourceModel(m_model);
 
-    connect(ui->keyword, SIGNAL(textChanged(QString)),
-            m_proxy, SLOT(setFilterFixedString(QString)));
+    connect(ui->keyword, &SpotlightWidget::textChanged, m_proxy, &QSortFilterProxyModel::setFilterFixedString);
 
     m_proxy->setFilterCaseSensitivity(Qt::CaseInsensitive);
     ui->keywordListView->setModel(m_proxy);

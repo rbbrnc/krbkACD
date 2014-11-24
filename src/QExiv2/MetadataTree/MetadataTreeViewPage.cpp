@@ -7,7 +7,7 @@
 MetadataTreeViewPage::MetadataTreeViewPage(QWidget *parent) :
 	QWidget(parent),
 	ui(new Ui::MetadataTreeViewPage),
-	m_model(0)
+    m_model(Q_NULLPTR)
 {
 	ui->setupUi(this);
 }
@@ -16,7 +16,7 @@ MetadataTreeViewPage::~MetadataTreeViewPage()
 {
 	if (m_model) {
 		delete m_model;
-		m_model = 0;
+        m_model = Q_NULLPTR;
 	}
 
 	delete ui;
@@ -26,7 +26,7 @@ void MetadataTreeViewPage::setFile(const QString &file)
 {
 	if (m_model) {
 		delete m_model;
-		m_model = 0;
+        m_model = Q_NULLPTR;
 	}
 
 	// Load medatata only for regular files.
@@ -42,9 +42,9 @@ void MetadataTreeViewPage::setFile(const QString &file)
 		return;
 	}
 
-	m_model = new MetadataTreeModel(&metadata);
+    m_model = new MetadataTreeModel(&metadata, this);
 	ui->treeView->setUniformRowHeights(true);
 	ui->treeView->setModel(m_model);
 	ui->treeView->hideColumn(7); // hide key column
-        ui->treeView->expandAll();
+    ui->treeView->expandAll();
 }
