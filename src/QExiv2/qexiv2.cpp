@@ -12,7 +12,7 @@ QExiv2::QExiv2() : d(new QExiv2DataPrivate)
 {
 }
 
-QExiv2::QExiv2(const QString& filePath) : d(new QExiv2DataPrivate)
+QExiv2::QExiv2(const QString &filePath) : d(new QExiv2DataPrivate)
 {
 	load(filePath);
 }
@@ -26,26 +26,56 @@ bool QExiv2::isValid() const
 	return d->metadataValid;
 }
 
-bool QExiv2::hasExif() const
-{
-	return !d->exifMetadata.empty();
-}
-
-bool QExiv2::hasIptc() const
-{
-	return !d->iptcMetadata.empty();
-}
-
-bool QExiv2::hasXmp() const
-{
-	return !d->xmpMetadata.empty();
-}
-
+///////////////////////////////////////////////////////////////////////////////
+/// Image Comment (e.g jpeg comment data)
+///////////////////////////////////////////////////////////////////////////////
 bool QExiv2::hasComment() const
 {
-	return !d->imageComment.empty();
+    return !d->imageComment.empty();
 }
 
+bool QExiv2::isImgCommentWritable() const
+{
+    return d->isMetadataWritable(Exiv2::mdComment);
+}
+
+void QExiv2::clearImgComment()
+{
+    d->imageComment.clear();
+}
+
+void QExiv2::setImgComment(const QByteArray &data)
+{
+    d->imageComment = std::string(data.data(), data.size());
+}
+
+QByteArray QExiv2::imgComment() const
+{
+    return QByteArray(d->imageComment.data(), d->imageComment.size());
+}
+
+///////////////////////////////////////////////////////////////////////////////
+/// Check Metadata presence
+///////////////////////////////////////////////////////////////////////////////
+bool QExiv2::hasExif()    const { return !d->exifMetadata.empty(); }
+bool QExiv2::hasIptc()    const { return !d->iptcMetadata.empty(); }
+bool QExiv2::hasXmp()     const { return !d->xmpMetadata.empty();  }
+
+bool QExiv2::isExifWritable() const { return d->isMetadataWritable(Exiv2::mdExif); }
+bool QExiv2::isIptcWritable() const { return d->isMetadataWritable(Exiv2::mdIptc); }
+bool QExiv2::isXmpWritable()  const { return d->isMetadataWritable(Exiv2::mdXmp);  }
+
+///////////////////////////////////////////////////////////////////////////////
+/// Erase Metadata
+///////////////////////////////////////////////////////////////////////////////
+void QExiv2::clearExif() { d->exifMetadata.clear(); }
+void QExiv2::clearIptc() { d->iptcMetadata.clear(); }
+void QExiv2::clearXmp()  { d->xmpMetadata.clear();  }
+
+
+///////////////////////////////////////////////////////////////////////////////
+/// Load Functions
+///////////////////////////////////////////////////////////////////////////////
 #if 0
 bool QExiv2::loadFromData(const QByteArray& data)
 {
@@ -76,13 +106,16 @@ bool QExiv2::load(const QString &filePath)
 	return d->readMetadata(filePath);
 }
 
-// Se il file non ha i permessi in scrittura scatta l'exception
+///////////////////////////////////////////////////////////////////////////////
+/// Save Functions
+///////////////////////////////////////////////////////////////////////////////
 bool QExiv2::save()
 {
 	if (!isValid()) {
 		return false;
 	}
 
+    // Se il file non ha i permessi in scrittura scatta l'exception
 	try {
 		bool update = false;
 		if (isImgCommentWritable()) {
@@ -96,7 +129,7 @@ bool QExiv2::save()
 			d->image->setXmpData(d->xmpMetadata);
 			update = true;
         } else {
-            qDebug() << __PRETTY_FUNCTION__ << "XMP Not writable";
+            qDebug() << __func__ << "XMP Not writable";
         }
 
 		if (update) {
@@ -107,171 +140,79 @@ bool QExiv2::save()
         return true;
 
     } catch (Exiv2::Error &e) {
-		d->error(__PRETTY_FUNCTION__, e);
+        d->error(__func__, e);
 	}
 
 	return false;
 }
 
-#if 0
-// Utility functions
-void QExiv2::locationCreated(MetadataLocation &loc, int index)
+///////////////////////////////////////////////////////////////////////////////
+/// Return a list of all EXIF, IPTC or XMP tags present.
+///////////////////////////////////////////////////////////////////////////////
+template<class T>
+QList<exifData> metadataList(const T& metadata)
 {
-    // ===================================================================
-    // Get Location Created tags
-    //
-    // This information describes the location where the image was created,
-    // the location of the camera during shot creation.
-    // The typical case is when a GPS receiver injects the current location
-    // into an image at shooting time (camera location).
-    //
-    // 1st try Xmp.iptcExt tags
-    //
-    // Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:WorldRegion
-    // Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryName
-    // Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:CountryCode
-    // Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:City
-    // Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:ProvinceState
-    // Xmp.iptcExt.LocationCreated[1]/Iptc4xmpExt:Sublocation
-    //
-    // 2nd Try Xmp.photoshop and Iptc.Application2 tags
-    //
-    // Xmp.photoshop.Country _or_  Iptc.Application2.CountryName
-    // ---                         Iptc.Application2.CountryCode
-    // Xmp.photoshop.State   _or_  Iptc.Application2.ProvinceState
-    // Xmp.photoshop.City    _or_  Iptc.Application2.City
-    // ---                         Iptc.Application2.SubLocation
-    //
-    // ===================================================================
-    QString xmpPath = QString("Xmp.iptcExt.LocationCreated[%1]/Iptc4xmpExt:").arg(index);
-
-    loc.worldRegion = xmpTagString(xmpPath + "WorldRegion", true);
-    loc.countryName = xmpTagString(xmpPath + "CountryName", true);
-    if (loc.countryName.isEmpty()) {
-        loc.countryName = xmpTagString("Xmp.photoshop.Country", true);
-        if (loc.countryName.isEmpty()) {
-            loc.countryName = iptcTagString("Iptc.Application2.CountryName", true);
-        }
+    QList<struct exifData> lst;
+    const auto data = metadata;
+    if (data.empty()) {
+        return lst;
     }
 
-    loc.countryCode = xmpTagString(xmpPath + "CountryCode", true);
-    if (loc.countryCode.isEmpty()) {
-        loc.countryCode = iptcTagString("Iptc.Application2.CountryCode", true);
-    }
+    for (auto i = data.begin(); i != data.end(); ++i) {
+        struct exifData ed;
 
-    loc.provinceState = xmpTagString(xmpPath + "ProvinceState", true);
-    if (loc.provinceState.isEmpty()) {
-        loc.provinceState = xmpTagString("Xmp.photoshop.State", true);
-        if (loc.provinceState.isEmpty()) {
-            loc.provinceState = iptcTagString("Iptc.Application2.ProvinceState", true);
-        }
+        ed.key      = QString::fromStdString(i->key());
+        ed.family   = QString::fromUtf8(i->familyName());
+        ed.group    = QString::fromStdString(i->groupName());
+        ed.tagName  = QString::fromStdString(i->tagName());
+        ed.tag      = i->tag();
+        ed.typeName = QString::fromUtf8(i->typeName());
+        ed.typeId   = i->typeId();
+        ed.count    = i->count();
+        ed.value    = QString::fromStdString(i->value().toString());
+        lst.append(ed);
     }
-
-    loc.city = xmpTagString(xmpPath + "City", true);
-    if (loc.city.isEmpty()) {
-        loc.city = xmpTagString("Xmp.photoshop.City", true);
-        if (loc.city.isEmpty()) {
-            loc.city = iptcTagString("Iptc.Application2.City", true);
-        }
-    }
-
-    loc.sublocation = xmpTagString(xmpPath + "Sublocation", true);
-    if (loc.sublocation.isEmpty()) {
-        loc.sublocation = iptcTagString("Iptc.Application2.SubLocation", true);
-    }
+    return lst;
 }
 
-void QExiv2::locationShown(MetadataLocation &loc, int index)
+QList<exifData> QExiv2::xmpDataList()  const { return metadataList(d->xmpMetadata);  }
+QList<exifData> QExiv2::iptcDataList() const { return metadataList(d->iptcMetadata); }
+QList<exifData> QExiv2::exifDataList() const { return metadataList(d->exifMetadata); }
+
+///////////////////////////////////////////////////////////////////////////////
+/// Get Metadata string by tag
+///////////////////////////////////////////////////////////////////////////////
+template<class T, class U>
+QString stringTag(const T& metadata, const U& key, bool escapeCR)
 {
-    // ===================================================================
-    // Get Location Shown tags
-    //
-    // This information describes the location of the main subject being
-    // shown in an image. For example, a picture of Mount Fuji would be
-    // tagged with the coordinates of where the mountain is located
-    // (subject location), although the picture may have been taken from
-    // downtown Tokyo.
-    //
-    // 1st try Xmp.iptcExt tags
-    //
-    // Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:WorldRegion
-    // Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryName
-    // Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:CountryCode
-    // Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:ProvinceState
-    // Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:City
-    // Xmp.iptcExt.LocationShown[1]/Iptc4xmpExt:Sublocation
-    //
-    // 2nd try legacy Iptc.Application2 tags
-    //
-    // Iptc.Application2.LocationName
-    // Iptc.Application2.LocationCode
-    //
-    // ====================================================================
-    QString xmpPath = QString("Xmp.iptcExt.LocationShown[%1]/Iptc4xmpExt:").arg(index);
-
-    loc.worldRegion = xmpTagString(xmpPath + "WorldRegion", true);
-    loc.countryName = xmpTagString(xmpPath + "CountryName", true);
-    if (loc.countryName.isEmpty()) {
-        loc.countryName = iptcTagString("Iptc.Application2.LocationName", true);
-    }
-
-    loc.countryCode = xmpTagString(xmpPath + "CountryCode", true);
-    if (loc.countryCode.isEmpty()) {
-        loc.countryCode = iptcTagString("Iptc.Application2.LocationCode", true);
-    }
-
-    loc.provinceState = xmpTagString(xmpPath + "ProvinceState", true);
-    loc.city          = xmpTagString(xmpPath + "City", true);
-    loc.sublocation   = xmpTagString(xmpPath + "Sublocation", true);
-}
-
-void QExiv2::setLocationShown(MetadataLocation &loc, int index)
-{
-    if (index != 1) {
-        //#warning TODO
-        qWarning() << __PRETTY_FUNCTION__ << "index >1 not implemented yet!";
-        return;
-    }
-
-    QString xmpPath = QString("Xmp.iptcExt.LocationShown[%1]/Iptc4xmpExt:").arg(index);
-
-    if (loc.isEmpty()) {
-        removeXmpBag("Xmp.iptcExt.LocationShown", 25);
-    } else {
-        if (xmpTagString("Xmp.iptcExt.LocationShown").isNull()) {
-            setXmpTagBag("Xmp.iptcExt.LocationShown");
+    const auto data = metadata;
+    const auto i = data.findKey(key);
+    if (i != data.end()) {
+        QString tagValue = QString::fromStdString(i->toString());
+        if (escapeCR) {
+            tagValue.replace('\n', ' ');
         }
-        setXmpTagString(xmpPath + "WorldRegion", loc.worldRegion);
-        setXmpTagString(xmpPath + "CountryName", loc.countryName);
-        setXmpTagString(xmpPath + "CountryCode", loc.countryCode);
-        setXmpTagString(xmpPath + "ProvinceState", loc.provinceState);
-        setXmpTagString(xmpPath + "City", loc.city);
-        setXmpTagString(xmpPath + "Sublocation", loc.sublocation);
+        return tagValue;
     }
+    return QString();
 }
 
-void QExiv2::setLocationCreated(MetadataLocation &loc, int index)
+QString QExiv2::iptcTagString(const char *tag, bool escapeCR) const
 {
-    if (index != 1) {
-        //#warning TODO
-        qWarning() << __PRETTY_FUNCTION__ << "index >1 not implemented yet!";
-        return;
-    }
-
-    QString xmpPath = QString("Xmp.iptcExt.LocationCreated[%1]/Iptc4xmpExt:").arg(index);
-
-    if (loc.isEmpty()) {
-        removeXmpBag("Xmp.iptcExt.LocationCreated", 27);
-    } else {
-        if (xmpTagString("Xmp.iptcExt.LocationCreated").isNull()) {
-            setXmpTagBag("Xmp.iptcExt.LocationCreated");
-        }
-        setXmpTagString(xmpPath + "WorldRegion", loc.worldRegion);
-        setXmpTagString(xmpPath + "CountryName", loc.countryName);
-        setXmpTagString(xmpPath + "CountryCode", loc.countryCode);
-        setXmpTagString(xmpPath + "ProvinceState", loc.provinceState);
-        setXmpTagString(xmpPath + "City", loc.city);
-        setXmpTagString(xmpPath + "Sublocation", loc.sublocation);
-    }
+    return stringTag(d->iptcMetadata, Exiv2::IptcKey(tag), escapeCR);
 }
-#endif
+
+QString QExiv2::exifTagString(const char *tag, bool escapeCR) const
+{
+    return stringTag(d->exifMetadata, Exiv2::ExifKey(tag), escapeCR);
+}
+
+QString QExiv2::xmpTagString(const char *tag, bool escapeCR) const
+{
+    return stringTag(d->xmpMetadata, Exiv2::XmpKey(tag), escapeCR);
+}
+
+QString QExiv2::xmpTagString(const QString &tag, bool escapeCR) const
+{
+    return stringTag(d->xmpMetadata, Exiv2::XmpKey(tag.toLatin1().constData()), escapeCR);
+}

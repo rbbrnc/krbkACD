@@ -14,7 +14,6 @@ message(Qt version: $$[QT_VERSION])
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
     CONFIG += c++11
-
     DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 } else {
 	QMAKE_CXXFLAGS += -std=c++11
@@ -33,11 +32,12 @@ include ($$PWD/QExiv2/LocationDialog/LocationDialog.pri)
 include ($$PWD/QExiv2/MetadataEdit/MetadataEdit.pri)
 
 #-- Try clang
-#QMAKE_CC  = clang
-#QMAKE_CXX = clang++
+QMAKE_CC  = gcc
+QMAKE_CXX = g++
 
 #-- common gcc flags
-QMAKE_CXXFLAGS += -Wall -W -Wunreachable-code
+QMAKE_CXXFLAGS += -Wall -W
+#-Wunreachable-code
 QMAKE_CXXFLAGS += -ffunction-sections -fdata-sections
 QMAKE_LFLAGS   += -Wl,--gc-sections,--as-needed
 

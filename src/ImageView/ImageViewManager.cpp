@@ -313,11 +313,7 @@ void ImageViewManager::removeRegion()
 	}
 	msg += " region?";
 
-	int rc = QMessageBox::question(this,
-			 "Remove Region", msg,
-			 QMessageBox::Ok | QMessageBox::Cancel,
-			 QMessageBox::Cancel);
-
+    int rc = QMessageBox::question(this, "Remove Region", msg, QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel);
 	if (QMessageBox::Cancel == rc) {
 		return;
 	}

@@ -79,12 +79,12 @@ bool MetadataDialog::loadData(const QString &file)
 
 	ui->ratingSpinBox->setValue(e->xmpTagString("Xmp.xmp.Rating", true).toDouble());
 
-	ui->Xmp_dc_description->setPlainText(e->xmpTagStringLangAlt("Xmp.dc.description", QString(), false));
-	ui->Xmp_dc_title->setText(e->xmpTagStringLangAlt("Xmp.dc.title", QString(), false));
+    ui->Xmp_dc_description->setPlainText(e->xmpLangAlt("Xmp.dc.description", QString(), false));
+    ui->Xmp_dc_title->setText(e->xmpLangAlt("Xmp.dc.title", QString(), false));
 
 	m_xmpDcSubjectModel->setStringList(e->xmpTagStringBag("Xmp.dc.subject", true));
 
-	ui->Xmp_iptcExt_Event->setText(e->xmpTagStringLangAlt("Xmp.iptcExt.Event", QString(), false));
+    ui->Xmp_iptcExt_Event->setText(e->xmpLangAlt("Xmp.iptcExt.Event", QString(), false));
 
 	// Image Comment
 	if (e->hasComment()) {
@@ -112,22 +112,22 @@ bool MetadataDialog::saveData(const QString &file)
 	if (ui->Xmp_iptcExt_Event->text().isEmpty()) {
 		e->removeXmpTag("Xmp.iptcExt.Event");
 	} else {
-		e->setXmpTagStringLangAlt("Xmp.iptcExt.Event", ui->Xmp_iptcExt_Event->text(), QString());
+        e->setXmpLangAlt("Xmp.iptcExt.Event", ui->Xmp_iptcExt_Event->text());
 	}
 
 	if (ui->Xmp_dc_title->text().isEmpty()) {
 		e->removeXmpTag("Xmp.dc.title");
 	} else {
-		e->setXmpTagStringLangAlt("Xmp.dc.title", ui->Xmp_dc_title->text(), QString());
+        e->setXmpLangAlt("Xmp.dc.title", ui->Xmp_dc_title->text());
 	}
 
 	if (ui->Xmp_dc_description->toPlainText().isEmpty()) {
 		e->removeXmpTag("Xmp.dc.description");
 	} else {
-		e->setXmpTagStringLangAlt("Xmp.dc.description", ui->Xmp_dc_description->toPlainText(), QString());
+        e->setXmpLangAlt("Xmp.dc.description", ui->Xmp_dc_description->toPlainText());
 	}
 
-	e->setXmpTagStringBag("Xmp.dc.subject", m_xmpDcSubjectModel->stringList());
+    e->setXmpBag("Xmp.dc.subject", m_xmpDcSubjectModel->stringList());
 
 	if (m_updateRating) {
 		e->setXmpTagString("Xmp.xmp.Rating", QString::number(ui->ratingSpinBox->value(), 'f', 1));

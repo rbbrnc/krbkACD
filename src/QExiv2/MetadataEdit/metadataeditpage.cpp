@@ -18,8 +18,8 @@ MetadataEditPage::MetadataEditPage(QWidget *parent) :
 {
 	ui->setupUi(this);
 
-    //connect(&m_geoCoding, SIGNAL(reverseGeocodeFinished()), this, SLOT(onReverseGeocodeFinished()));
-    connect(&m_geoCoding, &GeoCoding::reverseGeocodeFinished, this, &MetadataEditPage::onReverseGeocodeFinished);
+    connect(&m_geoCoding, &GeoCoding::reverseGeocodeFinished,
+            this, &MetadataEditPage::onReverseGeocodeFinished);
 }
 
 MetadataEditPage::~MetadataEditPage()
@@ -51,19 +51,19 @@ void MetadataEditPage::setFile(const QString &file)
     if (m_exifGps.isValid()) {
         ui->exifCoordinates->setText(m_exifGps.toString());
     } else {
-        ui->exifCoordinates->setText("");
+        ui->exifCoordinates->clear();
     }
     m_xmpGps = m_exiv2->xmpGeoCoordinate();
     if (m_xmpGps.isValid()) {
         ui->xmpCoordinates->setText(m_xmpGps.toString());
     } else {
-        ui->xmpCoordinates->setText("");
+        ui->xmpCoordinates->clear();
     }
 
     ui->ratingSpinBox->setValue(m_exiv2->xmpTagString("Xmp.xmp.Rating", true).toDouble());
-    ui->Xmp_dc_description->setPlainText(m_exiv2->xmpTagStringLangAlt("Xmp.dc.description", QString(), false));
-    ui->Xmp_dc_title->setText(m_exiv2->xmpTagStringLangAlt("Xmp.dc.title", QString(), false));
-    ui->Xmp_iptcExt_Event->setText(m_exiv2->xmpTagStringLangAlt("Xmp.iptcExt.Event", QString(), false));
+    ui->Xmp_dc_description->setPlainText(m_exiv2->xmpLangAlt("Xmp.dc.description", QString(), false));
+    ui->Xmp_dc_title->setText(m_exiv2->xmpLangAlt("Xmp.dc.title", QString(), false));
+    ui->Xmp_iptcExt_Event->setText(m_exiv2->xmpLangAlt("Xmp.iptcExt.Event", QString(), false));
 
     // Image Comment
     if (m_exiv2->hasComment()) {
@@ -210,19 +210,19 @@ bool MetadataEditPage::saveMetadata()
     if (ui->Xmp_iptcExt_Event->text().isEmpty()) {
         e->removeXmpTag("Xmp.iptcExt.Event");
     } else {
-        e->setXmpTagStringLangAlt("Xmp.iptcExt.Event", ui->Xmp_iptcExt_Event->text(), QString());
+        e->setXmpLangAlt("Xmp.iptcExt.Event", ui->Xmp_iptcExt_Event->text());
     }
 
     if (ui->Xmp_dc_title->text().isEmpty()) {
         e->removeXmpTag("Xmp.dc.title");
     } else {
-        e->setXmpTagStringLangAlt("Xmp.dc.title", ui->Xmp_dc_title->text(), QString());
+        e->setXmpLangAlt("Xmp.dc.title", ui->Xmp_dc_title->text());
     }
 
     if (ui->Xmp_dc_description->toPlainText().isEmpty()) {
         e->removeXmpTag("Xmp.dc.description");
     } else {
-        e->setXmpTagStringLangAlt("Xmp.dc.description", ui->Xmp_dc_description->toPlainText(), QString());
+        e->setXmpLangAlt("Xmp.dc.description", ui->Xmp_dc_description->toPlainText());
     }
 
     if (m_updateRating) {

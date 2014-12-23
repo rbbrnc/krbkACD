@@ -295,7 +295,7 @@ void RenameDialog::onPatternTypeChanged(int index)
         s.remove('{');
         s.remove('}');
         s.remove('-');
-        ui->patternValueDesc->setText("");
+        ui->patternValueDesc->clear();
         ui->patternValue->setText(s);
         ui->patternValue->setEnabled(false);
         break;
@@ -307,7 +307,7 @@ void RenameDialog::onPatternTypeChanged(int index)
         break;
 
     case FileName_Pattern:
-        ui->patternValueDesc->setText("");
+        ui->patternValueDesc->clear();
         ui->patternValue->setEnabled(false);
         break;
 

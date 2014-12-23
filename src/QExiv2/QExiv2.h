@@ -12,11 +12,8 @@
 #include "md_location.h"
 #include "md_social.h"
 
-//#define ENABLE_XMP_SEQ       1
 //#define ENABLE_XMP_SERIALIZE 1
-//#define ENABLE_EXIF_WRITE    1
 //#define ENABLE_EXIF_PREVIEW  1
-//#define ENABLE_IPTC_WRITE    1
 
 // Forward decl.
 class QExiv2DataPrivate;
@@ -68,11 +65,9 @@ class QExiv2
 		QString exifTagString(const char *tag, bool escapeCR = false) const;
         QByteArray exifTagData(const char *tag) const;
 
+        bool isExifWritable() const;
+        void clearExif();
 
-#ifdef ENABLE_EXIF_WRITE
-		bool isExifWritable() const;
-		bool clearExif();
-#endif
         // Date-Time Functions
 		bool setDatetime(const QDateTime &dt, QExiv2::DateTimeType type);
 		QDateTime datetime(QExiv2::DateTimeType type) const;
@@ -83,14 +78,15 @@ class QExiv2
 #endif
 
 		// IPTC Functions
-#ifdef ENABLE_IPTC_WRITE
-		bool isIptcWritable() const;
-		bool clearIptc();
-#endif
-		QString iptcTagString(const char *tag, bool escapeCR = false) const;
+        bool isIptcWritable() const;
+        void clearIptc();
+
+        QString iptcTagString(const char *tag, bool escapeCR = false) const;
 
 		// XMP Functions
 		bool isXmpWritable() const;
+        void clearXmp();
+
         bool xmpRegisterNamespace(const QString& uri, const QString &prefix);
 
 		QString xmpTagString(const char *tag, bool escapeCR = false) const;
@@ -99,16 +95,15 @@ class QExiv2
 		bool setXmpTagString(const QString &tag, const QString& value);
 
 		QStringList xmpTagStringBag(const char *tag, bool escapeCR = false) const;
-		bool setXmpTagStringBag(const char *tag, const QStringList &bag);
+        bool setXmpBag(const char *tag, const QStringList &bag);
 		bool setXmpTagBag(const char *tag);
 
-#ifdef ENABLE_XMP_SEQ
+
 		QStringList xmpTagStringSeq(const char *tag, bool escapeCR = false) const;
 		bool setXmpTagStringSeq(const char *tag, const QStringList &seq);
-#endif
 
-		QString xmpTagStringLangAlt(const char *tag, const QString &langAlt, bool escapeCR);
-		bool setXmpTagStringLangAlt(const char *tag, const QString &value, const QString &langAlt);
+        QString xmpLangAlt(const char *tag, const QString &langAlt, bool escapeCR);
+        bool setXmpLangAlt(const char *tag, const QString &value, const QString &langAlt = QStringLiteral("x-default"));
 
 		bool removeXmpTag(const char *tag);
 		void removeXmpBag(const char *tag, int tagNameSize);
@@ -116,7 +111,6 @@ class QExiv2
 #ifdef ENABLE_XMP_SERIALIZE
 		QByteArray xmpPacket() const;
 #endif
-
 
 		// XMP Regions
 		bool xmpHasRegionTags() const;
@@ -128,9 +122,9 @@ class QExiv2
 		// Image Comment Functions
 		bool isImgCommentWritable() const;
 		bool hasComment() const;
-		//bool clearImgComment();
+        void clearImgComment();
 		QByteArray imgComment() const;
-        bool setImgComment(const QByteArray &data);
+        void setImgComment(const QByteArray &data);
 
 		QList<struct exifData> exifDataList() const;
 		QList<struct exifData> iptcDataList() const;
@@ -154,6 +148,11 @@ class QExiv2
 		QGeoCoordinate xmpGeoCoordinate() const;
 
 	private:
+
+        QStringList xmpStringList(const char *tag, bool escapeCR) const;
+        bool setXmpStringList(const char *tag, const QStringList &list, int typeId);
+
+
 		void setLocation(MetadataLocation &loc, const QString &locType, int index);
 		void location(MetadataLocation &loc, const QString &locType, int index);
 

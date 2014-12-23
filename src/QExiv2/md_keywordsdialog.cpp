@@ -62,7 +62,7 @@ void KeywordsDialog::disableWidgets()
 bool KeywordsDialog::saveData()
 {
     if (m_exiv2->isValid()) {
-        m_exiv2->setXmpTagStringBag("Xmp.dc.subject", m_model->stringList());
+        m_exiv2->setXmpBag("Xmp.dc.subject", m_model->stringList());
         if (m_exiv2->save()) {
             return true;
         }

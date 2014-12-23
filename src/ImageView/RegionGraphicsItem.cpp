@@ -10,9 +10,9 @@
 #include "RegionGraphicsItem.h"
 
 RegionGraphicsItem::RegionGraphicsItem(const QRectF &rect, QGraphicsItem *parent)
-	: QGraphicsRectItem(rect, parent)
+    : QGraphicsRectItem(rect, parent),
+      m_type(0)
 {
-	m_type = 0;
 	m_removeAction = m_menu.addAction("Remove");
 	m_editAction   = m_menu.addAction("Edit");
 

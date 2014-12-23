@@ -10,8 +10,6 @@ SOURCES += \
 	$$PWD/qexiv2_datetime.cpp \
 	$$PWD/qexiv2_exif.cpp \
 	$$PWD/qexiv2_gps.cpp \
-	$$PWD/qexiv2_imgcomment.cpp \
-	$$PWD/qexiv2_iptc.cpp \
 	$$PWD/qexiv2_locations.cpp \
 	$$PWD/qexiv2_xmp.cpp \
 	$$PWD/qexiv2_xmpregion.cpp \
