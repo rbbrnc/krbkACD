@@ -213,10 +213,10 @@ bool QExiv2::setXmpLangAlt(const char *tag, const QString &value, const QString 
     const std::string txt = QString("lang=%1 %2").arg(langAlt).arg(value).toStdString();
 
 	try {
-		Exiv2::Value::AutoPtr xmpTxtVal = Exiv2::Value::create(Exiv2::langAlt);
-        xmpTxtVal->read(txt);
+        Exiv2::Value::AutoPtr value = Exiv2::Value::create(Exiv2::langAlt);
+        value->read(txt);
 		removeXmpTag(tag);
-		d->xmpMetadata.add(Exiv2::XmpKey(tag), xmpTxtVal.get());
+        d->xmpMetadata.add(Exiv2::XmpKey(tag), value.get());
 		return true;
 	} catch (Exiv2::Error &e) {
         d->error(QString("%1 Cannot add tag '%2'").arg(__func__).arg(tag), e);

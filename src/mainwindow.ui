@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>530</width>
+    <height>331</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>krbkACD</string>
   </property>
@@ -169,10 +177,10 @@
     <addaction name="actionFullScreen"/>
     <addaction name="separator"/>
     <addaction name="actionInfo"/>
-    <addaction name="action1"/>
     <addaction name="action2"/>
     <addaction name="action3"/>
     <addaction name="action4"/>
+    <addaction name="action1"/>
    </widget>
    <widget class="QMenu" name="menuPages">
     <property name="title">

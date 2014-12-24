@@ -10,6 +10,7 @@
 #include "md_keywordsdialog.h"
 #include "md_datetimedialog.h"
 #include "md_locationdialog.h"
+#include "md_socialdialog.h"
 
 MetadataEditPage::MetadataEditPage(QWidget *parent) :
 	QWidget(parent),
@@ -17,6 +18,8 @@ MetadataEditPage::MetadataEditPage(QWidget *parent) :
     m_exiv2(Q_NULLPTR)
 {
 	ui->setupUi(this);
+
+    ui->reverseGeolocationText->clear();
 
     connect(&m_geoCoding, &GeoCoding::reverseGeocodeFinished,
             this, &MetadataEditPage::onReverseGeocodeFinished);
@@ -170,6 +173,7 @@ void MetadataEditPage::on_locationEditButton_clicked()
     LocationDialog dlg(QStringList(m_fileName), this);
     if (QDialog::Accepted == dlg.exec()) {
         // Reload Data
+        // getLocations();
         setFile(m_fileName);
     }
 }
@@ -190,11 +194,6 @@ void MetadataEditPage::on_keywordsEditButton_clicked()
         // Reload Data
         setFile(m_fileName);
     }
-}
-
-void MetadataEditPage::on_ratingSpinBox_valueChanged(double)
-{
-    m_updateRating = true;
 }
 
 bool MetadataEditPage::saveMetadata()
@@ -225,10 +224,8 @@ bool MetadataEditPage::saveMetadata()
         e->setXmpLangAlt("Xmp.dc.description", ui->Xmp_dc_description->toPlainText());
     }
 
-    if (m_updateRating) {
-        e->setXmpTagString("Xmp.xmp.Rating", QString::number(ui->ratingSpinBox->value(), 'f', 1));
-        m_updateRating = false;
-    }
+    // Spinbox range is defined on .ui file.
+    e->setXmpTagString("Xmp.xmp.Rating", QString::number(ui->ratingSpinBox->value(), 'f', 1));
 
     if (e->save()) {
         delete e;
@@ -238,12 +235,6 @@ bool MetadataEditPage::saveMetadata()
     qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Data on:" << m_fileName;
     delete e;
     return false;
-}
-
-void MetadataEditPage::on_tabWidget_currentChanged(int index)
-{
-    // XXX To save unsaved data on the previous tab!!!
-    Q_UNUSED(index)
 }
 
 void MetadataEditPage::on_reverseGeolocationButton_clicked()
@@ -266,3 +257,8 @@ void MetadataEditPage::onReverseGeocodeFinished()
     ui->reverseGeolocationText->setText(m_geoCoding.location().address().text());
 }
 
+void MetadataEditPage::on_socialMetadataEditButton_clicked()
+{
+    SocialMetadataDialog dlg(QStringList(m_fileName), this);
+    dlg.exec();
+}
