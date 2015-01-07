@@ -71,6 +71,10 @@ int ObjectDetect::sourceHeight() const
 //		CvSize max_size=cvSize(0,0))
 int ObjectDetect::detect(double scale, bool fast)
 {
+    if (!m_image) {
+        return 0;
+    }
+
 	// Detect objects
 	cvClearMemStorage(storage);
 	if (fast) {
