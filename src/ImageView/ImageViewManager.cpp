@@ -190,43 +190,39 @@ void ImageViewManager::sceneChanged(const QList<QRectF> &region)
 // [SLOT public]
 void ImageViewManager::setImage(const QString &fileName, bool withMetadata)
 {
-	m_file = fileName;;
-	QPixmap pixmap;
-	if (!pixmap.load(m_file)) {
-		setImage(QPixmap());
-		return;
-	} else {
-		setImage(pixmap);
-	}
+    m_file = fileName;
 
-    if (withMetadata) {
-        loadMetadata();
+    if (m_image) {
+        delete m_image;
+        m_scene->clear();
+        m_view->reset();
+        m_regions.clear();
     }
+
+    m_image = new ImageGraphicsItem();
+
+    QImageReader ir(fileName);
+
+    if (!ir.canRead()) {
+        m_scene->addItem(new QGraphicsTextItem("Not a Pixmap"));
+    } else {
+        if (ir.supportsAnimation() && (ir.imageCount() > 1)) {
+            m_image->setMovie(fileName);
+        } else {
+            m_image->setPixmap(QPixmap(fileName));
+            if (withMetadata) {
+                loadMetadata();
+            }
+        }
+    }
+
+    m_scene->addItem(m_image);
+
+    // QGraphicsScene's boundingRect will grow when items are added,
+    // but doesn't shrink when items are removed.
+    m_scene->setSceneRect(m_scene->itemsBoundingRect());
 }
 
-// [private]
-void ImageViewManager::setImage(const QPixmap &pixmap)
-{
-	if (m_image) {
-		delete m_image;
-		m_scene->clear();
-		m_view->reset();
-		m_regions.clear();
-	}
-
-	m_image = new ImageGraphicsItem(pixmap);
-	m_scene->addItem(m_image);
-
-	// QGraphicsScene's boundingRect will grow when items are added,
-	// but doesn't shrink when items are removed.
-	m_scene->setSceneRect(m_scene->itemsBoundingRect());
-
-	if (pixmap.isNull()) {
-		QGraphicsTextItem *ti = new QGraphicsTextItem("Not a Pixmap");
-		ti->setDefaultTextColor(Qt::white);
-		m_scene->addItem(ti);
-	}
-}
 
 // [SLOT private]
 // checked = true -> Set image panning mode

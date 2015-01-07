@@ -3,6 +3,8 @@
 
 #include <QGraphicsPixmapItem>
 
+class QMovie;
+
 class ImageGraphicsItem : public QGraphicsPixmapItem
 {
 	public:
@@ -10,10 +12,20 @@ class ImageGraphicsItem : public QGraphicsPixmapItem
 		ImageGraphicsItem(const QPixmap &pixmap, QGraphicsItem *parent = 0);
 		~ImageGraphicsItem();
 
+        void setMovie(const QString &fileName);
+
 	protected:
-		virtual void mousePressEvent(QGraphicsSceneMouseEvent * event);
+        virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 		virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
 		virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+
+    private:
+        QMovie *m_movie;
+
 };
 
 #endif
+
+
+
+

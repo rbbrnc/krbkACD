@@ -25,8 +25,6 @@ class ImageViewManager : public QWidget
 		void loadMetadata();
 
 	private:
-		void setImage(const QPixmap &pixmap);
-
 		void insertRegion(const QRectF &rect,
 				  const QString &name,
 				  const QString &desc,
