@@ -350,7 +350,7 @@ void MainWindow::onOpenFile()
 	// USE DESKTOP SERVICES TO OPEN FILES (xdg-open)!
 	// The temporary files are deleted when the application is closed!
 	if (!QDesktopServices::openUrl(QUrl::fromLocalFile(files.at(0)))) {
-		qDebug() << __PRETTY_FUNCTION__ << "Cannot open Url:";
+        qDebug() << Q_FUNC_INFO << "Cannot open Url:";
 	}
 }
 

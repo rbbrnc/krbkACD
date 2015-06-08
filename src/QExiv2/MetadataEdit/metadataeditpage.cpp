@@ -3,7 +3,7 @@
 
 #include <QFileInfo>
 #include <QDateTime>
-
+#include <QMessageBox>
 #include <QDebug>
 
 #include "QExiv2.h"
@@ -48,8 +48,15 @@ void MetadataEditPage::setFile(const QString &file)
     }
 
     getDateTime();
-    getLocations();
 
+    // Get locations data
+    MetadataLocation loc;
+    m_exiv2->locationCreated(loc, 1);
+    ui->locationCreated->setText(loc.toString());
+    m_exiv2->locationShown(loc, 1);
+    ui->locationShown->setText(loc.toString());
+
+    // Get GPS data
     m_exifGps = m_exiv2->exifGeoCoordinate();
     if (m_exifGps.isValid()) {
         ui->exifCoordinates->setText(m_exifGps.toString());
@@ -85,18 +92,6 @@ void MetadataEditPage::setFile(const QString &file)
 
     delete m_exiv2;
     m_exiv2 = Q_NULLPTR;
-}
-
-void MetadataEditPage::getLocations()
-{
-    MetadataLocation lc;
-    MetadataLocation ls;
-
-    m_exiv2->locationCreated(lc, 1);
-    m_exiv2->locationShown(ls, 1);
-
-    ui->locationCreated->setText(lc.toString());
-    ui->locationShown->setText(ls.toString());
 }
 
 void MetadataEditPage::getDateTime()
@@ -232,7 +227,9 @@ bool MetadataEditPage::saveMetadata()
         return true;
     }
 
-    qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Data on:" << m_fileName;
+    QMessageBox::warning(this, "Save Metadata",
+        QString("Error writing XMP Data on:\n%1\n%2").arg(m_fileName).arg(e->errorString()));
+
     delete e;
     return false;
 }

@@ -18,23 +18,23 @@ static QString getMagic(const QString &file, int flags)
 	QString magicString;
 
 	if ((file.isNull()) || (file.isEmpty())) {
-		qDebug() << __PRETTY_FUNCTION__ << "NULL";
+        qDebug() << Q_FUNC_INFO << "NULL";
 		return magicString;
 	}
 
 	/* cfr. man libmagic */
 	cookie = magic_open(flags);
 	if (cookie == NULL) {
-		qDebug() << __PRETTY_FUNCTION__ << "Error allocating magic cookie";
+        qDebug() << Q_FUNC_INFO << "Error allocating magic cookie";
 	} else {
 		// load magic file (NULL default)
 		// XXX: Can be a custom magic file on .qrc?!
 		if (magic_load(cookie, NULL /*const char *filename*/) != 0) {
-			qDebug() << __PRETTY_FUNCTION__ << "Error loading magic data";
+            qDebug() << Q_FUNC_INFO << "Error loading magic data";
 		} else {
 			const char *s = magic_file(cookie, file.toLatin1().constData());
 			if (s == NULL) {
-				qDebug() << __PRETTY_FUNCTION__
+                qDebug() << Q_FUNC_INFO
 					 << "FILE:" << qPrintable(file)
 					 << magic_error(cookie);
 			}

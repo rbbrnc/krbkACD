@@ -23,7 +23,6 @@ bool QExiv2::xmpHasRegionTags() const
 
 void QExiv2::xmpEraseRegions()
 {
-	//qDebug() << __PRETTY_FUNCTION__;
 	try {
 		Exiv2::XmpData &md = d->xmpMetadata;
 		Exiv2::XmpData::iterator it = md.begin();
@@ -35,8 +34,8 @@ void QExiv2::xmpEraseRegions()
 				++it;
 			}
 		}
-	} catch (Exiv2::Error& e) {
-		d->error(QString("Cannot Erase Xmp tag '%1'using Exiv2 ").arg(__func__), e);
+    } catch (Exiv2::Error &e) {
+        d->error(QString("%1 Cannot Erase Xmp tag ").arg(__func__), e);
 	}
 }
 
@@ -49,18 +48,13 @@ void QExiv2::xmpSetMwgRegionList(const MwgRegionList &regions)
 	}
 
 	// TODO:
-	// Check region congruence to image dimensions and the applied dimensions
-	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w",
-			QString::number(d->image->pixelWidth()));
+    // Check region congruence to image dimensions and the applied dimensions
+    setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w", QString::number(d->image->pixelWidth()));
+    setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h", QString::number(d->image->pixelHeight()));
+    setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit", QStringLiteral("pixel"));
 
-	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h",
-			QString::number(d->image->pixelHeight()));
-
-	setXmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit",
-			"pixel");
-
-	setXmpTagBag("Xmp.mwg-rs.Regions/mwg-rs:RegionList");
-	for (int i = 0; i < regions.count(); i++) {
+    setXmpTagBag("Xmp.mwg-rs.Regions/mwg-rs:RegionList");
+    for (int i = 0; i < regions.count(); i++) {
 		xmpSetMwgRegion(regions.at(i), i + 1);
 	}
 }
@@ -70,11 +64,9 @@ void QExiv2::xmpSetMwgRegionList(const MwgRegionList &regions)
 void QExiv2::xmpSetMwgRegion(const MwgRegion &region, int n)
 {
 	if (n <= 0) {
-		qDebug() << __PRETTY_FUNCTION__ << "Cannot set index <= 0";
+        qDebug() << Q_FUNC_INFO << "Cannot set index <= 0";
 		return;
 	}
-
-	//qDebug() << __PRETTY_FUNCTION__ << region << n;
 
 	QRectF stArea = region.stArea();
 
@@ -131,22 +123,18 @@ MwgRegionList QExiv2::xmpMwgRegionList() const
 	QString s;
 	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:w");
 	if (s.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__
-			 << "Invalid Regions -- stDim:w Missing";
+        qDebug() << Q_FUNC_INFO << "Invalid Region: stDim:w Missing";
 		return MwgRegionList();
 	}
 
 	qreal dimW = s.toDouble();
-	//qDebug() << "stDim:w" << s << ":" << dimW;
 
 	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:h");
 	if (s.isEmpty()) {
-		qDebug() << __PRETTY_FUNCTION__
-			 << "Invalid Regions -- stDim:h Missing";
+        qDebug() << Q_FUNC_INFO << "Invalid Region: stDim:h Missing";
 		return MwgRegionList();
 	}
 	qreal dimH = s.toDouble();
-	//qDebug() << "stDim:h" << s << ":" << dimH;
 
 // XXX:
 //	s = xmpTagString("Xmp.mwg-rs.Regions/mwg-rs:AppliedToDimensions/stDim:unit");

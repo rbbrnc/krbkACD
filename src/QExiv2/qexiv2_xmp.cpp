@@ -24,7 +24,7 @@ void QExiv2::removeXmpBag(const char *tag, int tagNameSize)
 {
 	try {
 		Exiv2::XmpData &md = d->xmpMetadata;
-		Exiv2::XmpData::iterator it = md.begin();
+        auto /*Exiv2::XmpData::iterator*/ it = md.begin();
 		while (it != md.end()) {
 			if (it->key().compare(0, tagNameSize, tag) == 0) {
 				it = md.erase(it);
@@ -65,22 +65,28 @@ QByteArray QExiv2::xmpPacket() const
 }
 #endif
 
+bool QExiv2::setXmpTag(const char *tag, const QString &value, int typeId)
+{
+    if (value.isEmpty()) {
+        return removeXmpTag(tag);
+    }
+
+    try {
+        Exiv2::Value::AutoPtr val = Exiv2::Value::create(static_cast<Exiv2::TypeId>(typeId));
+        val->read(value.toStdString());
+        d->xmpMetadata[tag].setValue(val.get());
+        return true;
+
+    } catch (Exiv2::Error &e) {
+        setErrorString(QString("%1 [TAG: '%2'] %3").arg(__func__).arg(tag).arg(d->errorString(e)));
+    }
+
+    return false;
+}
+
 bool QExiv2::setXmpTagString(const char *tag, const QString &value)
 {
-	if (value.isEmpty()) {
-		return removeXmpTag(tag);
-	}
-
-	try {
-		Exiv2::Value::AutoPtr val = Exiv2::Value::create(Exiv2::xmpText);
-        val->read(value.toStdString());
-		d->xmpMetadata[tag].setValue(val.get());
-		return true;
-	} catch (Exiv2::Error &e) {
-        d->error(QString("%1 Cannot set tag '%2'").arg(__func__).arg(tag), e);
-	}
-
-	return false;
+    return setXmpTag(tag, value, Exiv2::xmpText);
 }
 
 bool QExiv2::setXmpTagString(const QString &tag, const QString &value)
@@ -97,7 +103,7 @@ bool QExiv2::setXmpStringList(const char *tag, const QStringList &list, int type
     try {
         Exiv2::Value::AutoPtr vptr = Exiv2::Value::create(static_cast<Exiv2::TypeId>(typeId));
 
-        for (QStringList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it ) {
+        for (QStringList::const_iterator it = list.constBegin(); it != list.constEnd(); ++it) {
             vptr->read((*it).toStdString());
         }
 
@@ -105,7 +111,8 @@ bool QExiv2::setXmpStringList(const char *tag, const QStringList &list, int type
         return true;
 
     } catch (Exiv2::Error &e) {
-        d->error(QString("%1 Cannot set tag '%2'").arg(__func__).arg(tag), e);
+        setErrorString(QString("%1 [TAG: '%2'] %3").arg(__func__).arg(tag).arg(d->errorString(e)));
+        //d->error(QString("%1 Cannot set tag '%2'").arg(__func__).arg(tag), e);
     }
 
     return false;
@@ -116,10 +123,9 @@ QStringList QExiv2::xmpStringList(const char *tag, bool escapeCR) const
 	QStringList tagList = QStringList();
 
 	try {
-		Exiv2::XmpData xmpData(d->xmpMetadata);
+        const Exiv2::XmpData xmpData(d->xmpMetadata);
         Exiv2::XmpData::const_iterator it = xmpData.findKey(Exiv2::XmpKey(tag));
 		if (it != xmpData.end()) {
-			//qDebug() << __func__ << "TypeID: 0x" << QString::number(it->typeId(), 16);
 			switch (it->typeId()) {
 			case Exiv2::xmpBag:
 			case Exiv2::xmpSeq:
@@ -136,6 +142,7 @@ QStringList QExiv2::xmpStringList(const char *tag, bool escapeCR) const
 		}
 	} catch (Exiv2::Error &e) {
         d->error(QString("%1 Cannot find tag '%2'").arg(__func__).arg(tag), e);
+        //setErrorString(QString("%1 [TAG: '%2'] %3").arg(__func__).arg(tag).arg(d->errorString(e)));
 	}
 
     return tagList;
@@ -161,7 +168,8 @@ bool QExiv2::setXmpTagBag(const char *tag)
         d->xmpMetadata[tag].setValue(valPtr.get());
 		return true;
 	} catch (Exiv2::Error &e) {
-        d->error(QString("%1 Cannot set tag '%2'").arg(__func__).arg(tag), e);
+        setErrorString(QString("%1 [TAG: '%2'] %3").arg(__func__).arg(tag).arg(d->errorString(e)));
+        //d->error(QString("%1 Cannot set tag '%2'").arg(__func__).arg(tag), e);
 	}
 	return false;
 }
@@ -182,11 +190,11 @@ bool QExiv2::setXmpTagStringSeq(const char *tag, const QStringList &seq)
 //****************************************************************************
 // XMP LangAlt Tag
 //****************************************************************************
-QString QExiv2::xmpLangAlt(const char *tag, const QString &langAlt, bool escapeCR)
+QString QExiv2::xmpLangAlt(const char *tag, const QString &langAlt, bool escapeCR) const
 {
 	try {
-		Exiv2::XmpData xmpData(d->xmpMetadata);
-        for (Exiv2::XmpData::iterator it = xmpData.begin(); it != xmpData.end(); ++it) {
+        const Exiv2::XmpData xmpData(d->xmpMetadata);
+        for (Exiv2::XmpData::const_iterator it = xmpData.begin(); it != xmpData.end(); ++it) {
 			if ((it->key() == tag) && (it->typeId() == Exiv2::langAlt)) {
 				for (int i = 0; i < it->count(); i++) {
                     QString value = QString::fromStdString(it->toString(i));

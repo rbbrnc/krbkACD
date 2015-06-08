@@ -38,7 +38,7 @@ SocialMetadata QExiv2::socialMetadata()
 bool QExiv2::setSocialMetadata(const SocialMetadata &smd, bool writeComments)
 {
 	if (!xmpRegisterNamespace("social/", "social")) {
-		qWarning() << __PRETTY_FUNCTION__ << "Metadata *NOT* saved";
+        qWarning() << Q_FUNC_INFO << "Metadata *NOT* saved";
 		return false;
 	}
 

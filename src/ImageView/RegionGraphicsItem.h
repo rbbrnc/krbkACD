@@ -10,7 +10,8 @@ class RegionGraphicsItem : public QObject, public QGraphicsRectItem
 	Q_OBJECT
 
 	public:
-		RegionGraphicsItem(const QRectF &rect = QRectF(), QGraphicsItem *parent = 0);
+        RegionGraphicsItem(const QRectF &rect = QRectF(), QGraphicsItem *parent = 0);
+
 		~RegionGraphicsItem();
 
 		QString name() const;

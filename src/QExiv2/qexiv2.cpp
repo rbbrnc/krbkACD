@@ -21,6 +21,18 @@ QExiv2::~QExiv2()
 {
 }
 
+QString QExiv2::errorString() const
+{
+    return m_errorString;
+}
+
+void QExiv2::setErrorString(const QString &msg)
+{
+    m_errorString = msg;
+
+    qDebug() << msg;
+}
+
 bool QExiv2::isValid() const
 {
 	return d->metadataValid;
@@ -72,11 +84,9 @@ void QExiv2::clearExif() { d->exifMetadata.clear(); }
 void QExiv2::clearIptc() { d->iptcMetadata.clear(); }
 void QExiv2::clearXmp()  { d->xmpMetadata.clear();  }
 
-
 ///////////////////////////////////////////////////////////////////////////////
 /// Load Functions
 ///////////////////////////////////////////////////////////////////////////////
-#if 0
 bool QExiv2::loadFromData(const QByteArray& data)
 {
 	if (data.isEmpty()) {
@@ -84,7 +94,6 @@ bool QExiv2::loadFromData(const QByteArray& data)
 	}
 	return d->readMetadata(data);
 }
-#endif
 
 bool QExiv2::load(const QString &filePath)
 {
@@ -133,14 +142,15 @@ bool QExiv2::save()
         }
 
 		if (update) {
-//			qDebug() << __PRETTY_FUNCTION__ << "write Metadata";
+//			qDebug() << Q_FUNC_INFO << "write Metadata";
 			d->image->writeMetadata();
 		}
 
         return true;
 
     } catch (Exiv2::Error &e) {
-        d->error(__func__, e);
+        setErrorString(QString("QExiv2::save(): %1").arg(d->errorString(e)));
+        //d->error(__func__, e);
 	}
 
 	return false;
@@ -153,23 +163,17 @@ template<class T>
 QList<exifData> metadataList(const T& metadata)
 {
     QList<struct exifData> lst;
-    const auto data = metadata;
-    if (data.empty()) {
-        return lst;
-    }
-
-    for (auto i = data.begin(); i != data.end(); ++i) {
+    for (auto i : metadata) {
         struct exifData ed;
-
-        ed.key      = QString::fromStdString(i->key());
-        ed.family   = QString::fromUtf8(i->familyName());
-        ed.group    = QString::fromStdString(i->groupName());
-        ed.tagName  = QString::fromStdString(i->tagName());
-        ed.tag      = i->tag();
-        ed.typeName = QString::fromUtf8(i->typeName());
-        ed.typeId   = i->typeId();
-        ed.count    = i->count();
-        ed.value    = QString::fromStdString(i->value().toString());
+        ed.key      = QString::fromStdString(i.key());
+        ed.family   = QString::fromUtf8(i.familyName());
+        ed.group    = QString::fromStdString(i.groupName());
+        ed.tagName  = QString::fromStdString(i.tagName());
+        ed.tag      = i.tag();
+        ed.typeName = QString::fromUtf8(i.typeName());
+        ed.typeId   = i.typeId();
+        ed.count    = i.count();
+        ed.value    = QString::fromStdString(i.value().toString());
         lst.append(ed);
     }
     return lst;

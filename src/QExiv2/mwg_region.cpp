@@ -49,9 +49,8 @@ void MwgRegion::setRegion(qreal x, qreal y, qreal w, qreal h, qreal dimW, qreal 
 			m_stArea.setRect(x/dimW, y/dimH, w/dimW, h/dimH);
 		}
 	} else {
-		qWarning() << __PRETTY_FUNCTION__
-			   << "Invalid stDim:" << QSizeF(dimW, dimH)
-			   << "stArea:" << QRectF(x, y, w, h);
+        qWarning() << Q_FUNC_INFO << "Invalid stDim:" << QSizeF(dimW, dimH)
+                   << "stArea:" << QRectF(x, y, w, h);
 		return;
 	}
 

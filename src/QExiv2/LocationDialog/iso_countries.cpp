@@ -36,7 +36,7 @@ void IsoCountries::load(const QString &countryFileName, QMap<QString, QString> &
 			line.remove('\n');
 			QStringList sl = line.split(';');
 			if (sl.isEmpty() || sl.size() != 2) {
-				//qDebug() << __PRETTY_FUNCTION__ << "wrong size";
+                //qDebug() << Q_FUNC_INFO << "wrong size";
 				continue;
 			}
 //			qDebug() << sl.at(0) << "---" << sl.at(1);

@@ -39,19 +39,21 @@ bool QExiv2::setDatetime(const QDateTime &dt, QExiv2::DateTimeType type)
 QDateTime QExiv2::datetime(QExiv2::DateTimeType type) const
 {
 	QDateTime dt;
+    const QString dtFormat = QStringLiteral("yyyy:MM:dd HH:mm:ss");
+
 	switch (type) {
 	case QExiv2::ExifOriginal:
-	    dt = QDateTime::fromString(exifTagString("Exif.Photo.DateTimeOriginal"), "yyyy:MM:dd HH:mm:ss");
+        dt = QDateTime::fromString(exifTagString("Exif.Photo.DateTimeOriginal"), dtFormat); //"yyyy:MM:dd HH:mm:ss");
 		if (!dt.isValid()) {
-	        dt = QDateTime::fromString(exifTagString("Exif.Image.DateTimeOriginal"), "yyyy:MM:dd HH:mm:ss");
+            dt = QDateTime::fromString(exifTagString("Exif.Image.DateTimeOriginal"), dtFormat); //"yyyy:MM:dd HH:mm:ss");
 	    }
 		break;
 
 	case QExiv2::ExifDigitized:
-	    return QDateTime::fromString(exifTagString("Exif.Photo.DateTimeDigitized"), "yyyy:MM:dd HH:mm:ss");
+        return QDateTime::fromString(exifTagString("Exif.Photo.DateTimeDigitized"), dtFormat); //"yyyy:MM:dd HH:mm:ss");
 
 	case QExiv2::ExifModified:
-		return QDateTime::fromString(exifTagString("Exif.Image.DateTime"), "yyyy:MM:dd HH:mm:ss");
+        return QDateTime::fromString(exifTagString("Exif.Image.DateTime"), dtFormat); //"yyyy:MM:dd HH:mm:ss");
 
 	case QExiv2::IptcOriginal:
 	    // Date represented in the form CCYYMMDD    (Follows ISO 8601 standard)

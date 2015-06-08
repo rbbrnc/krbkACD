@@ -97,14 +97,14 @@ bool QExiv2::exifGpsCoordinate(const QString &coordTag, const QString &refTag, d
         dir = true;
         break;
     default:
-        qWarning() << __PRETTY_FUNCTION__ << "Invalid Ref. data:" << ref[0];
+        qWarning() << Q_FUNC_INFO << "Invalid Ref. data:" << ref[0];
         return false;
     }
 
     double degrees;
 
-    Exiv2::ExifKey  key(coordTag.toLatin1().constData());
-    Exiv2::ExifData data(d->exifMetadata);
+    const Exiv2::ExifKey  key(coordTag.toLatin1().constData());
+    const Exiv2::ExifData data(d->exifMetadata);
     Exiv2::ExifData::const_iterator it = data.findKey(key);
     if (it != data.end() && (*it).count() == 3) {
         // Latitude decoding from Exif.

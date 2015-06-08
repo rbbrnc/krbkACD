@@ -24,14 +24,12 @@ class MetadataEditPage : public QWidget
 
     private:
         void getDateTime();
-        void getLocations();
 
     private slots:
         void on_locationEditButton_clicked();
         void on_datetimeEditButton_clicked();
         void on_keywordsEditButton_clicked();
         void on_socialMetadataEditButton_clicked();
-        //void on_ratingSpinBox_valueChanged(double);
         void on_reverseGeolocationButton_clicked();
         void onReverseGeocodeFinished();
 

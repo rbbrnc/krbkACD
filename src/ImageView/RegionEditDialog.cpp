@@ -1,8 +1,6 @@
 #include "RegionEditDialog.h"
 #include "ui_RegionEditDialog.h"
 
-#include <QDebug>
-
 RegionEditDialog::RegionEditDialog(RegionGraphicsItem *item, QWidget *parent) :
 	QDialog(parent),
 	ui(new Ui::RegionEditDialog),

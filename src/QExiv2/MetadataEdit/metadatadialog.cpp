@@ -138,7 +138,7 @@ bool MetadataDialog::saveData(const QString &file)
 		return true;
 	}
 
-	qDebug() << __PRETTY_FUNCTION__ << "Error set Xmp Data on file:" << file;
+    qDebug() << Q_FUNC_INFO << "Error set Xmp Data on file:" << file;
 	delete e;
 	return false;
 }

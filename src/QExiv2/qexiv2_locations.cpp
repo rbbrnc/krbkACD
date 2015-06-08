@@ -5,7 +5,7 @@
 void QExiv2::setLocation(MetadataLocation &loc, const QString &locType, int index)
 {
     if (index != 1) {
-        qWarning() << __PRETTY_FUNCTION__ << "index >1 not implemented yet!";
+        qWarning() << Q_FUNC_INFO << "index >1 not implemented yet!";
         return;
     }
 

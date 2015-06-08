@@ -18,7 +18,7 @@ ObjectDetect::ObjectDetect(const char *haarCascadePath)
 	storage = cvCreateMemStorage(0);
 
 	if (!haarCascadePath) {
-		m_haarCascade = (CvHaarClassifierCascade *) cvLoad(HAARCASCADE);
+        m_haarCascade = (CvHaarClassifierCascade *) cvLoad(HAARCASCADE);
 	} else {
 		m_haarCascade = (CvHaarClassifierCascade *) cvLoad(haarCascadePath);
 	}

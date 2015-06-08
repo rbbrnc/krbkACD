@@ -43,8 +43,7 @@ class MwgRegion
 		MwgRs::Type type() const;
 		MwgRs::FocusUsage focusUsage() const;
 
-		void setType(MwgRs::Type type,
-			     MwgRs::FocusUsage focus = MwgRs::NotEvaluatedNotUsed);
+        void setType(MwgRs::Type type, MwgRs::FocusUsage focus = MwgRs::NotEvaluatedNotUsed);
 
 		// Get/Set mwg-rs:Name
 		QString name() const;

@@ -48,12 +48,12 @@ class QExiv2
 			XmpModified
 		};
 
+        QString errorString() const;
+
 		// General metadata methods
 		bool isValid() const;
 		bool load(const QString& filePath);
-
-		// Unused
-		//bool loadFromData(const QByteArray& data);
+        bool loadFromData(const QByteArray& data);
 
 		bool save();
 
@@ -102,7 +102,7 @@ class QExiv2
 		QStringList xmpTagStringSeq(const char *tag, bool escapeCR = false) const;
 		bool setXmpTagStringSeq(const char *tag, const QStringList &seq);
 
-        QString xmpLangAlt(const char *tag, const QString &langAlt, bool escapeCR);
+        QString xmpLangAlt(const char *tag, const QString &langAlt, bool escapeCR) const;
         bool setXmpLangAlt(const char *tag, const QString &value, const QString &langAlt = QStringLiteral("x-default"));
 
 		bool removeXmpTag(const char *tag);
@@ -152,7 +152,6 @@ class QExiv2
         QStringList xmpStringList(const char *tag, bool escapeCR) const;
         bool setXmpStringList(const char *tag, const QStringList &list, int typeId);
 
-
 		void setLocation(MetadataLocation &loc, const QString &locType, int index);
 		void location(MetadataLocation &loc, const QString &locType, int index);
 
@@ -164,8 +163,13 @@ class QExiv2
         //bool xmpGpsAltitude(double *altitude) const;
         //bool exifGpsAltitude(double *altitude) const;
 
+        void setErrorString(const QString &msg);
+        bool setXmpTag(const char *tag, const QString &value, int typeId);
+
     private:
 		QSharedDataPointer<QExiv2DataPrivate> d;
+
+        QString m_errorString;
 };
 
 #endif

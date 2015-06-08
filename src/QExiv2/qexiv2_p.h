@@ -22,13 +22,16 @@ class QExiv2DataPrivate : public QSharedData
 		QExiv2DataPrivate();
 		~QExiv2DataPrivate();
 
-		void error(const QString &msg, Exiv2::Error &e) const;
+        void error(const QString &msg, Exiv2::Error &e) const;
 
-		bool readMetadata();
+        QString errorString(Exiv2::Error &e) const;
+
 		bool readMetadata(const QString &filePath);
-//		bool readMetadata(const QByteArray &data);
+        bool readMetadata(const QByteArray &data);
 
-		bool isMetadataWritable(Exiv2::MetadataId mid) const;
+        bool isMetadataWritable(Exiv2::MetadataId mid) const;
+
+        bool setXmpTag(const char *tag);
 
 	public:
 		bool metadataValid;
@@ -39,6 +42,10 @@ class QExiv2DataPrivate : public QSharedData
 		Exiv2::ExifData exifMetadata;
 		Exiv2::IptcData iptcMetadata;
 		Exiv2::XmpData  xmpMetadata;
+
+    private:
+        bool readMetadata();
+
 };
 
 #endif

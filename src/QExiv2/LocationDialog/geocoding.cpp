@@ -134,7 +134,7 @@ void GeoCoding::onReverseGeoCodeFinished()
     } else {
         data = reply->readAll();
         if (data.isEmpty()) {
-            qDebug() << __PRETTY_FUNCTION__ << "Empty DATA";
+            qDebug() << Q_FUNC_INFO << "Empty DATA";
         } else {
             //qDebug() << data;
 			if (setLocationFormJson(data)) {

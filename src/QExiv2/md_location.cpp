@@ -83,21 +83,22 @@ bool MetadataLocation::isEmpty() const
 const QString MetadataLocation::toString() const
 {
     QString s;
+    const QString separator = QStringLiteral(", ");
 
     if (!m_sublocation.isEmpty()) {
-        s = m_sublocation + ", ";
+        s = m_sublocation + separator;
     }
     if (!m_city.isEmpty()) {
-        s += m_city + ", ";
+        s += m_city + separator;
     }
     if (!m_provinceState.isEmpty()) {
-        s += m_provinceState + ", ";
+        s += m_provinceState + separator;
     }
     if (!m_countryName.isEmpty()) {
-        s += m_countryName + ", ";
+        s += m_countryName + separator;
     }
     if (!m_countryCode.isEmpty()) {
-        s += m_countryCode + ", ";
+        s += m_countryCode + separator;
     }
     if (!m_worldRegion.isEmpty()) {
         s += m_worldRegion;

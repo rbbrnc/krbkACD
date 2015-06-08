@@ -250,19 +250,19 @@ void ImageViewManager::insertRegion(const QRectF &rect, const QString &name,
 				    const QString &desc, int type)
 {
 	if (!m_image) {
-		qWarning() << __PRETTY_FUNCTION__ << "Invalid Image" << rect;
+        qWarning() << Q_FUNC_INFO << "Invalid Image" << rect;
 		return;
 	}
 
 	if (!rect.isValid()) {
-		qWarning() << __PRETTY_FUNCTION__ << "Invalid Rect:" << rect;
+        qWarning() << Q_FUNC_INFO << "Invalid Rect:" << rect;
 		return;
 	}
 
 	// Check if the rect is totally internal to the pixmap
 	// to avoid select a region outside the pixmap
 	if (!m_image->boundingRect().contains(rect)) {
-		qWarning() << __PRETTY_FUNCTION__ << "Region not fully bounded on image";
+        qWarning() << Q_FUNC_INFO << "Region not fully bounded on image";
 		return;
 	}
 

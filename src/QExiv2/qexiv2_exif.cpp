@@ -8,8 +8,8 @@
 QByteArray QExiv2::exifTagData(const char *tag) const
 {
     try {
-        Exiv2::ExifData data(d->exifMetadata);
-        Exiv2::ExifData::iterator it = data.findKey(Exiv2::ExifKey(tag));
+        const Exiv2::ExifData data(d->exifMetadata);
+        Exiv2::ExifData::const_iterator it = data.findKey(Exiv2::ExifKey(tag));
         if (it != data.end()) {
             char* const s = new char[(*it).size()];
             (*it).copy((Exiv2::byte *) s, Exiv2::bigEndian);
@@ -37,7 +37,7 @@ QImage QExiv2::previewImage() const
 		Exiv2::PreviewManager loader(*d->image);
 		Exiv2::PreviewPropertiesList list = loader.getPreviewProperties();
 
-//		qDebug() << __func__ << "# of preview:" << list.size();
+//		qDebug() << Q_FUNC_INFO << "# of preview:" << list.size();
 
 		if (list.empty()) {
 			return QImage();
@@ -61,7 +61,7 @@ QImage QExiv2::previewImage() const
 		return image;
 
 	} catch (Exiv2::Error& e) {
-		d->error(__PRETTY_FUNCTION__, e);
+        d->error(Q_FUNC_INFO, e);
 	}
 
 	return QImage();

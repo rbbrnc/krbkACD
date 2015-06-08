@@ -95,7 +95,7 @@ bool FileManager::isActive() const
 void FileManager::fileSelect(const QModelIndex &current, const QModelIndex &/*previous*/)
 {
 	m_currentFileName = m_model->fileName(current);
-//	qDebug() << __PRETTY_FUNCTION__ << m_currentFileName;
+//	qDebug() << Q_FUNC_INFO << m_currentFileName;
 	emit currentChanged();
 }
 
