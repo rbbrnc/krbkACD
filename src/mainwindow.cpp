@@ -21,6 +21,7 @@
 #define PAGE_METADATA_TREE   2
 #define PAGE_IMAGE_VIEW      3
 #define PAGE_METADATA_EDITOR 4
+#define PAGE_VIDEO_PLAYER    5
 
 //#define EMPTY_SELECTION_TEXT "No File Selected!"
 

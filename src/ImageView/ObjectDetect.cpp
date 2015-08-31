@@ -93,7 +93,7 @@ QList<QRectF> ObjectDetect::objects() const
 
 	if (m_objects) {
 		CvRect *r;
-		for (int i = 0; i < m_objects->total; i++ ) {
+        for (int i = 0; i < m_objects->total; ++i) {
 			r = (CvRect *) cvGetSeqElem(m_objects, i);
 			rects.append(QRectF(r->x, r->y, r->width, r->height));
 			//printf("x:%d y:%d w:%d h:%d\n", r->x, r->y, r->width, r->height);

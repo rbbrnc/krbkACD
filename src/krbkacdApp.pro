@@ -12,7 +12,7 @@ RCC_DIR     = out/resources
 #-- Check QT version
 message(Qt version: $$[QT_VERSION])
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
+    QT += widgets webkitwidgets
     CONFIG += c++11
     DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS
 } else {

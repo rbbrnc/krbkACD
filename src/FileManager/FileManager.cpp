@@ -287,7 +287,7 @@ void FileManager::deleteSelectedFiles()
     progress.setRange(0, count);
     progress.setModal(true);
 
-    for (int i = 0; i < count; i++) {
+    for (int i = 0; i < count; ++i) {
         progress.setLabelText(tr("Delete %1").arg(m_model->filePath(m_selection.at(i))));
         progress.setValue(i);
         qApp->processEvents();

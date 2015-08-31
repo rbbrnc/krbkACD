@@ -2,14 +2,6 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>530</width>
-    <height>331</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>krbkACD</string>
   </property>
@@ -131,6 +123,19 @@
         </property>
        </widget>
        <widget class="MetadataEditPage" name="metadataEditPage"/>
+       <widget class="QWidget" name="videoPage">
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <item>
+          <widget class="QWebView" name="webView">
+           <property name="url">
+            <url>
+             <string>about:blank</string>
+            </url>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -409,6 +414,11 @@
   </action>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QWebView</class>
+   <extends>QWidget</extends>
+   <header>QtWebKitWidgets/QWebView</header>
+  </customwidget>
   <customwidget>
    <class>ImageViewManager</class>
    <extends>QWidget</extends>
